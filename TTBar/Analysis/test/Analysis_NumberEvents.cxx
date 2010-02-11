@@ -66,16 +66,19 @@
   
   outfile_sh << "#!/bin/bash " << std::endl;
   outfile_sh << "cd -" << std::endl;
-  outfile_sh << "cd /afs/cern.ch/user/a/amassiro/scratch0/VBF/HWW2l2nu/CMSSW_2_2_10/src/" << std::endl; 
-  outfile_sh << "eval `scramv1 runtime -sh`" << std::endl;
-  outfile_sh << "cd -" << std::endl; 
-  outfile_sh << "source /afs/cern.ch/user/a/amassiro/scratch0/VBF/TTBar/Analysis/script/setup.sh" << std::endl;
-  outfile_sh << "cd -" << std::endl; 
-  outfile_sh << "rfcp /castor/cern.ch/user/a/amassiro/TTBar/madgraph_all/VBF_SimpleTree_TTBar_All.root ./" << std::endl; 
   
+  outfile_sh << "source /afs/cern.ch/sw/lcg/app/releases/ROOT/5.21.04/slc4_amd64_gcc34/root/bin/thisroot.sh" << std::endl;  
+  outfile_sh << "CLHEPSYS=/afs/cern.ch/sw/lcg/external/clhep/2.0.4.2/slc4_amd64_gcc34/" << std::endl;
+  outfile_sh << "export CLHEPSYS" << std::endl;  
+  outfile_sh << "PATH=${PATH}:${CLHEPSYS}/bin" << std::endl;
+  outfile_sh << "export PATH" << std::endl;  
+  outfile_sh << "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CLHEPSYS}/lib" << std::endl;
+  outfile_sh << "export LD_LIBRARY_PATH" << std::endl;  
+  
+  outfile_sh << "source /afs/cern.ch/user/a/amassiro/scratch0/VBF/TTBar/Analysis/script/setup.sh" << std::endl;
+  outfile_sh << "rfcp /castor/cern.ch/user/a/amassiro/TTBar/madgraph_all/VBF_SimpleTree_TTBar_All.root ./" << std::endl; 
   outfile_sh << "/afs/cern.ch/user/a/amassiro/scratch0/VBF/TTBar/Analysis/bin/TT_GeneralCalibrator.exe " << name << std::endl; 
   outfile_sh << "cp " << outputFileName << "/afs/cern.ch/user/a/amassiro/scratch0/VBF/TTBar/Analysis/output/" << std::endl;
-  
   outfile_sh << std::endl;
   outfile_sh.close();
   
