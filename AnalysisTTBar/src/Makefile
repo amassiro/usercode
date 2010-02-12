@@ -33,8 +33,11 @@ ROOTGLIBS     = $(shell root-config --glibs)
 CLHEPCFLAGS   =  $(shell clhep-config --include)
 CLHEPLIBS     =  $(shell clhep-config --libs)
 
-NTUPLEPACKAGEFLAGS = -I/home/andrea/Cern/Code/VBF/PhysicsTools/NtuplePackage/interface/
-NTUPLEPACKAGELIBS = -L/home/andrea/Cern/Code/VBF/PhysicsTools/NtuplePackage/lib/ -lEvent
+NTUPLEPACKAGEFLAGS = $(shell ntuplepkg-config --include)
+NTUPLEPACKAGELIBS = $(shell ntuplepkg-config --lib)
+
+# NTUPLEPACKAGEFLAGS = -I/home/andrea/Cern/Code/VBF/PhysicsTools/NtuplePackage/interface/
+# NTUPLEPACKAGELIBS = -L/home/andrea/Cern/Code/VBF/PhysicsTools/NtuplePackage/lib/ -lEvent
 
 CXX  =  c++
 CXXFLAGS  =  -Wall -O -fPIC -I$(HDR) $(ROOTCFLAGS) $(CLHEPCFLAGS) $(NTUPLEPACKAGEFLAGS)
