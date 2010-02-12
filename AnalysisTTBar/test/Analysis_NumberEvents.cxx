@@ -1,9 +1,9 @@
 {
  #include <iostream>
  
- int numEvents[10] = {10,100,1000,2000,3000,4000,5000,6000,7000,8000};
+ int numEvents[20] = {10,100,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,15000,20000,50000,100000,200000};
  
- for (int i=0; i<10; i++){
+ for (int i=0; i<17; i++){
   
   char name[1000];
   sprintf(name,"test_All_TTBarNtupleL2L3Antikt5CaloJets_%d.cfg",i);
@@ -15,7 +15,7 @@
   ofstream outfile (name);
   outfile << "[Input] " << std::endl;
   outfile << "treeName = TTBarNtupleL2L3Antikt5CaloJets/SimpleTree" << std::endl;
-  outfile << "inputFileList = /afs/cern.ch/user/a/amassiro/scratch0/VBF/TTBar/Analysis/data/list.txt" << std::endl;
+  outfile << "inputFileList = /afs/cern.ch/user/a/amassiro/scratch0/VBF/TTBar/AnalysisTTBar/data/list.txt" << std::endl;
   
   outfile << "entryMIN = 0" << std::endl;
   outfile << "entryMAX = " << numEvents[i] << std::endl;
@@ -47,7 +47,7 @@
   
   outfile << "[Test]" << std::endl;
   outfile << "entryMIN = " << numEvents[i] +1 << std::endl;
-  outfile << "entryMAX = " << numEvents[i] + 10000 << std::endl;
+  outfile << "entryMAX = " << numEvents[i] + 30000 << std::endl;
   outfile << std::endl;
   
   outfile << "[Output]" << std::endl;
@@ -73,14 +73,14 @@
   outfile_sh << "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CLHEPSYS}/lib" << std::endl;
   outfile_sh << "export LD_LIBRARY_PATH" << std::endl;  
   
-  outfile_sh << "source /afs/cern.ch/user/a/amassiro/scratch0/VBF/TTBar/Analysis/scripts/setup.sh" << std::endl;
+  outfile_sh << "source /afs/cern.ch/user/a/amassiro/scratch0/VBF/TTBar/AnalysisTTBar/scripts/setup.sh" << std::endl;
   outfile_sh << "rfcp /castor/cern.ch/user/a/amassiro/TTBar/madgraph_all/VBF_SimpleTree_TTBar_All.root ./" << std::endl; 
-  outfile_sh << "/afs/cern.ch/user/a/amassiro/scratch0/VBF/TTBar/Analysis/bin/TT_GeneralCalibrator.exe /afs/cern.ch/user/a/amassiro/scratch0/VBF/TTBar/Analysis/" << name << std::endl; 
-  outfile_sh << "mv " << outputFileName << " /afs/cern.ch/user/a/amassiro/scratch0/VBF/TTBar/Analysis/output/" << std::endl;
+  outfile_sh << "/afs/cern.ch/user/a/amassiro/scratch0/VBF/TTBar/AnalysisTTBar/bin/TT_GeneralCalibrator.exe /afs/cern.ch/user/a/amassiro/scratch0/VBF/TTBar/AnalysisTTBar/" << name << std::endl; 
+  outfile_sh << "mv " << outputFileName << " /afs/cern.ch/user/a/amassiro/scratch0/VBF/TTBar/AnalysisTTBar/output/" << std::endl;
   outfile_sh << std::endl;
   outfile_sh.close();
   
-  TString CommandToShell = Form("chmod 777 /afs/cern.ch/user/a/amassiro/scratch0/VBF/TTBar/Analysis/%s",name_sh);
+  TString CommandToShell = Form("chmod 777 /afs/cern.ch/user/a/amassiro/scratch0/VBF/TTBar/AnalysisTTBar/%s",name_sh);
   gSystem->Exec(CommandToShell);
   
   CommandToShell = Form("bsub -q \"8nm\" %s",name_sh);
