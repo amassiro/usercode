@@ -39,13 +39,15 @@ NTUPLEPACKAGELIBS = $(shell ntuplepkg-config --lib)
 # NTUPLEPACKAGEFLAGS = -I/home/andrea/Cern/Code/VBF/PhysicsTools/NtuplePackage/interface/
 # NTUPLEPACKAGELIBS = -L/home/andrea/Cern/Code/VBF/PhysicsTools/NtuplePackage/lib/ -lEvent
 
+ARCHL = -m64
+
 CXX  =  c++
 CXXFLAGS  =  -Wall -O -fPIC -I$(HDR) $(ROOTCFLAGS) $(CLHEPCFLAGS) $(NTUPLEPACKAGEFLAGS)
 CPP  =  c++
-CPPFLAGS  = -Wall -m32 -I$(HDR) $(ROOTCFLAGS) $(CLHEPCFLAGS) $(NTUPLEPACKAGEFLAGS)
+CPPFLAGS  = -Wall $(ARCHL) -I$(HDR) $(ROOTCFLAGS) $(CLHEPCFLAGS) $(NTUPLEPACKAGEFLAGS)
 
 LD       =  c++
-LDFLAGS  =  -rdynamic -shared -m32
+LDFLAGS  =  -rdynamic -shared $(ARCHL)
 SONAME	 =  libTTBar.so
 SOFLAGS  =  -Wl,-soname,$(SONAME)
 
@@ -58,11 +60,11 @@ ARCH  =  $(shell root-config --arch)
 ifeq ($(ARCH),macosx)
 LibSuf  =  .dylib
 
-CPPFLAGS  =  -Wall -W -Woverloaded-virtual -O2 -m32 -pipe -I$(HDR) $(ROOTCFLAGS) $(CLHEPCFLAGS)
+CPPFLAGS  =  -Wall -W -Woverloaded-virtual -O2 $(ARCHL) -pipe -I$(HDR) $(ROOTCFLAGS) $(CLHEPCFLAGS)
 
-CXXFLAGS  =  -Wall -W -Woverloaded-virtual -O2 -m32 -pipe -I$(HDR) $(ROOTCFLAGS) $(CLHEPCFLAGS)
+CXXFLAGS  =  -Wall -W -Woverloaded-virtual -O2 $(ARCHL) -pipe -I$(HDR) $(ROOTCFLAGS) $(CLHEPCFLAGS)
 
-LDFLAGS  =  -dynamiclib -shared -single_module -undefined dynamic_lookup -m32
+LDFLAGS  =  -dynamiclib -shared -single_module -undefined dynamic_lookup $(ARCHL)
 SONAME	 =  libTTBar.dylib
 SOFLAGS  =
 endif
