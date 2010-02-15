@@ -39,7 +39,7 @@ NTUPLEPACKAGELIBS = $(shell ntuplepkg-config --lib)
 # NTUPLEPACKAGEFLAGS = -I/home/andrea/Cern/Code/VBF/PhysicsTools/NtuplePackage/interface/
 # NTUPLEPACKAGELIBS = -L/home/andrea/Cern/Code/VBF/PhysicsTools/NtuplePackage/lib/ -lEvent
 
-ARCHL = -m64
+ARCHL = -m32
 
 CXX  =  c++
 CXXFLAGS  =  -Wall -O -fPIC -I$(HDR) $(ROOTCFLAGS) $(CLHEPCFLAGS) $(NTUPLEPACKAGEFLAGS)
