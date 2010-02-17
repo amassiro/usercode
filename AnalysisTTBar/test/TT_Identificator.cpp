@@ -82,13 +82,10 @@ int main(int argc, char** argv)
  int entryMOD = gConfigParser -> readIntOption("Input::entryMOD");
  
  
+ std::cout << ">>>>> input::entryMIN  " << entryMIN  << std::endl;  
  std::cout << ">>>>> input::entryMAX  " << entryMAX  << std::endl;  
  std::cout << ">>>>> input::entryMOD  " << entryMOD  << std::endl;  
- 
- std::string outputFileName    = gConfigParser -> readStringOption("Output::fileName");
- std::cout << ">>>>> output::fileName  " << outputFileName  << std::endl;  
- 
- 
+  
  // Open ntple
  TChain* chain = new TChain(treeName.c_str());
  if(!FillChain(*chain, inputFileList.c_str())) return 1;
@@ -104,7 +101,10 @@ int main(int argc, char** argv)
  if (creator == 1){
   ///----------------------------------------
   ///---- Tree producer for MVA training ----
-  
+ 
+ std::string outputFileName    = gConfigParser -> readStringOption("Creator::outFileName");
+ std::cout << ">>>>> Creator::outFileName  " << outputFileName  << std::endl;  
+ 
   TFile outFile(outputFileName.c_str(),"RECREATE");
   TTree outTree("outTree","outTree");
   
@@ -239,21 +239,27 @@ int main(int argc, char** argv)
     int matched = 0;
     matched = GetMatching<ROOT::Math::XYZTVector,ROOT::Math::XYZTVector>(*jets,*mcF_fromVandB,0.3,0.1,2.0,&matchIt);
     if (matched == 4){
-     int doSig_doBkg = myrand.Uniform(-1,1); // <0 == bkg, >=0 == sig    
+     double doSig_doBkg = myrand.Uniform(-1,1); // <0 == bkg, >=0 == sig    
      
      ///---- correct matchVector -> (1,2,4,3) => (1,2,3,4)
      Correct(matchIt);
      
      std::vector<std::vector<int> > combinations;
      int nJets = jets->size();
+//      std::cerr << " nJets = " << nJets << std::endl; 
+     if (nJets>10) {
+      nJets = 10;
+//       std::cerr << "        == > nJets = " << nJets << std::endl; 
+     }
+     
      int buffer = Build4JetCombinations(combinations,nJets);
-     std::cerr << " buffer = " << buffer << std::endl;
+//      std::cerr << " buffer = " << buffer << std::endl;
      /// combinations[i] ==> (0,1,2,3)
      /// combinations[i] ==> (0,1,2,4)
      /// combinations[i] ==> (0,1,2,5) 
      /// combinations[i] ==> ... and so on ...
      int nComb = combinations.size();
-     std::cerr << " nJets = " << nJets << " ==> nComb = " << nComb << std::endl; 
+//      std::cerr << " nJets = " << nJets << " ==> nComb = " << nComb << std::endl; 
      int numSelectedCombination = myrand.Uniform(0,nComb);
      
      for (int iComb = 0; iComb<nComb; iComb++){
@@ -370,9 +376,13 @@ int main(int argc, char** argv)
  else if (creator == 0){
   ///------------------
   ///---- test MVA ----
-  std::string OutFileName    = gConfigParser -> readStringOption("Identificator::OutFileName");
-  std::cout << ">>>>> Identificator::OutFileName  " << OutFileName  << std::endl;  
+  std::string OutFileName    = gConfigParser -> readStringOption("Tester::outFileName");
+  std::cout << ">>>>> Tester::outFileName  " << OutFileName  << std::endl;  
   TFile outFile(OutFileName.c_str(),"RECREATE");
+
+  std::string additionalInputFileName    = gConfigParser -> readStringOption("Tester::additionalInputFileName");
+  std::cout << ">>>>> Tester::additionalInputFileName  " << additionalInputFileName  << std::endl;  
+  
   
   TTree outTree("outTree","outTree");
   int n_matched;
@@ -380,52 +390,85 @@ int main(int argc, char** argv)
   outTree.Branch("n_matched",&n_matched,"n_matched/I");
   outTree.Branch("n_jets",&n_jets,"n_jets/I");
   
-  std::vector<std::string> theInputVars;
-  theInputVars.push_back("pT_RECO_q1");
-  theInputVars.push_back("pT_RECO_q2");
-  theInputVars.push_back("pT_RECO_b1");
-  theInputVars.push_back("pT_RECO_b2");
-  theInputVars.push_back("DR_RECO_qq");
-  theInputVars.push_back("DR_RECO_qb");
-  theInputVars.push_back("DR_RECO_bb");
-  theInputVars.push_back("jets_trackCountingHighEffBJetTags_RECO_q1");
-  theInputVars.push_back("jets_trackCountingHighEffBJetTags_RECO_b1");
-  theInputVars.push_back("jets_trackCountingHighEffBJetTags_RECO_q2");
-  theInputVars.push_back("jets_trackCountingHighEffBJetTags_RECO_b2");
+//   std::vector<std::string> theInputVars;
+//   theInputVars.push_back("pT_RECO_q1");
+//   theInputVars.push_back("pT_RECO_q2");
+//   theInputVars.push_back("pT_RECO_b1");
+//   theInputVars.push_back("pT_RECO_b2");
+//   theInputVars.push_back("DR_RECO_qq");
+//   theInputVars.push_back("DR_RECO_qb");
+//   theInputVars.push_back("DR_RECO_bb");
+//   theInputVars.push_back("jets_trackCountingHighEffBJetTags_RECO_q1");
+//   theInputVars.push_back("jets_trackCountingHighEffBJetTags_RECO_b1");
+//   theInputVars.push_back("jets_trackCountingHighEffBJetTags_RECO_q2");
+//   theInputVars.push_back("jets_trackCountingHighEffBJetTags_RECO_b2");
   
-//   TMVA::Reader *TMVAreader = new TMVA::Reader( "!Color:!Silent" );
+  Float_t pT_RECO_q1;
+  Float_t pT_RECO_q2;
+  Float_t pT_RECO_b1;
+  Float_t pT_RECO_b2;
+  
+  Float_t DR_RECO_qq;
+  Float_t DR_RECO_qb;
+  Float_t DR_RECO_bb;
+  
+  Float_t jets_trackCountingHighEffBJetTags_RECO_q1;
+  Float_t jets_trackCountingHighEffBJetTags_RECO_b1;
+  Float_t jets_trackCountingHighPurBJetTags_RECO_q1;
+  Float_t jets_trackCountingHighPurBJetTags_RECO_b1;
+  Float_t jets_simpleSecondaryVertexBJetTags_RECO_q1;
+  Float_t jets_simpleSecondaryVertexBJetTags_RECO_b1;
+  Float_t jets_combinedSecondaryVertexBJetTags_RECO_q1;
+  Float_t jets_combinedSecondaryVertexBJetTags_RECO_b1;
+  Float_t jets_combinedSecondaryVertexMVABJetTags_RECO_q1;
+  Float_t jets_combinedSecondaryVertexMVABJetTags_RECO_b1;
+  
+  Float_t jets_trackCountingHighEffBJetTags_RECO_q2;
+  Float_t jets_trackCountingHighEffBJetTags_RECO_b2;
+  Float_t jets_trackCountingHighPurBJetTags_RECO_q2;
+  Float_t jets_trackCountingHighPurBJetTags_RECO_b2;
+  Float_t jets_simpleSecondaryVertexBJetTags_RECO_q2;
+  Float_t jets_simpleSecondaryVertexBJetTags_RECO_b2;
+  Float_t jets_combinedSecondaryVertexBJetTags_RECO_q2;
+  Float_t jets_combinedSecondaryVertexBJetTags_RECO_b2;
+  Float_t jets_combinedSecondaryVertexMVABJetTags_RECO_q2;
+  Float_t jets_combinedSecondaryVertexMVABJetTags_RECO_b2; 
+  
+  
+  TMVA::Reader *TMVAreader = new TMVA::Reader( "!Color:!Silent" );
+  TMVAreader->AddVariable("pT_RECO_q1",&pT_RECO_q1);
+  TMVAreader->AddVariable("pT_RECO_q2",&pT_RECO_q2);
+  TMVAreader->AddVariable("pT_RECO_b1",&pT_RECO_b1);
+  TMVAreader->AddVariable("pT_RECO_b2",&pT_RECO_b2);
+  TMVAreader->AddVariable("DR_RECO_qq",&DR_RECO_qq);
+  TMVAreader->AddVariable("DR_RECO_qb",&DR_RECO_qb);
+  TMVAreader->AddVariable("DR_RECO_bb",&DR_RECO_bb);
+  TMVAreader->AddVariable("jets_trackCountingHighEffBJetTags_RECO_q1",&jets_trackCountingHighEffBJetTags_RECO_q1);
+  TMVAreader->AddVariable("jets_trackCountingHighEffBJetTags_RECO_b1",&jets_trackCountingHighEffBJetTags_RECO_b1);
+  TMVAreader->AddVariable("jets_trackCountingHighEffBJetTags_RECO_q2",&jets_trackCountingHighEffBJetTags_RECO_q2);
+  TMVAreader->AddVariable("jets_trackCountingHighEffBJetTags_RECO_b2",&jets_trackCountingHighEffBJetTags_RECO_b2);
+  
+  
+  std::string stdstrMethod    = gConfigParser -> readStringOption("Tester::Method");
+  std::cout << ">>>>> Tester::Method  " << stdstrMethod  << std::endl;  
+  
+  TString dir    = "weights/";
+  TString prefix = "TMVAnalysis";
+  TString methodName = stdstrMethod + " method";
+//   TString weightfile = dir + prefix + "_" + TString(additionalInputFileName) + ".weights.xml";  
+  TString weightfile = Form(additionalInputFileName.c_str());
+
+// methodName = "BDT";
+// weightfile = "weights/TMVAnalysis_BDT.weights.xml";
+
+
+  TMVAreader->BookMVA( methodName, weightfile );
+    
+  
+//   std::cerr << "OK" << std::endl;
+  
 //   ReadBDT* TMVAreader = new ReadBDT(theInputVars);
   
-  double pT_RECO_q1;
-  double pT_RECO_q2;
-  double pT_RECO_b1;
-  double pT_RECO_b2;
-  
-  double DR_RECO_qq;
-  double DR_RECO_qb;
-  double DR_RECO_bb;
-  
-  double jets_trackCountingHighEffBJetTags_RECO_q1;
-  double jets_trackCountingHighEffBJetTags_RECO_b1;
-  double jets_trackCountingHighPurBJetTags_RECO_q1;
-  double jets_trackCountingHighPurBJetTags_RECO_b1;
-  double jets_simpleSecondaryVertexBJetTags_RECO_q1;
-  double jets_simpleSecondaryVertexBJetTags_RECO_b1;
-  double jets_combinedSecondaryVertexBJetTags_RECO_q1;
-  double jets_combinedSecondaryVertexBJetTags_RECO_b1;
-  double jets_combinedSecondaryVertexMVABJetTags_RECO_q1;
-  double jets_combinedSecondaryVertexMVABJetTags_RECO_b1;
-  
-  double jets_trackCountingHighEffBJetTags_RECO_q2;
-  double jets_trackCountingHighEffBJetTags_RECO_b2;
-  double jets_trackCountingHighPurBJetTags_RECO_q2;
-  double jets_trackCountingHighPurBJetTags_RECO_b2;
-  double jets_simpleSecondaryVertexBJetTags_RECO_q2;
-  double jets_simpleSecondaryVertexBJetTags_RECO_b2;
-  double jets_combinedSecondaryVertexBJetTags_RECO_q2;
-  double jets_combinedSecondaryVertexBJetTags_RECO_b2;
-  double jets_combinedSecondaryVertexMVABJetTags_RECO_q2;
-  double jets_combinedSecondaryVertexMVABJetTags_RECO_b2; 
   
   
   double start, end;
@@ -492,10 +535,13 @@ int main(int argc, char** argv)
      
      std::vector<std::vector<int> > combinations;
      int nJets = jets->size();
+     if (nJets>10) {
+      nJets = 10;
+     }     
      int buffer = Build4JetCombinations(combinations,nJets);
-     std::cerr << " buffer = " << buffer << std::endl;
+//      std::cerr << " buffer = " << buffer << std::endl;
      int nComb = combinations.size();
-     std::cerr << " nJets = " << nJets << " ==> nComb = " << nComb << std::endl; 
+//      std::cerr << " nJets = " << nJets << " ==> nComb = " << nComb << std::endl; 
      int numSelectedCombination = myrand.Uniform(0,nComb);
      
      for (int iComb = 0; iComb<nComb; iComb++){     
@@ -562,29 +608,28 @@ int main(int argc, char** argv)
        jets_combinedSecondaryVertexMVABJetTags_RECO_b2 = jets_combinedSecondaryVertexMVABJetTags->at(b1);
       }
       
-      std::vector<double> inputValues;
-      inputValues.push_back(pT_RECO_q1);
-      inputValues.push_back(pT_RECO_q2);
-      inputValues.push_back(pT_RECO_b1);
-      inputValues.push_back(pT_RECO_b2);
-      inputValues.push_back(DR_RECO_qq);
-      inputValues.push_back(DR_RECO_qb);
-      inputValues.push_back(DR_RECO_bb);
-      inputValues.push_back(jets_trackCountingHighEffBJetTags_RECO_q1);
-      inputValues.push_back(jets_trackCountingHighEffBJetTags_RECO_b1);
-      inputValues.push_back(jets_trackCountingHighEffBJetTags_RECO_q2);
-      inputValues.push_back(jets_trackCountingHighEffBJetTags_RECO_b2);
-      
+//       std::vector<double> inputValues;
+//       inputValues.push_back(pT_RECO_q1);
+//       inputValues.push_back(pT_RECO_q2);
+//       inputValues.push_back(pT_RECO_b1);
+//       inputValues.push_back(pT_RECO_b2);
+//       inputValues.push_back(DR_RECO_qq);
+//       inputValues.push_back(DR_RECO_qb);
+//       inputValues.push_back(DR_RECO_bb);
+//       inputValues.push_back(jets_trackCountingHighEffBJetTags_RECO_q1);
+//       inputValues.push_back(jets_trackCountingHighEffBJetTags_RECO_b1);
+//       inputValues.push_back(jets_trackCountingHighEffBJetTags_RECO_q2);
+//       inputValues.push_back(jets_trackCountingHighEffBJetTags_RECO_b2);    
 //       double MVA_temp = TMVAreader->GetMvaValue(inputValues) ;
-//       if (MVA_temp > TMVA_value) {
-//        TMVA_value = MVA_temp;
-//        MVACombination = iComb;
-//       }
 
-
+double MVA_temp = TMVAreader->EvaluateMVA(methodName);
+if (MVA_temp > TMVA_value) {
+ TMVA_value = MVA_temp;
+ MVACombination = iComb;
+}
 
      }
-
+     
      n_matched = CalculateMatch(matchIt,combinations.at(MVACombination));
      n_jets = jets->size();
      outTree.Fill();     
@@ -594,6 +639,8 @@ int main(int argc, char** argv)
   end = clock();
   std::cout <<"Time = " <<  ((double) (end - start)) << " (a.u.)" << std::endl;  
   delete mcF_fromVandB;  
+  
+  outFile.Write();   
   ///---- end test MVA ----
   ///----------------------
  }
