@@ -51,7 +51,7 @@ LDFLAGS  =  -rdynamic -shared $(ARCHL)
 SONAME	 =  libTTBar.so
 SOFLAGS  =  -Wl,-soname,$(SONAME)
 
-GLIBS   =  -lm -ldl -rdynamic $(ROOTGLIBS) $(CLHEPLIBS) -lGenVector -lRooFit -lRooFitCore -lFoam -lMinuit $(NTUPLEPACKAGELIBS)
+GLIBS   =  -lm -ldl -rdynamic $(ROOTGLIBS) $(CLHEPLIBS) -lGenVector -lRooFit -lRooFitCore -lFoam -lMinuit -lTMVA -lMLP -lXMLIO  -lTreePlayer  $(NTUPLEPACKAGELIBS)
 
 
 #################################################
