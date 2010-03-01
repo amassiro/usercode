@@ -30,11 +30,11 @@ JetCalibrator::JetCalibrator(double MResonance,double PtMin,double PtMax,double 
  
  KK_ = new std::vector<double>;
  for (int ii=0; ii< nParameter_; ii++) {
-  KK_->push_back(1.);
+  KK_->push_back(1.0);
  }
  sKK_ = new std::vector<double>; //---- squared ----
  for (int ii=0; ii< nParameter_; ii++) {
-  sKK_->push_back(1.); 
+  sKK_->push_back(1.0); 
  }
  
  JMat_ = new CLHEP::HepMatrix(nParameter_,nParameter_);
@@ -300,7 +300,7 @@ double JetCalibrator::Chi2(std::vector<double>* sKK_In){
   int jK = GetInt(iPt2,iEta2);  
   double M_temp = ((InputJet_->at(ijet).first) + (InputJet_->at(ijet).second)).M();
 //   result += ((KK_In->at(iK) * KK_In->at(jK) * M_temp * M_temp - MResonance_ * MResonance_) * (KK_In->at(iK) * KK_In->at(jK) * M_temp * M_temp - MResonance_ * MResonance_));    
-  result += ((sKK_In->at(iK) * sKK_In->at(jK) * M_temp - MResonance_) * (sKK_In->at(iK) * sKK_In->at(jK) * M_temp - MResonance_));    
+  result += ((sKK_In->at(iK) * sKK_In->at(jK) * M_temp - MResonance_) * (sKK_In->at(iK) * sKK_In->at(jK) * M_temp - MResonance_) / (sKK_In->at(iK) * sKK_In->at(jK) * sKK_In->at(iK) * sKK_In->at(jK))); 
  }
  return result;
 }
@@ -320,24 +320,27 @@ double JetCalibrator::DChi2(std::vector<double>* KK_In, int i){
    if (iK == i && jK == i){ //---- same position
     double M_temp = ((InputJet_->at(ijet).first) + (InputJet_->at(ijet).second)).M();
 //     result += (2. * (KK_In->at(iK) * KK_In->at(iK) * M_temp * M_temp - MResonance_ * MResonance_) * 2. * M_temp * M_temp * KK_In->at(iK));    
-    result += (2. * (KK_In->at(iK) * KK_In->at(iK) * M_temp - MResonance_) * 2. * M_temp * KK_In->at(iK));    
+//     result += (2. * (KK_In->at(iK) * KK_In->at(iK) * M_temp - MResonance_) * 2. * M_temp * KK_In->at(iK));    
+result += (4. * MResonance_ * (KK_In->at(iK) * KK_In->at(iK) * M_temp - MResonance_) / (KK_In->at(iK) * KK_In->at(iK) * KK_In->at(iK) * KK_In->at(iK) * KK_In->at(iK)));
 //     if ((2. * (KK_In->at(iK) * KK_In->at(iK) * M_temp - MResonance_) * 2. * M_temp * KK_In->at(iK)) < 0 ) std::cerr << " ciao = " << (2. * (KK_In->at(iK) * KK_In->at(iK) * M_temp - MResonance_) * 2. * M_temp * KK_In->at(iK)) << std::endl;
    }
    else { //---- different position
     if (iK == i){ //---- iK == i && jK != i
      double M_temp = ((InputJet_->at(ijet).first) + (InputJet_->at(ijet).second)).M();
 //      result += (2. * (KK_In->at(iK) * KK_In->at(jK) * M_temp * M_temp - MResonance_ * MResonance_) * M_temp * M_temp * KK_In->at(jK)); 
-     result += (2. * (KK_In->at(iK) * KK_In->at(jK) * M_temp - MResonance_) * M_temp * KK_In->at(jK)); 
+//      result += (2. * (KK_In->at(iK) * KK_In->at(jK) * M_temp - MResonance_) * M_temp * KK_In->at(jK)); 
+result += (2. * MResonance_ * (KK_In->at(iK) * KK_In->at(jK) * M_temp - MResonance_) / ( KK_In->at(jK) * KK_In->at(jK) * KK_In->at(iK) * KK_In->at(iK) * KK_In->at(iK))); 
+     
     }
     else if (jK == i) { //---- iK != i && jK == i
      double M_temp = ((InputJet_->at(ijet).first) + (InputJet_->at(ijet).second)).M();
 //      result += (2. * (KK_In->at(iK) * KK_In->at(jK) * M_temp * M_temp - MResonance_ * MResonance_) * M_temp * M_temp * KK_In->at(iK));
-     result += (2. * (KK_In->at(iK) * KK_In->at(jK) * M_temp - MResonance_) * M_temp * KK_In->at(iK));
+     result += (2. * M_temp * (KK_In->at(iK) * KK_In->at(jK) * M_temp - MResonance_) / ( KK_In->at(iK) * KK_In->at(iK) * KK_In->at(jK) * KK_In->at(jK) * KK_In->at(jK))); 
     }
    }
   }
  }
- if (result < 0) std::cerr << " negativo!" << std::endl;
+//  if (result < 0) std::cerr << " negativo!" << std::endl;
  return result;
 }
 
@@ -353,7 +356,8 @@ double JetCalibrator::DDChi2(std::vector<double>* KK_In, int iK, int jK){
    if ((((GetInt(iPt1,iEta1)) == iK) && ((GetInt(iPt2,iEta2)) == jK)) || (((GetInt(iPt1,iEta1)) == jK) && ((GetInt(iPt2,iEta2)) == iK))){ //---- right position
     double M_temp = ((InputJet_->at(i).first) + (InputJet_->at(i).second)).M();
 //     result += (2. * (2. * KK_In->at(iK) * KK_In->at(jK) * M_temp * M_temp * M_temp * M_temp - M_temp * M_temp * MResonance_ * MResonance_));
-    result += (2. * (2. * KK_In->at(iK) * KK_In->at(jK) * M_temp * M_temp - M_temp * MResonance_));
+//     result += (2. * (2. * KK_In->at(iK) * KK_In->at(jK) * M_temp * M_temp - M_temp * MResonance_));
+    result += (2. * MResonance_ / (KK_In->at(iK) * KK_In->at(iK) * KK_In->at(iK) * KK_In->at(jK) * KK_In->at(jK) * KK_In->at(jK)) * (2. * MResonance_ - M_temp * KK_In->at(iK) * KK_In->at(jK)));
    }
   }
  }
@@ -367,17 +371,20 @@ double JetCalibrator::DDChi2(std::vector<double>* KK_In, int iK, int jK){
    if (((GetInt(iPt1,iEta1)) == iK) && ((GetInt(iPt2,iEta2)) == iK)){ //---- right position
     double M_temp = ((InputJet_->at(i).first) + (InputJet_->at(i).second)).M();
 //     result += (4. * (3. * KK_In->at(iK) * KK_In->at(iK) * M_temp * M_temp * M_temp * M_temp - M_temp * M_temp * MResonance_ * MResonance_));
-    result += (4. * (3. * KK_In->at(iK) * KK_In->at(iK) * M_temp * M_temp - M_temp * MResonance_));
+//     result += (4. * (3. * KK_In->at(iK) * KK_In->at(iK) * M_temp * M_temp - M_temp * MResonance_));
+    result += (4. * MResonance_ * (- 3. * KK_In->at(iK) * KK_In->at(iK) * M_temp + 5. * MResonance_) / (KK_In->at(iK) * KK_In->at(iK) * KK_In->at(iK) * KK_In->at(iK) * KK_In->at(iK) * KK_In->at(iK)));
    }
    else if ((GetInt(iPt1,iEta1)) == iK){
     double M_temp = ((InputJet_->at(i).first) + (InputJet_->at(i).second)).M();
 //     result += (2. * KK_In->at(GetInt(iPt2,iEta2)) * KK_In->at(GetInt(iPt2,iEta2)) * M_temp * M_temp * M_temp * M_temp);
-    result += (2. * KK_In->at(GetInt(iPt2,iEta2)) * KK_In->at(GetInt(iPt2,iEta2)) * M_temp * M_temp);
+//     result += (2. * KK_In->at(GetInt(iPt2,iEta2)) * KK_In->at(GetInt(iPt2,iEta2)) * M_temp * M_temp);
+   result += (2. * MResonance_ / (KK_In->at(GetInt(iPt2,iEta2)) * KK_In->at(GetInt(iPt2,iEta2))) * (2. * KK_In->at(GetInt(iPt2,iEta2)) * KK_In->at(GetInt(iPt1,iEta1)) * M_temp - 3. * MResonance_) / (KK_In->at(GetInt(iPt1,iEta1)) * KK_In->at(GetInt(iPt1,iEta1)) * KK_In->at(GetInt(iPt1,iEta1)) * KK_In->at(GetInt(iPt1,iEta1))));
    }
    else if ((GetInt(iPt2,iEta2)) == iK){
     double M_temp = ((InputJet_->at(i).first) + (InputJet_->at(i).second)).M();
 //     result += (2. * KK_In->at(GetInt(iPt1,iEta1)) * KK_In->at(GetInt(iPt1,iEta1)) * M_temp * M_temp * M_temp * M_temp);
-    result += (2. * KK_In->at(GetInt(iPt1,iEta1)) * KK_In->at(GetInt(iPt1,iEta1)) * M_temp * M_temp);
+//     result += (2. * KK_In->at(GetInt(iPt1,iEta1)) * KK_In->at(GetInt(iPt1,iEta1)) * M_temp * M_temp);
+    result += (2. * MResonance_ / (KK_In->at(GetInt(iPt1,iEta1)) * KK_In->at(GetInt(iPt1,iEta1))) * (2. * KK_In->at(GetInt(iPt1,iEta1)) * KK_In->at(GetInt(iPt2,iEta2)) * M_temp - 3. * MResonance_) / (KK_In->at(GetInt(iPt2,iEta2)) * KK_In->at(GetInt(iPt2,iEta2)) * KK_In->at(GetInt(iPt2,iEta2)) * KK_In->at(GetInt(iPt2,iEta2))));
    }
   }
  }
