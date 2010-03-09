@@ -36,7 +36,12 @@ JetCalibrator::JetCalibrator(double MResonance,double PtMin,double PtMax,double 
  for (int ii=0; ii< nParameter_; ii++) {
   sKK_->push_back(1.0); 
  }
- 
+
+ KKErr_ = new std::vector<double>;
+ for (int ii=0; ii< nParameter_; ii++) {
+  KKErr_->push_back(1.0);
+ }
+
  JMat_ = new CLHEP::HepMatrix(nParameter_,nParameter_);
  Chi2Vector_  = new CLHEP::HepVector(nParameter_);
 }
@@ -208,7 +213,7 @@ void JetCalibrator::UpdateMIB(){
   par[ii] = sKK_->at(ii);
   stepSize[ii] = 0.0001;
   minVal[ii] = 0.1;
-  maxVal[ii] = 3.5;
+  maxVal[ii] = 2.0; ///===== > max 2 !!!
   std::ostringstream oss;
   oss << ii;
   std::string s_temp(oss.str());
@@ -228,6 +233,7 @@ void JetCalibrator::UpdateMIB(){
  for (int ii=0; ii< nParameter_; ii++) {
   sKK_->at(ii) = outParameters[ii];
   KK_->at(ii) = outParameters[ii] * outParameters[ii];
+  KKErr_->at(ii) = 2 * errParameters[ii];
  }
  
 }
@@ -396,11 +402,11 @@ double JetCalibrator::DDChi2(std::vector<double>* KK_In, int iK, int jK){
 ///==== SFit ====
 
 void JetCalibrator::UpdateSFit(){
- UpdateSFit(KK_);
+ UpdateSFit(KK_,KKErr_);
 }
 
 
-void JetCalibrator::UpdateSFit(std::vector<double>* KK_In){
+void JetCalibrator::UpdateSFit(std::vector<double>* KK_In,std::vector<double>* KKErr_In){
  std::vector<TH1F>* CorrH = new std::vector<TH1F>;
  for (int i=0; i<nParameter_; i++){
   std::ostringstream oss;
@@ -437,6 +443,7 @@ void JetCalibrator::UpdateSFit(std::vector<double>* KK_In){
    double chisqdf=chisq/ndf;
    if (chisqdf < 5) { 
     KK_In->at(i) = (MResonance_ / mean) * KK_In->at(i);
+    KKErr_In->at(i) = gfit->GetParError(i) / mean * KK_In->at(i);
    }
   }
  }
@@ -448,13 +455,13 @@ void JetCalibrator::UpdateSFit(std::vector<double>* KK_In){
 
 
 void JetCalibrator::UpdateSRooFit(){
- UpdateSRooFit(KK_);
+ UpdateSRooFit(KK_,KKErr_);
 }
 
 
-void JetCalibrator::UpdateSRooFit(std::vector<double>* KK_In){
+void JetCalibrator::UpdateSRooFit(std::vector<double>* KK_In,std::vector<double>* KKErr_In){
  RooRealVar Mass("Mass","Mass",MResonance_,0,MResonance_*2);
- RooRealVar Iter("Iter","Iter",0,nParameter_);
+ RooRealVar Iter("Iter","Iter",0,nParameter_); 
  RooDataSet DataSet("DataSet","DataSet",RooArgSet(Mass,Iter)); 
  int n = InputJet_->size();
  std::cerr << "n = " << n << std::endl;
@@ -487,11 +494,17 @@ void JetCalibrator::UpdateSRooFit(std::vector<double>* KK_In){
 //   RooPolynomial poly("poly","poly",Mass,RooArgList(a0,a1));
 //   RooAddPdf pdfSum("pdfSum","gauss+poly",RooArgList(gauss,poly),RooArgList(frac));
   Iter.setRange("toAnalyse",iPar-0.1,iPar+0.9);
+  Mass.setRange("toAnalyse",MResonance_*0.6,MResonance_*1.5);
 //   RooFitResult * result = 
-  gauss.fitTo(DataSet,RooFit::Range("toAnalyse"),RooFit::Save(0),RooFit::PrintLevel(-1)); 
+
+  RooDataSet* ds_toFit = (RooDataSet*) DataSet.reduce(RooFit::CutRange("toAnalyse")) ;
+
+
+  gauss.fitTo(*ds_toFit,RooFit::Save(0),RooFit::PrintLevel(-1)); 
+//   gauss.fitTo(DataSet,RooFit::Range("toAnalyse"),RooFit::Save(0),RooFit::PrintLevel(-1)); 
 //   TCanvas c1;
   RooPlot* Massframe = Mass.frame(0,2*MResonance_,n / nParameter_ / 10);  
-  DataSet.plotOn(Massframe, RooFit::Name("DataSet_1")); //, RooFit::MarkerColor(kBlack)); 
+  ds_toFit->plotOn(Massframe, RooFit::Name("DataSet_1")); //, RooFit::MarkerColor(kBlack)); 
   gauss.plotOn(Massframe, RooFit::Name("gauss_1"),RooFit::LineColor(kRed));//, RooFit::MarkerColor(kBlack)); 
   Massframe->Draw () ;
   
@@ -506,6 +519,7 @@ void JetCalibrator::UpdateSRooFit(std::vector<double>* KK_In){
   //   double Mll=result->minNll();
   if (chi2 < 5) { 
    KK_In->at(iPar) = (MResonance_ / Mean_Fit.getVal()) * KK_In->at(iPar);
+   KKErr_In->at(iPar) = Mean_Fit.getError() / Mean_Fit.getVal() * KK_In->at(iPar);
   }
  }
 
@@ -595,11 +609,11 @@ void JetCalibrator::UpdateSRooFit(std::vector<double>* KK_In){
 ///==== RUFit ====
 
 void JetCalibrator::UpdateRUFit(){
- UpdateRUFit(KK_);
+ UpdateRUFit(KK_,KKErr_);
 }
 
 
-void JetCalibrator::UpdateRUFit(std::vector<double>* KK_In){
+void JetCalibrator::UpdateRUFit(std::vector<double>* KK_In,std::vector<double>* KKErr_In){
  std::vector<TH1F>* CorrH = new std::vector<TH1F>;
  for (int i=0; i<nParameter_; i++){
   std::ostringstream oss;
@@ -639,6 +653,7 @@ void JetCalibrator::UpdateRUFit(std::vector<double>* KK_In){
     double chisqdf=chisq/ndf;
     if (chisqdf < 5) { 
      KK_In->at(i) = (MResonance_ / mean) * (MResonance_ / mean) * KK_In->at(i);
+     KKErr_In->at(i) = 2. * gfit->GetParError(i) / mean * KK_In->at(i);
     }
    }
   }
@@ -672,7 +687,7 @@ void JetCalibrator::UpdateL3(std::vector<double>* KK_In){
   int iPt2 = GetIntPt(InputJet_->at(i).second.Pt());
   int iEta2 = GetIntEta(InputJet_->at(i).second.Eta());
   double M_temp = ((InputJet_->at(i).first) + (InputJet_->at(i).second)).M();
-  double Up_temp = 80.0 * 80.0 / (M_temp * M_temp * KK_In->at(GetInt(iPt1,iEta1))* KK_In->at(GetInt(iPt2,iEta2)));
+  double Up_temp = MResonance_ * MResonance_ / (M_temp * M_temp * KK_In->at(GetInt(iPt1,iEta1))* KK_In->at(GetInt(iPt2,iEta2)));
   double Down_temp = 1.;
   
   Up->at(GetInt(iPt1,iEta1)) = (Up->at(GetInt(iPt1,iEta1)) + Up_temp);
@@ -691,6 +706,48 @@ void JetCalibrator::UpdateL3(std::vector<double>* KK_In){
  delete Down; 
 }
 
+
+///============
+///==== SL3 ====
+
+void JetCalibrator::UpdateSL3(){
+ UpdateSL3(KK_);
+}
+
+void JetCalibrator::UpdateSL3(std::vector<double>* KK_In){
+ std::vector<double>* Up = new std::vector<double>;
+ std::vector<double>* Down = new std::vector<double>;
+ for (int i=0; i<nParameter_; i++){
+  Up->push_back(0.);
+  Down->push_back(0.);
+ }
+ int n = InputJet_->size();
+ std::cerr << "n = " << n << std::endl;
+ for (int i=0; i<n; i++){
+  //---- previous position ----
+  int iPt1 = GetIntPt(InputJet_->at(i).first.Pt());
+  int iEta1 = GetIntEta(InputJet_->at(i).first.Eta());
+  int iPt2 = GetIntPt(InputJet_->at(i).second.Pt());
+  int iEta2 = GetIntEta(InputJet_->at(i).second.Eta());
+  double M_temp = ((InputJet_->at(i).first) + (InputJet_->at(i).second)).M();
+  double Up_temp = MResonance_ / (M_temp * sqrt(KK_In->at(GetInt(iPt1,iEta1))* KK_In->at(GetInt(iPt2,iEta2))));
+  double Down_temp = 1.;
+  
+  Up->at(GetInt(iPt1,iEta1)) = (Up->at(GetInt(iPt1,iEta1)) + Up_temp);
+  Down->at(GetInt(iPt1,iEta1)) = (Down->at(GetInt(iPt1,iEta1)) + Down_temp);
+  
+  Up->at(GetInt(iPt2,iEta2)) = (Up->at(GetInt(iPt2,iEta2)) + Up_temp);
+  Down->at(GetInt(iPt2,iEta2)) = (Down->at(GetInt(iPt2,iEta2)) + Down_temp);
+ }
+ 
+ for (int i=0; i<nParameter_; i++){
+  if (Down->at(i) > 0){
+   KK_In->at(i) = (Up->at(i) / Down->at(i)) * KK_In->at(i);
+  }
+ }
+ delete Up;
+ delete Down; 
+}
 
 ///==============
 ///==== RUL3 ====
@@ -716,7 +773,7 @@ void JetCalibrator::UpdateRUL3(std::vector<double>* KK_In){
   int iEta2 = GetIntEta(InputJet_->at(i).second.Eta());
   double M_temp = ((InputJet_->at(i).first) + (InputJet_->at(i).second)).M();
  
-  double Up_temp = 80.0 * 80.0 / (M_temp * M_temp * KK_In->at(GetInt(iPt1,iEta1))* KK_In->at(GetInt(iPt2,iEta2)));
+  double Up_temp = MResonance_ * MResonance_ / (M_temp * M_temp * KK_In->at(GetInt(iPt1,iEta1))* KK_In->at(GetInt(iPt2,iEta2)));
   double Down_temp = 1.;
   
   Up->at(GetInt(iPt1,iEta1)) = (Up->at(GetInt(iPt1,iEta1)) + Up_temp);
@@ -810,6 +867,23 @@ double JetCalibrator::getKK(int num){
  else return 1;
 }
 
+double JetCalibrator::getKKErr(double eta, double pT){
+ int iPt = GetIntPt(pT);
+ int iEta = GetIntEta(eta); 
+ if ((iPt != -1) && (iEta != -1)){
+  return KKErr_->at(GetInt(iPt,iEta));
+ }
+ else return 1;
+}
+
+
+double JetCalibrator::getKKErr(int num){
+ if (num < nParameter_){
+  return KKErr_->at(num);
+ }
+ else return 1;
+}
+
 
 int JetCalibrator::GetInt(int iPt,int iEta){
  return (iPt * intEta_ + iEta);
@@ -824,7 +898,7 @@ int JetCalibrator::GetIntPt(double Pt){
 }
 
 int JetCalibrator::GetIntEta(double Eta){
- if (Eta < EtaMax_){//---- [min, max) ----
+ if (fabs(Eta) < EtaMax_){//---- [min, max) ----
   int iEta = static_cast<int>(fabs(Eta / DEta_));
   return iEta;
  }

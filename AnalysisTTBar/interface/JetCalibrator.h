@@ -4,7 +4,6 @@ Class JetCalibrator
 #ifndef JetCalibrator_h
 #define JetCalibrator_h
 
-
 #include "treeReader.h"
 #include "TF1.h"
 #include "TH1F.h"
@@ -64,18 +63,21 @@ class JetCalibrator{
    
   void UpdateL3();
   void UpdateL3(std::vector<double>* KK_In);
+
+  void UpdateSL3();
+  void UpdateSL3(std::vector<double>* KK_In);
   
   void UpdateRUL3();
   void UpdateRUL3(std::vector<double>* KK_In);
   
   void UpdateRUFit();
-  void UpdateRUFit(std::vector<double>* KK_In);
+  void UpdateRUFit(std::vector<double>* KK_In,std::vector<double>* KKErr_In);
 
   void UpdateSFit();
-  void UpdateSFit(std::vector<double>* KK_In);
+  void UpdateSFit(std::vector<double>* KK_In,std::vector<double>* KKErr_In);
   
   void UpdateSRooFit();
-  void UpdateSRooFit(std::vector<double>* KK_In);
+  void UpdateSRooFit(std::vector<double>* KK_In,std::vector<double>* KKErr_In);
   
   void UpdateMatrixInversion();
   void InitializeMatrix();
@@ -90,7 +92,11 @@ class JetCalibrator{
   
   double getKK(double eta, double pT);
   double getKK(int num);
- 
+  
+  double getKKErr(double eta, double pT);
+  double getKKErr(int num);
+  
+  
   int GetIntPt(double Pt);
   int GetIntEta(double Eta);
   int GetInt(int iPt, int iEta);
@@ -112,6 +118,7 @@ class JetCalibrator{
   std::vector<std::pair<ROOT::Math::XYZTVector,ROOT::Math::XYZTVector> >* InputJet_;
   std::vector<double>* KK_;
   std::vector<double>* sKK_;
+  std::vector<double>* KKErr_;
   double MResonance_;
   
   double PtMin_;

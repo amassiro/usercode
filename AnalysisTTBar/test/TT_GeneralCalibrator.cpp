@@ -19,7 +19,7 @@
 #include <sstream>
 #include "ntpleUtils.h"
 
-
+#include "TTBarUtils.h"
 
 
 
@@ -111,6 +111,7 @@ int main(int argc, char** argv)
  
  TH2F hKK_num("hKK_num","hKK_num",myJetCalibrator.getIntPt(),myJetCalibrator.getPtMin(),myJetCalibrator.getPtMax(),myJetCalibrator.getIntEta(),0,myJetCalibrator.getEtaMax()); //---- correction function K(eta) x K(pT) ----
  std::vector<TH2F> hKK_vect;
+ std::vector<TH2F> hKK_err_vect;
  
  
  
@@ -161,12 +162,18 @@ int main(int argc, char** argv)
     
   std::vector<int> matchIt;
   int matched = 0;
-  if (fabs(mcF1_fromV1_pdgId->at(0)) <= 4 && fabs(mcF1_fromV2_pdgId->at(0)) >= 11 ){
-   matched = GetMatching<ROOT::Math::XYZTVector,ROOT::Math::XYZTVector>(*jets,*mcF_fromV1,0.3,0.1,2.0,&matchIt);
-  }
-  if (fabs(mcF1_fromV2_pdgId->at(0)) <= 4 && fabs(mcF1_fromV1_pdgId->at(0)) >= 11 ){
+  
+  std::pair<int,int> decayMC = GetMCDecayChannel(mcF1_fromV1_pdgId->at(0),mcF2_fromV1_pdgId->at(0),mcF1_fromV2_pdgId->at(0),mcF2_fromV2_pdgId->at(0));
+   
+  if (decayMC.first == 2 && decayMC.second == 1){
+   ///==== emu - quark ======== < 2 , 1 >
    matched = GetMatching<ROOT::Math::XYZTVector,ROOT::Math::XYZTVector>(*jets,*mcF_fromV2,0.3,0.1,2.0,&matchIt);
   }
+  if (decayMC.first == 2 && decayMC.second == 2){
+   ///==== quark - emu ======== < 2 , 2 >
+   matched = GetMatching<ROOT::Math::XYZTVector,ROOT::Math::XYZTVector>(*jets,*mcF_fromV1,0.3,0.1,2.0,&matchIt);
+  }
+  
   if (matched > 0){
    if (matched == 2){
     std::pair<ROOT::Math::XYZTVector,ROOT::Math::XYZTVector> InputJetPair(jets->at(matchIt.at(0)),jets->at(matchIt.at(1)));
@@ -178,28 +185,6 @@ int main(int argc, char** argv)
      hKK_num.Fill(jets->at(matchIt.at(0)).Pt(),jets->at(matchIt.at(0)).Eta());
      hKK_num.Fill(jets->at(matchIt.at(1)).Pt(),jets->at(matchIt.at(1)).Eta());
     }
-//     double M_temp = (jets->at(matchIt.at(0)) + jets->at(matchIt.at(1))).M();
-//     t_M_Reco = M_temp;
-//     t_Eta_Reco->push_back(jets->at(matchIt.at(0)).Eta());
-//     t_Eta_Reco->push_back(jets->at(matchIt.at(1)).Eta());
-//     t_pT_Reco->push_back(jets->at(matchIt.at(0)).Pt());
-//     t_pT_Reco->push_back(jets->at(matchIt.at(1)).Pt()); 
-//     
-//     if (fabs(mcF1_fromV1_pdgId->at(0)) <= 4 && fabs(mcF1_fromV2_pdgId->at(0)) >= 11 ){
-//      t_pT_MC->push_back(mcF_fromV1->at(0).Pt());
-//      t_pT_MC->push_back(mcF_fromV1->at(1).Pt());
-//     }
-//     else {
-//      t_pT_MC->push_back(mcF_fromV2->at(0).Pt());
-//      t_pT_MC->push_back(mcF_fromV2->at(1).Pt());
-//     }
-
-//     t_Cycle_num = 0; //---- before
-//     t_Indip = 0; //---- No Indip
-//     outTree.Fill();
-//     t_pT_MC->clear();
-//     t_pT_Reco->clear();
-//     t_Eta_Reco->clear();
    }
   }
  } //loop over the events
@@ -220,8 +205,13 @@ std::cout << ">>>>> Calibration::nCycle " << nCycle << std::endl;
 
 if (Algorithm == 0) std::cout << ">>>>> Calibration::Algorithm UpdateMatrixInversion" << std::endl;   
 if (Algorithm == 1) std::cout << ">>>>> Calibration::Algorithm UpdateRUL3" << std::endl;   
-if (Algorithm == 2) std::cout << ">>>>> Calibration::Algorithm UpdateL3" << std::endl;   
-if (Algorithm == 3) std::cout << ">>>>> Calibration::Algorithm UpdateKUpdate" << std::endl;   
+if (Algorithm == 2) std::cout << ">>>>> Calibration::Algorithm UpdateL3 ----------> Be Careful!" << std::endl;   
+if (Algorithm == 3) std::cout << ">>>>> Calibration::Algorithm UpdateKUpdate ----------> Be Careful!" << std::endl;   
+if (Algorithm == 4) std::cout << ">>>>> Calibration::Algorithm UpdateRUFit" << std::endl;   
+if (Algorithm == 5) std::cout << ">>>>> Calibration::Algorithm UpdateSFit" << std::endl;   
+if (Algorithm == 6) std::cout << ">>>>> Calibration::Algorithm UpdateMIB" << std::endl;   
+if (Algorithm == 7) std::cout << ">>>>> Calibration::Algorithm UpdateSRooFit" << std::endl;   
+if (Algorithm == 8) std::cout << ">>>>> Calibration::Algorithm UpdateSL3" << std::endl;   
 
 for (int iCycle=0; iCycle< nCycle; iCycle++) { 
  std::cerr << "Cycle = " << iCycle << std::endl;
@@ -236,21 +226,30 @@ for (int iCycle=0; iCycle< nCycle; iCycle++) {
  if (Algorithm == 5) myJetCalibrator.UpdateSFit();
  if (Algorithm == 6) myJetCalibrator.UpdateMIB();
  if (Algorithm == 7) myJetCalibrator.UpdateSRooFit();
+ if (Algorithm == 8) myJetCalibrator.UpdateSL3();
  ///------------------------------------------------------------
  
  std::ostringstream oss;
  oss << "hKK_" << iCycle;
  std::string nameHisto(oss.str());
  TH2F hKK_tmp(nameHisto.c_str(),nameHisto.c_str(),myJetCalibrator.getIntPt(),myJetCalibrator.getPtMin(),myJetCalibrator.getPtMax(),myJetCalibrator.getIntEta(),0,myJetCalibrator.getEtaMax()); //---- correction function K(eta) x K(pT) ----
+
+ oss << "_err";
+ std::string nameHistoErr(oss.str());
+ 
+ TH2F hKK_err_tmp(nameHistoErr.c_str(),nameHistoErr.c_str(),myJetCalibrator.getIntPt(),myJetCalibrator.getPtMin(),myJetCalibrator.getPtMax(),myJetCalibrator.getIntEta(),0,myJetCalibrator.getEtaMax()); //---- error on correction function K(eta) x K(pT) ----
+ 
+ 
  for (int iEta=0; iEta<myJetCalibrator.getIntEta(); iEta++){
   for (int iPt=0; iPt<myJetCalibrator.getIntPt(); iPt++){
    hKK_tmp.SetBinContent(iPt+1,iEta+1,myJetCalibrator.getKK(myJetCalibrator.GetInt(iPt,iEta)));
-//    std::cerr << "KK[" << iPt << "][" << iEta << "] = " << myJetCalibrator.getKK(myJetCalibrator.GetInt(iPt,iEta)) << std::endl;
+   hKK_err_tmp.SetBinContent(iPt+1,iEta+1,myJetCalibrator.getKKErr(myJetCalibrator.GetInt(iPt,iEta)));   
+   //    std::cerr << "KK[" << iPt << "][" << iEta << "] = " << myJetCalibrator.getKK(myJetCalibrator.GetInt(iPt,iEta)) << std::endl;
   }
  }
  std::cerr << "JetCalibrator::chi2 = " << myJetCalibrator.getChi2() << std::endl;
  hKK_vect.push_back(hKK_tmp);  
- 
+ hKK_err_vect.push_back(hKK_err_tmp);  
 }
 
 ///==== end minimization ====
@@ -293,12 +292,19 @@ for(int iEvent = entryMIN ; iEvent < entryMAX ; ++iEvent)
  
  std::vector<int> matchIt;
  int matched = 0;
- if (fabs(mcF1_fromV1_pdgId->at(0)) <= 4 && fabs(mcF1_fromV2_pdgId->at(0)) >= 11 ){
-  matched = GetMatching<ROOT::Math::XYZTVector,ROOT::Math::XYZTVector>(*jets,*mcF_fromV1,0.3,0.1,2.0,&matchIt);
- }
- if (fabs(mcF1_fromV2_pdgId->at(0)) <= 4 && fabs(mcF1_fromV1_pdgId->at(0)) >= 11 ){
+ 
+ std::pair<int,int> decayMC = GetMCDecayChannel(mcF1_fromV1_pdgId->at(0),mcF2_fromV1_pdgId->at(0),mcF1_fromV2_pdgId->at(0),mcF2_fromV2_pdgId->at(0));
+ 
+ if (decayMC.first == 2 && decayMC.second == 1){
+  ///==== emu - quark ======== < 2 , 1 >
   matched = GetMatching<ROOT::Math::XYZTVector,ROOT::Math::XYZTVector>(*jets,*mcF_fromV2,0.3,0.1,2.0,&matchIt);
  }
+ if (decayMC.first == 2 && decayMC.second == 2){
+  ///==== quark - emu ======== < 2 , 2 >
+  matched = GetMatching<ROOT::Math::XYZTVector,ROOT::Math::XYZTVector>(*jets,*mcF_fromV1,0.3,0.1,2.0,&matchIt);
+ }
+ 
+ 
  if (matched > 0){
   if (matched == 2){
    int iPt1 = myJetCalibrator.GetIntPt(jets->at(matchIt.at(0)).Pt());
@@ -318,11 +324,11 @@ for(int iEvent = entryMIN ; iEvent < entryMAX ; ++iEvent)
     t_pT_Reco->push_back(jets->at(matchIt.at(0)).Pt() * myJetCalibrator.getKK(myJetCalibrator.GetInt(iPt1,iEta1)));
     t_pT_Reco->push_back(jets->at(matchIt.at(1)).Pt() * myJetCalibrator.getKK(myJetCalibrator.GetInt(iPt2,iEta2))); 
     
-    if (fabs(mcF1_fromV1_pdgId->at(0)) <= 4 && fabs(mcF1_fromV2_pdgId->at(0)) >= 11 ){
+    if (decayMC.second == 2){  ///==== quark - emu ======== < 2 , 2 >
      t_pT_MC->push_back(mcF_fromV1->at(0).Pt());
      t_pT_MC->push_back(mcF_fromV1->at(1).Pt());
     }
-    else {
+    else {///==== emu - quark ======== < 2 , 1 >
      t_pT_MC->push_back(mcF_fromV2->at(0).Pt());
      t_pT_MC->push_back(mcF_fromV2->at(1).Pt());
     }
@@ -386,12 +392,18 @@ for(int iEvent = entryMINTest ; iEvent < entryMAXTest ; ++iEvent)
  
  std::vector<int> matchIt;
  int matched = 0;
- if (fabs(mcF1_fromV1_pdgId->at(0)) <= 4 && fabs(mcF1_fromV2_pdgId->at(0)) >= 11 ){
-  matched = GetMatching<ROOT::Math::XYZTVector,ROOT::Math::XYZTVector>(*jets,*mcF_fromV1,0.3,0.1,2.0,&matchIt);
- }
- if (fabs(mcF1_fromV2_pdgId->at(0)) <= 4 && fabs(mcF1_fromV1_pdgId->at(0)) >= 11 ){
+
+ std::pair<int,int> decayMC = GetMCDecayChannel(mcF1_fromV1_pdgId->at(0),mcF2_fromV1_pdgId->at(0),mcF1_fromV2_pdgId->at(0),mcF2_fromV2_pdgId->at(0));
+ 
+ if (decayMC.first == 2 && decayMC.second == 1){
+  ///==== emu - quark ======== < 2 , 1 >
   matched = GetMatching<ROOT::Math::XYZTVector,ROOT::Math::XYZTVector>(*jets,*mcF_fromV2,0.3,0.1,2.0,&matchIt);
  }
+ if (decayMC.first == 2 && decayMC.second == 2){
+  ///==== quark - emu ======== < 2 , 2 >
+  matched = GetMatching<ROOT::Math::XYZTVector,ROOT::Math::XYZTVector>(*jets,*mcF_fromV1,0.3,0.1,2.0,&matchIt);
+ }
+ 
  if (matched > 0){
   if (matched == 2){
    int iPt1 = myJetCalibrator.GetIntPt(jets->at(matchIt.at(0)).Pt());
@@ -410,11 +422,11 @@ for(int iEvent = entryMINTest ; iEvent < entryMAXTest ; ++iEvent)
     t_pT_Reco->push_back(jets->at(matchIt.at(0)).Pt() * myJetCalibrator.getKK(myJetCalibrator.GetInt(iPt1,iEta1)));
     t_pT_Reco->push_back(jets->at(matchIt.at(1)).Pt() * myJetCalibrator.getKK(myJetCalibrator.GetInt(iPt2,iEta2))); 
     
-    if (fabs(mcF1_fromV1_pdgId->at(0)) <= 4 && fabs(mcF1_fromV2_pdgId->at(0)) >= 11 ){
+    if (decayMC.second == 2){  ///==== quark - emu ======== < 2 , 2 >
      t_pT_MC->push_back(mcF_fromV1->at(0).Pt());
      t_pT_MC->push_back(mcF_fromV1->at(1).Pt());
     }
-    else {
+    else {///==== emu - quark ======== < 2 , 1 >
      t_pT_MC->push_back(mcF_fromV2->at(0).Pt());
      t_pT_MC->push_back(mcF_fromV2->at(1).Pt());
     }
@@ -447,6 +459,13 @@ for(int iEvent = entryMINTest ; iEvent < entryMAXTest ; ++iEvent)
 
 delete mcF_fromV1;
 delete mcF_fromV2;
+
+
+
+for (int iHisto=0; iHisto<hKK_vect.size(); iHisto++){
+ hKK_vect.at(iHisto).Write();
+ hKK_err_vect.at(iHisto).Write();
+} 
 
 outFile.Write();   
 
