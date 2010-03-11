@@ -223,10 +223,10 @@ int main(int argc, char** argv)
    ///---- find: q,q', b1, b2 ---- Pool ----
    
    mcF_fromVandB->clear();
-   if (fabs(mcF1_fromV1_pdgId->at(0)) <= 4 && fabs(mcF1_fromV2_pdgId->at(0)) >= 11 ){
+   if (fabs(mcF1_fromV1_pdgId->at(0)) <= 4 && fabs(mcF1_fromV2_pdgId->at(0)) >= 11 && fabs(mcF1_fromV2_pdgId->at(0)) <= 14){ //---- no Tau jets considered!
     mcF_fromVandB->push_back(mcF1_fromV1->at(0));
     mcF_fromVandB->push_back(mcF2_fromV1->at(0));
-   } else if (fabs(mcF1_fromV2_pdgId->at(0)) <= 4 && fabs(mcF1_fromV1_pdgId->at(0)) >= 11 ){
+   } else if (fabs(mcF1_fromV2_pdgId->at(0)) <= 4 && fabs(mcF1_fromV1_pdgId->at(0)) >= 11 && fabs(mcF1_fromV1_pdgId->at(0)) <= 14){ //---- no Tau jets considered!
     mcF_fromVandB->push_back(mcF1_fromV2->at(0));
     mcF_fromVandB->push_back(mcF2_fromV2->at(0));
    }
@@ -517,10 +517,10 @@ int main(int argc, char** argv)
     ///---- find: q,q', b1, b2 ---- Pool ----
     
     mcF_fromVandB->clear();
-    if (fabs(mcF1_fromV1_pdgId->at(0)) <= 4 && fabs(mcF1_fromV2_pdgId->at(0)) >= 11 ){
+    if (fabs(mcF1_fromV1_pdgId->at(0)) <= 4 && fabs(mcF1_fromV2_pdgId->at(0)) >= 11 && fabs(mcF1_fromV2_pdgId->at(0)) <= 14){ //---- no Tau jets considered!
      mcF_fromVandB->push_back(mcF1_fromV1->at(0));
      mcF_fromVandB->push_back(mcF2_fromV1->at(0));
-    } else if (fabs(mcF1_fromV2_pdgId->at(0)) <= 4 && fabs(mcF1_fromV1_pdgId->at(0)) >= 11 ){
+    } else if (fabs(mcF1_fromV2_pdgId->at(0)) <= 4 && fabs(mcF1_fromV1_pdgId->at(0)) >= 11 && fabs(mcF1_fromV1_pdgId->at(0)) <= 14){ //---- no Tau jets considered!
      mcF_fromVandB->push_back(mcF1_fromV2->at(0));
      mcF_fromVandB->push_back(mcF2_fromV2->at(0));
     }
@@ -730,10 +730,10 @@ int main(int argc, char** argv)
     ///---- find: q,q', b1, b2 ---- Pool ----
     
     mcF_fromVandB->clear();
-    if (fabs(mcF1_fromV1_pdgId->at(0)) <= 4 && fabs(mcF1_fromV2_pdgId->at(0)) >= 11 ){
+    if (fabs(mcF1_fromV1_pdgId->at(0)) <= 4 && fabs(mcF1_fromV2_pdgId->at(0)) >= 11 && fabs(mcF1_fromV2_pdgId->at(0)) <= 14){ //---- no Tau jets considered!
      mcF_fromVandB->push_back(mcF1_fromV1->at(0));
      mcF_fromVandB->push_back(mcF2_fromV1->at(0));
-    } else if (fabs(mcF1_fromV2_pdgId->at(0)) <= 4 && fabs(mcF1_fromV1_pdgId->at(0)) >= 11 ){
+    } else if (fabs(mcF1_fromV2_pdgId->at(0)) <= 4 && fabs(mcF1_fromV1_pdgId->at(0)) >= 11 && fabs(mcF1_fromV1_pdgId->at(0)) <= 14){ //---- no Tau jets considered!
      mcF_fromVandB->push_back(mcF1_fromV2->at(0));
      mcF_fromVandB->push_back(mcF2_fromV2->at(0));
     }

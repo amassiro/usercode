@@ -76,6 +76,54 @@ bool JetCalibrator::AddJetPair(std::pair<ROOT::Math::XYZTVector,ROOT::Math::XYZT
 }
 
 
+///====================
+///==== Set values ====
+
+
+void JetCalibrator::SetKK(double KK_In, double eta, double pT){
+ int iPt = GetIntPt(pT);
+ int iEta = GetIntEta(eta); 
+ if ((iPt != -1) && (iEta != -1)){
+  KK_->at(GetInt(iPt,iEta)) = KK_In;
+ }
+}
+
+void JetCalibrator::SetKKErr(double KKErr_In, double eta, double pT){
+ int iPt = GetIntPt(pT);
+ int iEta = GetIntEta(eta); 
+ if ((iPt != -1) && (iEta != -1)){
+  KKErr_->at(GetInt(iPt,iEta)) = KKErr_In;
+ }
+}
+
+void JetCalibrator::SetKK(double KK_In, int num){
+ if (num < nParameter_){
+  KK_->at(num) = KK_In;
+ }
+}
+
+void JetCalibrator::SetKKErr(double KKErr_In, int num){
+ if (num < nParameter_){
+  KKErr_->at(num) = KKErr_In;
+ }
+}
+
+void JetCalibrator::SetKK(const std::vector<double>& KK_In){
+ int size = std::min(KK_->size(),KK_In.size());
+ for (int i=0; i<size; i++){
+  KK_->at(i) = KK_In.at(i);
+ }
+}
+
+void JetCalibrator::SetKKErr(const std::vector<double>& KKErr_In){
+ int size = std::min(KKErr_->size(),KKErr_In.size());
+ for (int i=0; i<size; i++){
+  KKErr_->at(i) = KKErr_In.at(i);
+ }
+}
+
+
+
 ///================
 ///==== Update ====
 void JetCalibrator::Update(){

@@ -2,7 +2,9 @@
  
  gROOT->ProcessLine(".x ./test/Style.cxx") ;
  
- TFile *_file1 = TFile::Open("output/out_TT_General_Calibrator_7TeV.root");
+ 
+//  TFile *_file1 = TFile::Open("output/out_TT_General_Calibrator_New.root");
+ TFile *_file1 = TFile::Open("output/out_TT_TestCalibration.root");
  TTree* outTree1 = (TTree*) _file1->Get("outTree"); 
  
  TCanvas c_After("c_After","c_After",800,600);

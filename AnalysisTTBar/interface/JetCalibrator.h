@@ -50,6 +50,15 @@ class JetCalibrator{
   JetCalibrator(double MResonance,double PtMin,double PtMax,double EtaMax, double DPt, double DEta);
   ~JetCalibrator();
    
+  void SetKK(const std::vector<double>& KK_In);
+  void SetKKErr(const std::vector<double>& KKErr_In);
+
+  void SetKK(double KK_In, int num);
+  void SetKKErr(double KKErr_In, int num);
+  
+  void SetKK(double KK_In, double eta, double pT);
+  void SetKKErr(double KKErr_In, double eta, double pT);  
+  
   void Update();
   void Update(int alpha);
   void Update(int alpha, int rand);
