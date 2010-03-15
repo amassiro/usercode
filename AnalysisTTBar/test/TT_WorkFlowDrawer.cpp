@@ -5,7 +5,7 @@
 #include "ConfigParser.h"
 #include "ntpleUtils.h"
 
-
+#include "TTBarUtils.h"
 
 #include "JetCalibrator.h"
 #include "TH1F.h"
@@ -149,52 +149,23 @@ int main(int argc, char** argv)
  
  
  double TMVA_value;
- 
- Float_t pT_RECO_q1;
- Float_t pT_RECO_q2;
- Float_t pT_RECO_b1;
- Float_t pT_RECO_b2;
- 
- Float_t DR_RECO_qq;
- Float_t DR_RECO_qb;
- Float_t DR_RECO_bb;
- 
- Float_t jets_trackCountingHighEffBJetTags_RECO_q1;
- Float_t jets_trackCountingHighEffBJetTags_RECO_b1;
- Float_t jets_trackCountingHighPurBJetTags_RECO_q1;
- Float_t jets_trackCountingHighPurBJetTags_RECO_b1;
- Float_t jets_simpleSecondaryVertexBJetTags_RECO_q1;
- Float_t jets_simpleSecondaryVertexBJetTags_RECO_b1;
- Float_t jets_combinedSecondaryVertexBJetTags_RECO_q1;
- Float_t jets_combinedSecondaryVertexBJetTags_RECO_b1;
- Float_t jets_combinedSecondaryVertexMVABJetTags_RECO_q1;
- Float_t jets_combinedSecondaryVertexMVABJetTags_RECO_b1;
- 
- Float_t jets_trackCountingHighEffBJetTags_RECO_q2;
- Float_t jets_trackCountingHighEffBJetTags_RECO_b2;
- Float_t jets_trackCountingHighPurBJetTags_RECO_q2;
- Float_t jets_trackCountingHighPurBJetTags_RECO_b2;
- Float_t jets_simpleSecondaryVertexBJetTags_RECO_q2;
- Float_t jets_simpleSecondaryVertexBJetTags_RECO_b2;
- Float_t jets_combinedSecondaryVertexBJetTags_RECO_q2;
- Float_t jets_combinedSecondaryVertexBJetTags_RECO_b2;
- Float_t jets_combinedSecondaryVertexMVABJetTags_RECO_q2;
- Float_t jets_combinedSecondaryVertexMVABJetTags_RECO_b2; 
- 
+ int MVACombination;
  
  TMVA::Reader *TMVAreader = new TMVA::Reader( "!Color:!Silent" );
- TMVAreader->AddVariable("pT_RECO_q1",&pT_RECO_q1);
- TMVAreader->AddVariable("pT_RECO_q2",&pT_RECO_q2);
- TMVAreader->AddVariable("pT_RECO_b1",&pT_RECO_b1);
- TMVAreader->AddVariable("pT_RECO_b2",&pT_RECO_b2);
- TMVAreader->AddVariable("DR_RECO_qq",&DR_RECO_qq);
- TMVAreader->AddVariable("DR_RECO_qb",&DR_RECO_qb);
- TMVAreader->AddVariable("DR_RECO_bb",&DR_RECO_bb);
- TMVAreader->AddVariable("jets_trackCountingHighEffBJetTags_RECO_q1",&jets_trackCountingHighEffBJetTags_RECO_q1);
- TMVAreader->AddVariable("jets_trackCountingHighEffBJetTags_RECO_b1",&jets_trackCountingHighEffBJetTags_RECO_b1);
- TMVAreader->AddVariable("jets_trackCountingHighEffBJetTags_RECO_q2",&jets_trackCountingHighEffBJetTags_RECO_q2);
- TMVAreader->AddVariable("jets_trackCountingHighEffBJetTags_RECO_b2",&jets_trackCountingHighEffBJetTags_RECO_b2);
- 
+
+ Float_t input_variables[1000];
+
+ TMVAreader->AddVariable("pT_RECO_q1",&input_variables[0]);
+ TMVAreader->AddVariable("pT_RECO_q2",&input_variables[1]);
+ TMVAreader->AddVariable("pT_RECO_b1",&input_variables[2]);
+ TMVAreader->AddVariable("pT_RECO_b2",&input_variables[3]);
+ TMVAreader->AddVariable("DR_RECO_qq",&input_variables[4]);
+ TMVAreader->AddVariable("DR_RECO_qb",&input_variables[5]);
+ TMVAreader->AddVariable("DR_RECO_bb",&input_variables[6]);
+ TMVAreader->AddVariable("jets_trackCountingHighEffBJetTags_RECO_q1",&input_variables[7]);
+ TMVAreader->AddVariable("jets_trackCountingHighEffBJetTags_RECO_b1",&input_variables[8]);
+ TMVAreader->AddVariable("jets_trackCountingHighEffBJetTags_RECO_q2",&input_variables[9]);
+ TMVAreader->AddVariable("jets_trackCountingHighEffBJetTags_RECO_b2",&input_variables[10]);
  
  std::string stdstrMethod = gConfigParser -> readStringOption("Selector::Method");
  std::cout << ">>>>> Selector::Method  " << stdstrMethod  << std::endl;  
@@ -269,82 +240,12 @@ int main(int argc, char** argv)
     nJets = 6;
    }     
    
-   TMVA_value = -100000000;
-   int MVACombination = -1;
-   
    int buffer = Build4JetCombinations(combinations,nJets);
-   int nComb = combinations.size();
-   for (int iComb = 0; iComb<nComb; iComb++){
-    int q1 = combinations.at(iComb).at(0);
-    int q2 = combinations.at(iComb).at(1);
-    int b1 = combinations.at(iComb).at(2);
-    int b2 = combinations.at(iComb).at(3);    
-    
-    pT_RECO_q1 = jets->at(q1).Pt();
-    pT_RECO_q2 = jets->at(q2).Pt();
-    pT_RECO_b1 = jets->at(b1).Pt();
-    pT_RECO_b2 = jets->at(b2).Pt();
-    DR_RECO_qq = ROOT::Math::VectorUtil::DeltaR(jets->at(q1),jets->at(q2));
-    DR_RECO_bb = ROOT::Math::VectorUtil::DeltaR(jets->at(b1),jets->at(b2));
-    DR_RECO_qb = std::min(ROOT::Math::VectorUtil::DeltaR(jets->at(q1),jets->at(b2)),ROOT::Math::VectorUtil::DeltaR(jets->at(b1),jets->at(q2)));
-    
-    if (jets->at(q1).Pt() > jets->at(q2).Pt()) {
-     jets_trackCountingHighEffBJetTags_RECO_q1 = jets_trackCountingHighEffBJetTags->at(q1);
-     jets_trackCountingHighEffBJetTags_RECO_q2 = jets_trackCountingHighEffBJetTags->at(q2);  
-     jets_trackCountingHighPurBJetTags_RECO_q1 = jets_trackCountingHighPurBJetTags->at(q1);
-     jets_trackCountingHighPurBJetTags_RECO_q2 = jets_trackCountingHighPurBJetTags->at(q2);
-     jets_simpleSecondaryVertexBJetTags_RECO_q1 = jets_simpleSecondaryVertexBJetTags->at(q1);
-     jets_simpleSecondaryVertexBJetTags_RECO_q2 = jets_simpleSecondaryVertexBJetTags->at(q2);
-     jets_combinedSecondaryVertexBJetTags_RECO_q1 = jets_combinedSecondaryVertexBJetTags->at(q1);
-     jets_combinedSecondaryVertexBJetTags_RECO_q2 = jets_combinedSecondaryVertexBJetTags->at(q2);
-     jets_combinedSecondaryVertexMVABJetTags_RECO_q1 = jets_combinedSecondaryVertexMVABJetTags->at(q1);
-     jets_combinedSecondaryVertexMVABJetTags_RECO_q2 = jets_combinedSecondaryVertexMVABJetTags->at(q2);
-    }
-    else  {
-     jets_trackCountingHighEffBJetTags_RECO_q1 = jets_trackCountingHighEffBJetTags->at(q2);
-     jets_trackCountingHighEffBJetTags_RECO_q2 = jets_trackCountingHighEffBJetTags->at(q1);  
-     jets_trackCountingHighPurBJetTags_RECO_q1 = jets_trackCountingHighPurBJetTags->at(q2);
-     jets_trackCountingHighPurBJetTags_RECO_q2 = jets_trackCountingHighPurBJetTags->at(q1);
-     jets_simpleSecondaryVertexBJetTags_RECO_q1 = jets_simpleSecondaryVertexBJetTags->at(q2);
-     jets_simpleSecondaryVertexBJetTags_RECO_q2 = jets_simpleSecondaryVertexBJetTags->at(q1);
-     jets_combinedSecondaryVertexBJetTags_RECO_q1 = jets_combinedSecondaryVertexBJetTags->at(q2);
-     jets_combinedSecondaryVertexBJetTags_RECO_q2 = jets_combinedSecondaryVertexBJetTags->at(q1);
-     jets_combinedSecondaryVertexMVABJetTags_RECO_q1 = jets_combinedSecondaryVertexMVABJetTags->at(q2);
-     jets_combinedSecondaryVertexMVABJetTags_RECO_q2 = jets_combinedSecondaryVertexMVABJetTags->at(q1);
-    }
-    
-    if (jets->at(b1).Pt() > jets->at(b2).Pt()) {
-     jets_trackCountingHighEffBJetTags_RECO_b1 = jets_trackCountingHighEffBJetTags->at(b1);
-     jets_trackCountingHighEffBJetTags_RECO_b2 = jets_trackCountingHighEffBJetTags->at(b2);  
-     jets_trackCountingHighPurBJetTags_RECO_b1 = jets_trackCountingHighPurBJetTags->at(b1);
-     jets_trackCountingHighPurBJetTags_RECO_b2 = jets_trackCountingHighPurBJetTags->at(b2);
-     jets_simpleSecondaryVertexBJetTags_RECO_b1 = jets_simpleSecondaryVertexBJetTags->at(b1);
-     jets_simpleSecondaryVertexBJetTags_RECO_b2 = jets_simpleSecondaryVertexBJetTags->at(b2);
-     jets_combinedSecondaryVertexBJetTags_RECO_b1 = jets_combinedSecondaryVertexBJetTags->at(b1);
-     jets_combinedSecondaryVertexBJetTags_RECO_b2 = jets_combinedSecondaryVertexBJetTags->at(b2);
-     jets_combinedSecondaryVertexMVABJetTags_RECO_b1 = jets_combinedSecondaryVertexMVABJetTags->at(b1);
-     jets_combinedSecondaryVertexMVABJetTags_RECO_b2 = jets_combinedSecondaryVertexMVABJetTags->at(b2);
-    }
-    else  {
-     jets_trackCountingHighEffBJetTags_RECO_b1 = jets_trackCountingHighEffBJetTags->at(b2);
-     jets_trackCountingHighEffBJetTags_RECO_b2 = jets_trackCountingHighEffBJetTags->at(b1);  
-     jets_trackCountingHighPurBJetTags_RECO_b1 = jets_trackCountingHighPurBJetTags->at(b2);
-     jets_trackCountingHighPurBJetTags_RECO_b2 = jets_trackCountingHighPurBJetTags->at(b1);
-     jets_simpleSecondaryVertexBJetTags_RECO_b1 = jets_simpleSecondaryVertexBJetTags->at(b2);
-     jets_simpleSecondaryVertexBJetTags_RECO_b2 = jets_simpleSecondaryVertexBJetTags->at(b1);
-     jets_combinedSecondaryVertexBJetTags_RECO_b1 = jets_combinedSecondaryVertexBJetTags->at(b2);
-     jets_combinedSecondaryVertexBJetTags_RECO_b2 = jets_combinedSecondaryVertexBJetTags->at(b1);
-     jets_combinedSecondaryVertexMVABJetTags_RECO_b1 = jets_combinedSecondaryVertexMVABJetTags->at(b2);
-     jets_combinedSecondaryVertexMVABJetTags_RECO_b2 = jets_combinedSecondaryVertexMVABJetTags->at(b1);
-    }
-    
-    double MVA_temp = TMVAreader->EvaluateMVA(methodName);
-    if (MVA_temp > TMVA_value) {
-     TMVA_value = MVA_temp;
-     MVACombination = iComb;
-    }
-   }
+   std::pair<double,int> bestCombination = GetCombinationMVA(reader,combinations,TMVAreader,methodName,input_variables);
    
+   TMVA_value = bestCombination.first;
+   MVACombination = bestCombination.second;
+  
    if (MVACombination!=-1){
     int q1 = combinations.at(MVACombination).at(0);
     int q2 = combinations.at(MVACombination).at(1);
