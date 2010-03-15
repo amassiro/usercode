@@ -376,20 +376,20 @@ int main(int argc, char** argv)
     factory.Fill ("dr_qb",0,dr_qb);
     factory.Fill ("dr_bb",0,dr_bb);
     factory.Fill ("Mjj_qq",0,Mjj);    
-    factory.Fill ("MET",3,met->at(0));    
+    factory.Fill ("MET",3,met->at(0).Pt());    
     factory.Fill ("jets_trackCountingHighEffBJetTags",0,std::min(jets_trackCountingHighEffBJetTags->at(b1),jets_trackCountingHighEffBJetTags->at(b2)));
     
     
     if (TMVA_value > -0.25) {
      factory.Fill ("Mjj_qq",1,Mjj);    
-     factory.Fill ("MET",0,met->at(0));
+     factory.Fill ("MET",0,met->at(0).Pt());
      if (numMuonsSurvived == 1 && numElectronsSurvived == 0) {
       factory.Fill ("Mjj_qq",4,Mjj); ///---- muon
       factory.Fill ("muons_eta", 2, muons->at(nSelMu).Eta());    
       factory.Fill ("muons_phi", 2, muons->at(nSelMu).Phi());
       factory.Fill ("muons_pt", 2, muons->at(nSelMu).Pt());     
       factory.Fill ("muons_iso", 2, (muons_tkIsoR03->at(nSelMu) + muons_emIsoR03->at(nSelMu) + muons_hadIsoR03->at(nSelMu)) / (muons->at(nSelMu).Pt()));
-      factory.Fill ("MET",1,met->at(0));
+      factory.Fill ("MET",1,met->at(0).Pt());
      }
      if (numMuonsSurvived == 0 && numElectronsSurvived == 1) {
       factory.Fill ("Mjj_qq",5,Mjj); ///---- electron
@@ -397,7 +397,7 @@ int main(int argc, char** argv)
       factory.Fill ("electrons_phi", 2, electrons->at(nSelEle).Phi());
       factory.Fill ("electrons_pt", 2, electrons->at(nSelEle).Pt());
       factory.Fill ("electrons_iso", 2, (electrons_tkIso->at(nSelEle) + electrons_emIso->at(nSelEle) + electrons_hadIso_1->at(nSelEle)) / (electrons->at(nSelEle).Pt()));
-      factory.Fill ("MET",2,met->at(0));
+      factory.Fill ("MET",2,met->at(0).Pt());
      }
     }
     if (numMuonsSurvived == 1 && numElectronsSurvived == 0) factory.Fill ("Mjj_qq",2,Mjj); ///---- muon
