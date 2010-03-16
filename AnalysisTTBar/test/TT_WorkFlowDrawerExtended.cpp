@@ -127,37 +127,37 @@ int main(int argc, char** argv)
  //  hFactory factory (OutFileName.c_str(), true) ;
  hFactory factory ("no", true) ;
  
- factory.add_h1 ("jets_eta", "jet #eta", 200, -10, 10, 1) ; 
- factory.add_h1 ("jets_pt", "jet pt", 1000, 0, 1000, 1) ; 
- factory.add_h1 ("jets_phi", "jet phi", 100, -6.28, 6.28, 1) ; 
- factory.add_h1 ("num_jets", "number of jets", 20, 0, 20, 2) ; 
- factory.add_h1 ("MVA_Response", "MVA Response", 1000, -2, 2, 1) ; 
+ factory.add_h1 ("jets_eta", "jet #eta", 200, -10, 10, 10) ; 
+ factory.add_h1 ("jets_pt", "jet pt", 1000, 0, 1000, 10) ; 
+ factory.add_h1 ("jets_phi", "jet phi", 100, -6.28, 6.28, 10) ; 
+ factory.add_h1 ("num_jets", "number of jets", 20, 0, 20, 10) ; 
+ factory.add_h1 ("MVA_Response", "MVA Response", 1000, -2, 2, 10) ; 
  
- factory.add_h1 ("num_leptons", "number of leptons", 20, 0, 20, 1) ; 
- factory.add_h1 ("num_electrons", "number of electrons", 20, 0, 20, 1) ; 
- factory.add_h1 ("num_muons", "number of muons", 20, 0, 20, 1) ; 
+ factory.add_h1 ("num_leptons", "number of leptons", 20, 0, 20, 10) ; 
+ factory.add_h1 ("num_electrons", "number of electrons", 20, 0, 20, 10) ; 
+ factory.add_h1 ("num_muons", "number of muons", 20, 0, 20, 10) ; 
  
- factory.add_h1 ("electrons_phi", "electrons phi", 100, -6.28, 6.28, 4) ; 
- factory.add_h1 ("electrons_eta", "electrons #eta", 200, -10, 10, 4) ; 
- factory.add_h1 ("electrons_pt", "electrons pt", 1000, 0, 1000, 4) ; 
- factory.add_h1 ("electrons_iso", "electrons isolation", 1000, 0, 2, 4) ; 
+ factory.add_h1 ("electrons_phi", "electrons phi", 100, -6.28, 6.28, 10) ; 
+ factory.add_h1 ("electrons_eta", "electrons #eta", 200, -10, 10, 10) ; 
+ factory.add_h1 ("electrons_pt", "electrons pt", 1000, 0, 1000, 10) ; 
+ factory.add_h1 ("electrons_iso", "electrons isolation", 1000, 0, 2, 10) ; 
  
- factory.add_h1 ("muons_phi", "muons phi", 100, -6.28, 6.28, 4) ; 
- factory.add_h1 ("muons_eta", "muons #eta", 200, -10, 10, 4) ; 
- factory.add_h1 ("muons_pt", "muons pt", 1000, 0, 1000, 4) ; 
- factory.add_h1 ("muons_iso", "muons isolation", 1000, 0, 2, 4) ; 
+ factory.add_h1 ("muons_phi", "muons phi", 100, -6.28, 6.28, 10) ; 
+ factory.add_h1 ("muons_eta", "muons #eta", 200, -10, 10, 10) ; 
+ factory.add_h1 ("muons_pt", "muons pt", 1000, 0, 1000, 10) ; 
+ factory.add_h1 ("muons_iso", "muons isolation", 1000, 0, 2, 10) ; 
  
- factory.add_h1 ("leptons_phi", "leptons phi", 100, -6.28, 6.28, 1) ; 
- factory.add_h1 ("leptons_eta", "leptons #eta", 200, -10, 10, 1) ; 
- factory.add_h1 ("leptons_pt", "leptons pt", 1000, 0, 1000, 1) ; 
+ factory.add_h1 ("leptons_phi", "leptons phi", 100, -6.28, 6.28, 10) ; 
+ factory.add_h1 ("leptons_eta", "leptons #eta", 200, -10, 10, 10) ; 
+ factory.add_h1 ("leptons_pt", "leptons pt", 1000, 0, 1000, 10) ; 
  
- factory.add_h1 ("dr_qq", "#Delta R Wqq", 100, 0, 10, 1) ; 
- factory.add_h1 ("dr_qb", "#Delta R qb", 100, 0, 10, 1) ; 
- factory.add_h1 ("dr_bb", "#Delta R bb", 100, 0, 10, 1) ; 
+ factory.add_h1 ("dr_qq", "#Delta R Wqq", 100, 0, 10, 10) ; 
+ factory.add_h1 ("dr_qb", "#Delta R qb", 100, 0, 10, 10) ; 
+ factory.add_h1 ("dr_bb", "#Delta R bb", 100, 0, 10, 10) ; 
 
- factory.add_h1 ("Mjj_qq", "Mjj Wqq", 100, 40, 140, 7) ; 
- factory.add_h1 ("MET", "MET", 1000, 0, 200, 7) ; 
- factory.add_h1 ("jets_trackCountingHighEffBJetTags", "jets_trackCountingHighEffBJetTags", 1100, -100, 1000, 7) ; 
+ factory.add_h1 ("Mjj_qq", "Mjj Wqq", 100, 40, 140, 10) ; 
+ factory.add_h1 ("MET", "MET", 1000, 0, 200, 10) ; 
+ factory.add_h1 ("jets_trackCountingHighEffBJetTags", "jets_trackCountingHighEffBJetTags", 1100, -100, 20, 10) ; 
  
  
  

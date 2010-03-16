@@ -100,7 +100,7 @@ std::pair<int,int> GetMCDecayChannel(float pdgId11,float pdgId12, float pdgId21,
 
 ///==== get GoodCombination MVA ====
 
-std::pair<double,int> GetCombinationMVA(treeReader& reader, std::vector<std::vector<int> >& combinations,TMVA::Reader* TMVAreader, TString& methodName, Float_t* input_variables){
+std::pair<double,int> GetCombinationMVA(treeReader& reader, std::vector<std::vector<int> >& combinations,TMVA::Reader* TMVAreader, TString& methodName, Float_t* input_variables, std::vector<int>* whitelistJet){
  
  Float_t pT_RECO_q1;
  Float_t pT_RECO_q2;
@@ -134,8 +134,8 @@ std::pair<double,int> GetCombinationMVA(treeReader& reader, std::vector<std::vec
  Float_t jets_combinedSecondaryVertexMVABJetTags_RECO_b2; 
  
  
- std::vector<ROOT::Math::XYZTVector>* muons = reader.Get4V("muons");
- std::vector<ROOT::Math::XYZTVector>* electrons = reader.Get4V("electrons");
+//  std::vector<ROOT::Math::XYZTVector>* muons = reader.Get4V("muons");
+//  std::vector<ROOT::Math::XYZTVector>* electrons = reader.Get4V("electrons");
  
  std::vector<ROOT::Math::XYZTVector>* jets = reader.Get4V("jets");
  std::vector<float>* jets_trackCountingHighEffBJetTags = reader.GetFloat("jets_trackCountingHighEffBJetTags");
@@ -156,6 +156,10 @@ std::pair<double,int> GetCombinationMVA(treeReader& reader, std::vector<std::vec
   int b1 = combinations.at(iComb).at(2);
   int b2 = combinations.at(iComb).at(3);    
   
+  if(whitelistJet != NULL)
+   if( (whitelistJet -> at(q1)) != 1 || (whitelistJet -> at(q2)) != 1 || (whitelistJet -> at(b1)) != 1 || (whitelistJet -> at(b2)) != 1)
+    continue;
+     
   pT_RECO_q1 = jets->at(q1).Pt();
   pT_RECO_q2 = jets->at(q2).Pt();
   pT_RECO_b1 = jets->at(b1).Pt();

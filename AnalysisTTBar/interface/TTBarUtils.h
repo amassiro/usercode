@@ -42,8 +42,7 @@ std::pair<int,int> GetMCDecayChannel(float pdgId11,float pdgId12, float pdgId21,
 
 ///==== get GoodCombination ====
 ///==== return the value of the Max MVA and the corresponding number in the combinations ====
-std::pair<double,int> GetCombinationMVA(treeReader& reader, std::vector<std::vector<int> >& combinations,TMVA::Reader* TMVAreader, TString& methodName, Float_t* input_variables);
-
+std::pair<double,int> GetCombinationMVA(treeReader& reader, std::vector<std::vector<int> >& combinations,TMVA::Reader* TMVAreader, TString& methodName, Float_t* input_variables, std::vector<int>* whitelistJet = NULL);
 
 
 
