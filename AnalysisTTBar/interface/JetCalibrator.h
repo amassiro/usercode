@@ -39,6 +39,7 @@ Class JetCalibrator
 #include "RooCategory.h"
 #include "RooFitResult.h"
 #include "RooPlot.h"
+#include "RooGlobalFunc.h"
 
 
 class JetCalibrator{
