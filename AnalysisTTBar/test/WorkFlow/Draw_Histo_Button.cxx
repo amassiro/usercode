@@ -20,7 +20,7 @@
  
  int totalSamples = 0;
  
- TH1F *histos[10000];
+ TH1F *histos[100000];
  
  int counterHisto = 0;
  int counterHistoPerFile = 0;
@@ -104,7 +104,7 @@
     std::cout << "### " << " effTot = " <<  preselection_efficiency / numEntriesBefore * histos[counterHistoPerFile * (iSample) + iHisto].GetEntries() << " <<<< " << std::endl;
     
     if (NORMXSECT) histos[counterHistoPerFile * (iSample) + iHisto].Scale(XSection * preselection_efficiency / numEntriesBefore);
-    else histos[counterHistoPerFile * (iSample) + iHisto].Scale(1. / histos[counterHistoPerFile * (iSample) + iHisto].GetEntries());
+    else if (histos[counterHistoPerFile * (iSample) + iHisto].GetEntries() != 0) histos[counterHistoPerFile * (iSample) + iHisto].Scale(1. / histos[counterHistoPerFile * (iSample) + iHisto].GetEntries());
     
     
     histos[counterHistoPerFile * (iSample) + iHisto].Rebin(REBIN);
@@ -153,13 +153,20 @@
   
   
   
-  
   std::vector< std::string > vect_name;
   TControlBar *bar = new TControlBar("vertical", "fit control panel");
   gROOT->Add(bar);
   for (int iHisto=0; iHisto<counterHistoPerFile; iHisto++){
    std::string name_histo = histos[iHisto]->GetName();
-   std::string name_kind = name_histo.substr(4);
+   int pos = name_histo.find("h_");
+   std::string temp_name_kind;
+   if (pos!=string::npos) temp_name_kind = name_histo.substr(2);
+   pos = temp_name_kind.find("_");
+   if (pos!=string::npos) temp_name_kind = temp_name_kind.substr(pos+1);
+   pos = temp_name_kind.find("_");
+   temp_name_kind = temp_name_kind.substr(0,pos);
+   std::string name_kind = temp_name_kind;
+   //    std::string name_kind = name_histo.substr(4);
    int found = 0;
    for (int i=0; i<vect_name.size(); i++){
     if (vect_name.at(i) == name_kind) {
@@ -169,7 +176,7 @@
    if (found == 0) {
     vect_name.push_back(name_kind);
     std::cerr << "name_kind = " << name_kind << std::endl;
-    TString CommandToROOT = Form("bar->AddButton(\"%s\",\"{Add(%d);}\",\"Add Histos\");\n",name_kind,vect_name.size()-1);
+    TString CommandToROOT = Form("bar->AddButton(\"%s\",\"{AddTab(%d);}\",\"Add Histos\");\n",name_kind,vect_name.size()-1);
     gROOT->ProcessLine(CommandToROOT);
    }
   }
@@ -177,6 +184,33 @@
   bar->Show();
   
   
+  
+  //---- more refined ----
+  
+//   std::vector< std::string > vect_name;
+//   TControlBar *bar = new TControlBar("vertical", "fit control panel");
+//   gROOT->Add(bar);
+//   for (int iHisto=0; iHisto<counterHistoPerFile; iHisto++){
+//    std::string name_histo = histos[iHisto]->GetName();
+//    std::string name_kind = name_histo.substr(4);
+//    int found = 0;
+//    for (int i=0; i<vect_name.size(); i++){
+//     if (vect_name.at(i) == name_kind) {
+//      found = 1;
+//     }
+//    }
+//    if (found == 0) {
+//     vect_name.push_back(name_kind);
+//     std::cerr << "name_kind = " << name_kind << std::endl;
+//     TString CommandToROOT = Form("bar->AddButton(\"%s\",\"{Add(%d);}\",\"Add Histos\");\n",name_kind,vect_name.size()-1);
+//     gROOT->ProcessLine(CommandToROOT);
+//    }
+//   }
+//   bar->AddButton("Exit","{Exit();}","Exit from the program");
+//   bar->Show();
+  
+  
+  //---- simplest ----
   
 /*  if (!gROOT->FindObject("draw control panel")) { 
    TControlBar *bar = new TControlBar("vertical", "fit control panel");
