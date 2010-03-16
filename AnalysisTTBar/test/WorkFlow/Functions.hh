@@ -62,8 +62,11 @@ void AddTab(int iName){
   std::string end = temp_name_kind;
   std::string middle = temp_name_kind;
   if (pos!=string::npos) middle = temp_name_kind.substr(0,pos); ///---- jets
-   if (pos!=string::npos) end = temp_name_kind.substr(pos+1); ///---- pt_sample_possible
+  if (pos!=string::npos) end = temp_name_kind.substr(pos+1); ///---- pt_sample_possible
+  pos = end.find("_");
+  if (pos!=string::npos) end = end.substr(0,pos); ///---- pt
     
+   
     std::string name_kind = middle;
    
    if (vect_name.at(iName) == name_kind){
@@ -106,6 +109,8 @@ void AddVar(int iName, int iVariable){
   std::string middle = temp_name_kind;
   if (pos!=string::npos) middle = temp_name_kind.substr(0,pos); ///---- jets
    if (pos!=string::npos) end = temp_name_kind.substr(pos+1); ///---- pt_sample_possible
+    pos = end.find("_");
+   if (pos!=string::npos) end = end.substr(0,pos); ///---- pt
     
     std::string name_kind = middle;
    
@@ -141,6 +146,8 @@ void AddVar(int iName, int iVariable){
   std::string middle = temp_name_kind;
   if (pos!=string::npos) middle = temp_name_kind.substr(0,pos); ///---- jets
    if (pos!=string::npos) end = temp_name_kind.substr(pos+1); ///---- pt_sample_possible
+    pos = end.find("_");
+   if (pos!=string::npos) end = end.substr(0,pos); ///---- pt
     
     std::string name_kind = middle;
    
