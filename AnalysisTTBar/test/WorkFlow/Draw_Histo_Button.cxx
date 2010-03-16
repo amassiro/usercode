@@ -103,7 +103,22 @@
     std::cout << "*** " << iHisto << ") " << nameSample[iSample] << " effTot = " <<  XSection * preselection_efficiency / numEntriesBefore * histos[counterHistoPerFile * (iSample) + iHisto].GetEntries() << " events / pb-1      <<<< " << histos[counterHistoPerFile * (iSample) + iHisto].GetEntries() << " = histo entries ";
     std::cout << "### " << " effTot = " <<  preselection_efficiency / numEntriesBefore * histos[counterHistoPerFile * (iSample) + iHisto].GetEntries() << " <<<< " << std::endl;
     
-    if (NORMXSECT) histos[counterHistoPerFile * (iSample) + iHisto].Scale(XSection * preselection_efficiency / numEntriesBefore);
+    
+    std::string name_histo_here = histos[counterHistoPerFile * (iSample) + iHisto].GetName();
+    int pos = name_histo_here.find("_");    
+    if (pos!=string::npos) name_histo_here = name_histo_here.substr(0,pos); ///---- events_sample_possible -> events
+    std::string name_histo_comparison = "events";
+    
+    if (NORMXSECT) {
+     histos[counterHistoPerFile * (iSample) + iHisto].Scale(XSection * preselection_efficiency / numEntriesBefore);
+     if (name_histo_here == name_histo_comparison) {
+      if (iSample == 0 || iSample == 1) histos[counterHistoPerFile * (iSample) + iHisto].SetBinContent(1,XSection * 14.3 / 100); ///--- signal "e" or "mu"
+      else if (iSample == 2) {
+       histos[counterHistoPerFile * (iSample) + iHisto].SetBinContent(1,XSection * 71.4 / 100); ///---- signal all other decays
+      }
+      else histos[counterHistoPerFile * (iSample) + iHisto].SetBinContent(1,XSection);
+     }
+    }
     else if (histos[counterHistoPerFile * (iSample) + iHisto].GetEntries() != 0) histos[counterHistoPerFile * (iSample) + iHisto].Scale(1. / histos[counterHistoPerFile * (iSample) + iHisto].GetEntries());
     
     

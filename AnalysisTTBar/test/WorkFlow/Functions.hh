@@ -23,7 +23,7 @@ void Exit(){
 
 void Add(int iName){
 std::cerr << "vect_name.at(" << iName << ") = " << vect_name.at(iName) << std::endl;
-TString CommandToROOT = Form("TControlBar *bar_%s = new TControlBar(\"%s\", \"Draw control panel %s\");\n",vect_name.at(iName),vect_name.at(iName),vect_name.at(iName));
+TString CommandToROOT = Form("TControlBar *bar_%s = new TControlBar(\"vertical\", \"Draw control panel %s\");\n",vect_name.at(iName),vect_name.at(iName));
 gROOT->ProcessLine(CommandToROOT);
 CommandToROOT = Form("gROOT->Add(bar_%s);\n",vect_name.at(iName));
 gROOT->ProcessLine(CommandToROOT);
@@ -45,7 +45,7 @@ gROOT->ProcessLine(CommandToROOT);
 
 void AddTab(int iName){
  std::cerr << "vect_name.at(" << iName << ") = " << vect_name.at(iName) << std::endl;
- TString CommandToROOT = Form("TControlBar *bar_%s = new TControlBar(\"%s\", \"Draw control panel %s\");\n",vect_name.at(iName),vect_name.at(iName),vect_name.at(iName));
+ TString CommandToROOT = Form("TControlBar *bar_%s = new TControlBar(\"vertical\", \"Draw control panel %s\");\n",vect_name.at(iName),vect_name.at(iName));
  gROOT->ProcessLine(CommandToROOT);
  CommandToROOT = Form("gROOT->Add(bar_%s);\n",vect_name.at(iName));
  gROOT->ProcessLine(CommandToROOT);
@@ -92,7 +92,7 @@ void AddTab(int iName){
 
 void AddVar(int iName, int iVariable){
  std::cerr << "vect_name.at(" << iName << ") = " << vect_name.at(iName) << std::endl;
- TString CommandToROOT = Form("TControlBar *bar_%s = new TControlBar(\"%s\", \"Draw control panel %s\");\n",vect_name.at(iName),vect_name.at(iName),vect_name.at(iName));
+ TString CommandToROOT = Form("TControlBar *bar_%s = new TControlBar(\"vertical\", \"Draw control panel %s\");\n",vect_name.at(iName),vect_name.at(iName));
  gROOT->ProcessLine(CommandToROOT);
  CommandToROOT = Form("gROOT->Add(bar_%s);\n",vect_name.at(iName));
  gROOT->ProcessLine(CommandToROOT);
@@ -129,7 +129,7 @@ void AddVar(int iName, int iVariable){
  
  
  std::cerr << "vect_name.at(" << iName << ") = " << vect_name.at(iName) << std::endl;
- CommandToROOT = Form("TControlBar *bar_%s_%s = new TControlBar(\"%s\", \"Draw control panel %s\");\n",vect_name.at(iName),vect_name_variable_temp.at(iVariable),vect_name_variable_temp.at(iVariable),vect_name_variable_temp.at(iVariable));
+ CommandToROOT = Form("TControlBar *bar_%s_%s = new TControlBar(\"vertical\", \"Draw control panel %s\");\n",vect_name.at(iName),vect_name_variable_temp.at(iVariable),vect_name_variable_temp.at(iVariable));
  gROOT->ProcessLine(CommandToROOT);
  CommandToROOT = Form("gROOT->Add(bar_%s_%s);\n",vect_name.at(iName),vect_name_variable_temp.at(iVariable));
  gROOT->ProcessLine(CommandToROOT);
