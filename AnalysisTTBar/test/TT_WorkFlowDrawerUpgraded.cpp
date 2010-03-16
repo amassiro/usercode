@@ -133,7 +133,7 @@ int main(int argc, char** argv)
  std::map<int, std::string> stepName;
  
  
- stdHisto* stdHistograms = new stdHisto(nStep, OutFileNameEfficiencies,&reader);
+ stdHisto* stdHistograms = new stdHisto(nStep, "no",&reader);
  stdHistograms -> Add1("jets", nStep);
  stdHistograms -> Add1("muons", nStep);
  stdHistograms -> Add1Float("muIso", nStep,2000,0,2);
@@ -425,21 +425,21 @@ int main(int argc, char** argv)
  end = clock();
  std::cout <<"Time = " <<  ((double) (end - start)) << " (a.u.)" << std::endl;  
  
- outFile.Write();   
+//  outFile.Write();   
  
  
  
  
  ///==== save additional information ====
- TFile* outputRootFile = new TFile(OutFileNameEfficiencies.c_str(), "recreate");
- outputRootFile -> cd();
+//  TFile* outputRootFile = new TFile(OutFileNameEfficiencies.c_str(), "recreate");
+//  outputRootFile -> cd();
  for(step = 0; step < nStep; ++step)
  {
   events -> SetBinContent(step+1, stepEvents[step]);
   events -> GetXaxis() -> SetBinLabel(step+1, stepName[step].c_str());
  } 
  events -> Write(); 
- outputRootFile -> Close();
+ outFile.Write();
  
  delete stdHistograms;
  
