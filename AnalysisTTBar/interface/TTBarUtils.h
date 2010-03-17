@@ -81,5 +81,11 @@ int SelectElectronTTBar(std::vector<ROOT::Math::XYZTVector>& leptons,
 ///==== get num Jets ====
 int getNumJets(const std::vector<int>& whitelist);
 
+
+///==== CopyTree ====
+void CopyTree();
+
+
+
 #endif
 
