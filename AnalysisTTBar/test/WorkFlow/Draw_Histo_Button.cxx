@@ -73,6 +73,7 @@
  
  std::cout << " totalSamples = " << totalSamples << std::endl;
  std::cout << " counterHistoPerFile = " << counterHistoPerFile << std::endl;
+ std::cout << " counterHisto = " << counterHisto << std::endl;
  
  THStack* hs[1000];
  for (int iHisto=0; iHisto<counterHistoPerFile; iHisto++){

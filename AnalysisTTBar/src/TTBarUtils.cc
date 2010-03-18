@@ -364,7 +364,13 @@ int SelectElectronTTBar(std::vector<ROOT::Math::XYZTVector>& leptons,
  for(unsigned int i = 0; i < leptons.size(); ++i){
   if( sqrt(leptons.at(i).Perp2()) < ptMin ) continue;
   if( fabs(leptons.at(i).eta()) > etaMax ) continue;
-  if( (tkIso.at(i) + emIso.at(i) + hadIso.at(i)) / sqrt(leptons.at(i).Perp2()) > isoMax ) continue; 
+  
+  
+  if (((tkIso.at(i) + emIso.at(i) + hadIso.at(i)) < 8.) && (sqrt(leptons.at(i).Perp2()) < (10. + 15./8.*(tkIso.at(i) + emIso.at(i) + hadIso.at(i))))) continue;
+  if ((tkIso.at(i) + emIso.at(i) + hadIso.at(i)) > 8.) continue;
+  
+//   if( (tkIso.at(i) + emIso.at(i) + hadIso.at(i)) / sqrt(leptons.at(i).Perp2()) > isoMax ) continue; 
+  
   if( eleId.at(i) == 0 ) continue;
   if( eled0.at(i) > d0Max ) continue; 
   bool skipLep = false;
@@ -410,4 +416,18 @@ void CopyTree(){
   
 }
 
+
+
+
+
+
+
+
+///==== get Jet Energy Correction ====
+double getJEC(const ROOT::Math::XYZTVector& Jet){
+ double pT = Jet.Pt();
+ double result = exp(-3.32898e-01  -2.34368e-02 * pT) + 7.40976e-01;
+//  expo(3) is a substitute for exp([3]+[4]*x)
+ return result;
+}
 

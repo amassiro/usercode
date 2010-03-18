@@ -64,6 +64,9 @@ int main(int argc, char** argv)
  ///==== Open ntple ====
  TChain* chainEff[1000];
  std::vector<TChain*> chain;
+ std::vector<int> maxFilling;
+ char *nameSample[1000];
+ 
  //  treeReader* reader[100];
  
  int stepAnalysis;
@@ -91,6 +94,10 @@ int main(int argc, char** argv)
  {
   inFile >> buffer;
   if(!inFile.good()) break;
+  
+  nameSample[numberOfSamples] = new char [1000];
+  sprintf(nameSample[numberOfSamples],"%s",buffer.c_str());
+  
   chain.push_back(new TChain(treeName.c_str()));
   
 // chain[numberOfSamples] = new TChain(treeName.c_str());  
@@ -181,11 +188,11 @@ int main(int argc, char** argv)
 
  start = clock();
  for (int iSample = 0; iSample < numberOfSamples; iSample++){
-  std::cout << ">>>>> tree::iSample " << iSample << " : " << numberOfSamples << std::endl;
+  std::cout << ">>>>> tree::iSample " << iSample << " : " << numberOfSamples << " => " << nameSample[iSample] << std::endl;
   std::cout << ">>>>> tree::entries " << chain[iSample] -> GetEntries()  << std::endl;
   int entryMAX = static_cast<int>(chain[iSample] -> GetEntries());
   
-  chainEff[iSample]->GetEntry(analysisStep);
+  chainEff[iSample]->GetEntry(analysisStep-1);
   std::cout << ">>>>> tree::XSection = " << XSection << std::endl;
   std::cout << ">>>>> tree::analysisEfficiency = " << analysisEfficiency << std::endl;
   std::cout << ">>>>> tree::preselection_efficiency = " << preselection_efficiency << std::endl;
@@ -202,13 +209,13 @@ int main(int argc, char** argv)
   std::cout << ">>>>> tree::entryMAX = " << entryMAX << std::endl;
   
   for(int iEvent = 0 ; iEvent < entryMAX ; ++iEvent){
-   std::cerr << "iEvent = " << iEvent << std::endl;
-   std::cerr << "entries = " << chain[iSample]->GetEntries() << std::endl;
-   std::cerr << "name = " << chain[iSample]->GetName() << std::endl;
-   std::cerr << "chain[" << iSample << "]->GetEntry(" << iEvent << ");" << std::endl;
+//    std::cerr << "iEvent = " << iEvent << std::endl;
+//    std::cerr << "entries = " << chain[iSample]->GetEntries() << std::endl;
+//    std::cerr << "name = " << chain[iSample]->GetName() << std::endl;
+//    std::cerr << "chain[" << iSample << "]->GetEntry(" << iEvent << ");" << std::endl;
    
    chain[iSample]->GetEntry(iEvent);
-   std::cerr << "stepAnalysis = " << stepAnalysis << std::endl;
+//    std::cerr << "stepAnalysis = " << stepAnalysis << std::endl;
    
    if (stepAnalysis != analysisStep) {
     if ((entryMAX+1) < static_cast<int>(chain[iSample] -> GetEntries())) {
@@ -308,11 +315,11 @@ int main(int argc, char** argv)
  ///---- same sample as before ----
  
  for (int iSample = 0; iSample < numberOfSamples; iSample++){
-  std::cout << ">>>>> tree::iSample " << iSample << " : " << numberOfSamples << std::endl;
+  std::cout << ">>>>> tree::iSample " << iSample << " : " << numberOfSamples << " => " << nameSample[iSample] << std::endl;
   std::cout << ">>>>> tree::entries " << chain[iSample] -> GetEntries()  << std::endl;
   int entryMAX = static_cast<int>(chain[iSample] -> GetEntries());
   
-  chainEff[iSample]->GetEntry(analysisStep);
+  chainEff[iSample]->GetEntry(analysisStep-1);
   std::cout << ">>>>> tree::XSection = " << XSection << std::endl;
   std::cout << ">>>>> tree::analysisEfficiency = " << analysisEfficiency << std::endl;
   std::cout << ">>>>> tree::preselection_efficiency = " << preselection_efficiency << std::endl;
@@ -378,28 +385,31 @@ int main(int argc, char** argv)
     t_Eta_Reco->clear();
    }
   } //loop over events
+  maxFilling.push_back(entryMAX);
  } //loop over samples
  
    
    
  ///---- independent sample ----
-  
+ std::cout << ">>>>> independent test <<<<<" << std::endl;
+ 
  for (int iSample = 0; iSample < numberOfSamples; iSample++){
-  std::cout << ">>>>> tree::iSample " << iSample << " : " << numberOfSamples << std::endl;
+  std::cout << ">>>>> tree::iSample " << iSample << " : " << numberOfSamples << " => " << nameSample[iSample] << std::endl;
   std::cout << ">>>>> tree::entries " << chain[iSample] -> GetEntries()  << std::endl;
   int entryMAX = static_cast<int>(chain[iSample] -> GetEntries());
   int entryMIN = static_cast<int>(chain[iSample] -> GetEntries());
   
-  chainEff[iSample]->GetEntry(analysisStep);
+  chainEff[iSample]->GetEntry(analysisStep-1);
   std::cout << ">>>>> tree::XSection = " << XSection << std::endl;
   std::cout << ">>>>> tree::analysisEfficiency = " << analysisEfficiency << std::endl;
   std::cout << ">>>>> tree::preselection_efficiency = " << preselection_efficiency << std::endl;
+    
+  int entryMIN_temp = maxFilling.at(iSample); //fractionLumiMAXcalib * lumiMAX * XSection * preselection_efficiency * analysisEfficiency;
+  std::cout << ">>>>> tree::entryMIN = " << entryMIN_temp << std::endl;
   
-  int entryMAX_temp = lumiMAX * XSection * preselection_efficiency * analysisEfficiency;
+  int entryMAX_temp = entryMIN_temp + (1.-fractionLumiMAXcalib) * lumiMAX * XSection * preselection_efficiency * analysisEfficiency;
   std::cout << ">>>>> tree::entryMAX = " << entryMAX_temp << std::endl;
   
-  int entryMIN_temp = fractionLumiMAXcalib * lumiMAX * XSection * preselection_efficiency * analysisEfficiency;
-  std::cout << ">>>>> tree::entryMIN = " << entryMIN_temp << std::endl;
   
   if (entryMAX < entryMAX_temp) {
    std::cerr << ">>>>>>>> ******************************** <<<<<<<<" << std::endl;
@@ -436,6 +446,7 @@ int main(int argc, char** argv)
    int iEta2 = myJetCalibrator.GetIntEta(q_2->Eta());
    
    double M_temp = ((*q_1) + (*q_2)).M();
+//    std::cerr << iPt1 << " " << iEta1 << " " << iPt2 << " " << iEta2 << std::endl;
    //---- data not used, out of range for KK!
    if ((iPt1 != -1) && (iPt2 != -1) && (iEta1 != -1.) && (iEta2 != -1)) {
     M_temp = M_temp * sqrt(myJetCalibrator.getKK(myJetCalibrator.GetInt(iPt1,iEta1)) * myJetCalibrator.getKK(myJetCalibrator.GetInt(iPt2,iEta2)));    

@@ -132,6 +132,8 @@ int main(int argc, char** argv)
  std::map<int, int> stepEvents;
  std::map<int, std::string> stepName;
  
+ outFile.mkdir("histos");
+ outFile.cd("histos");
  
  stdHisto* stdHistograms = new stdHisto(nStep, "no",&reader);
  stdHistograms -> Add1("jets", nStep);
@@ -144,6 +146,9 @@ int main(int argc, char** argv)
  stdHistograms -> Add1Float("MVAResponse", nStep,1000,-2,2); 
  stdHistograms -> Add2("WJJ", nStep);
  
+ outFile.cd();
+ 
+ double analysisEfficiency; 
  double XSection = inputXSection;
  int numEntriesBefore;
  
@@ -153,6 +158,7 @@ int main(int argc, char** argv)
  outTreeSelections.Branch("jet_efficiency",&jet_efficiency,"jet_efficiency/D");
  outTreeSelections.Branch("preselection_efficiency",&preselection_efficiency,"preselection_efficiency/D");
  outTreeSelections.Branch("numEntriesBefore",&numEntriesBefore,"numEntriesBefore/I");
+ outTreeSelections.Branch("analysisEfficiency",&analysisEfficiency,"analysisEfficiency/D");
  
  
  double TMVA_value;
@@ -192,7 +198,6 @@ int main(int argc, char** argv)
  if (entryMAX == -1) entryMAX = reader.GetEntries();
  else if (reader.GetEntries() < entryMAX) entryMAX = reader.GetEntries();
  numEntriesBefore = entryMAX - entryMIN;
- outTreeSelections.Fill();
  
  int step = 0;
  start = clock();
@@ -293,7 +298,7 @@ int main(int argc, char** argv)
     int nSelEle = SelectElectronTTBar(*electrons,*electrons_tkIso,*electrons_emIso,*electrons_hadIso_1,*electrons_IdRobustTight,*electrons_track_d0,method,30,2.5,0.1,0.2,numElectronsSurvived,blacklist);
     
     
-    if ( numMuonsSurvived == 1 ^ numElectronsSurvived == 1){///==== number of electrons == 1 xor number of muons == 1 ====
+    if ( (numMuonsSurvived == 1) ^ (numElectronsSurvived == 1)){///==== number of electrons == 1 xor number of muons == 1 ====
      std::vector<int>* whitelistElectron = 0;
      std::vector<int>* whitelistMuon = 0;
      std::vector<int>* blacklistElectron = 0;
@@ -437,6 +442,11 @@ int main(int argc, char** argv)
  {
   events -> SetBinContent(step+1, stepEvents[step]);
   events -> GetXaxis() -> SetBinLabel(step+1, stepName[step].c_str());
+  
+  if (step != 0){
+   analysisEfficiency = static_cast<double>(stepEvents[step]) / static_cast<double>(stepEvents[1]); ///---- fractio => efficiency
+   outTreeSelections.Fill();
+  }
  } 
  events -> Write(); 
  outFile.Write();
