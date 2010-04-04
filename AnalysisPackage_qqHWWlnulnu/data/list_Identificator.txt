@@ -1,0 +1,3 @@
+/media/LINUX/Data/VBF/Summer09_7TeV/VBFPreselection_H160_2W_2lnu_wbf_7TeV_ee.root
+/media/LINUX/Data/VBF/Summer09_7TeV/VBFPreselection_H160_2W_2lnu_wbf_7TeV_emu.root
+/media/LINUX/Data/VBF/Summer09_7TeV/VBFPreselection_H160_2W_2lnu_wbf_7TeV_mumu.root
