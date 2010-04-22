@@ -191,7 +191,7 @@ void Selector_Leptons_MVA_Training( TString myMethodList = "" ) {
     
     ///**********************************************************************
     weights[totalSamples] = XSection * preselection_efficiency / numEntriesBefore;
-    signal_background[totalSamples] = (TTree) f->Get("outTreeLep");
+    signal_background[totalSamples] = (TTree*) f->Get("outTreeLep");
     ///**********************************************************************
     
     totalSamples++;
@@ -203,7 +203,7 @@ void Selector_Leptons_MVA_Training( TString myMethodList = "" ) {
  for (int iSample=0; iSample<totalSamples; iSample++){
   std::cerr << "iSample = " << iSample << std::endl;
   if (iSample < 3) {
-   if (signal_background[iSample].GetEntries() != 0) factory->AddSignalTree( signal_background[iSample], weights[iSample] );
+   if (signal_background[iSample]->GetEntries() != 0) factory->AddSignalTree( signal_background[iSample], weights[iSample] );
   }
   else {
    if (signal_background[iSample].GetEntries() != 0) factory->AddBackgroundTree( signal_background[iSample], weights[iSample] );
@@ -220,7 +220,7 @@ void Selector_Leptons_MVA_Training( TString myMethodList = "" ) {
  
  // tell the factory to use all remaining events in the trees after training for testing:
 //  factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=NumEvents:!V" );
-factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=None:!V");//:nTrain_Background=10000:nTrain_Signal=10000:nTest_Background=10000:nTest_Signal=10000" );
+factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=None:V");//:nTrain_Background=10000:nTrain_Signal=10000:nTest_Background=10000:nTest_Signal=10000" );
 // factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=NumEvents:!V");//:nTrain_Background=10000:nTrain_Signal=10000:nTest_Background=10000:nTest_Signal=10000" );
 //  factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=NumEvents:!V:nTrain_Background=1000000:nTrain_Signal=30000");//:nTest_Background=1000:nTest_Signal=1000" );
  
