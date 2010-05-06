@@ -337,7 +337,6 @@ int main(int argc, char** argv)
   stdHistograms -> Fill1("met","met",step,0); 
   
   
-  
   ///*******************************
   ///**** STEP 1 - Jet cleaning ****
   ///************* it's performed another time here to make sure that the cleaning worked well
