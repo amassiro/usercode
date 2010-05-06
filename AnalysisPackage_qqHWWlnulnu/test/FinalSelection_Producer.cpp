@@ -312,22 +312,37 @@ int main(int argc, char** argv)
   
   ///==== define variables ==== 
   std::vector<ROOT::Math::XYZTVector>* jets = reader.Get4V("jets");
-  //   std::vector<ROOT::Math::XYZTVector>* muons = reader.Get4V("muons");
-  //   std::vector<ROOT::Math::XYZTVector>* electrons = reader.Get4V("electrons");
+//   std::vector<ROOT::Math::XYZTVector>* muons = reader.Get4V("muons");
+//   std::vector<ROOT::Math::XYZTVector>* electrons = reader.Get4V("electrons");
   
-  ///*******************************
-  ///**** STEP 0 - Preselection ****
+  
+  
+  ///*********************************************************************************************
+  ///*********************************************************************************************
+  ///*********************************************************************************************
+  ///*********************************************************************************************
+  
+  ///****************************
+  ///**** STEP 0 - Ntuplizer ****
+  ///************* no additional selections applied
+  
   step = 0;
-  stepName[step] = "preselection";
+  stepName[step] = "Jet cleaning";
   stepEvents[step] += 1;
   
+  ///==== filling ====
   stdHistograms -> Fill1("muons","muons",step,0);
   stdHistograms -> Fill1("electrons","electrons",step,0);
   stdHistograms -> Fill1("jets","jets",step,0);
   stdHistograms -> Fill1("met","met",step,0); 
   
   
-  ///==== Jet cleaning ====
+  
+  ///*******************************
+  ///**** STEP 1 - Jet cleaning ****
+  ///************* it's performed another time here to make sure that the cleaning worked well
+  ///************* possible problems with electron ID
+    
   std::vector<ROOT::Math::XYZTVector> electrons_jetCleaning;   
   // build the collection of electros for jet cleaning
   for(unsigned int eleIt = 0; eleIt < (reader.Get4V("electrons")->size()); ++eleIt)
@@ -357,27 +372,184 @@ int main(int argc, char** argv)
    }
   }
   
-  ///*******************************
-  ///**** STEP 1 - Jet cleaning ****
   if (GetNumList(whitelistJet) < 2) continue; ///==== at least 2 jets "isolated"
+ 
    
-   step = 1;
+  step = 1;
   stepName[step] = "Jet cleaning";
   stepEvents[step] += 1;
   
+  ///==== filling ====
   stdHistograms -> Fill1("muons","muons",step,0);
   stdHistograms -> Fill1("electrons","electrons",step,0);
   stdHistograms -> Fill1("jets","jets",step,&whitelistJet);
-  stdHistograms -> Fill1("met","met",step,0);  
+  stdHistograms -> Fill1("met","met",step,0); 
   
+   
+   
+   ///**************************************
+   ///**** STEP 2 - Super-Preselections ****
+   ///************* tighter preselections to start the analysis from the same point
+
+   ///==== construct considered objets
+   ///    Objects considered
+   
+   ///   Muon
+   ///   PromptTightMuonID
+   ///   Pt>10GeV, eta<2.5
+   ///   IsoTr / pTmu <0.5
+   
+   ///   Electron
+   ///   Pt>10GeV & |eta|<2.5
+   ///   IsoTr / pTele <0.5
+   ///   eidRobustLoose   
+   
+   ///   Jet
+   ///   Antikt5, L2L3 correction, Pt>30GeV & |eta|<5
+   
+   ///   Remove jet with
+   ///   a lepton(e/mu) with pt>10GeV in cone=0.3
+   ///   or
+   ///   an electron (the ones defined above) in cone=0.1
+   
+   
+   ///   Preselections
+   
+   ///   At least 2 leptons
+   ///   Muon (from the collections defined above)
+   ///   Pt > 15 GeV
+   
+   ///   Electron (from the collection defined above)
+   ///   Pt>15 GeV
+   
+   ///   At least two calo jets or two pf jets with pt>30GeV
+   ///   Jets (from the collection defined above)
+   
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
+   ///   Electron
+   ///   Pt>10GeV & |eta|<2.5
+   ///   IsoTr / pTele <0.5
+   ///   eidRobustLoose   
+   std::vector<int> whitelistEle;
+   std::vector<int> blacklistEle;
+   int nEles = reader.Get4V("electrons")->size();
+   for (int iEle = 0; iEle < nEles; iEle++){    
+    bool skipEle = false;
+    if (reader.Get4V("electrons")->at(iEle).pt() < 10.0) skipEle = true;
+    if (fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 2.5) skipEle = true;
+    if( (reader.GetFloat("electrons_tkIso")->at(iEle)) / reader.Get4V("electrons")->at(iEle).pt() > 0.5 ) skipEle = true;
+    if( (reader.GetFloat("electrons_IdRobustLoose")->at(iEle)) < 1. )  skipEle = true;    
+    if (skipEle) {
+     whitelistEle.push_back(0); ///---- reject
+     blacklistEle.push_back(iEle); ///---- reject ///== black list is in a different format
+    }
+    else {
+     whitelistEle.push_back(1); ///---- select
+    }
+   }
+   
+   
+   ///   Muon
+   ///   PromptTightMuonID
+   ///   Pt>10GeV, eta<2.5
+   ///   IsoTr / pTmu <0.5   
+   std::vector<int> whitelistMu;
+   std::vector<int> blacklistMu;
+   int nMus = reader.Get4V("muons")->size();
+   for (int iMu = 0; iMu < nMus; iMu++){    
+    bool skipMu = false;
+    if (reader.Get4V("muons")->at(iMu).pt() < 10.0) skipMu = true;
+    if (fabs(reader.Get4V("muons")->at(iMu).Eta()) > 2.5) skipMu = true;
+    if( (reader.GetFloat("muons_tkIso")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > 0.5 ) skipMu = true;
+    if( (reader.GetFloat("muons_goodMuon")->at(iMu)) < 1. )  skipMu = true;    
+    if (skipMu) {
+     whitelistMu.push_back(0); ///---- reject
+     blacklistMu.push_back(iMu); ///---- reject ///== black list is in a different format
+    }
+    else {
+     whitelistMu.push_back(1); ///---- select
+    }
+   }
+   
+    
+   ///   Jet
+   ///   Antikt5, L2L3 correction, Pt>30GeV & |eta|<5  
+   ///   Remove jet with
+   ///   a lepton(e/mu) with pt>10GeV in cone=0.3
+   ///   or
+   ///   an electron (the ones defined above) in cone=0.1
+   electrons_jetCleaning.clear();
+   // build the collection of electros for jet cleaning
+   for(unsigned int iEle = 0; iEle < nEles; ++iEle)
+   {
+    if (whitelistEle.at(iEle) == 0) continue;
+    electrons_jetCleaning.push_back( reader.Get4V("electrons")->at(iEle) );
+   }
+   for (int iJet = 0; iJet < nJets; iJet++){
+    bool skipJet = false;
+    if (whitelistJet.at(iJet) == 0) {
+//      skipJet = true;
+     continue; //---- otherwise blacklistJet.push_back(iJet) and blacklistJet becomes too long
+     //-------------- and then it's faster!
+    }
+    if (jets->at(iJet).Et() < 30.0) skipJet = true;
+    if (jets->at(iJet).Et() > 5.0) skipJet = true;
+    for(unsigned int eleIt = 0; eleIt < electrons_jetCleaning.size(); eleIt++) {
+     ROOT::Math::XYZTVector ele = electrons_jetCleaning.at(eleIt);
+     if (ROOT::Math::VectorUtil::DeltaR(jets->at(iJet),ele) < 0.3 ) skipJet = true;
+    }
+    if (skipJet) {
+     whitelistJet.push_back(0); ///---- reject
+     blacklistJet.push_back(iJet); ///---- reject ///== black list is in a different format
+    }
+    else {
+     whitelistJet.push_back(1); ///---- select
+    }
+   }
+   
+   ///   At least 2 leptons
+   ///   Muon (from the collections defined above)
+   ///   Pt > 15 GeV
+   int numLeptons_Accepted = 0;
+   for (int iMu = 0; iMu < nMus; iMu++){  
+    if (whitelistMu.at(iMu) == 1 && reader.Get4V("muons")->at(iMu).pt() > 15.0) numLeptons_Accepted++;
+   }
+   ///   Electron (from the collection defined above)
+   ///   Pt>15 GeV
+   for (int iEle = 0; iEle < nEles; iEle++){  
+    if (whitelistEle.at(iEle) == 1 && reader.Get4V("electrons")->at(iEle).pt() > 15.0) numLeptons_Accepted++;
+   }
+   if (numLeptons_Accepted < 2) continue;
+   
+   ///   At least two calo jets or two pf jets with pt>30GeV
+   ///   Jets (from the collection defined above)
+   int numJets_Accepted = 0;
+   for (int iJet = 0; iJet < nJets; iJet++){  
+    if (whitelistJet.at(iJet) == 1) numJets_Accepted++;
+   }
+   if (numJets_Accepted < 2) continue;
+   
+  
+   ///==== filling ====
+   step = 2;
+   stepName[step] = "Super Pre-Selections";
+   stepEvents[step] += 1;
+  
+   stdHistograms -> Fill1("muons","muons",step,&whitelistMu);
+   stdHistograms -> Fill1("electrons","electrons",step,&whitelistEle);
+   stdHistograms -> Fill1("jets","jets",step,&whitelistJet);
+   stdHistograms -> Fill1("met","met",step,0); 
+   
+   
+    
   ///*************************
-  ///**** STEP 2 - Jet ID ****
-  
-  step = 2;
-  stepName[step] = "Jet ID";
-  stepEvents[step] += 1;
-  
+  ///**** STEP 3 - Jet ID ****
+  ///************* Identification of two tag jets
+    
   std::vector<int> itSelJet;
   double maxPt_jets_selected = SelectJets(itSelJet,*jets,"maxSumPt",-1.,&blacklistJet);
   
@@ -399,15 +571,8 @@ int main(int argc, char** argv)
    }
    else {
     whitelistJet.at(iList) = 0;
-//     blacklistJet.push_back(iList);
    }
   }
-  
-  stdHistograms -> Fill1("muons","muons",step,0);
-  stdHistograms -> Fill1("electrons","electrons",step,0);
-  stdHistograms -> Fill1("jets","jets",step,&whitelistJet);
-  stdHistograms -> Fill1("met","met",step,0);  
-  stdHistograms -> Fill2(jets->at(q1),jets->at(q2), "JJ", step);
   
   pT_RECO_q1 = jets->at(q1).Pt();
   pT_RECO_q2 = jets->at(q2).Pt();
@@ -422,14 +587,23 @@ int main(int argc, char** argv)
   JV_20 = getJV(*jets,20.,&blacklistJet);
   JV_30 = getJV(*jets,30.,&blacklistJet);
   
-//   std::cerr << " === " << getCJV(*jets,q1,q2,1.,&blacklistJet) << ":" << blacklistJet.size() << ":" <<  whitelistJet.size() << std::endl;
-  
-  
   AnalysisStep = step;
-//   outTreeJetLep.Fill();
+  
+  ///==== filling ====
+  step = 3;
+  stepName[step] = "Jet ID";
+  stepEvents[step] += 1;
+  
+  stdHistograms -> Fill1("muons","muons",step,&whitelistMu);
+  stdHistograms -> Fill1("electrons","electrons",step,&whitelistEle);
+  stdHistograms -> Fill1("jets","jets",step,&whitelistJet);
+  stdHistograms -> Fill1("met","met",step,0); 
+  stdHistograms -> Fill2(jets->at(q1),jets->at(q2), "JJ", step);
+  
   
   ///*********************************
-  ///**** STEP 3 - Jet Selections ****
+  ///**** STEP 4 - Jet Selections ****
+  ///************* Loose selections of tag jets
   
   if (pT_RECO_q1 < 30.) continue;
   if (pT_RECO_q2 < 20.) continue;
@@ -437,26 +611,21 @@ int main(int argc, char** argv)
   if (Deta_RECO_q12 < 1.) continue;
   if (eta_RECO_q1_eta_RECO_q2 > 0.) continue;
   
-  step = 3;
+  ///==== filling ====
+  step = 4;
   stepName[step] = "Jet Selections";
   stepEvents[step] += 1;
   
-  
-  ///*************************************
-  ///**** STEP 4 - Jet Selections MVA ****
-  
-  step = 4;
-  stepName[step] = "Jet MVA";
-  stepEvents[step] += 1;
+  stdHistograms -> Fill1("muons","muons",step,&whitelistMu);
+  stdHistograms -> Fill1("electrons","electrons",step,&whitelistEle);
+  stdHistograms -> Fill1("jets","jets",step,&whitelistJet);
+  stdHistograms -> Fill1("met","met",step,0); 
+  stdHistograms -> Fill2(jets->at(q1),jets->at(q2), "JJ", step);
   
   
   ///********************************
   ///**** STEP 5 - Lepton Number ****
-  
-  step = 5;
-  stepName[step] = "Lepton Number";
-  stepEvents[step] += 1;
-  
+   
   std::vector<ROOT::Math::XYZTVector> electrons;
   std::vector<ROOT::Math::XYZTVector> muons;
   std::vector<ROOT::Math::XYZTVector> leptons;
@@ -506,6 +675,10 @@ int main(int argc, char** argv)
   
   if( (int)(leptons.size()) < lepNMIN ) continue;
   
+  step = 5;
+  stepName[step] = "Lepton Number";
+  stepEvents[step] += 1;
+  
   
   ///****************************
   ///**** STEP 6 - Lepton ID ****
@@ -553,13 +726,13 @@ int main(int argc, char** argv)
   
   AnalysisStep = step;
   
-  input_variables_Jet[0] = pT_RECO_q1;
-  input_variables_Jet[1] = pT_RECO_q2;
-  input_variables_Jet[2] = eta_RECO_q1;
-  input_variables_Jet[3] = eta_RECO_q2;
-  input_variables_Jet[4] = eta_RECO_q1_eta_RECO_q2;
-  input_variables_Jet[5] = Deta_RECO_q12;
-  input_variables_Jet[6] = Mjj;
+  input_variables_Jet[0] = static_cast<Float_t>(pT_RECO_q1);
+  input_variables_Jet[1] = static_cast<Float_t>(pT_RECO_q2);
+  input_variables_Jet[2] = static_cast<Float_t>(eta_RECO_q1);
+  input_variables_Jet[3] = static_cast<Float_t>(eta_RECO_q2);
+  input_variables_Jet[4] = static_cast<Float_t>(eta_RECO_q1_eta_RECO_q2);
+  input_variables_Jet[5] = static_cast<Float_t>(Deta_RECO_q12);
+  input_variables_Jet[6] = static_cast<Float_t>(Mjj);
   
   input_variables_Lep[0] = pdgId_RECO_l1;
   input_variables_Lep[1] = pdgId_RECO_l2;
