@@ -45,9 +45,12 @@
   myfile << "[Input]" << std::endl;
   myfile << "treeName = " << nameSampleTree[iSample] << std::endl;
   myfile << "inputFile = /media/LINUX/Data/VBF/Summer09_7TeV/" << nameSamplePrefix[iSample] << "_" << nameSample[iSample] << ".root" << std::endl;
-  myfile << "inputXSection = " << xsection[iSample] << std::endl;
+  char toDo[1000];
+  sprintf(toDo,"double xsec = %s",xsection[iSample]);
+  gROOT->ProcessLine(toDo);
+  myfile << "inputXSection = " << xsec << std::endl;
   myfile << "treeNameLeptonFilter = VBFPtMinLeptonCountFilterAll" << std::endl;
-  myfile << "treeNameJetCounterFilter = VBFEtMinCaloJetCountFilterAntikt5CaloJets " << std::endl;
+  myfile << "treeNameJetCounterFilter = VBFEtMinCaloJetCountFilterL2L3Antikt5CaloJets " << std::endl;
   myfile << std::endl;
   myfile << "entryMIN = 0 " << std::endl;
   myfile << "entryMAX = -1 " << std::endl;

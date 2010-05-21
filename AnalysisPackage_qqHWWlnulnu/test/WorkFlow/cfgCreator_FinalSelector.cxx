@@ -50,7 +50,7 @@
   gROOT->ProcessLine(toDo);
   myfile << "inputXSection = " << xsec << std::endl;
   myfile << "treeNameLeptonFilter = VBFPtMinLeptonCountFilterAll" << std::endl;
-  myfile << "treeNameJetCounterFilter = VBFEtMinCaloJetCountFilterAntikt5CaloJets " << std::endl;
+  myfile << "treeNameJetCounterFilter = VBFEtMinCaloJetCountFilterL2L3Antikt5CaloJets " << std::endl;
   myfile << std::endl;
   myfile << "entryMIN = 0 " << std::endl;
   myfile << "entryMAX = -1 " << std::endl;
@@ -70,7 +70,7 @@
   
   myfile << "Methods = \\" << std::endl;
   myfile << "   MLP, \\ " << std::endl;
-  myfile << "   BDT, \\" << std::endl;
+  myfile << "   BDT, \\ " << std::endl;
   myfile << "   Fisher, \\" << std::endl;
   myfile << "   Likelihood, \\" << std::endl;
   myfile << "   LikelihoodD" << std::endl;
