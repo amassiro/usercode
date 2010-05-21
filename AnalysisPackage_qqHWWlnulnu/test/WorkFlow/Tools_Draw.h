@@ -27,6 +27,7 @@ void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
   vectHist[numSample] = temp_h;
   
   if (sb_bs == 0 && numSample < numSignal) {
+   std::cerr << " >>> sig += " << temp_h->Integral() << std::endl;
    if (numSample == 0) {
     sigHist = (TH1F*) temp_h->Clone("signal");
     sigHist->SetTitle("signal");
@@ -36,6 +37,7 @@ void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
   }
   
   if (sb_bs == 0 && numSample >= numSignal) {
+   std::cerr << " >>> bkg += " << temp_h->Integral() << std::endl;
    if (numSample == numSignal) {
     bkgHist = (TH1F*) temp_h->Clone("background");
     bkgHist->SetTitle("backgroud");
@@ -45,6 +47,7 @@ void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
   }
   
   if (sb_bs == 1 && numSample < numBkg) {
+   std::cerr << " >>> bkg += " << temp_h->Integral() << std::endl;
    if (numSample == 0) {
     bkgHist = (TH1F*) temp_h->Clone("background");
     bkgHist->SetTitle("backgroud");
@@ -114,8 +117,13 @@ void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
  gPad->SetGrid();
  gPad->BuildLegend();
  
+
  
- 
+ cCompare->cd(4);
+ bkgHist->DrawNormalized();
+ sigHist->DrawNormalized("same");
+ gPad->SetGrid();
+ gPad->BuildLegend();
  
 }
 
@@ -219,8 +227,13 @@ void DrawSB2D(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
  gPad->BuildLegend();
  
  cCompare->cd(4);
- bkgHist->Draw("surf4");
- sigHist->Draw("surf4same");
+//  bkgHist->Draw("BOX");
+//  sigHist->Draw("BOXsame");
+ 
+ bkgHist->SetContour (5);
+ sigHist->SetContour (5);
+ bkgHist->Draw("cont3");
+ sigHist->Draw("cont3same");
  //  gPad->SetLogz();
  gPad->SetGrid();
  gPad->BuildLegend();
