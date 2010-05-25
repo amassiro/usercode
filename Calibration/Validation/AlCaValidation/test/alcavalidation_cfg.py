@@ -21,17 +21,14 @@ secFiles.extend( (
      #"file:/tmp/amassiro/MC/EcalCalElectron_6_1.root"
    #' ] );
 
-readFiles.extend( ['/store/relval/CMSSW_3_5_8/RelValZEE/ALCARECO/START3X_V26_EcalCalElectron-v1/0017/8622EA17-9052-DF11-8644-00304867D836.root','/store/relval/CMSSW_3_5_8/RelValZEE/ALCARECO/START3X_V26_EcalCalElectron-v1/0016/D64BA39D-6E52-DF11-BDF3-002618943879.root' ] );
-
-
-
+#readFiles.extend( ['file:../../AlCaTest/test/AAB867A5-395C-DF11-902A-002618FDA26D.root'] );
+readFiles.extend( ['file:../scripts/EcalCalElectron_1_1.root'] );
 
 
 process.AlCaValidationTEST = cms.EDAnalyzer("AlCaValidation",
   ElectronLabel=cms.InputTag("gsfElectrons"),
   AlcaBarrelHitCollection=cms.InputTag("alCaIsolatedElectrons:alcaBarrelHits"),
   AlcaEndcapHitCollection=cms.InputTag("alCaIsolatedElectrons:alcaEndcapHits"),
-  HistOutFile = cms.untracked.string("Validation_Ntuple_TTbar_3_7_0_pre4.root"),
   EcalIsoTag = cms.InputTag("egammaEcalIsolation"),
   ElePtTkIsoTag = cms.InputTag("egammaElectronSqPtTkIsolation"),
   EleTkIsoTag = cms.InputTag("egammaElectronTkIsolation"),
@@ -42,7 +39,7 @@ process.AlCaValidationTEST = cms.EDAnalyzer("AlCaValidation",
 
 process.TFileService = cms.Service(
     "TFileService",
-    fileName = cms.string("/tmp/amassiro/ValidAlCaTest.root"),
+    fileName = cms.string("ValidAlCaTest.root"),
     closeFileFast = cms.untracked.bool(True)
 )
 

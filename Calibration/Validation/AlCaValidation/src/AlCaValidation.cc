@@ -110,6 +110,8 @@ void
 {
  ++eventNaiveId_;
 
+ std::cout << " eventNaiveId = " << eventNaiveId << std::endl;
+
  double energia5 = 0 ;
  pTk_ = 0. ;
  math::XYZVector Zmoment(0.,0.,0.);
@@ -153,11 +155,7 @@ void
   pOut_ = eleIt->trackMomentumOut().R();    
   Zmoment+= eleIt->trackMomentumAtVtx();
   momentum_ = eleIt->p();
-  
-  NtupleFactory_->Fill4V("electrons",eleIt->p4()); 
-  NtupleFactory_->Fill3V("electrons_tracker_atVtx",eleIt->trackMomentumAtVtx());
-  NtupleFactory_->Fill3V("electrons_tracker_Out",eleIt->trackMomentumOut());
-  
+   
   const std::vector<std::pair<DetId,float> > & hits= eleIt->superCluster()->hitsAndFractions();
   for (std::vector<std::pair<DetId,float> > ::const_iterator rh = hits.begin(); rh!=hits.end(); ++rh){
    if ((*rh).first.subdetId()== EcalBarrel){
@@ -192,6 +190,10 @@ void
   }
   if (Max.det () == 0){ continue;} 
    
+  NtupleFactory_->Fill4V("electrons",eleIt->p4()); 
+  NtupleFactory_->Fill3V("electrons_tracker_atVtx",eleIt->trackMomentumAtVtx());
+  NtupleFactory_->Fill3V("electrons_tracker_Out",eleIt->trackMomentumOut());
+
   NtupleFactory_->FillFloat("recHits",recHits_);
   ///==== Barrel or Endcap
   if ( Max.subdetId () == EcalBarrel  ) //PG in the barrel
