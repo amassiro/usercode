@@ -13,7 +13,7 @@
 //
 // Original Author:  Andrea Massironi,27 1-020,+41227670757,
 //         Created:  Thu May 13 11:34:24 CEST 2010
-// $Id$
+// $Id: AlCaValidation.cc,v 1.2 2010/05/25 14:19:50 amassiro Exp $
 //
 //
 
@@ -110,7 +110,7 @@ void
 {
  ++eventNaiveId_;
 
- std::cout << " eventNaiveId = " << eventNaiveId << std::endl;
+ std::cout << " eventNaiveId = " << eventNaiveId_ << std::endl;
 
  double energia5 = 0 ;
  pTk_ = 0. ;
