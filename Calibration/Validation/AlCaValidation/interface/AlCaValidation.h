@@ -13,7 +13,7 @@
 //
 // Original Author:  Andrea Massironi,27 1-020,+41227670757,
 //         Created:  Thu May 13 11:34:24 CEST 2010
-// $Id$
+// $Id: AlCaValidation.h,v 1.1 2010/05/14 21:10:33 amassiro Exp $
 //
 //
 
@@ -41,7 +41,6 @@
 #include "DataFormats/EgammaReco/interface/BasicClusterShapeAssociation.h"
 
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterTools.h"
-#include "Validation/AlCaTest/interface/AlCaElectronsTest.h"
 #include "DataFormats/EcalDetId/interface/EcalSubdetector.h"
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -81,6 +80,7 @@
 
 #include "TTree.h"
 #include "TH1F.h"
+#include "TH2F.h"
 
 
 
