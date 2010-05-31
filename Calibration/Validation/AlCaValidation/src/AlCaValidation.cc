@@ -13,7 +13,7 @@
 //
 // Original Author:  Andrea Massironi,27 1-020,+41227670757,
 //         Created:  Thu May 13 11:34:24 CEST 2010
-// $Id: AlCaValidation.cc,v 1.3 2010/05/25 14:44:10 amassiro Exp $
+// $Id: AlCaValidation.cc,v 1.4 2010/05/31 10:24:39 amassiro Exp $
 //
 //
 
@@ -179,17 +179,20 @@ void
   Zmoment+= eleIt->trackMomentumAtVtx();
   momentum_ = eleIt->p();
    
+  seed_energy_ = -1;
   const std::vector<std::pair<DetId,float> > & hits= eleIt->superCluster()->hitsAndFractions();
   for (std::vector<std::pair<DetId,float> > ::const_iterator rh = hits.begin(); rh!=hits.end(); ++rh){
    if ((*rh).first.subdetId()== EcalBarrel){
     EBRecHitCollection::const_iterator itrechit = barrelHitsCollection->find((*rh).first);
     if (itrechit==barrelHitsCollection->end()) continue;
     recHits_+=itrechit->energy();
+    if (itrechit->energy() > seed_energy_) seed_energy_ = itrechit->energy();
    }
    if ((*rh).first.subdetId()== EcalEndcap){
     EERecHitCollection::const_iterator itrechit = endcapHitsCollection->find((*rh).first);
     if (itrechit==endcapHitsCollection->end()) continue;
     recHits_+=itrechit->energy();
+    if (itrechit->energy() > seed_energy_) seed_energy_ = itrechit->energy();
    }
    else
    { 
@@ -251,10 +254,7 @@ void
    itrechit = endcapHitsCollection->find (Max) ;
    MaxEnergy_ = itrechit->energy () ;
    energia5 = Energy25Endcap (EEMax.ix (), EEMax.iy (), EEMax.zside(),5, endcapHitsCollection) ;
-   hEndcapGlobalCrystalsMap_ -> Fill (
-     EEMax.ix () ,
-   EEMax.iy () 
-                                   ) ;
+   hEndcapGlobalCrystalsMap_ -> Fill (EEMax.ix () , EEMax.iy ()) ;
    Energy25_ = energia5 ;
    Energy49_ = Energy25Endcap (EEMax.ix (), EEMax.iy (), EEMax.zside(),7, endcapHitsCollection) ;
    Energy9_ = Energy25Endcap (EEMax.ix (), EEMax.iy (), EEMax.zside(),3, endcapHitsCollection) ;
@@ -298,10 +298,11 @@ void
   NtupleFactory_->FillFloat("electrons_hadIso04_2",(eleIt->dr04HcalDepth2TowerSumEt()));
 
   NtupleFactory_->FillFloat("electrons_sigmaIetaIeta",eleIt->sigmaIetaIeta());
-  NtupleFactory_->FillFloat("electrons_scTheta",(2*atan(exp(-eleIt->superCluster()->eta()))));
+  NtupleFactory_->FillFloat("electrons_scTheta",(2*atan(exp(-(eleIt->superCluster()->eta())))));
   NtupleFactory_->FillFloat("electrons_scE",eleIt->superCluster()->energy());
   NtupleFactory_->FillFloat("electrons_eOverP",eleIt->eSuperClusterOverP());
-  NtupleFactory_->FillFloat("electrons_eSeed",eleIt->superCluster()->seed()->energy());
+//  NtupleFactory_->FillFloat("electrons_eSeed",eleIt->superCluster()->seed()->energy());
+  NtupleFactory_->FillFloat("electrons_eSeed",seed_energy_);
   NtupleFactory_->FillFloat("electrons_fbrem",eleIt->fbrem());
   NtupleFactory_->FillFloat("electrons_pin",eleIt->trackMomentumAtVtx().R());
   NtupleFactory_->FillFloat("electrons_pout",eleIt->trackMomentumOut().R());
@@ -309,8 +310,7 @@ void
   NtupleFactory_->FillFloat("electrons_deltaPhiIn",eleIt->deltaPhiSuperClusterTrackAtVtx());
   NtupleFactory_->FillFloat("electrons_deltaEtaIn",eleIt->deltaEtaSuperClusterTrackAtVtx());
   NtupleFactory_->FillInt("electrons_mishits",eleIt->gsfTrack()->trackerExpectedHitsInner().numberOfHits());
-
-
+  
  } //PG loop over electrons
  
  NtupleFactory_->FillNtuple(); 

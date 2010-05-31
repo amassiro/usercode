@@ -13,7 +13,7 @@
 //
 // Original Author:  Andrea Massironi,27 1-020,+41227670757,
 //         Created:  Thu May 13 11:34:24 CEST 2010
-// $Id: AlCaValidation.h,v 1.1 2010/05/14 21:10:33 amassiro Exp $
+// $Id: AlCaValidation.h,v 1.2 2010/05/29 18:25:31 amassiro Exp $
 //
 //
 
@@ -124,7 +124,7 @@ class AlCaValidation : public edm::EDAnalyzer {
   TH2F * hEndcapLocalCrystalsEnergy_ ;
   TH1F * hZee_;
 
-  
+  float seed_energy_;
   float eta_;
   float phi_;
   float pTk_;
