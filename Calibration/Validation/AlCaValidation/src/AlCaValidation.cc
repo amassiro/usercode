@@ -13,7 +13,7 @@
 //
 // Original Author:  Andrea Massironi,27 1-020,+41227670757,
 //         Created:  Thu May 13 11:34:24 CEST 2010
-// $Id: AlCaValidation.cc,v 1.6 2010/06/01 09:37:12 amassiro Exp $
+// $Id: AlCaValidation.cc,v 1.7 2010/06/01 10:50:40 amassiro Exp $
 //
 //
 
@@ -40,6 +40,7 @@ AlCaValidation::AlCaValidation(const edm::ParameterSet& iConfig)
 {
  eventNaiveId_ = 0;
    //now do what ever initialization is needed
+  MetTag_ = iConfig.getParameter<edm::InputTag>("MetTag");
   ElectronLabel_ = iConfig.getParameter<edm::InputTag>("ElectronLabel");
   AlcaBarrelHitCollection_ = iConfig.getParameter<edm::InputTag>("AlcaBarrelHitCollection");
   AlcaEndcapHitCollection_ = iConfig.getParameter<edm::InputTag>("AlcaEndcapHitCollection");
@@ -52,6 +53,9 @@ AlCaValidation::AlCaValidation(const edm::ParameterSet& iConfig)
   hZee_  = fs->make <TH1F>("Zee","Zee",100,0,200);
 
   NtupleFactory_ = new NtupleFactory(outTree_);
+
+   
+  NtupleFactory_->Add4V("met"); ///==== caloMET
 
   NtupleFactory_->Add4V("electrons"); ///==== eleIt->p4();
 
@@ -67,6 +71,7 @@ AlCaValidation::AlCaValidation(const edm::ParameterSet& iConfig)
   NtupleFactory_->Add3V("electrons_tracker_Out"); 
   ///==== momentum = eleIt->trackMomentumOut()
 
+  NtupleFactory_->AddFloat("SwissE4"); 
   NtupleFactory_->AddFloat("Energy_seed"); 
   NtupleFactory_->AddFloat("Energy4"); 
   NtupleFactory_->AddFloat("Energy9"); 
@@ -89,26 +94,26 @@ AlCaValidation::AlCaValidation(const edm::ParameterSet& iConfig)
   NtupleFactory_->AddInt("eventId"); 
   NtupleFactory_->AddInt("eventNaiveId"); 
 
-    NtupleFactory_->AddFloat("electrons_charge"); 
-    NtupleFactory_->AddFloat("electrons_tkIso"); 
-    NtupleFactory_->AddFloat("electrons_emIso03"); 
-    NtupleFactory_->AddFloat("electrons_emIso04"); 
-    NtupleFactory_->AddFloat("electrons_hadIso03_1"); 
-    NtupleFactory_->AddFloat("electrons_hadIso03_2"); 
-    NtupleFactory_->AddFloat("electrons_hadIso04_1"); 
-    NtupleFactory_->AddFloat("electrons_hadIso04_2"); 
-    NtupleFactory_->AddFloat("electrons_scTheta");
-    NtupleFactory_->AddFloat("electrons_scE");
-    NtupleFactory_->AddFloat("electrons_eOverP");
-    NtupleFactory_->AddFloat("electrons_eSeed");
-    NtupleFactory_->AddFloat("electrons_fbrem");
-    NtupleFactory_->AddFloat("electrons_sigmaIetaIeta");
-    NtupleFactory_->AddFloat("electrons_pin");
-    NtupleFactory_->AddFloat("electrons_pout");
-    NtupleFactory_->AddFloat("electrons_hOverE");
-    NtupleFactory_->AddFloat("electrons_deltaPhiIn");
-    NtupleFactory_->AddFloat("electrons_deltaEtaIn");
-    NtupleFactory_->AddInt("electrons_mishits");
+  NtupleFactory_->AddFloat("electrons_charge"); 
+  NtupleFactory_->AddFloat("electrons_tkIso"); 
+  NtupleFactory_->AddFloat("electrons_emIso03"); 
+  NtupleFactory_->AddFloat("electrons_emIso04"); 
+  NtupleFactory_->AddFloat("electrons_hadIso03_1"); 
+  NtupleFactory_->AddFloat("electrons_hadIso03_2"); 
+  NtupleFactory_->AddFloat("electrons_hadIso04_1"); 
+  NtupleFactory_->AddFloat("electrons_hadIso04_2"); 
+  NtupleFactory_->AddFloat("electrons_scTheta");
+  NtupleFactory_->AddFloat("electrons_scE");
+  NtupleFactory_->AddFloat("electrons_eOverP");
+  NtupleFactory_->AddFloat("electrons_eSeed");
+  NtupleFactory_->AddFloat("electrons_fbrem");
+  NtupleFactory_->AddFloat("electrons_sigmaIetaIeta");
+  NtupleFactory_->AddFloat("electrons_pin");
+  NtupleFactory_->AddFloat("electrons_pout");
+  NtupleFactory_->AddFloat("electrons_hOverE");
+  NtupleFactory_->AddFloat("electrons_deltaPhiIn");
+  NtupleFactory_->AddFloat("electrons_deltaEtaIn");
+  NtupleFactory_->AddInt("electrons_mishits");
 
 }
 
@@ -239,6 +244,7 @@ void
    NtupleFactory_->FillFloat("Energy49",Energy49_); 
    NtupleFactory_->FillFloat("Energy4",Energy4_);   
    NtupleFactory_->FillFloat("MaxEnergy",MaxEnergy_);
+   NtupleFactory_->FillFloat("SwissE4",SwissE4Barrel(EBMax.ieta(),EBMax.iphi(),barrelHitsCollection)); 
    Zenergy+=energia5;
    fillAroundBarrel (
      barrelHitsCollection, 
@@ -267,13 +273,9 @@ void
    NtupleFactory_->FillFloat("Energy49",Energy49_); 
    NtupleFactory_->FillFloat("Energy4",Energy4_); 
    NtupleFactory_->FillFloat("MaxEnergy",MaxEnergy_);
+   NtupleFactory_->FillFloat("SwissE4",SwissE4Endcap(EEMax.ix (), EEMax.iy (), EEMax.zside(),endcapHitsCollection)); 
    Zenergy+=energia5+preshower_;
-   fillAroundEndcap (
-     endcapHitsCollection, 
-   EEMax.ix (), 
-   EEMax.iy (),
-   pTk_
-                    ) ;
+   fillAroundEndcap (endcapHitsCollection, EEMax.ix (), EEMax.iy (), pTk_) ;
   } //PG in the endcap
   NtupleFactory_->FillInt("runId", iEvent.id().run());
   NtupleFactory_->FillInt("lumiId", iEvent.luminosityBlock());
@@ -317,6 +319,12 @@ void
   NtupleFactory_->FillInt("electrons_mishits",eleIt->gsfTrack()->trackerExpectedHitsInner().numberOfHits());
   
  } //PG loop over electrons
+ 
+ edm::Handle<reco::CaloMETCollection> MetHandle ;
+ iEvent.getByLabel (MetTag_,MetHandle);
+ 
+ const reco::CaloMET* met = &(MetHandle->front());
+ NtupleFactory_->Fill4V("met",met->p4());
  
  NtupleFactory_->FillNtuple(); 
  double MZ;
@@ -428,6 +436,7 @@ double AlCaValidation::Energy25Barrel (int eta, int phi,int side,
 // ----------------------------------------------------------------
 
 
+
 //! AM energy in the 2x2 neighbourhood around MaxId
 //! in the barrel
 double AlCaValidation::Energy4Barrel (int eta, int phi, const EcalRecHitCollection * barrelHitsCollection)
@@ -505,6 +514,87 @@ double AlCaValidation::Energy4Endcap (int ics, int ips, int z, const EcalRecHitC
   }
  } 
  return (*std::max_element( E4,E4+4));
+}
+
+
+
+// ----------------------------------------------------------------
+
+
+
+//! AM energy in the 2x2 neighbourhood around MaxId Swiss Cross definition
+//! in the barrel
+double AlCaValidation::SwissE4Barrel (int eta, int phi, const EcalRecHitCollection * barrelHitsCollection)
+{
+
+ int curr_eta = 0 ;
+ int curr_phi = 0 ;
+
+ double E4 = 0;
+  
+ for (int ii = -1 ; ii < 2 ; ++ii){
+  for (int ij = -1 ; ij < 2 ; ++ij){
+   curr_eta = eta + ii ;
+   curr_phi = phi + ij ;
+   if (abs (curr_eta) > 85) continue ;
+   if (curr_eta * eta <= 0) 
+   {
+    if (eta > 0) --curr_eta ; 
+    else curr_eta++ ; 
+   }  // JUMP over 0
+   if (curr_phi < 1) curr_phi += 360 ;
+   if (curr_phi > 360) curr_phi -= 360 ;
+   if (EBDetId::validDetId (curr_eta,curr_phi)){
+    EBDetId det = EBDetId (curr_eta,curr_phi,EBDetId::ETAPHIMODE) ;
+    EcalRecHitCollection::const_iterator curr_recHit = barrelHitsCollection->find (det) ;
+    if (isnan(curr_recHit->energy())) continue;
+    if (curr_recHit->energy()<0) continue;
+    if (curr_recHit->energy()>1000) continue;
+    int dx = diff_neta_s(eta,curr_eta);
+    int dy = diff_nphi_s(phi,curr_phi);
+    double en = curr_recHit->energy ();
+    if(dx != 0 && dy ==0) E4 += en;
+    if(dx == 0 && dy !=0) E4 += en;
+   }
+  }
+ }
+ return E4;
+}
+
+// ----------------------------------------------------------------
+
+
+
+  
+//! AM energy in the 2x2 neighbourhood around MaxId Swiss Cross definition
+//! in the endcap   
+double AlCaValidation::SwissE4Endcap (int ics, int ips, int z, const EcalRecHitCollection * endcapHitsCollection){
+ int curr_x = 0 ;
+ int curr_y = 0 ;
+ double E4 = 0;
+ //PG loop on the energy reconstruction window
+ for (int ii = -1 ; ii < 2 ; ++ii){
+  for (int ij = -1 ; ij < 2 ; ++ij){
+   curr_x = ics + ii ;
+   curr_y = ips + ij ;
+   if (curr_x>100 || curr_x<0) continue ; //PG prob qs ctrl nn serve visto qllo dopo
+   if (curr_y>100 || curr_y<0) continue ; //PG prob qs ctrl nn serve visto qllo dopo
+   if (EEDetId::validDetId (curr_x,curr_y,z))
+   {
+    EEDetId det = EEDetId (curr_x,curr_y,z,EEDetId::XYMODE) ;
+    EcalRecHitCollection::const_iterator curr_recHit = endcapHitsCollection->find (det) ;
+    if (isnan(curr_recHit->energy())) continue;
+    if (curr_recHit->energy()<0) continue;
+    if (curr_recHit->energy()>1000) continue;
+    double en = curr_recHit->energy ();
+    int dx = ics - curr_x;
+    int dy = ips - curr_y;
+    if(dx != 0 && dy ==0) E4 += en;
+    if(dx == 0 && dy !=0) E4 += en;
+   } 
+  }
+ } 
+ return E4;
 }
 
 // ----------------------------------------------------------------
