@@ -13,7 +13,7 @@
 //
 // Original Author:  Andrea Massironi,27 1-020,+41227670757,
 //         Created:  Thu May 13 11:34:24 CEST 2010
-// $Id: AlCaValidation.cc,v 1.5 2010/05/31 13:06:54 amassiro Exp $
+// $Id: AlCaValidation.cc,v 1.6 2010/06/01 09:37:12 amassiro Exp $
 //
 //
 
@@ -89,7 +89,6 @@ AlCaValidation::AlCaValidation(const edm::ParameterSet& iConfig)
   NtupleFactory_->AddInt("eventId"); 
   NtupleFactory_->AddInt("eventNaiveId"); 
 
-    NtupleFactory_->Add4V("electrons");
     NtupleFactory_->AddFloat("electrons_charge"); 
     NtupleFactory_->AddFloat("electrons_tkIso"); 
     NtupleFactory_->AddFloat("electrons_emIso03"); 
