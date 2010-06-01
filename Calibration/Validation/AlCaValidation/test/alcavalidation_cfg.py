@@ -27,15 +27,15 @@ secFiles.extend( (
 readFiles.extend( ['file:/tmp/amassiro/AlCaDump/EcalCalElectron_3_1.root'] );
 
 process.AlCaValidationTEST = cms.EDAnalyzer("AlCaValidation",
-  ElectronLabel=cms.InputTag("gsfElectrons"),
-  AlcaBarrelHitCollection=cms.InputTag("alCaIsolatedElectrons:alcaBarrelHits"),
-  AlcaEndcapHitCollection=cms.InputTag("alCaIsolatedElectrons:alcaEndcapHits"),
-  EcalIsoTag = cms.InputTag("egammaEcalIsolation"),
-  ElePtTkIsoTag = cms.InputTag("egammaElectronSqPtTkIsolation"),
-  EleTkIsoTag = cms.InputTag("egammaElectronTkIsolation"),
-  HoETag = cms.InputTag("egammaHOE"),
-  HCalIsoTag = cms.InputTag("egammaHcalIsolation"),
-  METTag = cms.InputTag("met")
+  MetTag                  = cms.InputTag("met"),
+  ElectronLabel           = cms.InputTag("gsfElectrons"),
+  AlcaBarrelHitCollection = cms.InputTag("alCaIsolatedElectrons:alcaBarrelHits"),
+  AlcaEndcapHitCollection = cms.InputTag("alCaIsolatedElectrons:alcaEndcapHits"),
+  EcalIsoTag              = cms.InputTag("egammaEcalIsolation"),
+  ElePtTkIsoTag           = cms.InputTag("egammaElectronSqPtTkIsolation"),
+  EleTkIsoTag             = cms.InputTag("egammaElectronTkIsolation"),
+  HoETag                  = cms.InputTag("egammaHOE"),
+  HCalIsoTag              = cms.InputTag("egammaHcalIsolation")
 )
 
 process.TFileService = cms.Service(

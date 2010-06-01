@@ -13,7 +13,7 @@
 //
 // Original Author:  Andrea Massironi,27 1-020,+41227670757,
 //         Created:  Thu May 13 11:34:24 CEST 2010
-// $Id: AlCaValidation.h,v 1.3 2010/05/31 13:06:54 amassiro Exp $
+// $Id: AlCaValidation.h,v 1.4 2010/06/01 09:37:12 amassiro Exp $
 //
 //
 
@@ -75,6 +75,10 @@
 #include "DataFormats/GsfTrackReco/interface/GsfTrackFwd.h"
 #include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
 
+#include "DataFormats/METReco/interface/CaloMET.h"
+#include "DataFormats/METReco/interface/CaloMETFwd.h"
+#include "DataFormats/METReco/interface/MET.h"
+#include "DataFormats/METReco/interface/METFwd.h"
 
 #include "PhysicsTools/NtupleUtils/interface/NtupleFactory.h"
 
@@ -104,6 +108,10 @@ class AlCaValidation : public edm::EDAnalyzer {
      double Energy4Barrel (int eta, int phi, const EcalRecHitCollection * barrelHitsCollection);
      double Energy4Endcap (int ics, int ips, int z, const EcalRecHitCollection * endcapHitsCollection);
 
+     double SwissE4Barrel (int eta, int phi, const EcalRecHitCollection * barrelHitsCollection);
+     double SwissE4Endcap (int ics, int ips, int z, const EcalRecHitCollection * endcapHitsCollection);
+     
+
 
      //!MF riempie grafico 5x5
      void EnergyOn25Barrel (int eta, int phi, const EBRecHitCollection* EBhits) ;
@@ -117,6 +125,8 @@ class AlCaValidation : public edm::EDAnalyzer {
 
 
       // ----------member data ---------------------------
+  
+  edm::InputTag MetTag_;
 
   edm::InputTag ElectronLabel_;
   edm::InputTag AlcaBarrelHitCollection_;
