@@ -13,7 +13,7 @@
 //
 // Original Author:  Andrea Massironi,27 1-020,+41227670757,
 //         Created:  Thu May 13 11:34:24 CEST 2010
-// $Id: AlCaValidation.cc,v 1.4 2010/05/31 10:24:39 amassiro Exp $
+// $Id: AlCaValidation.cc,v 1.5 2010/05/31 13:06:54 amassiro Exp $
 //
 //
 
@@ -68,6 +68,7 @@ AlCaValidation::AlCaValidation(const edm::ParameterSet& iConfig)
   ///==== momentum = eleIt->trackMomentumOut()
 
   NtupleFactory_->AddFloat("Energy_seed"); 
+  NtupleFactory_->AddFloat("Energy4"); 
   NtupleFactory_->AddFloat("Energy9"); 
   NtupleFactory_->AddFloat("Energy49"); 
   NtupleFactory_->AddFloat("Presh"); 
@@ -231,11 +232,13 @@ void
    MaxEnergy_=itrechit->energy () ;
    hBarrelGlobalCrystalsMap_ -> Fill (EBMax.ieta () , EBMax.iphi ()) ;
    Energy25_=energia5 ;
-   Energy49_= Energy25Barrel (EBMax.ieta(),EBMax.iphi(),7,barrelHitsCollection);
-   Energy9_=Energy25Barrel (EBMax.ieta(),EBMax.iphi(),3,barrelHitsCollection);
+   Energy49_ = Energy25Barrel (EBMax.ieta(),EBMax.iphi(),7,barrelHitsCollection);
+   Energy9_ =  Energy25Barrel (EBMax.ieta(),EBMax.iphi(),3,barrelHitsCollection);
+   Energy4_ =  Energy4Barrel  (EBMax.ieta(),EBMax.iphi(),barrelHitsCollection);
    NtupleFactory_->FillFloat("Energy25",Energy25_);
    NtupleFactory_->FillFloat("Energy9",Energy9_); 
    NtupleFactory_->FillFloat("Energy49",Energy49_); 
+   NtupleFactory_->FillFloat("Energy4",Energy4_);   
    NtupleFactory_->FillFloat("MaxEnergy",MaxEnergy_);
    Zenergy+=energia5;
    fillAroundBarrel (
@@ -257,10 +260,13 @@ void
    hEndcapGlobalCrystalsMap_ -> Fill (EEMax.ix () , EEMax.iy ()) ;
    Energy25_ = energia5 ;
    Energy49_ = Energy25Endcap (EEMax.ix (), EEMax.iy (), EEMax.zside(),7, endcapHitsCollection) ;
-   Energy9_ = Energy25Endcap (EEMax.ix (), EEMax.iy (), EEMax.zside(),3, endcapHitsCollection) ;
+   Energy9_ =  Energy25Endcap (EEMax.ix (), EEMax.iy (), EEMax.zside(),3, endcapHitsCollection) ;
+   Energy4_ =   Energy4Endcap (EEMax.ix (), EEMax.iy (), EEMax.zside(),endcapHitsCollection);
+
    NtupleFactory_->FillFloat("Energy25",Energy25_);
    NtupleFactory_->FillFloat("Energy9",Energy9_); 
    NtupleFactory_->FillFloat("Energy49",Energy49_); 
+   NtupleFactory_->FillFloat("Energy4",Energy4_); 
    NtupleFactory_->FillFloat("MaxEnergy",MaxEnergy_);
    Zenergy+=energia5+preshower_;
    fillAroundEndcap (
@@ -420,6 +426,87 @@ double AlCaValidation::Energy25Barrel (int eta, int phi,int side,
  return dummy ;
 }
 
+// ----------------------------------------------------------------
+
+
+//! AM energy in the 2x2 neighbourhood around MaxId
+//! in the barrel
+double AlCaValidation::Energy4Barrel (int eta, int phi, const EcalRecHitCollection * barrelHitsCollection)
+{
+
+  int curr_eta = 0 ;
+  int curr_phi = 0 ;
+
+  double E4[4] = {0,0,0,0};
+  
+  for (int ii = -1 ; ii < 2 ; ++ii){
+   for (int ij = -1 ; ij < 2 ; ++ij){
+    curr_eta = eta + ii ;
+    curr_phi = phi + ij ;
+    if (abs (curr_eta) > 85) continue ;
+    if (curr_eta * eta <= 0) 
+    {
+     if (eta > 0) --curr_eta ; 
+     else curr_eta++ ; 
+    }  // JUMP over 0
+    if (curr_phi < 1) curr_phi += 360 ;
+    if (curr_phi > 360) curr_phi -= 360 ;
+    if (EBDetId::validDetId (curr_eta,curr_phi)){
+     EBDetId det = EBDetId (curr_eta,curr_phi,EBDetId::ETAPHIMODE) ;
+     EcalRecHitCollection::const_iterator curr_recHit = barrelHitsCollection->find (det) ;
+     if (isnan(curr_recHit->energy())) continue;
+     if (curr_recHit->energy()<0) continue;
+     if (curr_recHit->energy()>1000) continue;
+     int dx = diff_neta_s(eta,curr_eta);
+     int dy = diff_nphi_s(phi,curr_phi);
+     double en = curr_recHit->energy ();
+     if(dx <= 0 && dy <=0) E4[0] += en;
+     if(dx >= 0 && dy <=0) E4[1] += en;
+     if(dx <= 0 && dy >=0) E4[2] += en;
+     if(dx >= 0 && dy >=0) E4[3] += en;
+    }
+   }
+  }
+  return (*std::max_element( E4,E4+4));
+}
+
+// ----------------------------------------------------------------
+
+
+
+  
+//! AM energy in the 2x2 neighbourhood around MaxId
+//! in the endcap   
+double AlCaValidation::Energy4Endcap (int ics, int ips, int z, const EcalRecHitCollection * endcapHitsCollection){
+ int curr_x = 0 ;
+ int curr_y = 0 ;
+ double E4[4] = {0,0,0,0};
+ //PG loop on the energy reconstruction window
+ for (int ii = -1 ; ii < 2 ; ++ii){
+  for (int ij = -1 ; ij < 2 ; ++ij){
+   curr_x = ics + ii ;
+   curr_y = ips + ij ;
+   if (curr_x>100 || curr_x<0) continue ; //PG prob qs ctrl nn serve visto qllo dopo
+   if (curr_y>100 || curr_y<0) continue ; //PG prob qs ctrl nn serve visto qllo dopo
+   if (EEDetId::validDetId (curr_x,curr_y,z))
+   {
+    EEDetId det = EEDetId (curr_x,curr_y,z,EEDetId::XYMODE) ;
+    EcalRecHitCollection::const_iterator curr_recHit = endcapHitsCollection->find (det) ;
+    if (isnan(curr_recHit->energy())) continue;
+    if (curr_recHit->energy()<0) continue;
+    if (curr_recHit->energy()>1000) continue;
+    double en = curr_recHit->energy ();
+    int dx = ics - curr_x;
+    int dy = ips - curr_y;
+    if(dx <= 0 && dy <=0) E4[0] += en;
+    if(dx >= 0 && dy <=0) E4[1] += en;
+    if(dx <= 0 && dy >=0) E4[2] += en;
+    if(dx >= 0 && dy >=0) E4[3] += en;
+   } 
+  }
+ } 
+ return (*std::max_element( E4,E4+4));
+}
 
 // ----------------------------------------------------------------
 
@@ -457,8 +544,31 @@ double AlCaValidation::Energy25Endcap (int ics, int ips, int z,int side,
   return dummy ;
 } 
 
+// ----------------------------------------------------------------
 
+int AlCaValidation::diff_neta_s(Int_t neta1, Int_t neta2){
+ Int_t mdiff;
+ mdiff=(neta1-neta2);
+ return mdiff;
+}
+ 
+// ----------------------------------------------------------------
 
+ // Calculate the distance in xtals taking into account the periodicity of the Barrel 
+ 
+int AlCaValidation::diff_nphi_s(Int_t nphi1,Int_t nphi2) { 
+ Int_t mdiff; 
+ if(abs(nphi1-nphi2) < (360-abs(nphi1-nphi2))) { 
+  mdiff=nphi1-nphi2; 
+ } 
+ else { 
+  mdiff=360-abs(nphi1-nphi2); 
+  if(nphi1>nphi2) mdiff=-mdiff; 
+ } 
+ return mdiff; 
+} 
+
+// ----------------------------------------------------------------
 
 
 //define this as a plug-in

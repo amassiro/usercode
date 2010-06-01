@@ -23,7 +23,8 @@ secFiles.extend( (
 
 #readFiles.extend( ['file:../../AlCaTest/test/AAB867A5-395C-DF11-902A-002618FDA26D.root'] );
 #readFiles.extend( ['file:../scripts/EcalCalElectron_1_1.root'] );
-readFiles.extend( ['file:/gwtera/cms/users/amassiro/AlCaReco/May6thReRecoDump/EcalCalElectron_14_1.root'] );
+#readFiles.extend( ['file:/gwtera/cms/users/amassiro/AlCaReco/May6thReRecoDump/EcalCalElectron_14_1.root'] );
+readFiles.extend( ['file:/tmp/amassiro/AlCaDump/EcalCalElectron_3_1.root'] );
 
 process.AlCaValidationTEST = cms.EDAnalyzer("AlCaValidation",
   ElectronLabel=cms.InputTag("gsfElectrons"),

@@ -13,7 +13,7 @@
 //
 // Original Author:  Andrea Massironi,27 1-020,+41227670757,
 //         Created:  Thu May 13 11:34:24 CEST 2010
-// $Id: AlCaValidation.h,v 1.2 2010/05/29 18:25:31 amassiro Exp $
+// $Id: AlCaValidation.h,v 1.3 2010/05/31 13:06:54 amassiro Exp $
 //
 //
 
@@ -101,13 +101,19 @@ class AlCaValidation : public edm::EDAnalyzer {
      double Energy25Barrel (int eta, int phi,int side, const EBRecHitCollection* EBhits) ; //MF
      double Energy25Endcap (int ics, int ips, int z,int side, const EERecHitCollection* EEhits) ; //MF
 
+     double Energy4Barrel (int eta, int phi, const EcalRecHitCollection * barrelHitsCollection);
+     double Energy4Endcap (int ics, int ips, int z, const EcalRecHitCollection * endcapHitsCollection);
+
+
      //!MF riempie grafico 5x5
      void EnergyOn25Barrel (int eta, int phi, const EBRecHitCollection* EBhits) ;
      
-     void fillAroundBarrel (const EcalRecHitCollection * recHits, 
-                            int eta, int phi, double momentum) ;
-     void fillAroundEndcap (const EcalRecHitCollection * recHits, 
-                            int ics, int ips, double momentum) ;
+     void fillAroundBarrel (const EcalRecHitCollection * recHits, int eta, int phi, double momentum) ;
+     void fillAroundEndcap (const EcalRecHitCollection * recHits, int ics, int ips, double momentum) ;
+
+
+     int diff_neta_s(Int_t neta1, Int_t neta2);
+     int diff_nphi_s(Int_t nphi1,Int_t nphi2); 
 
 
       // ----------member data ---------------------------
@@ -135,6 +141,7 @@ class AlCaValidation : public edm::EDAnalyzer {
   float eSeedOverPout_;
   float pOut_;
   float preshower_;
+  float Energy4_;
   float Energy9_;
   float Energy49_;
   float pErr_;
