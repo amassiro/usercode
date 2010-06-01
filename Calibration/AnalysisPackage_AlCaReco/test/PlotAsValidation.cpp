@@ -74,9 +74,12 @@ int main(int argc, char** argv)
  float m_eSeedOverPout;
  float m_pOut;
  float m_preshower;
+ float m_Energy4;
+ float m_SwissE4;
  float m_Energy9;
  float m_Energy49;
  float m_pErr;
+ float electrons_eSeed;
  int m_class;
  float m_recHits;
  double m_chis;
@@ -97,8 +100,11 @@ int main(int argc, char** argv)
  m_tree.Branch("ESCoP",&m_ESCoP,"ESCoP/F");
  m_tree.Branch("eSeedOverPout",&m_eSeedOverPout,"eSeedOverPout/F");
  m_tree.Branch("pOut",&m_pOut,"pOut/F");
+ m_tree.Branch("SwissE4",&m_SwissE4,"SwissE4/F");
+ m_tree.Branch("Energy4",&m_Energy4,"Energy4/F");
  m_tree.Branch("Energy9",&m_Energy9,"Energy9/F");
  m_tree.Branch("Energy49",&m_Energy49,"Energy49/F");
+ m_tree.Branch("electrons_eSeed",&electrons_eSeed,"electrons_eSeed/F");
  m_tree.Branch("Presh",&m_preshower,"Presh/F");
  m_tree.Branch("pErr",&m_pErr,"pErr/F");
  m_tree.Branch("recHits",&m_recHits,"recHits/F");
@@ -130,6 +136,10 @@ int main(int argc, char** argv)
   std::cerr << " nEles = " << nEles << std::endl;
   for (int iEle = 0; iEle < nEles; iEle++){    
    m_eta = reader.Get4V("electrons")->at(iEle).Eta();
+   m_SwissE4 = reader.GetFloat("SwissE4")->at(iEle);
+   m_Energy4 = reader.GetFloat("Energy4")->at(iEle);
+   m_MaxEnergy = reader.GetFloat("MaxEnergy")->at(iEle);
+   electrons_eSeed = reader.GetFloat("electrons_eSeed")->at(iEle);
    m_energy = reader.GetFloat("Calo_Energy")->at(iEle);
    m_ESCoP = reader.GetFloat("ESCoP")->at(iEle);
    m_recHits = reader.GetFloat("recHits")->at(iEle);

@@ -1,6 +1,6 @@
 {
  ///==== Validator ====
- int NBINeta = 100;
+ int NBINeta = 50;
  int NBINenergy = 100;
  int NBINESCoP = 80;
  int NBINHits = 50;
@@ -21,7 +21,7 @@
  
 
  TH1F etaDistMC ("etaDistMC","etaDistMC",NBINeta,-3,3);
- TH1F energyMC ("energyMC","energyMC",NBINenergy,0,1000);
+ TH1F energyMC ("energyMC","energyMC",NBINenergy,0,800);
  TH1F ESCoPMC ("ESCoPMC","ESCoPMC",NBINESCoP,0,20);
  TH1F HitsOeMC ("HitsOeMC","HitsOeMC",NBINHits,0,1.02);
  
@@ -40,18 +40,21 @@
  ///==== DATA ====
 //  TFile fileInDATA ("../output/EcalCalElectron_Summed.root","READ");
 
-TFile fileInDATA ("../output/out_PlotAsValidation.root","READ");
-TString nameData = "/EG/Run2010A-EcalCalElectron-v2/ALCARECO ";
+// TFile fileInDATA ("../output/out_PlotAsValidation.root","READ");
+// TString nameData = "/EG/Run2010A-EcalCalElectron-v2/ALCARECO ";
 
 // TFile fileInDATA ("../output/out_PlotAsValidation_MinimumBias_Commissioning10_May6thReReco_EcalCalElectron_v1_ALCARECO_JSON.root","READ");
 // TString nameData = "May6thReReco_JSON";
 
- TFile fileInDATA ("../output/out_PlotAsValidation_May27_NOJSON.root","READ");
- TString nameData = "May27th";
+ TFile fileInDATA ("../output/out_PlotAsValidation_May27_JSON.root","READ");
+ TString nameData = "May27th_JSON_370";
 
-// TFile fileInDATA2 ("../output/EcalCalElectron_Summed.root","READ");
-// TString nameData2 = "May6th";
-
+//  TFile fileInDATA2 ("../output/EcalCalElectron_Summed.root","READ");
+//  TString nameData2 = "May6th";
+ 
+ TFile fileInDATA2 ("../output/out_PlotAsValidation_May27thReReco_JSON_PreProduction_v1_JSON.root","READ");
+ TString nameData2 = "May27th_JSON_361_p3";
+ 
 
 
  TH1F etaDistDATA ("etaDistDATA","etaDistDATA",NBINeta,-3,3);
