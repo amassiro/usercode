@@ -13,7 +13,7 @@
 //
 // Original Author:  Andrea Massironi,27 1-020,+41227670757,
 //         Created:  Thu May 13 11:34:24 CEST 2010
-// $Id: AlCaValidation.cc,v 1.8 2010/06/01 15:25:50 amassiro Exp $
+// $Id: AlCaValidation.cc,v 1.9 2010/06/02 13:22:18 amassiro Exp $
 //
 //
 
@@ -56,7 +56,9 @@ AlCaValidation::AlCaValidation(const edm::ParameterSet& iConfig)
 
    
   NtupleFactory_->Add4V("met"); ///==== caloMET
-
+  NtupleFactory_->AddFloat("sumEt"); 
+  
+    
   NtupleFactory_->Add4V("electrons"); ///==== eleIt->p4();
 
   NtupleFactory_->Add3V("electrons_tracker_atVtx"); 
@@ -326,6 +328,8 @@ void
  const reco::CaloMET* met = &(MetHandle->front());
  NtupleFactory_->Fill4V("met",met->p4());
  
+ NtupleFactory_->FillFloat("sumEt",met->sumEt());
+   
  NtupleFactory_->FillNtuple(); 
  double MZ;
  MZ = sqrt( Zenergy*Zenergy - Zmoment.R()*Zmoment.R());
