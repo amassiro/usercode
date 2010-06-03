@@ -68,6 +68,10 @@ int main(int argc, char** argv)
  std::string OutFileName    = gConfigParser -> readStringOption("Output::outFileName");
  std::cout << ">>>>> Output::outFileName  " << OutFileName  << std::endl;  
 
+ std::string outFileNameImage    = gConfigParser -> readStringOption("Output::outFileNameImage");
+ std::cout << ">>>>> Output::outFileNameImage  " << outFileNameImage  << std::endl;  
+ 
+ 
  TFile outFile(OutFileName.c_str(),"RECREATE");
  outFile.cd();
  
@@ -91,6 +95,8 @@ int main(int argc, char** argv)
   int nEleSel = 0;
   
   std::vector<int> blacklist;
+  std::vector<int> whitelist;
+  /*
   for (int iEle = 0; iEle < nEles; iEle++){    
    if
 //     (
@@ -130,14 +136,46 @@ int main(int argc, char** argv)
 // //     || reader.GetFloat("electrons_sigmaIetaIeta")->at(iEle) > 0.031
 // ) && (fabs((reader.Get4V("electrons")->at(iEle)).Eta()) > 1.479))
 
+
+
+///==== EleId ====
+//http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/CMSSW/RecoEgamma/ElectronIdentification/python/electronIdCutBased_cfi.py?revision=1.23&view=markup
+//# variables H/E sigmaietaieta deltaphiin deltaetain e2x5/e5X5 e1x5/e5x5 isoTk ecalTk hcalTk(barrel/endcap)
+//barrel = cms.vdouble(0.05, 0.0103, 0.8, 0.00688, -1, -1, 7.33, 4.68, 9999., 9999., 9999.,9999., 0.000, -9999., 9999., 9999., 9999, -1, 0, 0),
+//endcap = cms.vdouble(0.0389, 0.0307, 0.7, 0.00944, -1, -1, 7.76, 3.09, 2.23, 9999., 9999.,9999., 0.000, -9999., 9999., 9999., 9999, -1, 0, 0)
+
 (
- (reader.Get4V("met")->at(0)).Et() < 20
- || reader.Get4V("electrons")->at(iEle).Pt() < 20 || reader.Get4V("electrons")->at(iEle).Pt() > 60
- || deltaPhi(reader.Get4V("electrons")->at(iEle).Phi(),(reader.Get4V("met")->at(0)).Phi()) < 0.75
- || reader.GetFloat("sumET")->at(0) > 40
- || (reader.GetFloat("sumET")->at(0) > 10 && reader.Get4V("met")->at(0).Et() < (30 + 2/15. * (reader.GetFloat("sumET")->at(0)-25)))
- || (reader.GetFloat("sumET")->at(0) < 10 && reader.Get4V("met")->at(0).Et() < (20 + 0.8 * (reader.GetFloat("sumET")->at(0))))
+(
+ ( reader.GetFloat("electrons_hOverE")->at(iEle)   > 0.05
+|| reader.GetFloat("electrons_sigmaIetaIeta")->at(iEle) > 0.0103
+|| reader.GetFloat("electrons_deltaPhiIn")->at(iEle) > 0.8
+|| reader.GetFloat("electrons_deltaEtaIn")->at(iEle) > 0.00688
+|| reader.GetFloat("electrons_tkIso")->at(iEle)      > 7.33
+|| reader.GetFloat("electrons_emIso03")->at(iEle)    > 4.68
 )
+&& (fabs((reader.Get4V("electrons")->at(iEle)).Eta()) < 1.479))
+||
+(
+( reader.GetFloat("electrons_hOverE")->at(iEle)   > 0.0389
+|| reader.GetFloat("electrons_sigmaIetaIeta")->at(iEle) > 0.0307
+|| reader.GetFloat("electrons_deltaPhiIn")->at(iEle) > 0.7
+|| reader.GetFloat("electrons_deltaEtaIn")->at(iEle) > 0.00944
+|| reader.GetFloat("electrons_tkIso")->at(iEle)      > 7.76
+|| reader.GetFloat("electrons_emIso03")->at(iEle)    > 3.09
+)
+&& (fabs((reader.Get4V("electrons")->at(iEle)).Eta()) >= 1.479))
+)
+if
+
+///==== Branson ====
+ (
+  (reader.Get4V("met")->at(0)).Et() < 20
+  || reader.Get4V("electrons")->at(iEle).Pt() < 20 || reader.Get4V("electrons")->at(iEle).Pt() > 60
+  || deltaPhi(reader.Get4V("electrons")->at(iEle).Phi(),(reader.Get4V("met")->at(0)).Phi()) < 0.75
+//   || reader.GetFloat("sumET")->at(0) > 40
+//   || (reader.GetFloat("sumET")->at(0) > 10 && reader.Get4V("met")->at(0).Et() < (30 + 2/15. * (reader.GetFloat("sumET")->at(0)-25)))
+//   || (reader.GetFloat("sumET")->at(0) < 10 && reader.Get4V("met")->at(0).Et() < (20 + 0.8 * (reader.GetFloat("sumET")->at(0))))
+ )
 
 ///=== old ===
 //    (
@@ -166,7 +204,63 @@ int main(int argc, char** argv)
     {
     blacklist.push_back(iEle);
    }
+   else {
+    whitelist.push_back(iEle);
+   }
     
+  }
+*/
+  
+  
+  for (int iEle = 0; iEle < nEles; iEle++){    
+   if (
+   
+    ///==== EleId ====
+    //http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/CMSSW/RecoEgamma/ElectronIdentification/python/electronIdCutBased_cfi.py?revision=1.23&view=markup
+    //# variables H/E sigmaietaieta deltaphiin deltaetain e2x5/e5X5 e1x5/e5x5 isoTk ecalTk hcalTk(barrel/endcap)
+    //barrel = cms.vdouble(0.05, 0.0103, 0.8, 0.00688, -1, -1, 7.33, 4.68, 9999., 9999., 9999.,9999., 0.000, -9999., 9999., 9999., 9999, -1, 0, 0),
+    //endcap = cms.vdouble(0.0389, 0.0307, 0.7, 0.00944, -1, -1, 7.76, 3.09, 2.23, 9999., 9999.,9999., 0.000, -9999., 9999., 9999., 9999, -1, 0, 0)
+    
+    (
+    (
+    ( reader.GetFloat("electrons_hOverE")->at(iEle)            < 0.05
+    && reader.GetFloat("electrons_sigmaIetaIeta")->at(iEle)    < 0.0103
+    && fabs(reader.GetFloat("electrons_deltaPhiIn")->at(iEle)) < 0.8
+    && fabs(reader.GetFloat("electrons_deltaEtaIn")->at(iEle)) < 0.00688
+    && reader.GetFloat("electrons_tkIso")->at(iEle)            < 7.33
+    && reader.GetFloat("electrons_emIso03")->at(iEle)          < 4.68
+    )
+    && (fabs((reader.Get4V("electrons")->at(iEle)).Eta()) < 1.479))
+    ||
+    (
+    ( reader.GetFloat("electrons_hOverE")->at(iEle)            < 0.0389
+    && reader.GetFloat("electrons_sigmaIetaIeta")->at(iEle)    < 0.0307
+    && fabs(reader.GetFloat("electrons_deltaPhiIn")->at(iEle)) < 0.7
+    && fabs(reader.GetFloat("electrons_deltaEtaIn")->at(iEle)) < 0.00944
+    && reader.GetFloat("electrons_tkIso")->at(iEle)            < 7.76
+    && reader.GetFloat("electrons_emIso03")->at(iEle)          < 3.09
+    )
+    && (fabs((reader.Get4V("electrons")->at(iEle)).Eta()) >= 1.479))
+    )
+    &&
+     
+     ///==== Branson ====
+     
+    (reader.Get4V("met")->at(0)).Et() > 20
+    && reader.Get4V("electrons")->at(iEle).Pt() > 20 && reader.Get4V("electrons")->at(iEle).Pt() < 60
+    && deltaPhi(reader.Get4V("electrons")->at(iEle).Phi(),(reader.Get4V("met")->at(0)).Phi()) > 0.75
+     //   || reader.GetFloat("sumET")->at(0) < 40
+     //   || (reader.GetFloat("sumET")->at(0) > 10 && reader.Get4V("met")->at(0).Et() > (30 + 2/15. * (reader.GetFloat("sumET")->at(0)-25)))
+     //   || (reader.GetFloat("sumET")->at(0) < 10 && reader.Get4V("met")->at(0).Et() > (20 + 0.8 * (reader.GetFloat("sumET")->at(0))))
+    
+    )
+     {
+      whitelist.push_back(iEle);
+     }
+     else {
+      blacklist.push_back(iEle);
+     }
+     
   }
   
   
@@ -207,7 +301,7 @@ int main(int argc, char** argv)
  hMT.SetLineWidth(1.0);
  hMT.SetMarkerSize(1.0);
  hMT.Draw("E");
- gPad->SaveAs("test/MT.png");
+ gPad->SaveAs(outFileNameImage.c_str());
  outFile.Write();
   
  return 0;
