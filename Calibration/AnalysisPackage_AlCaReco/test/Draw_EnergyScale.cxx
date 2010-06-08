@@ -4,8 +4,25 @@
 TFile* fileInW;
 TFile* fileInDATA;
 TFile* outFile;
-Double_t DELTA = 1.0;
+Double_t DELTA = 0.5;
 Int_t NBIN = 40;
+
+int NBINTemplate = NBIN;
+double MinTemplate = 20.0;
+double MaxTemplate = 60.0;
+double Delta = (MaxTemplate - MinTemplate) / NBINTemplate;
+
+
+double MinScan = -0.5;
+double MaxScan = 0.5;
+Int_t iNoSteps = 1000;
+
+
+
+double pT;
+double ET;
+double MT;
+double EoP;
 
 double KM(const double *xx ){
  const Double_t scale = xx[0];
@@ -31,6 +48,51 @@ double KM(const double *xx ){
 //  double result = hMC.Chi2Test(&hDATA,"CHI2/NDF");
  double result = hMC.Chi2Test(&hDATA,"CHI2");
  //double result = - hMC.Chi2Test(&hDATA,""); ///==== http://root.cern.ch/root/html/TH1.html#TH1:Chi2Test
+ 
+ 
+ 
+ 
+ 
+ ///==== Likelihood ====
+ 
+ 
+//  fileInW->cd();
+//  TTree* MyTreeMC = (TTree*) fileInW->Get("myTree");
+//  
+//  fileInDATA->cd();
+//  TTree* MyTreeDATA = (TTree*) fileInDATA->Get("myTree");
+//  MyTreeDATA->SetBranchAddress("pT",&pT);
+//  MyTreeDATA->SetBranchAddress("ET",&ET);
+//  MyTreeDATA->SetBranchAddress("MT",&MT);
+//  MyTreeDATA->SetBranchAddress("EoP",&EoP);
+//  
+//  
+//  TH1F hMC("hMC","hMC",NBINTemplate,MinTemplate,MaxTemplate);
+//  hMC.Reset();
+//  TString DrawMC = Form("(ET * (1+%f))>>hMC",scale);
+//  MyTreeMC->Draw(DrawMC,"MT>30 && abs(Eta)<1.479");
+//  int numberDATA = (MyTreeDATA->GetEntries("MT>30 && abs(Eta)<1.479"));
+//  double result = 1.;
+//  for (int iEvt = 0; iEvt < numberDATA; iEvt ++){
+//   MyTreeDATA->GetEntry(iEvt);
+//   if (MT > 30){
+//    int bin = ( ET - MinTemplate ) / Delta;
+//    if (bin > 0 && bin < NBINTemplate){
+//     result *= (hMC.GetBinContent(bin));
+//     if (hMC.GetBinContent(bin) == 0) {
+//      std::cerr << " result = " << result << " hMC.GetBinContent(" << bin << ":" << NBINTemplate << ") = " << hMC.GetBinContent(bin) << " scale = " << scale << std::endl;
+//     }
+//    }
+//   }
+//  }
+//  outFile->cd();
+//  hMC.Write();
+//  
+//  if (result != 0) result = -log(result);
+ 
+ ///==== end Likelihood ====
+ 
+ 
  return result;
 }
 
@@ -76,7 +138,7 @@ ROOT::Math::Minimizer* minuit = ROOT::Math::Factory::CreateMinimizer("Minuit2", 
  // Set the free variables to be minimized!
 //  minuit->SetVariable(0,"Scale",variable[0], step[0]);
   
- minuit->SetLimitedVariable(0,"Scale" , variable[0]  , step[0] , -0.5  , 0.5 );
+ minuit->SetLimitedVariable(0,"Scale" , variable[0]  , step[0] , MinScan , MaxScan );
  
  std::cerr << "... I'm minimizing ..." << std::endl;
  ///------------------
@@ -124,9 +186,8 @@ ROOT::Math::Minimizer* minuit = ROOT::Math::Factory::CreateMinimizer("Minuit2", 
  cResult->cd(4);
 
  Int_t iPar_NoBG = 0;
- Int_t iNoSteps = 1000;
  TGraph * gr = new TGraph(iNoSteps);
- minuit->Scan(iPar_NoBG,iNoSteps,gr->GetX(),gr->GetY(),-0.5,0.5);
+ minuit->Scan(iPar_NoBG,iNoSteps,gr->GetX(),gr->GetY(),MinScan,MaxScan);
  gr->Draw("AL");
  outFile->cd();
  gr->Write();
@@ -144,7 +205,7 @@ ROOT::Math::Minimizer* minuit = ROOT::Math::Factory::CreateMinimizer("Minuit2", 
  int err_low = 0;
  int err_up = 0;
  for (int ii=0; ii < iNoSteps; ii++){
-  double X_ii = (0.5+0.5) / iNoSteps * ii - 0.5;
+  double X_ii = (MaxScan - MinScan) / iNoSteps * ii + MinScan;
   double here = gr->Eval(X_ii);
   if (err_low == 0){
    //     std::cerr << " => " << here << " < " << min+DELTA << std::endl;
@@ -153,7 +214,7 @@ ROOT::Math::Minimizer* minuit = ROOT::Math::Factory::CreateMinimizer("Minuit2", 
     err_low = 1;
    }
   }
-  else if (err_up == 0 && here > (min + DELTA)){
+  else if (err_up == 0 && here > (min + DELTA) && X_ii > outParameters[0]){
    errX_up = X_ii; 
    err_up = 1;
   }
@@ -212,22 +273,26 @@ ROOT::Math::Minimizer* minuit = ROOT::Math::Factory::CreateMinimizer("Minuit2", 
  
  
  ///==== scam plot ====
- TLine* lOriz = new TLine(-0.5,min + DELTA,0.5,min + DELTA);
+ TLine* lOriz = new TLine(MinScan,min + DELTA,MaxScan,min + DELTA);
  lOriz->SetLineColor(kRed);
  lOriz->SetLineWidth(4);
  lOriz->SetLineStyle(5);
  
- TLine* lVertLow = new TLine(errX_low,0,errX_low,100);
+ TLine* lVertLow = new TLine(errX_low,min-100,errX_low,min+100);
  lVertLow->SetLineColor(kRed);
  lVertLow->SetLineWidth(4);
  lVertLow->SetLineStyle(5);
  
- TLine* lVertUp = new TLine(errX_up,0,errX_up,100);
+ TLine* lVertUp = new TLine(errX_up,min-100,errX_up,min+100);
  lVertUp->SetLineColor(kRed);
  lVertUp->SetLineWidth(4);
  lVertUp->SetLineStyle(5);
  
  cResult->cd(4);
+ 
+ TString TitleGr = Form("#alpha = %f - %f + %f",outParameters[0],outParameters[0]-errX_low,errX_up-outParameters[0]);
+ gr->SetTitle(TitleGr);
+ 
  gr->Draw("AL"); 
  gr->GetXaxis()->SetTitle("#alpha");
  gr->GetYaxis()->SetTitle("#chi^{2}");

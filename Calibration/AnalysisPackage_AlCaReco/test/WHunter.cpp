@@ -303,7 +303,7 @@ if
     )
      {
       whitelist.push_back(iEle);
-      std::cerr << " reader.GetFloat(\"sumEt\")->at(0) = " << reader.GetFloat("sumEt")->at(0) << std::endl;
+//       std::cerr << " reader.GetFloat(\"sumEt\")->at(0) = " << reader.GetFloat("sumEt")->at(0) << std::endl;
      }
      else {
       blacklist.push_back(iEle);
@@ -314,8 +314,8 @@ if
   
   int iEleMaxPt  = SelectLepton(*reader.Get4V("electrons"),"maxPt",5,&blacklist);
   if (iEleMaxPt!= -1) {
-   std::cerr << " nEles = " << nEles << " " ;
-   std::cerr << " iEleMaxPt = " << iEleMaxPt << std::endl;
+//    std::cerr << " nEles = " << nEles << " " ;
+//    std::cerr << " iEleMaxPt = " << iEleMaxPt << std::endl;
   }
   for (int iEle = 0; iEle < nEles; iEle++){    
    bool skipEle = false;
@@ -339,6 +339,7 @@ if
    if (MT > MINMT){
     hPt.Fill(pT);
     hEt.Fill(ET);
+    std::cerr << " runId = " << reader.GetInt("runId")->at(0) << " lumiId = " << reader.GetInt("lumiId")->at(0) << " eventId = " << reader.GetInt("eventId")->at(0) << " ET(SC) = " << ET << " Eta = " << Eta << std::endl;
    }
    hMT.Fill(MT);
    myTree.Fill();
@@ -349,6 +350,10 @@ if
  end = clock();
  std::cout <<"Time = " <<  ((double) (end - start)) << " (a.u.)" << std::endl;  
  std::cout << " selEvents = " << selEvents << " : " << entryMAX - entryMIN << std::endl;
+ 
+ TH1F efficiency("efficiency","efficiency",1,0,1);
+ efficiency.SetBinContent(1,static_cast<double>(selEvents)/static_cast<double>(entryMAX - entryMIN));
+ efficiency.Write();
  
  hEt.SetMarkerColor(kGreen);
  hEt.SetMarkerStyle(20);
