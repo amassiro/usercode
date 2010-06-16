@@ -1,0 +1,102 @@
+///=================================
+
+0) Signal splitter:
+     split the signal according to WW decays
+     ~/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/Signal_Splitter.cfg
+     ~/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/    ./bin/Signal_Splitter.exe test/Signal_Splitter.cfg
+     do this for all signal samples: modify test/Signal_Splitter.cfg
+      
+1) creation of name of samples
+     ~/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/Spring10
+     r00t Sample_Converter.cxx
+     then modify "samples.txt" for signal channel different analysis
+  
+2) Tree production
+  FinalSelection_Producer.cpp
+  Save all variables of leptons and of jets in 2 separated tree (filled at the same time)
+  All kind of MVAs saved at the same time
+  ~/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/Spring10    
+     r00t cfgCreator_FinalSelector.cxx
+     r00t cfgLauncher_FinalSelection.cxx
+     
+     
+3) Draw and Select best cut from the last tree (9)
+     Draw_Results_Tree.cxx
+     -> Tools_Draw.h
+     r00t test/Spring10/Draw_Results_Tree.cxx\(\"NBjets_trackCountingHighPurBJetTags\",0,10,10,500,\"pT_RECO_l1\>20\&\&pT_RECO_l2\>10\&\&pT_RECO_l1\<90\&\&pT_RECO_l2\<70\&\&Z_03_20==0\&\&Deta_RECO_q12\>3.5\&\&Mjj\>450\&\&Mll\<65\&\&Mll\>12\"\)
+     
+4) Reduced zeppenfeld variable cut
+     r00t Zepp_Studies.cxx
+     
+5) Show luminosity available and number of events
+     r00t NumberOfEventsAndLumi.cxx
+
+     
+10) Data driven method
+     A) check for correlation of variables
+     ~/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/Spring10/    r00t Correlation.cxx\(\"NAME_SAMPLE\"\)
+     names of variables and number of variables to analyze are hardcoded
+     e.g. r00t Correlation.cxx\(\"H160_2W_2lnu_wbf_7TeV_ee\"\)
+     r00t Correlation.cxx\(\"TTbarJets_madgraph\"\)
+     r00t Correlation.cxx\(\"TTbarJets_madgraph\",\"pT_RECO_l1\>20\&\&pT_RECO_l2\>10\&\&pT_RECO_l1\<90\&\&pT_RECO_l2\<70\&\&Z_03_20==0\&\&Deta_RECO_q12\>3.5\&\&Mjj\>450\&\&Mll\<70\&\&Mll\>10\"\)
+     
+     B_1) DatAdriven method using MC information
+     ~/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/Spring10/    r00t DD_1.cxx\(\"NAME_SAMPLE\",CUT\)
+     e.g. r00t DD_1.cxx\(\"H160_2W_2lnu_wbf_7TeV_ee\",0.4\)
+     r00t DD_1.cxx\(\"TTbarJets_madgraph\",0.4\)
+     
+     B_2) As if the total number of events has a poissonian distribution (should not affect the result)
+     ~/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/Spring10/    r00t DD_2.cxx\(\"NAME_SAMPLE\",CUT\)
+     e.g. r00t DD_2.cxx\(\"H160_2W_2lnu_wbf_7TeV_ee\",0.4\)
+     r00t DD_2.cxx\(\"WJets-madgraph_new\",0.14\)
+     
+     
+     C_1) DatAdriven method in 2 dimensions
+     ~/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/Spring10/    r00t DD_C_1.cxx\(\"NAME_SAMPLE\",CUT\)
+     e.g. r00t DD_C_1.cxx\(\"H160_2W_2lnu_wbf_7TeV_ee\",0.4,0.4\)
+          r00t DD_C_1.cxx\(\"TTbarJets_madgraph\",0.4,0.4\)
+          r00t DD_C_1.cxx\(\"TTbarJets_madgraph\",0.4,0.0,\"pT_RECO_l1\>20\&\&pT_RECO_l2\>10\&\&pT_RECO_l1\<90\&\&pT_RECO_l2\<70\&\&Z_03_20==0\&\&Deta_RECO_q12\>3.5\&\&Mjj\>450\&\&Mll\<70\&\&Mll\>10\"\)
+          
+     
+     C_1) DatAdriven method in 2 dimensions: do luminosity studies
+     ~/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/Spring10/    r00t DD_C_2.cxx\(\"NAME_SAMPLE\",CUT\)
+     e.g. r00t DD_C_2.cxx\(\"H160_2W_2lnu_wbf_7TeV_ee\",0.4,0.4\)
+     r00t DD_C_2.cxx\(\"TTbarJets_madgraph\",0.4,0.4\)
+     
+     
+     
+     
+     
+ CUT
+ 
+
+\"pT_RECO_l1\>20\&\&pT_RECO_l2\>10\&\&pT_RECO_l1\<90\&\&pT_RECO_l2\<70\&\&Z_03_20==0\&\&Deta_RECO_q12\>3.5\&\&Mjj\>450\&\&NBjets_trackCountingHighPurBJetTags==0\&\&Mll\<70\&\&Mll\>10\"
+ 
+ pT_RECO_l1\>20
+ \&\&pT_RECO_l2\>10
+ \&\&pT_RECO_l1\<90
+ \&\&pT_RECO_l2\<70
+ \&\&Z_03_20==0
+ \&\&Deta_RECO_q12\>3.5
+ \&\&Mjj\>450
+ \&\&NBjets_trackCountingHighPurBJetTags==0
+ &\&Mll\<70\&\&Mll\>10
+ 
+ 
+ \(eta_RECO_q1\>0.4\|\eta_RECO_q1\<-0.4\)\&\&\(eta_RECO_q2\>0.4\|\|eta_RECO_q2\<-0.4\)\&\&eta_RECO_q1_eta_RECO_q2\<-2.0\&\&Deta_RECO_q12\>1.3\&\&Mjj\>350\&\&Likelihood_Lep\>0.14\&\&JV_30==0\"
+ 
+ 
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
