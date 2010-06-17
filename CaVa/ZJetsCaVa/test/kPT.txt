@@ -1,0 +1,3 @@
+### k(pT) to Jet generation -> see "JetGeneration.cpp"
+### last line used, so add a new line or comment (#) the one unused
+(1.3+0.001*x-exp(-x/100))*x
