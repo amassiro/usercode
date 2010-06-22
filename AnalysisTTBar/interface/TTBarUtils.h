@@ -45,6 +45,10 @@ std::pair<int,int> GetMCDecayChannel(float pdgId11,float pdgId12, float pdgId21,
 std::pair<double,int> GetCombinationMVA(treeReader& reader, std::vector<std::vector<int> >& combinations,TMVA::Reader* TMVAreader, TString& methodName, Float_t* input_variables, std::vector<int>* whitelistJet = NULL);
 
 
+///==== return the value of the Min Chi2 and the corresponding number in the combinations ====
+std::pair<double,int> GetCombinationChi2(treeReader& reader, std::vector<std::vector<int> >& combinations,std::vector<int>* whitelistJet);
+ 
+
 
 ///==== get Selected Lepton ====
 int SelectLeptonTTBar(std::vector<ROOT::Math::XYZTVector>& leptons,const std::string& method,const double& ptMin,const double& etaMax,int& numLeptons,const std::vector<int>* blacklist);
@@ -84,6 +88,11 @@ int getNumJets(const std::vector<int>& whitelist);
 
 ///==== CopyTree ====
 void CopyTree();
+
+
+
+///==== get Jet Energy Correction ====
+double getJEC(const ROOT::Math::XYZTVector& Jet);
 
 
 
