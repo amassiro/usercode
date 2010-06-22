@@ -2,9 +2,11 @@
  
  gROOT->ProcessLine(".x ./test/Style.cxx") ;
  
+ TFile *_file1 = TFile::Open("output/out_TT_WorkFlowCalibrator_7TeV.root");
  
 //  TFile *_file1 = TFile::Open("output/out_TT_General_Calibrator_New.root");
- TFile *_file1 = TFile::Open("output/out_TT_TestCalibration.root");
+// TFile *_file1 = TFile::Open("output/out_TT_WorkFlowCalibrator_Loose.root");
+// TFile *_file1 = TFile::Open("output/out_TT_TestCalibration.root");
  TTree* outTree1 = (TTree*) _file1->Get("outTree"); 
  
  TCanvas c_After("c_After","c_After",800,600);
@@ -23,8 +25,14 @@
  t_Cycle_num.setRange("after",0.9,1.1);
  t_M_Reco.setRange("after",50,120);
  
- t_M_Reco.setRange("reduce",50,130);
-  
+
+ t_Indip.setRange("before_draw",0.9,1.1);
+ t_Cycle_num.setRange("before_draw",-0.1,0.1);
+ 
+ t_Indip.setRange("after_draw",0.9,1.1);
+ t_Cycle_num.setRange("after_draw",0.9,1.1);
+ 
+ 
  RooRealVar Mean_Fit("Mean_Fit","Mean Fit",60,100,"Gev/c^{2}");
  RooRealVar Sigma_Fit("Sigma_Fit","Sigma Fit",10.0,0.1,100);
  
@@ -52,14 +60,16 @@
  
  
  RooDataSet* ds_before = (RooDataSet*) ds.reduce(RooFit::CutRange("before")) ;
+ RooDataSet* ds_before_draw = (RooDataSet*) ds.reduce(RooFit::CutRange("before_draw")) ;
  gauss.fitTo(*ds_before,RooFit::Save(0),RooFit::PrintLevel(-1),RooFit::Hesse (1)); 
- ds_before->plotOn(frame_t_M_Reco,RooFit::MarkerColor(kRed),RooFit::LineColor(kRed)) ;
+ ds_before_draw->plotOn(frame_t_M_Reco,RooFit::MarkerColor(kRed),RooFit::LineColor(kRed)) ;
  gauss.plotOn(frame_t_M_Reco, RooFit::Name("gauss_before"),RooFit::LineColor(kRed));
  gauss.paramOn(frame_t_M_Reco);
  
  RooDataSet* ds_after = (RooDataSet*) ds.reduce(RooFit::CutRange("after")) ;
+ RooDataSet* ds_after_draw = (RooDataSet*) ds.reduce(RooFit::CutRange("after_draw")) ;
  gauss.fitTo(*ds_after,RooFit::Save(0),RooFit::PrintLevel(-1)); 
- ds_after->plotOn(frame_t_M_Reco,RooFit::MarkerColor(kGreen),RooFit::LineColor(kGreen)) ;
+ ds_after_draw->plotOn(frame_t_M_Reco,RooFit::MarkerColor(kGreen),RooFit::LineColor(kGreen)) ;
  gauss.plotOn(frame_t_M_Reco, RooFit::Name("gauss_after"),RooFit::LineColor(kGreen));
  gauss.paramOn(frame_t_M_Reco);
  

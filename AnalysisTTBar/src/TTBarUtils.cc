@@ -247,6 +247,59 @@ std::pair<double,int> GetCombinationMVA(treeReader& reader, std::vector<std::vec
 }
 
 
+///==== return the value of the Min Chi2 and the corresponding number in the combinations ====
+std::pair<double,int> GetCombinationChi2(treeReader& reader, std::vector<std::vector<int> >& combinations,std::vector<int>* whitelistJet,const ROOT::Math::XYZTVector& lepton, const ROOT::Math::XYZTVector& MET){
+ 
+ double Chi2 = -1;
+ double Chi2Combination = -1;
+ 
+ std::vector<ROOT::Math::XYZTVector>* jets = reader.Get4V("jets");
+ std::vector<float>* jets_trackCountingHighEffBJetTags = reader.GetFloat("jets_trackCountingHighEffBJetTags");
+ std::vector<float>* jets_trackCountingHighEffBJetTagsDR = reader.GetFloat("jets_trackCountingHighEffBJetTagsDR");
+ std::vector<float>* jets_trackCountingHighPurBJetTags = reader.GetFloat("jets_trackCountingHighPurBJetTags");
+ std::vector<float>* jets_simpleSecondaryVertexBJetTags = reader.GetFloat("jets_simpleSecondaryVertexBJetTags");
+ std::vector<float>* jets_combinedSecondaryVertexBJetTags = reader.GetFloat("jets_combinedSecondaryVertexBJetTags");
+ std::vector<float>* jets_combinedSecondaryVertexMVABJetTags = reader.GetFloat("jets_combinedSecondaryVertexMVABJetTags");
+ 
+ 
+ int nComb = combinations.size();
+ 
+ for (int iComb = 0; iComb<nComb; iComb++){
+  int q1 = combinations.at(iComb).at(0);
+  int q2 = combinations.at(iComb).at(1);
+  int b1 = combinations.at(iComb).at(2); //---> in this analysis this is the bjet that couple with qq
+  int b2 = combinations.at(iComb).at(3);    
+  
+  if(whitelistJet != NULL)
+   if( (whitelistJet -> at(q1)) != 1 || (whitelistJet -> at(q2)) != 1 || (whitelistJet -> at(b1)) != 1 || (whitelistJet -> at(b2)) != 1)
+    continue;
+  
+  double sigma1 = 1;
+  double sigma2 = 1;
+  double sigma3 = 1;
+  
+  double massW = 80.398;
+  double massTop = 170; //--------- ??????????????????????????????????????????????????
+  ROOT::Math::XYZTVector neutrino; // = GetNeutrino(MET,lepton,massW);
+  
+  double Chi2_temp = 0;
+  Chi2_temp += ((jets->at(q1) + jets->at(q2)).M() - massW) * ((jets->at(q1) + jets->at(q2)).M() - massW)  / sigma1 / sigma1; 
+  
+  Chi2_temp += ((jets->at(q1) + jets->at(q2) + jets->at(b1)).M() - massTop) * ((jets->at(q1) + jets->at(q2)).M() - massTop)  / sigma1 / sigma1; 
+  
+  Chi2_temp += ((jets->at(b2) + lepton + neutrino).M() - massTop) * ((jets->at(q1) + jets->at(q2)).M() - massTop)  / sigma1 / sigma1; 
+    
+  if (Chi2_temp < Chi2 || Chi2 == -1) {
+   Chi2 = Chi2_temp;
+   Chi2Combination = iComb;
+  }
+ }
+ 
+ std::pair<double,int> result;
+ result.first = Chi2;
+ result.second = Chi2Combination;
+ return result;
+}
 
 
 ///==== get Selected Lepton: electron or muon ====
@@ -365,7 +418,7 @@ int SelectElectronTTBar(std::vector<ROOT::Math::XYZTVector>& leptons,
   if( sqrt(leptons.at(i).Perp2()) < ptMin ) continue;
   if( fabs(leptons.at(i).eta()) > etaMax ) continue;
   
-  
+  ///---- H-like isolation ----
   if (((tkIso.at(i) + emIso.at(i) + hadIso.at(i)) < 8.) && (sqrt(leptons.at(i).Perp2()) < (10. + 15./8.*(tkIso.at(i) + emIso.at(i) + hadIso.at(i))))) continue;
   if ((tkIso.at(i) + emIso.at(i) + hadIso.at(i)) > 8.) continue;
   

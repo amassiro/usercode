@@ -217,7 +217,18 @@ int main(int argc, char** argv)
    chain[iSample]->GetEntry(iEvent);
 //    std::cerr << "stepAnalysis = " << stepAnalysis << std::endl;
    
-   if (stepAnalysis != analysisStep) {
+   
+   std::string str_sample = nameSample[iSample];
+   int pos = str_sample.find("QCD");
+   
+   int analysisStep_temp = analysisStep;
+   if (pos!=string::npos) {
+    ///---- if it's a QCD sample ---- consider step 5 and not 6 -> stepAnalysis is always correct!
+    analysisStep_temp = 5;
+   }
+    
+    
+    if (stepAnalysis != analysisStep_temp) {
     if ((entryMAX+1) < static_cast<int>(chain[iSample] -> GetEntries())) {
      entryMAX++; //---- I need to go further ONLY if I have enough data ----
     }
@@ -338,7 +349,17 @@ int main(int argc, char** argv)
   for(int iEvent = 0 ; iEvent < entryMAX ; ++iEvent){
    chain[iSample]->GetEntry(iEvent);
    
-   if (stepAnalysis != analysisStep) {
+   std::string str_sample = nameSample[iSample];
+   int pos = str_sample.find("QCD");
+   
+   int analysisStep_temp = analysisStep;
+   if (pos!=string::npos) {
+    ///---- if it's a QCD sample ---- consider step 5 and not 6 -> stepAnalysis is always correct!
+    analysisStep_temp = 5;
+   }
+   
+   
+   if (stepAnalysis != analysisStep_temp) {
     if ((entryMAX+1) < static_cast<int>(chain[iSample] -> GetEntries())) {
      entryMAX++; //---- I need to go further ONLY if I have enough data ----
     }
@@ -425,7 +446,17 @@ int main(int argc, char** argv)
   for(int iEvent = entryMIN ; iEvent < entryMAX ; ++iEvent){
    chain[iSample]->GetEntry(iEvent);
    
-   if (stepAnalysis != analysisStep) {
+   std::string str_sample = nameSample[iSample];
+   int pos = str_sample.find("QCD");
+   
+   int analysisStep_temp = analysisStep;
+   if (pos!=string::npos) {
+    ///---- if it's a QCD sample ---- consider step 5 and not 6 -> stepAnalysis is always correct!
+    analysisStep_temp = 5;
+   }
+   
+   
+   if (stepAnalysis != analysisStep_temp) {
     if ((entryMAX+1) < static_cast<int>(chain[iSample] -> GetEntries())) {
      entryMAX++; //---- I need to go further ONLY if I have enough data ----
     }

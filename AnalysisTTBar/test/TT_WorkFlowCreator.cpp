@@ -117,8 +117,8 @@ int main(int argc, char** argv)
  
  ///-------------------
  ///---- selection ----
- std::string OutFileName    = gConfigParser -> readStringOption("Output::outFileName");
- std::cout << ">>>>> Output::outFileName  " << OutFileName  << std::endl;  
+//  std::string OutFileName    = gConfigParser -> readStringOption("Output::outFileName");
+//  std::cout << ">>>>> Output::outFileName  " << OutFileName  << std::endl;  
  std::string OutFileNameEfficiencies    = gConfigParser -> readStringOption("Output::OutFileNameEfficiencies");
  std::cout << ">>>>> Output::OutFileNameEfficiencies  " << OutFileNameEfficiencies  << std::endl;  
  
@@ -215,6 +215,8 @@ int main(int argc, char** argv)
  else if (reader.GetEntries() < entryMAX) entryMAX = reader.GetEntries();
  numEntriesBefore = entryMAX - entryMIN;
  
+ std::cout << ">>>>> analysis::entryMIN " << entryMIN << " ==> entryMAX " << entryMAX << std::endl;   
+ 
  int step = 0;
  start = clock();
  for(int iEvent = entryMIN ; iEvent < entryMAX ; ++iEvent) {
@@ -280,7 +282,8 @@ int main(int argc, char** argv)
    
    std::vector<int> whitelistJet;
    for (int iJet = 0; iJet < nJets; iJet++){
-    if (fabs(jets->at(iJet).Eta()) < 2.4 && jets->at(iJet).Pt() > 10) { ///==== selections on jets
+    if (fabs(jets->at(iJet).Eta()) < 5.0 && jets->at(iJet).Pt() > 10) { ///==== selections on jets
+     //if (fabs(jets->at(iJet).Eta()) < 2.4 && jets->at(iJet).Pt() > 10) { ///==== selections on jets
      whitelistJet.push_back(1);
     }
     else {
@@ -412,7 +415,7 @@ int main(int argc, char** argv)
        
        ///********************************
        ///**** STEP 6 - jet selection ****
-       if (TMVA_value > -0.2){
+       if (TMVA_value > -0.12){
 	step = 6;
 	stepName[step] = "jet selection";
 	stepEvents[step] += 1;

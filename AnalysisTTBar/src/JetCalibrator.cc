@@ -281,7 +281,7 @@ void JetCalibrator::UpdateMIB(){
  for (int ii=0; ii< nParameter_; ii++) {
   sKK_->at(ii) = outParameters[ii];
   KK_->at(ii) = outParameters[ii] * outParameters[ii];
-  KKErr_->at(ii) = 2 * errParameters[ii];
+  KKErr_->at(ii) = 2 * errParameters[ii] * outParameters[ii];
  }
  
 }

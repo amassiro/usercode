@@ -102,10 +102,11 @@ void TT_Identificator_MVA_Training( TString myMethodList = "" ) {
  std::cout << "Start TMVAnalysis" << std::endl << "=================" << std::endl << std::endl;
  
 //  TString fname = "output/out_TT_Identificator_0_100kEvts.root";
- TString fname = "output/out_TT_Identificator_2.root";
+//  TString fname = "output/out_TT_Identificator_2.root";
+ TString fname = "/home/andrea/Cern/Code/VBF/TTBar/AnalysisTTBar/output/out_TT_Identificator_7TeV.root";
  
  // Create a new root output file.
- TString outfileName( "output/out_TT_Identificator_TMVA_2_trained.root" );
+ TString outfileName( "output/out_TT_Identificator_TMVA_7TeV_trained.root" );
  TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
  
  //==== Create the factory ====
@@ -205,8 +206,10 @@ void TT_Identificator_MVA_Training( TString myMethodList = "" ) {
  TCut mycutb = mycuts_b;
  
  // tell the factory to use all remaining events in the trees after training for testing:
+ factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=NumEvents:!V" );
 //  factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=NumEvents:!V:nTrain_Background=2500:nTrain_Signal=2500" );
- factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=NumEvents:!V:nTrain_Background=1000000:nTrain_Signal=30000");//:nTest_Background=1000:nTest_Signal=1000" );
+ 
+ //  factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=NumEvents:!V:nTrain_Background=1000000:nTrain_Signal=30000");//:nTest_Background=1000:nTest_Signal=1000" );
  
  
    //==== Book the MVA methods ====

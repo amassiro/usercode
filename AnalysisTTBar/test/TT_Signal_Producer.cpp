@@ -45,7 +45,6 @@ int main(int argc, char** argv)
  std::string outputRootFileName;
  std::string str (".root");
  int found;
- // different member versions of find in the same order as above:
  found=inputFile.find(str);
  if (found!=std::string::npos) {
   outputRootFileName = inputFile.substr(0,found);
