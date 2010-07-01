@@ -13,7 +13,7 @@
 //
 // Original Author:  Andrea Massironi,27 1-020,+41227670757,
 //         Created:  Thu May 13 11:34:24 CEST 2010
-// $Id: AlCaValidation.cc,v 1.10 2010/06/03 14:25:42 amassiro Exp $
+// $Id: AlCaValidation.cc,v 1.11 2010/07/01 10:37:47 amassiro Exp $
 //
 //
 
@@ -301,12 +301,7 @@ void
    Zenergy+=energia5+preshower_;
    fillAroundEndcap (endcapHitsCollection, EEMax.ix (), EEMax.iy (), pTk_) ;
   } //PG in the endcap
-  NtupleFactory_->FillInt("runId", iEvent.id().run());
-  NtupleFactory_->FillInt("lumiId", iEvent.luminosityBlock());
-  NtupleFactory_->FillInt("BXId", iEvent.bunchCrossing());
-  NtupleFactory_->FillInt("eventId", iEvent.id().event());
-  NtupleFactory_->FillInt("eventNaiveId", eventNaiveId_);
-
+ 
   NtupleFactory_->FillInt("lost",lost_); 
   NtupleFactory_->FillInt("found",found_); 
   NtupleFactory_->FillFloat("ndof",ndof_); 
@@ -344,6 +339,12 @@ void
   
  } //PG loop over electrons
  
+ NtupleFactory_->FillInt("runId", iEvent.id().run());
+ NtupleFactory_->FillInt("lumiId", iEvent.luminosityBlock());
+ NtupleFactory_->FillInt("BXId", iEvent.bunchCrossing());
+ NtupleFactory_->FillInt("eventId", iEvent.id().event());
+ NtupleFactory_->FillInt("eventNaiveId", eventNaiveId_);
+
  edm::Handle<reco::CaloMETCollection> MetHandle ;
  iEvent.getByLabel (MetTag_,MetHandle);
  
