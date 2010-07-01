@@ -13,7 +13,7 @@
 //
 // Original Author:  Andrea Massironi,27 1-020,+41227670757,
 //         Created:  Thu May 13 11:34:24 CEST 2010
-// $Id: AlCaValidation.cc,v 1.9 2010/06/02 13:22:18 amassiro Exp $
+// $Id: AlCaValidation.cc,v 1.10 2010/06/03 14:25:42 amassiro Exp $
 //
 //
 
@@ -117,6 +117,13 @@ AlCaValidation::AlCaValidation(const edm::ParameterSet& iConfig)
   NtupleFactory_->AddFloat("electrons_deltaEtaIn");
   NtupleFactory_->AddInt("electrons_mishits");
 
+
+  NtupleFactory_->AddFloat("E_xtal"); 
+  NtupleFactory_->AddInt("ieta_xtal");
+  NtupleFactory_->AddInt("iphi_xtal");
+  NtupleFactory_->AddInt("ix_xtal");
+  NtupleFactory_->AddInt("iy_xtal");
+
 }
 
 
@@ -193,12 +200,24 @@ void
     EBRecHitCollection::const_iterator itrechit = barrelHitsCollection->find((*rh).first);
     if (itrechit==barrelHitsCollection->end()) continue;
     recHits_+=itrechit->energy();
+    EBDetId barrelId (itrechit->id ()); 
+    NtupleFactory_->FillFloat("E_xtal",itrechit->energy());
+    NtupleFactory_->FillInt("ieta_xtal",barrelId.ieta());
+    NtupleFactory_->FillInt("iphi_xtal",barrelId.iphi());
+    NtupleFactory_->FillInt("ix_xtal",-1000);
+    NtupleFactory_->FillInt("iy_xtal",-1000);
     if (itrechit->energy() > seed_energy_) seed_energy_ = itrechit->energy();
    }
    if ((*rh).first.subdetId()== EcalEndcap){
     EERecHitCollection::const_iterator itrechit = endcapHitsCollection->find((*rh).first);
     if (itrechit==endcapHitsCollection->end()) continue;
     recHits_+=itrechit->energy();
+    EEDetId endcapId (itrechit->id ()); 
+    NtupleFactory_->FillFloat("E_xtal",itrechit->energy());
+    NtupleFactory_->FillInt("ix_xtal",endcapId.ix());
+    NtupleFactory_->FillInt("iy_xtal",endcapId.iy());
+    NtupleFactory_->FillInt("ieta_xtal",-1000);
+    NtupleFactory_->FillInt("iphi_xtal",-1000);
     if (itrechit->energy() > seed_energy_) seed_energy_ = itrechit->energy();
    }
    else
@@ -221,8 +240,11 @@ void
    temp = EcalClusterTools::getMaximum(eleIt->superCluster()->hitsAndFractions(),endcapHitsCollection).first;
    Max=temp;
   }
-  if (Max.det () == 0){ continue;} 
-   
+  if (Max.det () == 0){
+   NtupleFactory_->ClearNtuple();
+   continue;
+  }
+  
   NtupleFactory_->Fill4V("electrons",eleIt->p4()); 
   NtupleFactory_->Fill3V("electrons_tracker_atVtx",eleIt->trackMomentumAtVtx());
   NtupleFactory_->Fill3V("electrons_tracker_Out",eleIt->trackMomentumOut());

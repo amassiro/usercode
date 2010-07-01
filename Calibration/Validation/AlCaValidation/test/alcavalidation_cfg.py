@@ -25,7 +25,7 @@ secFiles.extend( (
 #readFiles.extend( ['file:../scripts/EcalCalElectron_1_1.root'] );
 #readFiles.extend( ['file:/gwtera/cms/users/amassiro/AlCaReco/May6thReRecoDump/EcalCalElectron_14_1.root'] );
 #readFiles.extend( ['file:/tmp/amassiro/AlCaDump/EcalCalElectron_3_1.root'] );
-readFiles.extend( ['file:/tmp/amassiro/E0A4897C-1A6A-DF11-8606-002618943970.root'] );
+readFiles.extend( ['file:/tmp/amassiro/F4E16702-3275-DF11-8FBF-003048F0E834.root'] );
 
 process.AlCaValidationTEST = cms.EDAnalyzer("AlCaValidation",
   MetTag                  = cms.InputTag("met"),
