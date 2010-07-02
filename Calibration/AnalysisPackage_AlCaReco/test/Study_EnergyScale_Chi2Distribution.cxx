@@ -203,13 +203,13 @@ void Study_EnergyScale_Chi2Distribution(){
   ///==== end likelihood ====
   const double *outParametersLL = minuit->X();
   const double *errParametersLL = minuit->Errors();
-  double minLL = grLL->Eval(outParameters[0]);
+  double minLL = grLL->Eval(outParametersLL[0]);
   
   
   
   std::cerr << "... minimized ..." << std::endl;
  
-   std::cerr << " numEvents = " << numEvents << " Scale = " << outParameters[0] << " +/- " << errParameters[0] << std::endl;
+  std::cerr << " numEvents = " << numEvents << " Scale = " << outParametersLL[0] << " +/- " << errParametersLL[0] << std::endl;
   
   for (int ii=0; ii < iNoSteps; ii++){
    double X_ii = (MaxScan - MinScan) / iNoSteps * ii + MinScan;
@@ -271,13 +271,13 @@ void Study_EnergyScale_Chi2Distribution(){
    }
   }
   
-  AlphaMean = outParameters[0];
+  AlphaMean = outParametersLL[0];
   AlphaMinus = errX_low;
   AlphaPlus = errX_up;
   myTreeLL_Result.Fill();
   
   std::cerr << ">>>> errX_low:errX_up = " << errX_low << " : " << errX_up << std::endl;
-  std::cerr << ">>>> Scale = " << outParameters[0] << " +/- " << errParameters[0] << std::endl;
+  std::cerr << ">>>> Scale = " << outParametersLL[0] << " +/- " << errParametersLL[0] << std::endl;
   
   
   

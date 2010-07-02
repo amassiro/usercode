@@ -27,6 +27,13 @@ double mT(const ROOT::Math::XYZTVector& v1, const ROOT::Math::XYZTVector& v2){
  return sqrt((v1.Et() + v2.Et()) * (v1.Et() + v2.Et()) - (v1 + v2).Pt() * (v1 + v2).Pt());
 }
 
+double mTDirect(double ET,double PT){
+ return sqrt(ET*ET - PT*PT);
+}
+
+
+
+
 int main(int argc, char** argv)
 { 
  //Check if all nedeed arguments to parse are there                                                                                                                               
@@ -92,6 +99,8 @@ int main(int argc, char** argv)
  TFile outFile(OutFileName.c_str(),"RECREATE");
  outFile.cd();
  
+ TH1F* SwissCrossDistDATA = new TH1F("SwissCrossDistDATA","SwissCrossDistDATA",100,0,1.5); 
+ 
  TH1F hEt("hEt","hEt",BinPt,0,200);
  TH1F hPt("hPt","hPt",BinPt,0,200);
  TH1F hMT("hMT","hMT",BinMass,0,200);
@@ -101,6 +110,8 @@ int main(int argc, char** argv)
  double ET;
  double MT;
  double EoP;
+ double SwissE4;
+ double MaxEnergy;
  
  myTree.Branch("Eta",&Eta,"Eta/D");
  myTree.Branch("ET",&ET,"ET/D");
@@ -108,6 +119,8 @@ int main(int argc, char** argv)
  myTree.Branch("MT",&MT,"MT/D");
  myTree.Branch("EoP",&EoP,"EoP/D");
  
+ myTree.Branch("SwissE4",&SwissE4,"SwissE4/D");
+ myTree.Branch("MaxEnergy",&MaxEnergy,"MaxEnergy/D");
  
  double start, end;
  
@@ -339,8 +352,17 @@ if
    if (MT > MINMT){
     hPt.Fill(pT);
     hEt.Fill(ET);
-    std::cerr << " runId = " << reader.GetInt("runId")->at(0) << " lumiId = " << reader.GetInt("lumiId")->at(0) << " eventId = " << reader.GetInt("eventId")->at(0) << " ET(SC) = " << ET << " Eta = " << Eta << std::endl;
+    std::cerr << " runId = " << reader.GetInt("runId")->at(0) << " lumiId = " << reader.GetInt("lumiId")->at(0) << " eventId = " << reader.GetInt("eventId")->at(0) << " ET(SC) = " << ET << " Eta = " << Eta << std::endl;    
    }
+   
+   SwissE4 = reader.GetFloat("SwissE4")->at(iEleMaxPt);
+   MaxEnergy = reader.GetFloat("MaxEnergy")->at(iEleMaxPt);
+   
+   if (MT>30 && EoP<3 && ET>18) {
+    SwissCrossDistDATA->Fill((1-SwissE4/MaxEnergy));
+    std::cerr << " (1-SwissE4/MaxEnergy) = " << (1-SwissE4/MaxEnergy) << std::endl;
+   }
+   
    hMT.Fill(MT);
    myTree.Fill();
    selEvents++;
@@ -379,6 +401,15 @@ if
  hMT.Write();
  hMT.Draw("E");
  gPad->SaveAs(outFileNameImage.c_str());
+ 
+ 
+ SwissCrossDistDATA->SetMarkerColor(kRed);
+ SwissCrossDistDATA->SetMarkerStyle(20);
+ SwissCrossDistDATA->SetMarkerSize(1.0);
+ SwissCrossDistDATA->SetLineColor(kRed);
+ SwissCrossDistDATA->SetLineWidth(2.0);
+ SwissCrossDistDATA->Draw("E"); 
+ gPad->SaveAs("testSwiss.png");
  
  myTree.Write();
  outFile.Write();

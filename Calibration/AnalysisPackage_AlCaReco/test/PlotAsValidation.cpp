@@ -64,6 +64,10 @@ int main(int argc, char** argv)
  
  
  TTree m_tree("m_tree","m_tree");
+ 
+ float m_ET_SC;
+ 
+ float m_pT;
  float m_eta;
  float m_phi;
  float m_pTk;
@@ -91,6 +95,8 @@ int main(int argc, char** argv)
  int m_runID;
  int m_eventID;
 
+ m_tree.Branch("ET_SC",&m_ET_SC,"ET_SC/F");
+ m_tree.Branch("pT",&m_pT,"pT/F");
  m_tree.Branch("eta",&m_eta,"eta/F");
  m_tree.Branch("phi",&m_phi,"phi/F");
  m_tree.Branch("pTk",&m_pTk,"pTk/F");
@@ -133,8 +139,13 @@ int main(int argc, char** argv)
   int nEles = reader.Get4V("electrons")->size();
   int nEleSel = 0;
   ROOT::Math::XYZTVector Resonance(0,0,0,0);
-  std::cerr << " nEles = " << nEles << std::endl;
+//   std::cerr << " nEles = " << nEles << std::endl;
+  bool OkpT15 = false;
+
   for (int iEle = 0; iEle < nEles; iEle++){    
+   m_pT = reader.Get4V("electrons")->at(iEle).Pt();
+   if (m_pT >= 15) OkpT15 = true;
+   m_ET_SC = (reader.GetFloat("electrons_scE")->at(iEle)) * sin(reader.Get4V("electrons")->at(iEle).Theta());
    m_eta = reader.Get4V("electrons")->at(iEle).Eta();
    m_SwissE4 = reader.GetFloat("SwissE4")->at(iEle);
    m_Energy4 = reader.GetFloat("Energy4")->at(iEle);
@@ -147,6 +158,12 @@ int main(int argc, char** argv)
    m_runID = reader.GetInt("runId")->at(iEle);
    m_tree.Fill();
    nEleTot++;
+  }
+  if (OkpT15 == false) {
+   std::cerr << " No electron pT 15 found : " << nEles << std::endl;
+   for (int iEle = 0; iEle < nEles; iEle++){    
+    std::cerr << " >< " << reader.Get4V("electrons")->at(iEle).Pt() << std::endl;
+   }
   }
  } //loop over the events 
  
