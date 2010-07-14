@@ -50,16 +50,35 @@ SOFLAGS  =  -Wl,-soname,$(SONAME)
 
 GLIBS   =  -lm -ldl -rdynamic $(ROOTGLIBS) $(CLHEPLIBS) -lGenVector -lRooFit -lRooFitCore -lFoam -lMinuit -lTMVA -lMLP -lXMLIO  -lTreePlayer  $(NTUPLEPACKAGELIBS)
 
-
 #################################################
 #if mac
 ARCH  =  $(shell root-config --arch)
 ifeq ($(ARCH),macosx)
 LibSuf  =  .dylib
 
-CPPFLAGS  =  -Wall -W -Woverloaded-virtual -O2 $(ARCHL) -pipe -I$(HDR) $(ROOTCFLAGS) $(CLHEPCFLAGS)
+ARCHL = -m32
 
-CXXFLAGS  =  -Wall -W -Woverloaded-virtual -O2 $(ARCHL) -pipe -I$(HDR) $(ROOTCFLAGS) $(CLHEPCFLAGS)
+CPPFLAGS  =  -Wall -W -Woverloaded-virtual -O2 $(ARCHL) -pipe -I$(HDR) $(ROOTCFLAGS) $(CLHEPCFLAGS) $(NTUPLEPACKAGEFLAGS)
+
+CXXFLAGS  =  -Wall -W -Woverloaded-virtual -O2 $(ARCHL) -pipe -I$(HDR) $(ROOTCFLAGS) $(CLHEPCFLAGS) $(NTUPLEPACKAGEFLAGS)
+
+LDFLAGS  =  -dynamiclib -shared -single_module -undefined dynamic_lookup $(ARCHL)
+SONAME	 =  libAlCaReco.dylib
+SOFLAGS  =
+endif
+#################################################
+
+#################################################
+#if mac 64
+ARCH  =  $(shell root-config --arch)
+ifeq ($(ARCH),macosx64)
+LibSuf  =  .dylib
+
+ARCHL = -m64
+
+CPPFLAGS  =  -Wall -W -Woverloaded-virtual -O2 $(ARCHL) -pipe -I$(HDR) $(ROOTCFLAGS) $(CLHEPCFLAGS) $(NTUPLEPACKAGEFLAGS)
+
+CXXFLAGS  =  -Wall -W -Woverloaded-virtual -O2 $(ARCHL) -pipe -I$(HDR) $(ROOTCFLAGS) $(CLHEPCFLAGS) $(NTUPLEPACKAGEFLAGS)
 
 LDFLAGS  =  -dynamiclib -shared -single_module -undefined dynamic_lookup $(ARCHL)
 SONAME	 =  libAlCaReco.dylib
