@@ -117,9 +117,21 @@ int main(int argc, char** argv){
  std::cout << ">>>>> Output::outputFile  " << outputFile  << std::endl;
 
 
+ int EEEB = gConfigParser -> readIntOption("Options::EEorEB");
+ std::cout << ">>>>> Options::EEEB " << EEEB << std::endl;
+ TString AdditionalCut = Form("1"); ///==== no additional selection
+ if (EEEB == 1) { ///==== EE
+   AdditionalCut = Form("(eta > 1.5 || eta < -1.5)");
+ }
+
+ if (EEEB == 2) { ///==== EB
+   AdditionalCut = Form("(eta < 1.5 && eta > -1.5)");
+ }
+ std::cout << ">>>>>        :: " << AdditionalCut.Data() << std::endl;
+ 
 
 
- EColor vColor[10] = {kBlue,kRed,kGreen,kYellow,kOrange,kMagenta,kTeal,kViolet};
+ EColor vColor[10] = {kBlue,kRed,kGreen,kYellow,kOrange,kGray,kTeal,kMagenta,kViolet};
 
  ///==== DATA ====
  TFile* fileInDATA = new TFile(inputFileDATA.c_str(),"READ");
@@ -153,7 +165,7 @@ int main(int argc, char** argv){
  MyTreeDATA->SetBranchAddress("EoP",&EoP);
  TH1F* HistoDATA = new TH1F("DATA","DATA",bin,min,max);
  TString DrawDATA = Form("%s >> DATA",variable.c_str());
- MyTreeDATA->Draw(DrawDATA.Data());
+ MyTreeDATA->Draw(DrawDATA.Data(),AdditionalCut.Data());
  HistoDATA->SetMarkerSize(1);
  HistoDATA->SetMarkerStyle(20); 
  HistoDATA->GetXaxis()->SetTitle(variable.c_str());
@@ -165,6 +177,7 @@ int main(int argc, char** argv){
  THStack* hsMC = new THStack("hsMC","hsMC");
  
  for (int iMC = 0; iMC < nMC; iMC++) {
+// for (int iMC = nMC-1; iMC >= 0; iMC--) {
   MyTreeMC[iMC] = (TTree*) fileInMC[iMC]->Get(treeNameMC.c_str());
   MyTreeMC[iMC]->SetBranchAddress("pT",&pT);
   MyTreeMC[iMC]->SetBranchAddress("ET",&ET);
@@ -172,7 +185,7 @@ int main(int argc, char** argv){
   MyTreeMC[iMC]->SetBranchAddress("EoP",&EoP);
   HistoMC[iMC] = new TH1F(inputSampleMC.at(iMC).c_str(),inputSampleMC.at(iMC).c_str(),bin,min,max);
   TString Draw = Form("%s >>%s",variable.c_str(),inputSampleMC.at(iMC).c_str());
-  MyTreeMC[iMC]->Draw(Draw.Data());
+  MyTreeMC[iMC]->Draw(Draw.Data(),AdditionalCut.Data());
   std::cout << ">>>>>> " << inputSampleMC.at(iMC) << " : " << xSecAndEfficiency.at(iMC) << " : " << luminosity << " : " << HistoMC[iMC]->GetEntries() << " = " << luminosity * xSecAndEfficiency.at(iMC) * HistoMC[iMC]->GetEntries() << std::endl;
   std::cout << "    >> " << Draw.Data() << std::endl;
   HistoMC[iMC]->Scale(luminosity * xSecAndEfficiency.at(iMC)); // / HistoMC[iMC]->GetEntries());
@@ -180,6 +193,7 @@ int main(int argc, char** argv){
   HistoMC[iMC]->SetAxisRange(0,HistoDATA->GetMaximum() * 2.5,"Y");
   HistoMC[iMC]->GetXaxis()->SetTitle(variable.c_str());
   hsMC->Add(HistoMC[iMC]);
+  if (iMC == 0) hsMC->Add(HistoMC[iMC]);
   leg->AddEntry(HistoMC[iMC],HistoMC[iMC]->GetTitle(),"f");
   legDown->AddEntry(HistoMC[iMC],HistoMC[iMC]->GetTitle(),"f");
  }
@@ -195,28 +209,34 @@ int main(int argc, char** argv){
  HistoDATA->SetAxisRange(0.01,HistoDATA->GetMaximum() * 1.5,"Y");
  HistoDATA->DrawClone("E1");
 // DrawStack(hsMC);
- hsMC->Draw("same");
- hsMC->Draw("BARsame");
+ hsMC->DrawClone("same");
+ hsMC->DrawClone("BARsame");
+
+// HistoMC[0]->Draw("BAR");
+// HistoMC[1]->Draw("same");
+ // std::cerr << " HistoMC[0]->GetEntries() = " << HistoMC[0]->GetEntries() << std::endl;
  leg->Draw();
  gPad->SetGrid();
  TString tLumiName = Form("#int L = %.4f pb^{-1}",luminosity);
  TLatex tLumi(2.0 * HistoDATA->GetMean(1),0.1 * HistoDATA->GetMaximum(),tLumiName.Data());
  tLumi.DrawClone();
- TString nameImage = Form("%s.png",variable.c_str());
+ TString nameImage = Form("%s_%d.png",variable.c_str(),EEEB);
  cResultDistro.SaveAs(nameImage.Data());
 
- TString nameImageRoot = Form("%s.root",variable.c_str());
+ TString nameImageRoot = Form("%s_%d.root",variable.c_str(),EEEB);
  cResultDistro.SaveAs(nameImageRoot.Data());
 
 
  TCanvas cResultDistroLog("cResultDistroLog","cResultDistroLog",800,800);
  HistoDATA->DrawClone("E1");
- hsMC->Draw("same");
- hsMC->Draw("BARsame");
+ DrawStack(hsMC);
+// hsMC->DrawClone("same");
+// hsMC->DrawClone("BARsame");
+ HistoDATA->DrawClone("E1same");
  legDown->Draw();
  gPad->SetGrid();
  gPad->SetLogy();
- TString nameImageLog = Form("%s_log.png",variable.c_str());
+ TString nameImageLog = Form("%s_%d_log.png",variable.c_str(),EEEB);
  tLumi.Draw();
  cResultDistroLog.SaveAs(nameImageLog.Data());
   

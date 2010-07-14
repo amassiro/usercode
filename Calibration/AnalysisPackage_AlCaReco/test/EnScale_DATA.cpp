@@ -22,6 +22,8 @@
 
 #include "TF1.h"
 
+
+
 TFile* fileInDATA;
 TFile* fileInMC;
 TFile* outFile;
@@ -41,7 +43,11 @@ double MinScanRange = -0.3;
 double MaxScanRange = 0.3;
 unsigned int iNoSteps = 1000;
 unsigned int iPar_NoBG = 0;
+
+std::string variableName;
 int numBINS;
+double minBINS;
+double maxBINS;
 
 int maxIter = 1000;
 Int_t numEvents = 100;
@@ -88,7 +94,7 @@ double LLFunc(const double *xx ){
  if (!gROOT->FindObject(NameMC.Data())){
   hMC = new TH1F(NameMC,NameMC,NBINTemplate,MinTemplate,MaxTemplate);
   hMC->Reset();
-  TString DrawMC = Form("(ET * (1+(%f)))>>%s",scale,NameMC.Data());
+  TString DrawMC = Form("(%s * (1+(%f)))>>%s",variableName.c_str(),scale,NameMC.Data());
   MyTreeMC->Draw(DrawMC,AdditionalCut.Data());
   hMC->Scale(1./numEvents);
   outFile->cd();
@@ -147,9 +153,9 @@ double Chi2F(const double *xx ){
  
  TH1F* hMC;
  if (!gROOT->FindObject(NameMC.Data())){
-  hMC = new TH1F(NameMC,NameMC,numBINS,0,200);
+  hMC = new TH1F(NameMC,NameMC,numBINS,minBINS,maxBINS);
   hMC->Reset();
-  TString DrawMC = Form("(ET * (1+(%f)))>>%s",scale,NameMC.Data());
+  TString DrawMC = Form("(%s * (1+(%f)))>>%s",variableName.c_str(),scale,NameMC.Data());
   MyTreeMC->Draw(DrawMC,AdditionalCut.Data());
   hMC->Sumw2();
   hMC->Scale(hDATA->GetEntries()/hMC->GetEntries());
@@ -197,9 +203,9 @@ double NewChi2Func(const double *xx ){
  TString NameMC = Form("hMC_Chi2_%.5f",scale);
  TH1F* hMC;
  if (!gROOT->FindObject(NameMC.Data())){
-  hMC = new TH1F(NameMC,NameMC,numBINS,0,200);
+  hMC = new TH1F(NameMC,NameMC,numBINS,minBINS,maxBINS);
   hMC->Reset();
-  TString DrawMC = Form("(ET * (1+(%f)))>>%s",scale,NameMC.Data());
+  TString DrawMC = Form("(%s * (1+(%f)))>>%s",variableName.c_str(),scale,NameMC.Data());
   MyTreeMC->Draw(DrawMC,AdditionalCut.Data());
   hMC->Sumw2();
   hMC->Scale(hDATA->GetEntries()/hMC->GetEntries());
@@ -272,7 +278,7 @@ void doMC_Chi2(){
   vET_data.clear();
   outFile->cd();
   TString nameDATA = Form("hDATA_%d_%d_%.5f",Data_or_MC,nIter,ScaleTrue);
-  TH1F hDATA(nameDATA,nameDATA,numBINS,0,200);
+  TH1F hDATA(nameDATA,nameDATA,numBINS,minBINS,maxBINS);
   for (int iEvt = 0; iEvt < numEvents; iEvt ++){
    MyTreeMC->GetEntry(static_cast<int>(gRandom->Uniform(0,MyTreeMC->GetEntries())));
    //==== 0 = EE+EB
@@ -283,9 +289,17 @@ void doMC_Chi2(){
        (EEEB == 0) 
       )
   {
-   std::cerr << " ET = " << ET << " eta = " << eta << std::endl;
-   hDATA.Fill(ET * (1+ScaleTrue));
-   vET_data.push_back(ET * (1+ScaleTrue));
+//   std::cerr << " ET = " << ET << " eta = " << eta << std::endl;
+
+   if (variableName == "ET"){
+    hDATA.Fill(ET * (1+ScaleTrue));
+    vET_data.push_back(ET * (1+ScaleTrue));
+   }
+   else if (variableName == "EoP"){
+    hDATA.Fill(EoP * (1+ScaleTrue));
+    vET_data.push_back(EoP * (1+ScaleTrue));
+   }
+
   }
   else {
    iEvt --;
@@ -387,7 +401,7 @@ void doMC_LL(){
   vET_data.clear();
   outFile->cd();
   TString nameDATA = Form("hDATA_%d_%d_%.5f",Data_or_MC,nIter,ScaleTrue);
-  TH1F hDATA(nameDATA,nameDATA,numBINS,0,200);
+  TH1F hDATA(nameDATA,nameDATA,numBINS,minBINS,maxBINS);
   for (int iEvt = 0; iEvt < numEvents; iEvt ++){
    MyTreeMC->GetEntry(static_cast<int>(gRandom->Uniform(0,MyTreeMC->GetEntries())));
    //==== 0 = EE+EB
@@ -398,8 +412,16 @@ void doMC_LL(){
        (EEEB == 0) 
       )
   {
-   hDATA.Fill(ET * (1+ScaleTrue));
-   vET_data.push_back(ET * (1+ScaleTrue));
+   if (variableName == "ET"){
+    hDATA.Fill(ET * (1+ScaleTrue));
+    vET_data.push_back(ET * (1+ScaleTrue));
+   }
+   else if (variableName == "EoP"){
+    hDATA.Fill(EoP * (1+ScaleTrue));
+    vET_data.push_back(EoP * (1+ScaleTrue));
+   }
+
+
   }
   else {
    iEvt --;
@@ -504,7 +526,7 @@ void doMC_NewChi2(){
   vET_data.clear();
   outFile->cd();
   TString nameDATA = Form("hDATA_%d_%d_%.5f",Data_or_MC,nIter,ScaleTrue);
-  TH1F hDATA(nameDATA,nameDATA,numBINS,0,200);
+  TH1F hDATA(nameDATA,nameDATA,numBINS,minBINS,maxBINS);
   for (int iEvt = 0; iEvt < numEvents; iEvt ++){
   MyTreeMC->GetEntry(static_cast<int>(gRandom->Uniform(0,MyTreeMC->GetEntries())));
    //==== 0 = EE+EB
@@ -515,8 +537,14 @@ void doMC_NewChi2(){
        (EEEB == 0) 
       )
   {
-   hDATA.Fill(ET * (1+ScaleTrue));
-   vET_data.push_back(ET * (1+ScaleTrue));
+    if (variableName == "ET"){
+    hDATA.Fill(ET * (1+ScaleTrue));
+    vET_data.push_back(ET * (1+ScaleTrue));
+   }
+   else if (variableName == "EoP"){
+    hDATA.Fill(EoP * (1+ScaleTrue));
+    vET_data.push_back(EoP * (1+ScaleTrue));
+   }
   }
   else {
    iEvt --;
@@ -640,16 +668,23 @@ int main(int argc, char** argv){
  std::cout << ">>>>> Options::MinScanRange  " << MinScanRange  << std::endl;  
  std::cout << ">>>>> Options::MaxScanRange  " << MaxScanRange  << std::endl;  
 
+
  numBINS = gConfigParser -> readIntOption("Options::numBINS");
- std::cout << ">>>>> Options::numBINS  " << numBINS  << std::endl;  
+ minBINS = gConfigParser -> readDoubleOption("Options::minBINS");
+ maxBINS = gConfigParser -> readDoubleOption("Options::maxBINS");
+ std::cout << ">>>>> Options::numBINS   " << numBINS  << std::endl;  
+ std::cout << ">>>>> Options::minBINS   " << minBINS  << std::endl;
+ std::cout << ">>>>> Options::maxBINS   " << maxBINS  << std::endl;
+
 
  NBINTemplate = 100 * numBINS;
- MinTemplate = 0.0;
- MaxTemplate = 200.0;
+ MinTemplate = minBINS;
+ MaxTemplate = maxBINS;
  Delta = (MaxTemplate - MinTemplate) / NBINTemplate;
 
 
-
+ variableName = gConfigParser -> readStringOption("Options::variableName");
+ std::cout << ">>>>> Options::variableName " << variableName.c_str() << std::endl;
 
  EEEB = gConfigParser -> readIntOption("Options::EEorEB");
 ///==== 0 = EE+EB
@@ -794,11 +829,17 @@ int main(int argc, char** argv){
  vET_data.clear();
  nIter = 1000000000; ///==== less than 1000000000 iterations at the end !!!
  TString nameDATA = Form("hDATA_%d_%d_%.5f",Data_or_MC,nIter,ScaleTrue);
- TH1F hDATA(nameDATA,nameDATA,numBINS,0,200);
+ TH1F hDATA(nameDATA,nameDATA,numBINS,minBINS,maxBINS);
  for (int iEvt = 0; iEvt < MyTreeDATA->GetEntries(); iEvt ++){
   MyTreeDATA->GetEntry(iEvt);
-  hDATA.Fill(ET);
-  vET_data.push_back(ET);
+  if (variableName == "ET"){
+    hDATA.Fill(ET);
+    vET_data.push_back(ET);
+   }
+   else if (variableName == "EoP"){
+    hDATA.Fill(EoP);
+    vET_data.push_back(EoP);
+   }
  }
  hDATA.Write();
   
