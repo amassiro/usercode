@@ -35,7 +35,7 @@
 SetColor/Style Histo
 */
 void SetColorAndStyleHisto(TH1 & histo , EColor color){
- histo.SetFillStyle (3004) ;
+ histo.SetFillStyle (3001) ;
  histo.SetFillColor (color) ;
  histo.SetLineColor (color) ;
  histo.SetLineWidth (1) ;
@@ -119,7 +119,7 @@ int main(int argc, char** argv){
 
 
 
- EColor vColor[10] = {kBlue,kRed,kGreen,kYellow,kAzure,kMagenta,kTeal};
+ EColor vColor[10] = {kBlue,kRed,kGreen,kYellow,kOrange,kMagenta,kTeal,kViolet};
 
  ///==== DATA ====
  TFile* fileInDATA = new TFile(inputFileDATA.c_str(),"READ");
@@ -174,6 +174,7 @@ int main(int argc, char** argv){
   TString Draw = Form("%s >>%s",variable.c_str(),inputSampleMC.at(iMC).c_str());
   MyTreeMC[iMC]->Draw(Draw.Data());
   std::cout << ">>>>>> " << inputSampleMC.at(iMC) << " : " << xSecAndEfficiency.at(iMC) << " : " << luminosity << " : " << HistoMC[iMC]->GetEntries() << " = " << luminosity * xSecAndEfficiency.at(iMC) * HistoMC[iMC]->GetEntries() << std::endl;
+  std::cout << "    >> " << Draw.Data() << std::endl;
   HistoMC[iMC]->Scale(luminosity * xSecAndEfficiency.at(iMC)); // / HistoMC[iMC]->GetEntries());
   SetColorAndStyleHisto(*(HistoMC[iMC]),vColor[iMC]);
   HistoMC[iMC]->SetAxisRange(0,HistoDATA->GetMaximum() * 2.5,"Y");

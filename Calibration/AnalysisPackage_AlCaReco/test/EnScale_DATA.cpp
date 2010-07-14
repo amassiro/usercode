@@ -164,7 +164,9 @@ double Chi2F(const double *xx ){
  outFile->cd();
 //  hDATA.Write();
 //  hMC.Write();
- double result = - hMC->KolmogorovTest(hDATA,"X");
+ 
+ double result = hMC->KolmogorovTest(hDATA,"M");
+// double result = - hMC->KolmogorovTest(hDATA,"X");
 //  double result = hMC->Chi2Test(&hDATA,"CHI2/NDF");
 //=========> E' QUESTO! ==> double result = hMC->Chi2Test(hDATA,"CHI2");
  //double result = - hMC.Chi2Test(&hDATA,""); ///==== http://root.cern.ch/root/html/TH1.html#TH1:Chi2Test
@@ -281,6 +283,7 @@ void doMC_Chi2(){
        (EEEB == 0) 
       )
   {
+   std::cerr << " ET = " << ET << " eta = " << eta << std::endl;
    hDATA.Fill(ET * (1+ScaleTrue));
    vET_data.push_back(ET * (1+ScaleTrue));
   }

@@ -11,15 +11,15 @@
   TFile *fmc   = TFile::Open("output/Wenu_MC_4analysis.root");  
  
   
-  TH1F *hWd = (TH1F*)fdata->Get("hetEB") ;
-  TH1F *hWm = (TH1F*)fmc->Get("hetEB") ;
+  TH1F *hWd = (TH1F*)fdata->Get("hetEE") ;
+  TH1F *hWm = (TH1F*)fmc->Get("hetEE") ;
   float  s = float(hWd->GetSumOfWeights())/float(hWm->GetSumOfWeights());
   hWm->Scale(s);
 
   TH1F *hWM[200];
   char hname[100];
   for (int i = 0; i < 200; i++){
-    sprintf(hname,"hetEBscaled_%d",i);
+    sprintf(hname,"hetEEscaled_%d",i);
     hWM[i] = (TH1F*)fmc->Get(hname) ;
     s = float(hWd->GetSumOfWeights())/float(hWM[i]->GetSumOfWeights());
     hWM[i]->Sumw2();
@@ -27,7 +27,7 @@
   }
   
 
-/*
+
   TGraph *gChi = new TGraph();
   for (int i=0;i<200;i++){
     float chi2=0;
@@ -40,7 +40,7 @@
     float alpha = (i-100.)/1000.;
     gChi->SetPoint(i,alpha,chi2);
   }
-*/
+/*
 
   TGraph *gChi = new TGraph();
   for (int i=0;i<200;i++){
@@ -48,7 +48,7 @@
     float alpha = (i-100.)/1000.;
     gChi->SetPoint(i,alpha,chi2);
   }
-
+*/
 
   TCanvas *cc = new TCanvas("cc","cc"); 
   cc->Divide(2,1);
@@ -70,7 +70,7 @@
 
   float xmin = gChi->GetMean();
   TF1 *myfit = new TF1("myfit","pol2",-1,1);
-  myfit->SetRange(-0.08,-0.03);
+  myfit->SetRange(-0.07,0.00);
   gChi->Fit("myfit","sameQRM");
   float a=myfit->GetParameter(0);
   float b=myfit->GetParameter(1);
