@@ -1,9 +1,15 @@
 {
 	
- double MIN = -0.3;
- double MAX = 0.3;
- int BIN = 300;
+ double MIN = -0.2;
+ double MAX = 0.2;
+ int BIN = 200;
+//  double MinScanRange = -0.04;
+//  double MaxScanRange = 0.01;
  
+ double MinScanRange = -0.06;
+ double MaxScanRange = 0.04;
+ 
+
  TTree* myTreeChi2 = (TTree*) _file0->Get("myTreeChi2");
  
  ///==== DATA
@@ -188,9 +194,13 @@
  TF1* fitMinChi2 = new TF1("fitMinChi2","pol2");
  TF1* fitMinLL = new TF1("fitMinLL","pol2");
  TF1* fitMinNewChi2 = new TF1("fitMinNewChi2","pol2");
- fitMinChi2->SetRange(-0.07,-0.04);
- fitMinLL->SetRange(-0.1,0.0);
- fitMinNewChi2->SetRange(-0.1,0.0);
+ fitMinChi2->SetRange(MinScanRange,MaxScanRange);
+ fitMinLL->SetRange(MinScanRange,MaxScanRange);
+ fitMinNewChi2->SetRange(MinScanRange,MaxScanRange);
+
+// fitMinChi2->SetRange(-0.07,-0.04);
+// fitMinLL->SetRange(-0.1,0.0);
+// fitMinNewChi2->SetRange(-0.1,0.0);
  grChi2->Fit("fitMinChi2","RMQ");
  std::cerr << " alpha Chi2 = " << -fitMinChi2->GetParameter(1) / 2. / fitMinChi2->GetParameter(2) << std::endl;
  grLL->Fit("fitMinLL","RMQ");
@@ -319,8 +329,8 @@
  hDATA->Draw("E1");
  hMC_Chi2->Draw("BARsame");
  hDATA->Draw("E1same");
- TString Result_Chi2 = Form("#alpha = %.4f + %.4f - %.4f ",AlphaMean_Chi2_Fit,AlphaMinus_Chi2_Fit-AlphaMean_Chi2_Fit,AlphaMean_Chi2_Fit-AlphaPlus_Chi2_Fit);
- //TString Result_Chi2 = Form("#alpha = %.4f + %.4f - %.4f ",AlphaMean_Chi2,AlphaMinus_Chi2-AlphaMean_Chi2,AlphaMean_Chi2-AlphaPlus_Chi2);
+// TString Result_Chi2 = Form("#alpha = %.4f + %.4f - %.4f ",AlphaMean_Chi2_Fit,AlphaMinus_Chi2_Fit-AlphaMean_Chi2_Fit,AlphaMean_Chi2_Fit-AlphaPlus_Chi2_Fit);
+ TString Result_Chi2 = Form("#alpha = %.4f + %.4f - %.4f ",AlphaMean_Chi2,AlphaMinus_Chi2-AlphaMean_Chi2,AlphaMean_Chi2-AlphaPlus_Chi2);
  TLatex lResult_Chi2(70,11,Result_Chi2);
  lResult_Chi2->Draw();
 

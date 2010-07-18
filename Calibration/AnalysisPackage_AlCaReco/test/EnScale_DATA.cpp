@@ -95,7 +95,8 @@ double LLFunc(const double *xx ){
   hMC = new TH1F(NameMC,NameMC,NBINTemplate,MinTemplate,MaxTemplate);
   hMC->Reset();
   TString DrawMC = Form("(%s * (1+(%f)))>>%s",variableName.c_str(),scale,NameMC.Data());
-  MyTreeMC->Draw(DrawMC,AdditionalCut.Data());
+  std::cerr << " CUT = " << (AdditionalCut+Form("&& (ET * (1+(%f)))>18.",scale)).Data() << std::endl;
+  MyTreeMC->Draw(DrawMC,(AdditionalCut+Form("&& (ET * (1+(%f)))>18.",scale)).Data());
   hMC->Scale(1./numEvents);
   outFile->cd();
   hMC->Write();
@@ -156,9 +157,9 @@ double Chi2F(const double *xx ){
   hMC = new TH1F(NameMC,NameMC,numBINS,minBINS,maxBINS);
   hMC->Reset();
   TString DrawMC = Form("(%s * (1+(%f)))>>%s",variableName.c_str(),scale,NameMC.Data());
-  MyTreeMC->Draw(DrawMC,AdditionalCut.Data());
+  MyTreeMC->Draw(DrawMC,(AdditionalCut+Form("&& (ET * (1+(%f)))>18.",scale)).Data());
   hMC->Sumw2();
-  hMC->Scale(hDATA->GetEntries()/hMC->GetEntries());
+  hMC->Scale(hDATA->GetEffectiveEntries()/hMC->GetEffectiveEntries());
   outFile->cd();
   hMC->Write();
  }
@@ -206,9 +207,9 @@ double NewChi2Func(const double *xx ){
   hMC = new TH1F(NameMC,NameMC,numBINS,minBINS,maxBINS);
   hMC->Reset();
   TString DrawMC = Form("(%s * (1+(%f)))>>%s",variableName.c_str(),scale,NameMC.Data());
-  MyTreeMC->Draw(DrawMC,AdditionalCut.Data());
+  MyTreeMC->Draw(DrawMC,(AdditionalCut+Form("&& (ET * (1+(%f)))>18.",scale)).Data());
   hMC->Sumw2();
-  hMC->Scale(hDATA->GetEntries()/hMC->GetEntries());
+  hMC->Scale(hDATA->GetEffectiveEntries()/hMC->GetEffectiveEntries());
   outFile->cd();
   hMC->Write();
  } 
@@ -284,9 +285,11 @@ void doMC_Chi2(){
    //==== 0 = EE+EB
    //==== 1 = EE
    //==== 2 = EB
-   if ((EEEB == 1 && (eta > 1.5 || eta < -1.5)) ||
+   if (
+       ET * (1+ScaleTrue) > 18. &&
+       ((EEEB == 1 && (eta > 1.5 || eta < -1.5)) ||
        (EEEB == 2 && (eta < 1.5 && eta > -1.5)) ||
-       (EEEB == 0) 
+       (EEEB == 0))
       )
   {
 //   std::cerr << " ET = " << ET << " eta = " << eta << std::endl;
@@ -407,9 +410,11 @@ void doMC_LL(){
    //==== 0 = EE+EB
    //==== 1 = EE
    //==== 2 = EB
-   if ((EEEB == 1 && (eta > 1.5 || eta < -1.5)) ||
+   if(
+      ET * (1+ScaleTrue) > 18. &&
+      ((EEEB == 1 && (eta > 1.5 || eta < -1.5)) ||
        (EEEB == 2 && (eta < 1.5 && eta > -1.5)) ||
-       (EEEB == 0) 
+       (EEEB == 0))
       )
   {
    if (variableName == "ET"){
@@ -532,9 +537,11 @@ void doMC_NewChi2(){
    //==== 0 = EE+EB
    //==== 1 = EE
    //==== 2 = EB
-   if ((EEEB == 1 && (eta > 1.5 || eta < -1.5)) ||
+   if (
+        ET * (1+ScaleTrue) > 18. &&
+       ((EEEB == 1 && (eta > 1.5 || eta < -1.5)) ||
        (EEEB == 2 && (eta < 1.5 && eta > -1.5)) ||
-       (EEEB == 0) 
+       (EEEB == 0))
       )
   {
     if (variableName == "ET"){
@@ -687,6 +694,7 @@ int main(int argc, char** argv){
  std::cout << ">>>>> Options::variableName " << variableName.c_str() << std::endl;
 
  EEEB = gConfigParser -> readIntOption("Options::EEorEB");
+ std::cout << ">>>>> Options::EEEB " << EEEB << std::endl;
 ///==== 0 = EE+EB
 ///==== 1 = EE
 ///==== 2 = EB
@@ -698,7 +706,7 @@ int main(int argc, char** argv){
  if (EEEB == 2) { ///==== EB
    AdditionalCut = Form("(eta < 1.5 && eta > -1.5)");
  }
-
+ std::cout << ">>>>>        :: " << AdditionalCut.Data() << std::endl;
 
 
 // int entryMAX = gConfigParser -> readIntOption("Input::entryMAX");
@@ -832,14 +840,20 @@ int main(int argc, char** argv){
  TH1F hDATA(nameDATA,nameDATA,numBINS,minBINS,maxBINS);
  for (int iEvt = 0; iEvt < MyTreeDATA->GetEntries(); iEvt ++){
   MyTreeDATA->GetEntry(iEvt);
-  if (variableName == "ET"){
-    hDATA.Fill(ET);
-    vET_data.push_back(ET);
+  if ( 
+       (EEEB == 1 && (eta > 1.5 || eta < -1.5)) ||
+       (EEEB == 2 && (eta < 1.5 && eta > -1.5)) ||
+       (EEEB == 0) 
+      ){
+   if (variableName == "ET"){
+     hDATA.Fill(ET);
+     vET_data.push_back(ET);
+    }
+    else if (variableName == "EoP"){
+     hDATA.Fill(EoP);
+     vET_data.push_back(EoP);
    }
-   else if (variableName == "EoP"){
-    hDATA.Fill(EoP);
-    vET_data.push_back(EoP);
-   }
+  }
  }
  hDATA.Write();
   

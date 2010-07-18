@@ -1,9 +1,18 @@
 {
 	
- double MIN = -0.3;
- double MAX = 0.3;
- int BIN = 300;
  
+ double MIN = -0.2;
+ double MAX = 0.2;
+ int BIN = 200;
+ //  double MinScanRange = -0.04;
+ //  double MaxScanRange = 0.01;
+ 
+ double MinScanRange = -0.06;
+ double MaxScanRange = 0.04; 
+ 
+ TF1* fitGaus = new TF1("fitGaus","gaus");
+ fitGaus->SetRange(-0.1,0.03);
+
  TTree* myTreeChi2 = (TTree*) _file0->Get("myTreeChi2");
  
  ///==== DATA
@@ -186,8 +195,8 @@
  cKS.Divide(2,2);
  
  cKS.cd(1);
- hChi2->SetTitle("KS test: - probability KS");
- hChi2->GetYaxis()->SetTitle("- probability KS test");
+ hChi2->SetTitle("KS test: KS");
+ hChi2->GetYaxis()->SetTitle("D_{n}");
  hChi2->GetXaxis()->SetTitle("#alpha");
  hChi2->Draw("colz");
  grChi2->Draw("P");
@@ -199,6 +208,9 @@
  hChi2_Min->Draw();
  gPad->SetGrid();
  
+
+ hChi2_Min->Fit("fitGaus","RMQ");
+
  cKS.cd(2);
  
  double ScaleTrue = -1000; ///==== default
@@ -221,16 +233,18 @@
  hDATA->Draw("E1");
  hMC_Chi2->Draw("BARsame");
  hDATA->Draw("E1same");
- TString Result_Chi2 = Form("#alpha = %.4f #pm %.4f",AlphaMean_Chi2,hChi2_Min->GetRMS());
- TLatex lResult_Chi2(70,11,Result_Chi2);
+ 
+// TString Result_Chi2 = Form("#alpha = %.4f #pm %.4f",AlphaMean_Chi2,hChi2_Min->GetRMS());
+ TString Result_Chi2 = Form("#alpha = %.4f #pm %.4f",AlphaMean_Chi2,fitGaus->GetParameter(2));
+ TLatex lResult_Chi2(hDATA->GetMean(),9,Result_Chi2);
  lResult_Chi2->Draw();
 
  
 ///==== Plot LL ====
  TF1* fitMinLL = new TF1("fitMinLL","pol2");
- fitMinLL->SetRange(-0.1,0.0);
+ fitMinLL->SetRange(MinScanRange,MaxScanRange);
  grLL->Fit("fitMinLL","RMQ");
- std::cerr << " alpha LL = " << -fitMinLL->GetParameter(1) / 2. / fitMinLL->GetParameter(2) << std::endl;
+//  std::cerr << " alpha LL = " << -fitMinLL->GetParameter(1) / 2. / fitMinLL->GetParameter(2) << std::endl;
 
 
  TCanvas cLL("cLL","cLL",1200,1200);
@@ -249,7 +263,8 @@
  hLL_Min_Fit->GetXaxis()->SetTitle("#alpha");
  hLL_Min_Fit->Draw();
  gPad->SetGrid();
- 
+ hLL_Min_Fit->Fit("fitGaus","RMQ"); 
+
  cLL.cd(2);
  
  TString NameMC_LL = Form("hMC_Chi2_%.5f",AlphaMean_LL);
@@ -262,11 +277,54 @@
  hDATA->Draw("E1");
  hMC_LL->Draw("BARsame");
  hDATA->Draw("E1same");
- TString Result_LL = Form("#alpha = %.4f #pm %.4f",AlphaMean_LL_Fit,hLL_Min_Fit->GetRMS());
- TLatex lResult_LL(70,11,Result_LL);
+ //TString Result_LL = Form("#alpha = %.4f #pm %.4f",AlphaMean_LL_Fit,hLL_Min_Fit->GetRMS());
+ TString Result_LL = Form("#alpha = %.4f #pm %.4f",AlphaMean_LL_Fit,fitGaus->GetParameter(2));
+ TLatex lResult_LL(hDATA->GetMean(),9,Result_LL);
  lResult_LL->Draw();
 
  
+
+///==== Plot Chi2 ====
+ TF1* fitMinNewChi2 = new TF1("fitMinNewChi2","pol2");
+ fitMinNewChi2->SetRange(MinScanRange,MaxScanRange);
+ grNewChi2->Fit("fitMinNewChi2","RMQ");
+ std::cerr << " alpha NewChi2 = " << -fitMinNewChi2->GetParameter(1) / 2. / fitMinNewChi2->GetParameter(2) << std::endl;
+
+
+ TCanvas cNewChi2("cNewChi2","cNewChi2",1200,1200);
+ cNewChi2.Divide(2,2);
+ 
+ cNewChi2.cd(1);
+ hNewChi2->SetTitle("#chi^{2}");
+ hNewChi2->GetYaxis()->SetTitle("#chi^{2}");
+ hNewChi2->GetXaxis()->SetTitle("#alpha");
+ hNewChi2->Draw("colz");
+ grNewChi2->Draw("P");
+ gPad->SetGrid();
+ 
+ cNewChi2.cd(3);
+ hNewChi2_Min_Fit->SetTitle("#chi^{2} test: toy experiments");
+ hNewChi2_Min_Fit->GetXaxis()->SetTitle("#alpha");
+ hNewChi2_Min_Fit->Draw();
+ gPad->SetGrid();
+ hNewChi2_Min_Fit->Fit("fitGaus","RMQ"); 
+
+ cNewChi2.cd(2);
+ 
+ TString NameMC_NewChi2 = Form("hMC_Chi2_%.5f",AlphaMean_NewChi2);
+ TH1F* hMC_NewChi2 = (TH1F*) _file0->Get(NameMC_NewChi2.Data());
+ hMC_NewChi2->SetLineWidth(1);
+ hMC_NewChi2->SetLineColor(kRed);
+ hMC_NewChi2->SetFillColor(kRed);
+ hMC_NewChi2->SetFillStyle(3001);
+
+ hDATA->Draw("E1");
+ hMC_NewChi2->Draw("BARsame");
+ hDATA->Draw("E1same");
+ TString Result_NewChi2 = Form("#alpha = %.4f #pm %.4f",AlphaMean_NewChi2_Fit,fitGaus->GetParameter(2));
+// TString Result_NewChi2 = Form("#alpha = %.4f #pm %.4f",AlphaMean_NewChi2_Fit,hNewChi2_Min_Fit->GetRMS());
+ TLatex lResult_NewChi2(hDATA->GetMean(),9,Result_NewChi2);
+ lResult_NewChi2->Draw();
 
 }
 

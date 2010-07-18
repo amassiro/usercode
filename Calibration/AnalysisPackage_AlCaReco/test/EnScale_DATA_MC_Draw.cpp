@@ -176,6 +176,8 @@ int main(int argc, char** argv){
  TTree* MyTreeMC[nMC];
  THStack* hsMC = new THStack("hsMC","hsMC");
  
+ double MC_Expected = 0;
+ 
  for (int iMC = 0; iMC < nMC; iMC++) {
 // for (int iMC = nMC-1; iMC >= 0; iMC--) {
   MyTreeMC[iMC] = (TTree*) fileInMC[iMC]->Get(treeNameMC.c_str());
@@ -188,6 +190,7 @@ int main(int argc, char** argv){
   MyTreeMC[iMC]->Draw(Draw.Data(),AdditionalCut.Data());
   std::cout << ">>>>>> " << inputSampleMC.at(iMC) << " : " << xSecAndEfficiency.at(iMC) << " : " << luminosity << " : " << HistoMC[iMC]->GetEntries() << " = " << luminosity * xSecAndEfficiency.at(iMC) * HistoMC[iMC]->GetEntries() << std::endl;
   std::cout << "    >> " << Draw.Data() << std::endl;
+  MC_Expected += luminosity * xSecAndEfficiency.at(iMC) * HistoMC[iMC]->GetEntries();
   HistoMC[iMC]->Scale(luminosity * xSecAndEfficiency.at(iMC)); // / HistoMC[iMC]->GetEntries());
   SetColorAndStyleHisto(*(HistoMC[iMC]),vColor[iMC]);
   HistoMC[iMC]->SetAxisRange(0,HistoDATA->GetMaximum() * 2.5,"Y");
@@ -202,6 +205,8 @@ int main(int argc, char** argv){
  ///----------------------
  ///---- Plot results ----
  ///----------------------
+ std::cerr << " MC expected : DATA = " << MC_Expected << " : " << HistoDATA->GetEntries() << std::endl;
+ 
  std::cerr << " HistoDATA->GetMaximum() = " << HistoDATA->GetMaximum() << std::endl;
  std::cerr << " HistoDATA->GetEntries() = " << HistoDATA->GetEntries() << std::endl;
  outFile->cd();

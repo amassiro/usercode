@@ -11,15 +11,13 @@
   TFile *fmc   = TFile::Open("output/Wenu_MC_4analysis.root");  
  
   
-  TH1F *hWd = (TH1F*)fdata->Get("hetEE") ;
-  TH1F *hWm = (TH1F*)fmc->Get("hetEE") ;
-  float  s = float(hWd->GetSumOfWeights())/float(hWm->GetSumOfWeights());
-  hWm->Scale(s);
+  TH1F *hWd = (TH1F*)fdata->Get("hetEB") ;
 
+  float s;
   TH1F *hWM[200];
   char hname[100];
   for (int i = 0; i < 200; i++){
-    sprintf(hname,"hetEEscaled_%d",i);
+    sprintf(hname,"hetEBscaled_%d",i);
     hWM[i] = (TH1F*)fmc->Get(hname) ;
     s = float(hWd->GetSumOfWeights())/float(hWM[i]->GetSumOfWeights());
     hWM[i]->Sumw2();
@@ -27,7 +25,7 @@
   }
   
 
-
+  float alpha;
   TGraph *gChi = new TGraph();
   for (int i=0;i<200;i++){
     float chi2=0;
@@ -37,7 +35,7 @@
       if (ff!=0) chi2 += ( (yy-ff)*(yy-ff)/ff );
       // cout << ff << " " << yy << " " << chi2 << endl;
     }
-    float alpha = (i-100.)/1000.;
+    alpha = (i-100.)/1000.;
     gChi->SetPoint(i,alpha,chi2);
   }
 /*
@@ -52,22 +50,12 @@
 
   TCanvas *cc = new TCanvas("cc","cc"); 
   cc->Divide(2,1);
-  cc->cd(1);
-  hWm->SetFillColor(2); 
-  hWm->SetFillStyle(3004); 
-  hWd->SetMarkerStyle(20);
-  hWd->GetXaxis()->SetTitle("Electron E_{T} (GeV)");
-  hWd->GetYaxis()->SetTitle("Events/4 GeV");
-
-  hWd->Draw("e");
-  hWm->Draw("same");
-  hWd->Draw("esame");
 
   cc->cd(2);
   gChi->SetMarkerStyle(7);
   gChi->SetMarkerColor(2);
   gChi->Draw("AP");
-
+ 
   float xmin = gChi->GetMean();
   TF1 *myfit = new TF1("myfit","pol2",-1,1);
   myfit->SetRange(-0.07,0.00);
@@ -78,6 +66,27 @@
   gChi->GetXaxis()->SetTitle("Relative scale variation");
   gChi->GetYaxis()->SetTitle("#chi^{2}");
   gPad->Update();
+
+  alpha = -b/2./c;
+  
+  std::cerr << " alpha = " << alpha << " bin best = " << (alpha-(-0.1) ) / 0.2 * 200 << std::endl;
+  char hnameBest[100];
+  sprintf(hnameBest,"hetEBscaled_%d",(alpha-(-0.1) ) / 0.2 * 200);
+  TH1F *hWm = (TH1F*)fmc->Get(hnameBest) ;
+  float s = float(hWd->GetSumOfWeights())/float(hWm->GetSumOfWeights());
+  hWm->Scale(s);
+  
+  cc->cd(1);
+  hWm->SetFillColor(2); 
+  hWm->SetFillStyle(3004); 
+  hWd->SetMarkerStyle(20);
+  hWd->GetXaxis()->SetTitle("Electron E_{T} (GeV)");
+  hWd->GetYaxis()->SetTitle("Events/4 GeV");
+
+  hWd->Draw("e");
+  hWm->Draw("BARsame");
+  hWd->Draw("esame");
+
 
   // verdice parabola e deltachi = 1
   float mW = 80.4*(1+(-b/2./c));
