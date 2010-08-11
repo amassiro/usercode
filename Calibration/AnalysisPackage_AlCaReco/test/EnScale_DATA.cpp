@@ -95,8 +95,8 @@ double LLFunc(const double *xx ){
   hMC = new TH1F(NameMC,NameMC,NBINTemplate,MinTemplate,MaxTemplate);
   hMC->Reset();
   TString DrawMC = Form("(%s * (1+(%f)))>>%s",variableName.c_str(),scale,NameMC.Data());
-  std::cerr << " CUT = " << (AdditionalCut+Form("&& (ET * (1+(%f)))>18.",scale)).Data() << std::endl;
-  MyTreeMC->Draw(DrawMC,(AdditionalCut+Form("&& (ET * (1+(%f)))>18.",scale)).Data());
+  std::cerr << " CUT = " << (AdditionalCut+Form("&& (ET * (1+(%f)))>%f",scale,minET)).Data() << std::endl;
+  MyTreeMC->Draw(DrawMC,(AdditionalCut+Form("&& (ET * (1+(%f)))>%f",scale,minET)).Data());
   hMC->Scale(1./numEvents);
   outFile->cd();
   hMC->Write();
@@ -157,7 +157,7 @@ double Chi2F(const double *xx ){
   hMC = new TH1F(NameMC,NameMC,numBINS,minBINS,maxBINS);
   hMC->Reset();
   TString DrawMC = Form("(%s * (1+(%f)))>>%s",variableName.c_str(),scale,NameMC.Data());
-  MyTreeMC->Draw(DrawMC,(AdditionalCut+Form("&& (ET * (1+(%f)))>18.",scale)).Data());
+  MyTreeMC->Draw(DrawMC,(AdditionalCut+Form("&& (ET * (1+(%f)))>%f",scale,minET)).Data());
   hMC->Sumw2();
   hMC->Scale(hDATA->GetEffectiveEntries()/hMC->GetEffectiveEntries());
   outFile->cd();
@@ -207,7 +207,7 @@ double NewChi2Func(const double *xx ){
   hMC = new TH1F(NameMC,NameMC,numBINS,minBINS,maxBINS);
   hMC->Reset();
   TString DrawMC = Form("(%s * (1+(%f)))>>%s",variableName.c_str(),scale,NameMC.Data());
-  MyTreeMC->Draw(DrawMC,(AdditionalCut+Form("&& (ET * (1+(%f)))>18.",scale)).Data());
+  MyTreeMC->Draw(DrawMC,(AdditionalCut+Form("&& (ET * (1+(%f)))>%f",scale,minET)).Data());
   hMC->Sumw2();
   hMC->Scale(hDATA->GetEffectiveEntries()/hMC->GetEffectiveEntries());
   outFile->cd();
@@ -286,7 +286,7 @@ void doMC_Chi2(){
    //==== 1 = EE
    //==== 2 = EB
    if (
-       ET * (1+ScaleTrue) > 18. &&
+       ET * (1+ScaleTrue) > minET &&
        ((EEEB == 1 && (eta > 1.5 || eta < -1.5)) ||
        (EEEB == 2 && (eta < 1.5 && eta > -1.5)) ||
        (EEEB == 0))
@@ -411,7 +411,7 @@ void doMC_LL(){
    //==== 1 = EE
    //==== 2 = EB
    if(
-      ET * (1+ScaleTrue) > 18. &&
+      ET * (1+ScaleTrue) > minET &&
       ((EEEB == 1 && (eta > 1.5 || eta < -1.5)) ||
        (EEEB == 2 && (eta < 1.5 && eta > -1.5)) ||
        (EEEB == 0))
@@ -538,7 +538,7 @@ void doMC_NewChi2(){
    //==== 1 = EE
    //==== 2 = EB
    if (
-        ET * (1+ScaleTrue) > 18. &&
+        ET * (1+ScaleTrue) > minET &&
        ((EEEB == 1 && (eta > 1.5 || eta < -1.5)) ||
        (EEEB == 2 && (eta < 1.5 && eta > -1.5)) ||
        (EEEB == 0))
@@ -693,6 +693,9 @@ int main(int argc, char** argv){
  variableName = gConfigParser -> readStringOption("Options::variableName");
  std::cout << ">>>>> Options::variableName " << variableName.c_str() << std::endl;
 
+ minET = gConfigParser -> readDoubleOption("Options::minET");
+ std::cout << ">>>>> Options::minET " << minET << std::endl;
+ 
  EEEB = gConfigParser -> readIntOption("Options::EEorEB");
  std::cout << ">>>>> Options::EEEB " << EEEB << std::endl;
 ///==== 0 = EE+EB

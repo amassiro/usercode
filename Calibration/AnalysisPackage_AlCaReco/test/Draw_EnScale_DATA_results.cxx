@@ -202,11 +202,11 @@
 // fitMinLL->SetRange(-0.1,0.0);
 // fitMinNewChi2->SetRange(-0.1,0.0);
  grChi2->Fit("fitMinChi2","RMQ");
- std::cerr << " alpha Chi2 = " << -fitMinChi2->GetParameter(1) / 2. / fitMinChi2->GetParameter(2) << std::endl;
+ if (fitMinChi2->GetParameter(1)) std::cerr << " alpha Chi2 = " << -fitMinChi2->GetParameter(1) / 2. / fitMinChi2->GetParameter(2) << std::endl;
  grLL->Fit("fitMinLL","RMQ");
- std::cerr << " alpha LL = " << -fitMinLL->GetParameter(1) / 2. / fitMinLL->GetParameter(2) << std::endl;
+ if (fitMinLL->GetParameter(1)) std::cerr << " alpha LL = " << -fitMinLL->GetParameter(1) / 2. / fitMinLL->GetParameter(2) << std::endl;
  grNewChi2->Fit("fitMinNewChi2","RMQ");
- std::cerr << " alpha NewChi2 = " << -fitMinNewChi2->GetParameter(1) / 2. / fitMinNewChi2->GetParameter(2) << std::endl;
+ if (fitMinNewChi2->GetParameter(1)) std::cerr << " alpha NewChi2 = " << -fitMinNewChi2->GetParameter(1) / 2. / fitMinNewChi2->GetParameter(2) << std::endl;
  
 // grChi2->SetMarkerSize(0.01);
 // grLL->SetMarkerSize(0.01);

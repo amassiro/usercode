@@ -223,7 +223,7 @@ int main(int argc, char** argv){
  leg->Draw();
  gPad->SetGrid();
  TString tLumiName = Form("#int L = %.4f pb^{-1}",luminosity);
- TLatex tLumi(2.0 * HistoDATA->GetMean(1),0.1 * HistoDATA->GetMaximum(),tLumiName.Data());
+ TLatex tLumi(1.5 * HistoDATA->GetMean(1),0.1 * HistoDATA->GetMaximum(),tLumiName.Data());
  tLumi.DrawClone();
  TString nameImage = Form("%s_%d.png",variable.c_str(),EEEB);
  cResultDistro.SaveAs(nameImage.Data());
