@@ -364,7 +364,7 @@ void doMC_Chi2(){
   MyTreeMC->SetEntryList(listMCHere);
   MyTreeMC->Draw(Form("(1+%f) * %s >> %s",ScaleTrue,variableName.c_str(),nameDATA.Data()));
   
-  ConvertStdVectDouble(vET_data,MyTreeMC->GetV1(),listMCHere->GetN());
+  ConvertStdVectDouble(vET_data,MyTreeMC->GetV1(),numSelectedData);
   
   ///===== Chi2 ====
   minuit->SetFunction(functorChi2);
@@ -469,7 +469,7 @@ void doMC_LL(){
   MyTreeMC->SetEntryList(listMCHere);
   MyTreeMC->Draw(Form("(1+%f) * %s >> %s",ScaleTrue,variableName.c_str(),nameDATA.Data()));
   
-  ConvertStdVectDouble(vET_data,MyTreeMC->GetV1(),listMCHere->GetN());
+  ConvertStdVectDouble(vET_data,MyTreeMC->GetV1(),numSelectedData);
   
   ///==== likelihood ====
  std::cerr << " === LL === " << std::endl;
@@ -586,7 +586,7 @@ void doMC_NewChi2(){
  MyTreeMC->SetEntryList(listMCHere);
  MyTreeMC->Draw(Form("(1+%f) * %s >> %s",ScaleTrue,variableName.c_str(),nameDATA.Data()));
   
- ConvertStdVectDouble(vET_data,MyTreeMC->GetV1(),listMCHere->GetN());
+ ConvertStdVectDouble(vET_data,MyTreeMC->GetV1(),numSelectedData);
    
   ///==== newChi2 ====
   minuit->SetFunction(functorNewChi2);
@@ -916,7 +916,7 @@ int main(int argc, char** argv){
  hDATA.Write();
   
  std::cerr << "... I'm minimizing ... DATA analysis" << std::endl;
- std::cerr << ">>>>>>> numEvents = " << numEvents << " => " << vET_data.size() << " selected " << std::endl;
+ std::cerr << ">>>>>>> numEvents = " << numEvents << " => " << vET_data.size() << " selected (=" << mylist->GetN() << ")" << std::endl;
  numSelectedData = vET_data.size();
  
  
@@ -965,7 +965,7 @@ int main(int argc, char** argv){
   double y = LLFunc(&x);
   std::cerr << " y = " << y << std::endl;
   if (y != numberDATA * numEvents) {
-   std::cerr << " y = " << y << std::endl;
+   std::cerr << " Ok y = " << y << std::endl;
    grLL->SetPoint(nPointLL,x,y);
    nPointLL++;
   }
