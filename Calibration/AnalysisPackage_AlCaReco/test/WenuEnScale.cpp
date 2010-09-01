@@ -440,7 +440,7 @@ void doMC_Chi2(){
 
   myTreeChi2_Result->Fill();
  
-  delete listMCHere;
+//  delete listMCHere;
   
  }
 }
@@ -558,7 +558,7 @@ void doMC_LL(){
  
   grLL->Write();
   
-  delete listMCHere;
+  //delete listMCHere;
   
  }
 }
@@ -653,7 +653,7 @@ void doMC_NewChi2(){
   
   myTreeNewChi2_Result->Fill();
   
-  delete listMCHere;
+ // delete listMCHere;
  }
  
 }
