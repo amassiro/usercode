@@ -6,9 +6,11 @@
  ///==== Draw the Shape of the crystals in Ecal ====
 
  TChain* myTree = new TChain("myTree");
- myTree->Add("/home/andrea/Cern/Code/WeCalib/AnalysisPackage_AlCaReco/output/out_Data_ShowerShape_NewData_Run2010A-EcalCalElectron-Jun9thReReco_v1.root");
- myTree->Add("/home/andrea/Cern/Code/WeCalib/AnalysisPackage_AlCaReco/output/out_Data_ShowerShape_NewData_Commissioning10-EcalCalElectron-May27thReReco_v1.root");
+ //myTree->Add("/home/andrea/Cern/Code/WeCalib/AnalysisPackage_AlCaReco/output/out_Data_ShowerShape_NewData_Run2010A-EcalCalElectron-Jun9thReReco_v1.root");
+ //myTree->Add("/home/andrea/Cern/Code/WeCalib/AnalysisPackage_AlCaReco/output/out_Data_ShowerShape_NewData_Commissioning10-EcalCalElectron-May27thReReco_v1.root");
  
+myTree->Add("/home/andrea/Cern/Code/WeCalib/AnalysisPackage_AlCaReco/output/out_Data_ShowerShape_treeNtupleWenu_EG-Run2010A-Jul16thReReco-v2.root");
+ 	
 //  TFile* fileIn = new TFile("output/out_Data_ShowerShape_NewData_Run2010A-EcalCalElectron-Jun9thReReco_v1.root","READ");
 //  TFile* fileIn = new TFile("output/out_Data_ShowerShape.root","READ");
 //  TTree* myTree = (TTree*) fileIn->Get("myTree");

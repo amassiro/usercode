@@ -24,6 +24,30 @@
 
 
 
+void CorrectString(std::string &inString){
+ int pos = 1;
+ while (pos!=std::string::npos){
+  pos = inString.find("PHL");
+  if (pos!=std::string::npos) inString.replace(pos,3,"(");
+ }
+ pos = 1;
+ while (pos!=std::string::npos){
+  pos = inString.find("PHR");
+  if (pos!=std::string::npos) inString.replace(pos,3,")");
+ }
+ pos = 1;
+ while (pos!=std::string::npos){
+  pos = inString.find("DIV");
+  if (pos!=std::string::npos) inString.replace(pos,3,"/");
+ }
+}
+
+
+int numEntriesMC;
+int numSelectedData;
+
+int numberDATA;
+
 TFile* fileInDATA;
 TFile* fileInMC;
 TFile* outFile;
@@ -63,7 +87,7 @@ double MinTemplate = 0.0;
 double MaxTemplate = 100.0;
 double Delta = (MaxTemplate - MinTemplate) / NBINTemplate;
 
-TString AdditionalCut = Form("1"); ///==== no additional data ?!?!?
+TString AdditionalCut = Form("abs(eleFBrem)<0.2"); ///==== no additional data ?!?!?
 double minET = 30; ///==== used in generation of sample
 
 int EEEB = 0;
@@ -97,7 +121,7 @@ double LLFunc(const double *xx ){
   TString DrawMC = Form("(%s * (1+(%f)))>>%s",variableName.c_str(),scale,NameMC.Data());
   std::cerr << " CUT = " << (AdditionalCut+Form("&& (ET * (1+(%f)))>%f",scale,minET)).Data() << std::endl;
   MyTreeMC->Draw(DrawMC,(AdditionalCut+Form("&& (ET * (1+(%f)))>%f",scale,minET)).Data());
-  hMC->Scale(1./numEvents);
+  hMC->Scale(10./numEvents);
   outFile->cd();
   hMC->Write();
 //  tempGrLL = new TGraphErrors(buildGEfromH (*hMC));
@@ -109,7 +133,7 @@ double LLFunc(const double *xx ){
   hMC = (TH1F*) outFile->Get(NameMC.Data());
 //  tempGrLL = (TGraphErrors*) outFile->Get(NameMCGr.Data());
  }
- int numberDATA = vET_data.size();
+ numberDATA = vET_data.size();
  double result = 1.;
  
  for (int iEvt = 0; iEvt < numberDATA; iEvt ++){
@@ -117,8 +141,13 @@ double LLFunc(const double *xx ){
   int bin = ( ET - MinTemplate ) / Delta;
   if (bin > 0 && bin <= NBINTemplate){
 //   result *= (tempGrLL->Eval(hMC->GetBinCenter(bin)));
-    result *= (hMC->GetBinContent(bin));
-
+//    std::cerr << " hMC->GetBinContent(" << bin << ") = " << hMC->GetBinContent(bin) << " result = " << result << std::endl;
+   if (hMC->GetBinContent(bin) != 0) result -= log(hMC->GetBinContent(bin));
+   else {
+    result = numberDATA * numEvents;
+    std::cerr << " it's ZERO !!!! " << std::endl;
+    return result;
+   }
 //    if (hMC->GetBinContent(bin) == 0) {
 //     std::cerr << " result = " << result << " hMC.GetBinContent(" << bin << ":" << NBINTemplate << ") = " << hMC.GetBinContent(bin) << " scale = " << scale << std::endl;
 //    }
@@ -127,8 +156,11 @@ double LLFunc(const double *xx ){
 //  outFile->cd();
 //  hMC.Write();
  
- if (result != 0) result = -log(result);
- else result = numberDATA * numEvents;
+//  if (result != 0) result = -log(result);
+//  else {
+//   result = numberDATA * numEvents;
+//   std::cerr << " it's ZERO !!!! " << std::endl;
+//  }
  
  ///==== end Likelihood ====    
 
@@ -249,6 +281,10 @@ double MT;
 double EoP;
 double eta;
 
+double eleES;
+double eleFBrem;
+double E5x5;
+double p;
 
 ROOT::Math::Minimizer* minuit = ROOT::Math::Factory::CreateMinimizer("Minuit2", "Migrad");
 ROOT::Math::Functor functorChi2(&Chi2F,1); 
@@ -275,21 +311,32 @@ void doMC_Chi2(){
  TTree* MyTreeMC = (TTree*) fileInMC->Get("myTree");
 
  for (nIter = 0; nIter<maxIter; nIter++){
-  if (!(nIter%100)) std::cerr << ">>> nIter = " << nIter << " : " << maxIter << std::endl;
+  if (!(nIter%1)) std::cerr << ">>> nIter = " << nIter << " : " << maxIter << std::endl;
   vET_data.clear();
   outFile->cd();
   TString nameDATA = Form("hDATA_%d_%d_%.5f",Data_or_MC,nIter,ScaleTrue);
   TH1F hDATA(nameDATA,nameDATA,numBINS,minBINS,maxBINS);
   for (int iEvt = 0; iEvt < numEvents; iEvt ++){
-   MyTreeMC->GetEntry(static_cast<int>(gRandom->Uniform(0,MyTreeMC->GetEntries())));
+   MyTreeMC->GetEntry(static_cast<int>(gRandom->Uniform(0,numEntriesMC)));
    //==== 0 = EE+EB
    //==== 1 = EE
    //==== 2 = EB
    if (
+       fabs(eleFBrem)<0.2 &&
        ET * (1+ScaleTrue) > minET &&
-       ((EEEB == 1 && (eta > 1.5 || eta < -1.5)) ||
+       (
+       (EEEB == 1 && (eta > 1.5 || eta < -1.5)) ||
        (EEEB == 2 && (eta < 1.5 && eta > -1.5)) ||
-       (EEEB == 0))
+       (EEEB == 3 && (eta > 1.5)) ||
+       (EEEB == 4 && (eta < -1.5)) ||
+       (EEEB == 5 && (fabs(eta) < 0.348)) ||
+       (EEEB == 6 && (fabs(eta) < 0.656 && fabs(eta) > 0.348)) ||
+       (EEEB == 7 && (fabs(eta) < 1.044 && fabs(eta) > 0.656)) ||
+       (EEEB == 8 && (fabs(eta) < 1.479 && fabs(eta) > 1.044)) ||
+       (EEEB == 9 && (fabs(eta) > 2.5)) ||
+       (EEEB == 10 && (fabs(eta) < 2.5 && fabs(eta) > 1.5)) ||
+       (EEEB == 0) 
+       )
       )
   {
 //   std::cerr << " ET = " << ET << " eta = " << eta << std::endl;
@@ -302,10 +349,13 @@ void doMC_Chi2(){
     hDATA.Fill(EoP * (1+ScaleTrue));
     vET_data.push_back(EoP * (1+ScaleTrue));
    }
-
+   else if (variableName == "((E5x5)/(p-eleES))"){
+    hDATA.Fill(((E5x5)/(p-eleES)) * (1+ScaleTrue));
+    vET_data.push_back(((E5x5)/(p-eleES)) * (1+ScaleTrue));
+   }
   }
   else {
-   iEvt --;
+//    iEvt --;
   }
  }
   
@@ -355,7 +405,7 @@ void doMC_Chi2(){
   double c;
   
   ///===== Chi2 ====
-//  std::cerr << " === Chi2 === " << std::endl;
+ std::cerr << " === Chi2 === " << std::endl;
 //  std::cerr << "==== min Scan = " << minChi2 << std::endl;
   double errX_low = -9999;
   double errX_up = 9999;
@@ -400,21 +450,32 @@ void doMC_LL(){
  TTree* MyTreeMC = (TTree*) fileInMC->Get("myTree");
 
  for (nIter = 0; nIter<maxIter; nIter++){
-  if (!(nIter%100)) std::cerr << ">>> nIter = " << nIter << " : " << maxIter << std::endl;
+  if (!(nIter%1)) std::cerr << ">>> nIter = " << nIter << " : " << maxIter << std::endl;
   vET_data.clear();
   outFile->cd();
   TString nameDATA = Form("hDATA_%d_%d_%.5f",Data_or_MC,nIter,ScaleTrue);
   TH1F hDATA(nameDATA,nameDATA,numBINS,minBINS,maxBINS);
   for (int iEvt = 0; iEvt < numEvents; iEvt ++){
-   MyTreeMC->GetEntry(static_cast<int>(gRandom->Uniform(0,MyTreeMC->GetEntries())));
+   MyTreeMC->GetEntry(static_cast<int>(gRandom->Uniform(0,numEntriesMC)));
    //==== 0 = EE+EB
    //==== 1 = EE
    //==== 2 = EB
    if(
+      fabs(eleFBrem)<0.2 &&
       ET * (1+ScaleTrue) > minET &&
-      ((EEEB == 1 && (eta > 1.5 || eta < -1.5)) ||
-       (EEEB == 2 && (eta < 1.5 && eta > -1.5)) ||
-       (EEEB == 0))
+      (
+      (EEEB == 1 && (eta > 1.5 || eta < -1.5)) ||
+      (EEEB == 2 && (eta < 1.5 && eta > -1.5)) ||
+      (EEEB == 3 && (eta > 1.5)) ||
+      (EEEB == 4 && (eta < -1.5)) ||
+      (EEEB == 5 && (fabs(eta) < 0.348)) ||
+      (EEEB == 6 && (fabs(eta) < 0.656 && fabs(eta) > 0.348)) ||
+      (EEEB == 7 && (fabs(eta) < 1.044 && fabs(eta) > 0.656)) ||
+      (EEEB == 8 && (fabs(eta) < 1.479 && fabs(eta) > 1.044)) ||
+      (EEEB == 9 && (fabs(eta) > 2.5)) ||
+      (EEEB == 10 && (fabs(eta) < 2.5 && fabs(eta) > 1.5)) ||
+      (EEEB == 0) 
+      )
       )
   {
    if (variableName == "ET"){
@@ -425,16 +486,22 @@ void doMC_LL(){
     hDATA.Fill(EoP * (1+ScaleTrue));
     vET_data.push_back(EoP * (1+ScaleTrue));
    }
-
+   else if (variableName == "((E5x5)/(p-eleES))"){
+    hDATA.Fill(((E5x5)/(p-eleES)) * (1+ScaleTrue));
+    vET_data.push_back(((E5x5)/(p-eleES)) * (1+ScaleTrue));
+   }
 
   }
   else {
-   iEvt --;
+//    iEvt --;
   } 
  }
   
   ///==== likelihood ====
-//  std::cerr << " === LL === " << std::endl;
+ std::cerr << " === LL === " << std::endl;
+ std::cerr << " === pseudo vET_data.size() = " << vET_data.size() << std::endl;
+ 
+ 
   minuit->SetFunction(functorLL); 
   TGraph * grLL_temp = new TGraph(iNoSteps);
   minuit->Scan(iPar_NoBG,iNoSteps,grLL_temp->GetX(),grLL_temp->GetY(),MinScan,MaxScan);
@@ -443,7 +510,7 @@ void doMC_LL(){
  for (int iStep = 0; iStep < iNoSteps; iStep++){
    double x = MinScan + (MaxScan - MinScan) / iNoSteps * (iStep+0.5);
    double y = LLFunc(&x);
-   if (y < -0.001) {
+   if (y != numberDATA * numEvents) {
     grLL->SetPoint(nPointLL,x,y);
     nPointLL++;
    }
@@ -462,6 +529,8 @@ void doMC_LL(){
 //  outFile->cd();
 //  grLL->Write();
 
+  std::cerr << " nPointLL = " << nPointLL << std::endl;
+  
   double minLL = grLL->Eval(outParametersLL[0]);
 //  std::cerr << " numEvents = " << numEvents << " Scale = " << outParametersLL[0] << " +/- " << errParametersLL[0] << std::endl;
   ///==== end likelihood ====
@@ -527,21 +596,32 @@ void doMC_LL(){
 void doMC_NewChi2(){
  TTree* MyTreeMC = (TTree*) fileInMC->Get("myTree");
  for (nIter = 0; nIter<maxIter; nIter++){
-  if (!(nIter%100)) std::cerr << ">>> nIter = " << nIter << " : " << maxIter << std::endl;
+  if (!(nIter%1)) std::cerr << ">>> nIter = " << nIter << " : " << maxIter << std::endl;
   vET_data.clear();
   outFile->cd();
   TString nameDATA = Form("hDATA_%d_%d_%.5f",Data_or_MC,nIter,ScaleTrue);
   TH1F hDATA(nameDATA,nameDATA,numBINS,minBINS,maxBINS);
   for (int iEvt = 0; iEvt < numEvents; iEvt ++){
-  MyTreeMC->GetEntry(static_cast<int>(gRandom->Uniform(0,MyTreeMC->GetEntries())));
+   MyTreeMC->GetEntry(static_cast<int>(gRandom->Uniform(0,numEntriesMC)));
    //==== 0 = EE+EB
    //==== 1 = EE
    //==== 2 = EB
    if (
-        ET * (1+ScaleTrue) > minET &&
-       ((EEEB == 1 && (eta > 1.5 || eta < -1.5)) ||
+       fabs(eleFBrem)<0.2 &&
+       ET * (1+ScaleTrue) > minET &&
+       (
+       (EEEB == 1 && (eta > 1.5 || eta < -1.5)) ||
        (EEEB == 2 && (eta < 1.5 && eta > -1.5)) ||
-       (EEEB == 0))
+       (EEEB == 3 && (eta > 1.5)) ||
+       (EEEB == 4 && (eta < -1.5)) ||
+       (EEEB == 5 && (fabs(eta) < 0.348)) ||
+       (EEEB == 6 && (fabs(eta) < 0.656 && fabs(eta) > 0.348)) ||
+       (EEEB == 7 && (fabs(eta) < 1.044 && fabs(eta) > 0.656)) ||
+       (EEEB == 8 && (fabs(eta) < 1.479 && fabs(eta) > 1.044)) ||
+       (EEEB == 9 && (fabs(eta) > 2.5)) ||
+       (EEEB == 10 && (fabs(eta) < 2.5 && fabs(eta) > 1.5)) ||
+       (EEEB == 0)
+       )
       )
   {
     if (variableName == "ET"){
@@ -552,9 +632,13 @@ void doMC_NewChi2(){
     hDATA.Fill(EoP * (1+ScaleTrue));
     vET_data.push_back(EoP * (1+ScaleTrue));
    }
+   else if (variableName == "((E5x5)/(p-eleES))"){
+    hDATA.Fill(((E5x5)/(p-eleES)) * (1+ScaleTrue));
+    vET_data.push_back(((E5x5)/(p-eleES)) * (1+ScaleTrue));
+   }
   }
   else {
-   iEvt --;
+//    iEvt --;
   } 
  }
   
@@ -684,7 +768,7 @@ int main(int argc, char** argv){
  std::cout << ">>>>> Options::maxBINS   " << maxBINS  << std::endl;
 
 
- NBINTemplate = 100 * numBINS;
+ NBINTemplate = 10 * numBINS;
  MinTemplate = minBINS;
  MaxTemplate = maxBINS;
  Delta = (MaxTemplate - MinTemplate) / NBINTemplate;
@@ -692,7 +776,12 @@ int main(int argc, char** argv){
 
  variableName = gConfigParser -> readStringOption("Options::variableName");
  std::cout << ">>>>> Options::variableName " << variableName.c_str() << std::endl;
-
+ 
+ CorrectString(variableName);
+ 
+ std::cout << ">>>>> Options::variableName After " << variableName.c_str() << std::endl;
+ 
+ 
  minET = gConfigParser -> readDoubleOption("Options::minET");
  std::cout << ">>>>> Options::minET " << minET << std::endl;
  
@@ -701,14 +790,41 @@ int main(int argc, char** argv){
 ///==== 0 = EE+EB
 ///==== 1 = EE
 ///==== 2 = EB
+///==== 3 = EE+
+///==== 4 = EE-
 
  if (EEEB == 1) { ///==== EE
-   AdditionalCut = Form("(eta > 1.5 || eta < -1.5)");
+  AdditionalCut = Form("%s && (eta > 1.5 || eta < -1.5)",AdditionalCut.Data());
  }
 
  if (EEEB == 2) { ///==== EB
-   AdditionalCut = Form("(eta < 1.5 && eta > -1.5)");
+  AdditionalCut = Form("%s && (eta < 1.5 && eta > -1.5)",AdditionalCut.Data());
  }
+ if (EEEB == 3) { ///==== EE+
+  AdditionalCut = Form("%s && (eta > 1.5)",AdditionalCut.Data());
+ }
+ if (EEEB == 4) { ///==== EE-
+  AdditionalCut = Form("%s && (eta < -1.5)",AdditionalCut.Data());
+ }
+ if (EEEB == 5) { ///==== EB mod 1
+  AdditionalCut = Form("%s && (abs(eta) < 0.348)",AdditionalCut.Data());
+ }
+ if (EEEB == 6) { ///==== EB mod 2
+  AdditionalCut = Form("%s && (abs(eta) < 0.656 && abs(eta) > 0.348)",AdditionalCut.Data());
+ }
+ if (EEEB == 7) { ///==== EB mod 3
+  AdditionalCut = Form("%s && (abs(eta) < 1.044 && abs(eta) > 0.656)",AdditionalCut.Data());
+ }
+ if (EEEB == 8) { ///==== EB mod 4
+  AdditionalCut = Form("%s && (abs(eta) < 1.479 && abs(eta) > 1.044)",AdditionalCut.Data());
+ }
+ if (EEEB == 9) { ///==== EE No ES
+  AdditionalCut = Form("%s && (abs(eta) > 2.5)",AdditionalCut.Data());
+ }
+ if (EEEB == 10) { ///==== EE + ES
+ AdditionalCut = Form("%s && (abs(eta) < 2.5 && abs(eta) > 1.5)",AdditionalCut.Data());
+ }
+ 
  std::cout << ">>>>>        :: " << AdditionalCut.Data() << std::endl;
 
 
@@ -805,6 +921,13 @@ int main(int argc, char** argv){
  MyTreeDATA->SetBranchAddress("EoP",&EoP);
  MyTreeDATA->SetBranchAddress("eta",&eta);
 
+ MyTreeDATA->SetBranchAddress("E5x5",&E5x5);
+ MyTreeDATA->SetBranchAddress("p",&p);
+ MyTreeDATA->SetBranchAddress("eleES",&eleES);
+ MyTreeDATA->SetBranchAddress("eleFBrem",&eleFBrem);
+ 
+ 
+ 
 // if (entryMAX == -1) entryMAX = MyTreeDATA->GetEntries();
 // else if (MyTreeDATA->GetEntries() < entryMAX) entryMAX = MyTreeDATA->GetEntries();
 
@@ -814,6 +937,13 @@ int main(int argc, char** argv){
  MyTreeMC->SetBranchAddress("MT",&MT);
  MyTreeMC->SetBranchAddress("EoP",&EoP);
  MyTreeMC->SetBranchAddress("eta",&eta);
+ 
+ MyTreeMC->SetBranchAddress("E5x5",&E5x5);
+ MyTreeMC->SetBranchAddress("p",&p);
+ MyTreeMC->SetBranchAddress("eleES",&eleES);
+ MyTreeMC->SetBranchAddress("eleFBrem",&eleFBrem);
+ 
+ numEntriesMC = MyTreeMC->GetEntries();
  
  ///==== prepare minuit ====
 
@@ -844,9 +974,21 @@ int main(int argc, char** argv){
  for (int iEvt = 0; iEvt < MyTreeDATA->GetEntries(); iEvt ++){
   MyTreeDATA->GetEntry(iEvt);
   if ( 
+      fabs(eleFBrem)<0.2 &&
+       ET > minET &&
+       (
        (EEEB == 1 && (eta > 1.5 || eta < -1.5)) ||
        (EEEB == 2 && (eta < 1.5 && eta > -1.5)) ||
+       (EEEB == 3 && (eta > 1.5)) ||
+       (EEEB == 4 && (eta < -1.5)) ||
+       (EEEB == 5 && (fabs(eta) < 0.348)) ||
+       (EEEB == 6 && (fabs(eta) < 0.656 && fabs(eta) > 0.348)) ||
+       (EEEB == 7 && (fabs(eta) < 1.044 && fabs(eta) > 0.656)) ||
+       (EEEB == 8 && (fabs(eta) < 1.479 && fabs(eta) > 1.044)) ||
+       (EEEB == 9 && (fabs(eta) > 2.5)) ||
+       (EEEB == 10 && (fabs(eta) < 2.5 && fabs(eta) > 1.5)) ||
        (EEEB == 0) 
+       )
       ){
    if (variableName == "ET"){
      hDATA.Fill(ET);
@@ -856,13 +998,19 @@ int main(int argc, char** argv){
      hDATA.Fill(EoP);
      vET_data.push_back(EoP);
    }
+   else if (variableName == "((E5x5)/(p-eleES))"){
+    hDATA.Fill(((E5x5)/(p-eleES)));
+    vET_data.push_back(((E5x5)/(p-eleES)));
+   }
   }
  }
  hDATA.Write();
   
  std::cerr << "... I'm minimizing ... DATA analysis" << std::endl;
- std::cerr << ">>>>>>> numEvents = " << numEvents << std::endl;
-
+ std::cerr << ">>>>>>> numEvents = " << numEvents << " => " << vET_data.size() << " selected " << std::endl;
+ numSelectedData = vET_data.size();
+ 
+ 
  ///===== Chi2 ====
  std::cerr << " === Chi2 === " << std::endl;
  minuit->SetFunction(functorChi2);
@@ -906,7 +1054,8 @@ int main(int argc, char** argv){
  for (int iStep = 0; iStep < iNoSteps; iStep++){
   double x = MinScan + (MaxScan - MinScan) / iNoSteps * (iStep+0.5);
   double y = LLFunc(&x);
-  if (y < -0.001) {
+  std::cerr << " y = " << y << std::endl;
+  if (y != numberDATA * numEvents) {
    std::cerr << " y = " << y << std::endl;
    grLL->SetPoint(nPointLL,x,y);
    nPointLL++;
@@ -962,7 +1111,7 @@ int main(int argc, char** argv){
   LL      = grLL->Eval(X_ii);
   NewChi2 = grNewChi2->Eval(X_ii);
   
-//    if (!(ii%100)) std::cerr << "Alpha = " << Alpha << ":: Chi2 = " << Chi2 << " LL = " << LL << " NewChi2 = " << NewChi2 << std::endl;
+//    if (!(ii%1)) std::cerr << "Alpha = " << Alpha << ":: Chi2 = " << Chi2 << " LL = " << LL << " NewChi2 = " << NewChi2 << std::endl;
    myTreeChi2->Fill();
  }
   
@@ -1098,18 +1247,18 @@ int main(int argc, char** argv){
  ///==== cycle on number of Toy MC experiments ====
  ///=== Chi2 ===
  std::cerr << "======================= Chi2 " << ScaleTrue_Chi2 << " =====================" << std::endl;
- ScaleTrue = ScaleTrue_Chi2;
- doMC_Chi2();
+//  ScaleTrue = ScaleTrue_Chi2;
+//  doMC_Chi2();
 
 ///=== LogLikelihood ===
  std::cerr << "======================= LL " << ScaleTrue_LL << " =====================" << std::endl;
- ScaleTrue = ScaleTrue_LL;
- doMC_LL();
+//  ScaleTrue = ScaleTrue_LL;
+//  doMC_LL();
 
 ///=== NewChi2 ===
  std::cerr << "======================= NewChi2 " << ScaleTrue_NewChi2 << " =====================" << std::endl;
- ScaleTrue = ScaleTrue_NewChi2;
- doMC_NewChi2();
+//  ScaleTrue = ScaleTrue_NewChi2;
+//  doMC_NewChi2();
 
 
  Data_or_MC = -1; ///=== 1 = Data;  0 = MC; -1 = MC Fit
@@ -1117,8 +1266,8 @@ int main(int argc, char** argv){
  ///==== cycle on number of Toy MC experiments ====
  ///=== Chi2 ===
  std::cerr << "======================= Chi2 FIT " << ScaleTrue_Chi2_Fit << " =====================" << std::endl;
- ScaleTrue = ScaleTrue_Chi2_Fit;
- doMC_Chi2();
+//  ScaleTrue = ScaleTrue_Chi2_Fit;
+//  doMC_Chi2();
 
 ///=== LogLikelihood ===
  std::cerr << "======================= LL FIT " << ScaleTrue_LL_Fit << " =====================" << std::endl;
@@ -1127,8 +1276,8 @@ int main(int argc, char** argv){
 
 ///=== NewChi2 ===
  std::cerr << "======================= NewChi2 FIT " << ScaleTrue_NewChi2_Fit << " =====================" << std::endl;
- ScaleTrue = ScaleTrue_NewChi2_Fit;
- doMC_NewChi2();
+//  ScaleTrue = ScaleTrue_NewChi2_Fit;
+//  doMC_NewChi2();
 
  
   ///----------------------

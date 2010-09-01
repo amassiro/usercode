@@ -45,7 +45,7 @@ void Draw(){
  std::cerr << "iEvent = " << iEvent << ":" << myTree->GetEntries() << std::endl;
  myTree->GetEntry(iEvent);
  TString nameCut = Form("");
- if (EoP<3 && ET>18){
+//  if (EoP<3 && ET>18){
   ccSS->cd(1);
   h2ShowerShapeEB->Draw("colz");
   gPad->SetGrid();
@@ -67,10 +67,10 @@ void Draw(){
   std::cerr << " Ele eta = " << Eta << std::endl;
   std::cerr << " Ele EoP = " << EoP << std::endl;
   
- }
- else {
-  std::cerr << "Not good ..." << std::endl;
- }
+//  }
+//  else {
+//   std::cerr << "Not good ..." << std::endl;
+//  }
 }
 
 

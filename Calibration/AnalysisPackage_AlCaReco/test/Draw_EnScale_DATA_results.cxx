@@ -319,7 +319,7 @@
  std::cerr << " ratio = " << hDATA->GetEffectiveEntries() << " / " << hMC_LL->GetEffectiveEntries() << " or " << hMC_LL->GetEntries() << " or " << hDATA->Integral() << " / "  << hMC_LL->Integral() << " = " << static_cast<double>(hDATA->GetEffectiveEntries())/hMC_LL->GetEffectiveEntries() << " = " << hDATA->Integral()/hMC_LL->Integral() << std::endl;
  std::cerr << std::endl;
 // hMC_LL->Scale(static_cast<double>(hDATA->GetEffectiveEntries())/hMC_LL->GetEffectiveEntries() * 100);
- hMC_LL->Scale(static_cast<double>(hDATA->Integral())/hMC_LL->Integral() * 100);
+ hMC_LL->Scale(static_cast<double>(hDATA->Integral())/hMC_LL->Integral() * 10);
  hMC_LL->SetLineWidth(1);
  hMC_LL->SetLineColor(kGreen);
  hMC_LL->SetFillColor(kGreen);
@@ -331,7 +331,7 @@
  hDATA->Draw("E1same");
 // TString Result_Chi2 = Form("#alpha = %.4f + %.4f - %.4f ",AlphaMean_Chi2_Fit,AlphaMinus_Chi2_Fit-AlphaMean_Chi2_Fit,AlphaMean_Chi2_Fit-AlphaPlus_Chi2_Fit);
  TString Result_Chi2 = Form("#alpha = %.4f + %.4f - %.4f ",AlphaMean_Chi2,AlphaMinus_Chi2-AlphaMean_Chi2,AlphaMean_Chi2-AlphaPlus_Chi2);
- TLatex lResult_Chi2(70,11,Result_Chi2);
+ TLatex lResult_Chi2(1,11,Result_Chi2);
  lResult_Chi2->Draw();
 
  cDistro.cd(2);
@@ -340,7 +340,7 @@
  hDATA->Draw("E1same");
  TString Result_NewChi2 = Form("#alpha = %.4f + %.4f - %.4f ",AlphaMean_NewChi2_Fit,AlphaMinus_NewChi2_Fit-AlphaMean_NewChi2_Fit,AlphaMean_NewChi2_Fit-AlphaPlus_NewChi2_Fit);
  //TString Result_NewChi2 = Form("#alpha = %.4f + %.4f - %.4f ",AlphaMean_NewChi2,AlphaMinus_NewChi2-AlphaMean_NewChi2,AlphaMean_NewChi2-AlphaPlus_NewChi2);
- TLatex lResult_NewChi2(70,11,Result_NewChi2);
+ TLatex lResult_NewChi2(1,11,Result_NewChi2);
  lResult_NewChi2->Draw();
 
  cDistro.cd(3);
@@ -349,7 +349,7 @@
  hDATA->Draw("E1same");
  TString Result_LL = Form("#alpha = %.4f + %.4f - %.4f ",AlphaMean_LL_Fit,AlphaMinus_LL_Fit-AlphaMean_LL_Fit,AlphaMean_LL_Fit-AlphaPlus_LL_Fit);
 // TString Result_LL = Form("#alpha = %.4f + %.4f - %.4f ",AlphaMean_LL,AlphaMinus_LL-AlphaMean_LL,AlphaMean_LL-AlphaPlus_LL);
- TLatex lResult_LL(70,11,Result_LL);
+ TLatex lResult_LL(1,11,Result_LL);
  lResult_LL->Draw();
 
 

@@ -31,6 +31,51 @@
 
 #include "TLatex.h"
 
+
+void CorrectString(std::string &inString){
+ int pos = 1;
+ while (pos!=std::string::npos){
+  pos = inString.find("PHL");
+  if (pos!=std::string::npos) inString.replace(pos,3,"(");
+ }
+ pos = 1;
+ while (pos!=std::string::npos){
+  pos = inString.find("PHR");
+  if (pos!=std::string::npos) inString.replace(pos,3,")");
+ }
+ pos = 1;
+ while (pos!=std::string::npos){
+  pos = inString.find("DIV");
+  if (pos!=std::string::npos) inString.replace(pos,3,"/");
+ }
+ pos = 1;
+ while (pos!=std::string::npos){
+  pos = inString.find("MIN");
+  if (pos!=std::string::npos) inString.replace(pos,3,"<");
+ }
+ pos = 1;
+ while (pos!=std::string::npos){
+  pos = inString.find("MAJ");
+  if (pos!=std::string::npos) inString.replace(pos,3,">");
+ }
+ pos = 1;
+ while (pos!=std::string::npos){
+  pos = inString.find("AND");
+  if (pos!=std::string::npos) inString.replace(pos,3,"&&");
+ }
+ pos = 1;
+ while (pos!=std::string::npos){
+  pos = inString.find("OR");
+  if (pos!=std::string::npos) inString.replace(pos,2,"||");
+ }
+ pos = 1;
+ while (pos!=std::string::npos){
+  pos = inString.find("PLUS");
+  if (pos!=std::string::npos) inString.replace(pos,4,"+");
+ }
+}
+
+
 /**
 SetColor/Style Histo
 */
@@ -103,7 +148,9 @@ int main(int argc, char** argv){
     std::cout << ">>>>> InputMC::inputFile[" << iMC << "] = " << inputSampleMC.at(iMC) << " => " << inputFileMC.at(iMC)  << " : " << xSecAndEfficiency.at(iMC) << " : " << luminosity * xSecAndEfficiency.at(iMC) << std::endl;
  }
 
-
+ int Dimension = gConfigParser -> readIntOption("Options::Dimension");
+ std::cout << ">>>>> Options::Dimension     " << Dimension  << std::endl;
+ 
  int bin = gConfigParser -> readIntOption("Options::bin");
  double min = gConfigParser -> readDoubleOption("Options::min");
  double max = gConfigParser -> readDoubleOption("Options::max");
@@ -113,26 +160,75 @@ int main(int argc, char** argv){
  std::cout << ">>>>> Options::max      " << max  << std::endl;
  std::cout << ">>>>> Options::variable " << variable.c_str() << std::endl;
 
+ std::string variableNameFile = variable;
+ CorrectString(variable);
+ std::cout << ">>>>> Options::variable After " << variable.c_str() << std::endl;
+ 
+ 
+ int binY;
+ double minY;
+ double maxY;
+ std::string variableY;
+ std::string variableNameFileY;
+ 
+ if (Dimension == 2) {
+	binY = gConfigParser -> readIntOption("Options::binY");
+	minY = gConfigParser -> readDoubleOption("Options::minY");
+	maxY = gConfigParser -> readDoubleOption("Options::maxY");
+	variableY = gConfigParser -> readStringOption("Options::variableY");
+	std::cout << ">>>>> Options::binY      " << binY  << std::endl;
+	std::cout << ">>>>> Options::minY      " << minY  << std::endl;
+	std::cout << ">>>>> Options::maxY      " << maxY  << std::endl;
+	std::cout << ">>>>> Options::variableY " << variableY.c_str() << std::endl;
+	variableNameFileY = variableY;
+	CorrectString(variableY);
+	std::cout << ">>>>> Options::variableY After " << variableY.c_str() << std::endl;
+ }
+ 
+ 
  std::string outputFile = gConfigParser -> readStringOption("Output::outputFile");
  std::cout << ">>>>> Output::outputFile  " << outputFile  << std::endl;
 
-
+ std::string cut = gConfigParser -> readStringOption("Options::cut");
+ std::cout << ">>>>> Output::cut  " << cut  << std::endl;
+ CorrectString(cut);
+ std::cout << ">>>>> Output::cut  " << cut  << std::endl;
+ 
+ 
  int EEEB = gConfigParser -> readIntOption("Options::EEorEB");
  std::cout << ">>>>> Options::EEEB " << EEEB << std::endl;
- TString AdditionalCut = Form("1"); ///==== no additional selection
+ TString AdditionalCut = Form("%s",cut.c_str());
  if (EEEB == 1) { ///==== EE
-   AdditionalCut = Form("(eta > 1.5 || eta < -1.5)");
+   AdditionalCut = Form("%s && (eta > 1.5 || eta < -1.5)",AdditionalCut.Data());
  }
 
  if (EEEB == 2) { ///==== EB
-   AdditionalCut = Form("(eta < 1.5 && eta > -1.5)");
+  AdditionalCut = Form("%s && (eta < 1.5 && eta > -1.5)",AdditionalCut.Data());
  }
+ 
+ if (EEEB == 3) { ///==== EE+
+  AdditionalCut = Form("%s && (eta > 1.5)",AdditionalCut.Data());
+ }
+ 
+ if (EEEB == 4) { ///==== EE-
+  AdditionalCut = Form("%s && (eta < -1.5)",AdditionalCut.Data());
+ }
+ 
  std::cout << ">>>>>        :: " << AdditionalCut.Data() << std::endl;
  
-
-
- EColor vColor[10] = {kBlue,kRed,kGreen,kYellow,kOrange,kGray,kTeal,kMagenta,kViolet};
-
+ ///==== HLT cut added ====
+//  AdditionalCut += Form(" && HLT_Ele15_LW_L1R==1");
+ 
+ 
+ 
+ EColor vColor[100] = {
+  kBlue,(EColor)(kBlue+1),(EColor) (kBlue+2),
+  kRed,(EColor) (kRed+1),(EColor) (kRed+2),
+  kGreen,(EColor) (kGreen+1),(EColor) (kGreen+2),
+  kTeal,(EColor) (kTeal+1),
+  kOrange,(EColor) (kOrange+1),
+  kMagenta,(EColor) (kMagenta+1),(EColor) (kViolet),(EColor) (kYellow),(EColor) (kGray)};
+ 
  ///==== DATA ====
  TFile* fileInDATA = new TFile(inputFileDATA.c_str(),"READ");
 
@@ -154,37 +250,30 @@ int main(int argc, char** argv){
  TLegend* legDown = new TLegend(0.55,0.1,0.95,0.35);
  legDown->SetFillColor(0);
 
- TTree* MyTreeDATA = (TTree*) fileInDATA->Get(treeNameDATA.c_str());
- double pT;
- double ET;
- double MT;
- double EoP;
- MyTreeDATA->SetBranchAddress("pT",&pT);
- MyTreeDATA->SetBranchAddress("ET",&ET);
- MyTreeDATA->SetBranchAddress("MT",&MT);
- MyTreeDATA->SetBranchAddress("EoP",&EoP);
- TH1F* HistoDATA = new TH1F("DATA","DATA",bin,min,max);
- TString DrawDATA = Form("%s >> DATA",variable.c_str());
- MyTreeDATA->Draw(DrawDATA.Data(),AdditionalCut.Data());
- HistoDATA->SetMarkerSize(1);
- HistoDATA->SetMarkerStyle(20); 
- HistoDATA->GetXaxis()->SetTitle(variable.c_str());
- leg->AddEntry(HistoDATA,HistoDATA->GetTitle(),"p");
- legDown->AddEntry(HistoDATA,HistoDATA->GetTitle(),"p");
+ if (Dimension == 1){
+  int initialNumber;
+  TTree* MyTreeDATA = (TTree*) fileInDATA->Get(treeNameDATA.c_str());
+  TH1F* HistoDATA = new TH1F("DATA","DATA",bin,min,max);
+  TString DrawDATA = Form("%s >> DATA",variable.c_str());
+  MyTreeDATA->Draw(DrawDATA.Data(),AdditionalCut.Data());
+  HistoDATA->SetMarkerSize(1);
+  HistoDATA->SetMarkerStyle(20); 
+  HistoDATA->GetXaxis()->SetTitle(variable.c_str());
+  leg->AddEntry(HistoDATA,HistoDATA->GetTitle(),"p");
+  legDown->AddEntry(HistoDATA,HistoDATA->GetTitle(),"p");
 
- TH1F* HistoMC[nMC];
- TTree* MyTreeMC[nMC];
- THStack* hsMC = new THStack("hsMC","hsMC");
+  TH1F* HistoMC[nMC];
+  TTree* MyTreeMC[nMC];
+  THStack* hsMC = new THStack("hsMC","hsMC");
  
- double MC_Expected = 0;
+  double MC_Expected = 0;
  
- for (int iMC = 0; iMC < nMC; iMC++) {
-// for (int iMC = nMC-1; iMC >= 0; iMC--) {
+  for (int iMC = 0; iMC < nMC; iMC++) {
+ // for (int iMC = nMC-1; iMC >= 0; iMC--) {
   MyTreeMC[iMC] = (TTree*) fileInMC[iMC]->Get(treeNameMC.c_str());
-  MyTreeMC[iMC]->SetBranchAddress("pT",&pT);
-  MyTreeMC[iMC]->SetBranchAddress("ET",&ET);
-  MyTreeMC[iMC]->SetBranchAddress("MT",&MT);
-  MyTreeMC[iMC]->SetBranchAddress("EoP",&EoP);
+  MyTreeMC[iMC]->SetBranchAddress("initialNumber",&initialNumber);
+  MyTreeMC[iMC]->GetEntry(0);
+  xSecAndEfficiency.at(iMC) = xSecAndEfficiency.at(iMC) / initialNumber; ///==== normalize to initial number of events
   HistoMC[iMC] = new TH1F(inputSampleMC.at(iMC).c_str(),inputSampleMC.at(iMC).c_str(),bin,min,max);
   TString Draw = Form("%s >>%s",variable.c_str(),inputSampleMC.at(iMC).c_str());
   MyTreeMC[iMC]->Draw(Draw.Data(),AdditionalCut.Data());
@@ -205,46 +294,139 @@ int main(int argc, char** argv){
  ///----------------------
  ///---- Plot results ----
  ///----------------------
- std::cerr << " MC expected : DATA = " << MC_Expected << " : " << HistoDATA->GetEntries() << std::endl;
+  std::cerr << " MC expected : DATA = " << MC_Expected << " : " << HistoDATA->GetEntries() << std::endl;
  
- std::cerr << " HistoDATA->GetMaximum() = " << HistoDATA->GetMaximum() << std::endl;
- std::cerr << " HistoDATA->GetEntries() = " << HistoDATA->GetEntries() << std::endl;
- outFile->cd();
- TCanvas cResultDistro("cResultDistro","cResultDistro",800,800);
- HistoDATA->SetAxisRange(0.01,HistoDATA->GetMaximum() * 1.5,"Y");
- HistoDATA->DrawClone("E1");
-// DrawStack(hsMC);
- hsMC->DrawClone("same");
- hsMC->DrawClone("BARsame");
+  std::cerr << " HistoDATA->GetMaximum() = " << HistoDATA->GetMaximum() << std::endl;
+  std::cerr << " HistoDATA->GetEntries() = " << HistoDATA->GetEntries() << std::endl;
+  outFile->cd();
+  TCanvas cResultDistro("cResultDistro","cResultDistro",800,800);
+  HistoDATA->SetAxisRange(0.01,HistoDATA->GetMaximum() * 2.0,"Y");
+  HistoDATA->DrawClone("E1");
+  DrawStack(hsMC);
+ //  hsMC->DrawClone("same");
+ //  hsMC->DrawClone("BARsame");
+  HistoDATA->DrawClone("E1same");
 
-// HistoMC[0]->Draw("BAR");
-// HistoMC[1]->Draw("same");
- // std::cerr << " HistoMC[0]->GetEntries() = " << HistoMC[0]->GetEntries() << std::endl;
- leg->Draw();
- gPad->SetGrid();
- TString tLumiName = Form("#int L = %.4f pb^{-1}",luminosity);
- TLatex tLumi(1.5 * HistoDATA->GetMean(1),0.1 * HistoDATA->GetMaximum(),tLumiName.Data());
- tLumi.DrawClone();
- TString nameImage = Form("%s_%d.png",variable.c_str(),EEEB);
- cResultDistro.SaveAs(nameImage.Data());
+ // HistoMC[0]->Draw("BAR");
+ // HistoMC[1]->Draw("same");
+  // std::cerr << " HistoMC[0]->GetEntries() = " << HistoMC[0]->GetEntries() << std::endl;
+  leg->Draw();
+  gPad->SetGrid();
+  TString tLumiName = Form("#int L = %.4f pb^{-1}",luminosity);
+  TLatex tLumi(1.5 * HistoDATA->GetMean(1),0.1 * HistoDATA->GetMaximum(),tLumiName.Data());
+  tLumi.DrawClone();
 
- TString nameImageRoot = Form("%s_%d.root",variable.c_str(),EEEB);
- cResultDistro.SaveAs(nameImageRoot.Data());
+  TString tEleName = Form("%d electrons",(int) HistoDATA->GetEntries());
+  TLatex tEle(1.5 * HistoDATA->GetMean(1),0.3 * HistoDATA->GetMaximum(),tEleName.Data());
+  tEle.DrawClone();
+ 
+  TString nameImage = Form("%s_%d.png",variableNameFile.c_str(),EEEB);
+  cResultDistro.SaveAs(nameImage.Data());
 
+  TString nameImageRoot = Form("%s_%d.root",variableNameFile.c_str(),EEEB);
+  cResultDistro.SaveAs(nameImageRoot.Data());
 
- TCanvas cResultDistroLog("cResultDistroLog","cResultDistroLog",800,800);
- HistoDATA->DrawClone("E1");
- DrawStack(hsMC);
-// hsMC->DrawClone("same");
-// hsMC->DrawClone("BARsame");
- HistoDATA->DrawClone("E1same");
- legDown->Draw();
- gPad->SetGrid();
- gPad->SetLogy();
- TString nameImageLog = Form("%s_%d_log.png",variable.c_str(),EEEB);
- tLumi.Draw();
- cResultDistroLog.SaveAs(nameImageLog.Data());
+  TCanvas cResultDistroLog("cResultDistroLog","cResultDistroLog",800,800);
+  HistoDATA->DrawClone("E1");
+  DrawStack(hsMC);
+ // hsMC->DrawClone("same");
+ // hsMC->DrawClone("BARsame");
+  HistoDATA->DrawClone("E1same");
+  legDown->Draw();
+  gPad->SetGrid();
+  gPad->SetLogy();
+  TString nameImageLog = Form("%s_%d_log.png",variableNameFile.c_str(),EEEB);
+  tLumi.Draw();
+  cResultDistroLog.SaveAs(nameImageLog.Data());
+  }
   
+  
+  
+  
+  
+  
+  
+  
+  
+  ///==== 2D ====
+  
+   if (Dimension == 2){
+  int initialNumber;
+  TTree* MyTreeDATA = (TTree*) fileInDATA->Get(treeNameDATA.c_str());
+  TH2F* HistoDATA = new TH2F("DATA","DATA",bin,min,max,binY,minY,maxY);
+  TString DrawDATA = Form("%s:%s >> DATA",variableY.c_str(),variable.c_str());
+  MyTreeDATA->Draw(DrawDATA.Data(),AdditionalCut.Data());
+  HistoDATA->SetMarkerSize(1);
+  HistoDATA->SetMarkerStyle(20); 
+  HistoDATA->GetXaxis()->SetTitle(variable.c_str());
+  HistoDATA->GetYaxis()->SetTitle(variableY.c_str());
+  leg->AddEntry(HistoDATA,HistoDATA->GetTitle(),"p");
+  legDown->AddEntry(HistoDATA,HistoDATA->GetTitle(),"p");
+
+  TH2F* HistoMC[nMC];
+  TTree* MyTreeMC[nMC];
+  TH2F* hsMC = new TH2F("MC","MC",bin,min,max,binY,minY,maxY);
+ 
+  double MC_Expected = 0;
+ 
+  for (int iMC = 0; iMC < nMC; iMC++) {
+ // for (int iMC = nMC-1; iMC >= 0; iMC--) {
+  MyTreeMC[iMC] = (TTree*) fileInMC[iMC]->Get(treeNameMC.c_str());
+  MyTreeMC[iMC]->SetBranchAddress("initialNumber",&initialNumber);
+  MyTreeMC[iMC]->GetEntry(0);
+  xSecAndEfficiency.at(iMC) = xSecAndEfficiency.at(iMC) / initialNumber; ///==== normalize to initial number of events
+  HistoMC[iMC] = new TH2F(inputSampleMC.at(iMC).c_str(),inputSampleMC.at(iMC).c_str(),bin,min,max,binY,minY,maxY);
+  TString Draw = Form("%s:%s >>%s",variableY.c_str(),variable.c_str(),inputSampleMC.at(iMC).c_str());
+  MyTreeMC[iMC]->Draw(Draw.Data(),AdditionalCut.Data());
+  std::cout << ">>>>>> " << inputSampleMC.at(iMC) << " : " << xSecAndEfficiency.at(iMC) << " : " << luminosity << " : " << HistoMC[iMC]->GetEntries() << " = " << luminosity * xSecAndEfficiency.at(iMC) * HistoMC[iMC]->GetEntries() << std::endl;
+  std::cout << "    >> " << Draw.Data() << std::endl;
+  MC_Expected += luminosity * xSecAndEfficiency.at(iMC) * HistoMC[iMC]->GetEntries();
+  HistoMC[iMC]->Scale(luminosity * xSecAndEfficiency.at(iMC)); // / HistoMC[iMC]->GetEntries());
+  SetColorAndStyleHisto(*(HistoMC[iMC]),vColor[iMC]);
+  HistoMC[iMC]->GetXaxis()->SetTitle(variable.c_str()); 
+  HistoMC[iMC]->GetYaxis()->SetTitle(variableY.c_str());
+  hsMC->Add(HistoMC[iMC],1.);
+  leg->AddEntry(HistoMC[iMC],HistoMC[iMC]->GetTitle(),"f");
+  legDown->AddEntry(HistoMC[iMC],HistoMC[iMC]->GetTitle(),"f");
+ }
+ hsMC->GetXaxis()->SetTitle(variable.c_str()); 
+ hsMC->GetYaxis()->SetTitle(variableY.c_str());
+  
+ ///----------------------
+ ///---- Plot results ----
+ ///----------------------
+  std::cerr << " MC expected : DATA = " << MC_Expected << " : " << HistoDATA->GetEntries() << std::endl;
+  std::cerr << " HistoDATA->GetEntries() = " << HistoDATA->GetEntries() << std::endl;
+  outFile->cd();
+  TCanvas cResultDistro("cResultDistro","cResultDistro",800,800);
+   hsMC->DrawClone("COLZ");
+   HistoDATA->DrawClone("boxSAME");
+  
+   gPad->SetGrid();
+   TString tLumiName = Form("#int L = %.4f pb^{-1}",luminosity);
+   TLatex tLumi(1.5 * (max+min)/2. ,0.2 * (maxY+minY)/2.,tLumiName.Data());
+   tLumi.DrawClone();
+  
+   TString tEleName = Form("%d electrons",(int) HistoDATA->GetEntries());
+   TLatex tEle(1.5 * (max+min)/2. ,0.4 * (maxY+minY)/2.,tEleName.Data());
+   tEle.DrawClone();
+   
+   TString nameImage = Form("%s_%s_%d.png",variableNameFile.c_str(),variableNameFileY.c_str(),EEEB);
+   std::cerr << "nameImage = " << nameImage.Data() << std::endl;
+   cResultDistro.SaveAs(nameImage.Data());
+  
+   TString nameImageRoot = Form("%s_%s_%d.root",variableNameFile.c_str(),variableNameFileY.c_str(),EEEB);
+   cResultDistro.SaveAs(nameImageRoot.Data());
+  
+   TCanvas cResultDistroLog("cResultDistroLog","cResultDistroLog",800,800);
+   hsMC->DrawClone("COLZ");
+   HistoDATA->DrawClone("boxSAME");
+   gPad->SetGrid();
+   gPad->SetLogz();
+   TString nameImageLog = Form("%s_%s_%d_log.png",variableNameFile.c_str(),variableNameFileY.c_str(),EEEB);
+   tLumi.Draw();
+   cResultDistroLog.SaveAs(nameImageLog.Data());
+   }
 }
 
 
