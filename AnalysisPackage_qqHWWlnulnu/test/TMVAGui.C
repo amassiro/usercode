@@ -75,7 +75,8 @@ void TMVAGui( const char* fName = "TMVA.root" )
    // find all references   
    cout << "--- Reading keys ..." << endl;
    TMVAGui_keyContent = (TList*)file->GetListOfKeys()->Clone();
-   
+
+   cout << "--- close file ..." << endl;
    // close file
    file->Close();
   
@@ -89,9 +90,10 @@ void TMVAGui( const char* fName = "TMVA.root" )
 
    const TString buttonType( "button" );
 
+   cout << "--- configure buttons ..." << endl;
+   
    // configure buttons   
    Int_t ic = 1;
-
    // find all input variables types
    TList* keylist = GetKeyList( "InputVariables" );
    TListIter it( keylist );
@@ -112,7 +114,7 @@ void TMVAGui( const char* fName = "TMVA.root" )
 
    std::cout << "" << std::endl;
    
-   
+   cout << "--- correlation scatter plots ..." << endl;
    
    // correlation scatter plots 
    it.Reset(); ch = 'a';
@@ -128,6 +130,8 @@ void TMVAGui( const char* fName = "TMVA.root" )
                           str->GetString().Data() ),
                     buttonType, str->GetString() );
    }      
+   
+   cout << "--- coefficients ..." << endl;
    
    // coefficients
    ActionButton( cbar,  
@@ -154,11 +158,11 @@ void TMVAGui( const char* fName = "TMVA.root" )
                  "Plots the probability of each classifier for the test data (macro mvas.C(...,1))",
                  buttonType, defaultRequiredClassifier );
 
-   ActionButton( cbar,  
-                 Form( "(%id) Classifier Rarity Distributions (test sample)", ic ),
-                 Form( ".x mvas.C(\"%s\",2)", fName ),
-                 "Plots the Rarity of each classifier for the test data (macro mvas.C(...,2)) - background distribution should be uniform",
-                 buttonType, defaultRequiredClassifier );
+//    ActionButton( cbar,  
+//                  Form( "(%id) Classifier Rarity Distributions (test sample)", ic ),
+//                  Form( ".x mvas.C(\"%s\",2)", fName ),
+//                  "Plots the Rarity of each classifier for the test data (macro mvas.C(...,2)) - background distribution should be uniform",
+//                  buttonType, defaultRequiredClassifier );
 
    ActionButton( cbar,  
                  Form( "(%ia) Classifier Cut Efficiencies", ++ic ),
@@ -179,16 +183,19 @@ void TMVAGui( const char* fName = "TMVA.root" )
                  "Plots parallel coordinates for classifiers and input variables (macro paracoor.C, requires ROOT >= 5.17)",
                  buttonType, defaultRequiredClassifier );
 
+		 
+  cout << "--- ... half ..." << endl;
+		 
    // parallel coordinates only exist since ROOT 5.17
-   #if ROOT_VERSION_CODE < ROOT_VERSION(5,17,0)
-   TMVAGui_inactiveButtons.push_back( title );
-   #endif
+//    #if ROOT_VERSION_CODE < ROOT_VERSION(5,17,0)
+//    TMVAGui_inactiveButtons.push_back( title );
+//    #endif
 
-   ActionButton( cbar,  
-                 Form( "(%i) PDFs of Classifiers (requires \"CreateMVAPdfs\" option set)", ++ic ),
-                 Form( ".x probas.C(\"%s\")", fName ),
-                 "Plots the PDFs of the classifier output distributions for signal and background - if requested (macro probas.C)",
-                 buttonType, defaultRequiredClassifier );
+//    ActionButton( cbar,  
+//                  Form( "(%i) PDFs of Classifiers (requires \"CreateMVAPdfs\" option set)", ++ic ),
+//                  Form( ".x probas.C(\"%s\")", fName ),
+//                  "Plots the PDFs of the classifier output distributions for signal and background - if requested (macro probas.C)",
+//                  buttonType, defaultRequiredClassifier );
 
    ActionButton( cbar,  
                  Form( "(%i) Likelihood Reference Distributiuons", ++ic),
@@ -214,11 +221,12 @@ void TMVAGui( const char* fName = "TMVA.root" )
                  "Plots the Decision Trees trained by BDT algorithms (macro BDT.C(itree,...))",
                  buttonType, "BDT" );
 
-   ActionButton( cbar,  
-                 Form( "(%i) Decision Tree Control Plots (BDT)", ++ic ),
-                 Form( ".x BDTControlPlots.C(\"%s\")", fName ),
-                 "Plots to monitor boosting and pruning of decision trees (macro BDTControlPlots.C)",
-                 buttonType, "BDT" );
+//    ActionButton( cbar,  
+//                  Form( "(%i) Decision Tree Control Plots (BDT)", ++ic ),
+//                  Form( ".x BDTControlPlots.C(\"%s\")", fName ),
+//                  "Plots to monitor boosting and pruning of decision trees (macro BDTControlPlots.C)",
+//                  buttonType, "BDT" );
+
    //    ActionButton( cbar,  
    //                  Form( "(%i) Monitor Decision Tree Boosting", ++ic ),
    //                  Form( ".x BDTBoostWatch.C+(\"%s\")", fName ),
@@ -231,32 +239,37 @@ void TMVAGui( const char* fName = "TMVA.root" )
    //                  "Plots all input variables with rule ensemble weights, including linear terms (macro rulevis.C)",
    //                  buttonType, "RuleFit" );
 
-   ActionButton( cbar,  
-                 Form( "(%i) Plot Foams (PDEFoam)", ++ic ),
-                 Form( ".x PlotFoams.C", fName ),
-                 "Plot Foams (macro PlotFoams.C)",
-                 buttonType, "PDEFoam" );
+//    ActionButton( cbar,  
+//                  Form( "(%i) Plot Foams (PDEFoam)", ++ic ),
+//                  Form( ".x PlotFoams.C", fName ),
+//                  "Plot Foams (macro PlotFoams.C)",
+//                  buttonType, "PDEFoam" );
 
-   ActionButton( cbar,  
-                 Form( "(%i) General Boost Control Plots", ++ic ),
-                 Form( ".x BoostControlPlots.C(\"%s\")", fName ),
-                 "Plots to monitor boosting of general classifiers (macro BoostControlPlots.C)",
-                 buttonType, "Boost" );
+//    ActionButton( cbar,  
+//                  Form( "(%i) General Boost Control Plots", ++ic ),
+//                  Form( ".x BoostControlPlots.C(\"%s\")", fName ),
+//                  "Plots to monitor boosting of general classifiers (macro BoostControlPlots.C)",
+//                  buttonType, "Boost" );
 
+  cout << "--- add separator ..." << endl;
+		 
    cbar->AddSeparator();
-
+   
+   cout << "--- add Quit ..." << endl;
    cbar->AddButton( Form( "(%i) Quit", ++ic ),   ".q", "Quit", buttonType );
 
+   cout << "--- set the Style ..." << endl;
    // set the style 
-   cbar->SetTextColor("black");
+//    cbar->SetTextColor("black");
 
    // there seems to be a bug in ROOT: font jumps back to default after pressing on >2 different buttons
    // cbar->SetFont("-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-iso8859-1");
    
-   
+   cout << "--- draw ..." << endl;
    // draw
    cbar->Show();
 
+   cout << "--- inactive ..." << endl;
    // indicate inactive buttons
    for (UInt_t i=0; i<TMVAGui_inactiveButtons.size(); i++) cbar->SetButtonState( TMVAGui_inactiveButtons[i], 3 );
    if (TMVAGui_inactiveButtons.size() > 0) {

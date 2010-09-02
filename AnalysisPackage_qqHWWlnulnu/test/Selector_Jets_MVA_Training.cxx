@@ -144,14 +144,15 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
  char *nameSamplePrefix[1000];
  char *nameSampleTree[1000];
  double xsection[1000];
- std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/WorkFlow/samples.txt");
+//  std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/WorkFlow/samples.txt");
+ std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/WorkFlow/samples_temp.txt");
  std::string buffer;
 
  int totalSamples = 0;
  
  while(!inFile.eof()){
   getline(inFile,buffer);
-  std::cout << "buffer = " << buffer << std::endl;
+//   std::cout << "buffer = " << buffer << std::endl;
   if (buffer != ""){ ///---> save from empty line at the end!
    //    std::cout << "buffer.at(0) = " << buffer.at(0) << std::endl;
    if (buffer.at(0) != '#'){ ///--------------------------------------- NON FUNZIONA!!!
@@ -168,31 +169,34 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
     
     line >> xsection[totalSamples]; 
     std::cout << xsection[totalSamples] << " ";
-    std::cout << std::endl;
+//     std::cout << std::endl;
     
     char nameFile[1000];
-    sprintf(nameFile,"output/out_SelectorJets_%s.root",nameSample[totalSamples]);  
+    sprintf(nameFile,"output/out_FinalSelection_%s.root",nameSample[totalSamples]);  
+//     sprintf(nameFile,"output/out_SelectorJets_%s.root",nameSample[totalSamples]);  
     TFile* f = new TFile(nameFile, "READ");
     
     treeEffVect[totalSamples] = (TTree) f->Get("outTreeSelections");
     char nameTreeEff[100];
     sprintf(nameTreeEff,"treeEff_%d",totalSamples); 
-    treeEffVect[totalSamples].SetName(nameTreeEff);      
+    treeEffVect[totalSamples]->SetName(nameTreeEff);      
     
     double XSection;
     double eff_Channel_Filter;
     double preselection_efficiency;
     int numEntriesBefore;
-    treeEffVect[totalSamples].SetBranchAddress("XSection",&XSection);
-    treeEffVect[totalSamples].SetBranchAddress("preselection_efficiency",&preselection_efficiency);
-    treeEffVect[totalSamples].SetBranchAddress("numEntriesBefore",&numEntriesBefore);
-    treeEffVect[totalSamples].GetEntry(0);
+    treeEffVect[totalSamples]->SetBranchAddress("XSection",&XSection);
+    treeEffVect[totalSamples]->SetBranchAddress("preselection_efficiency",&preselection_efficiency);
+    treeEffVect[totalSamples]->SetBranchAddress("numEntriesBefore",&numEntriesBefore);
+    treeEffVect[totalSamples]->GetEntry(0);
     
     ///**********************************************************************
     weights[totalSamples] = XSection * preselection_efficiency / numEntriesBefore;
-    signal_background[totalSamples] = (TTree) f->Get("outTree");
+    signal_background[totalSamples] = (TTree) f->Get("outTreeJetLep");
+    //     signal_background[totalSamples] = (TTree) f->Get("outTree");
     ///**********************************************************************
-    
+//     std::cout << " " << weights[totalSamples] << " " << treeEffVect[totalSamples] << ;
+    std::cout << std::endl;
     totalSamples++;
    } 
   }
@@ -208,7 +212,7 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
   }
  }
  
- 
+ std::cerr << "==== exec ==== " << std::endl;
  
  TString mycuts_s = Form("");
  TString mycuts_b = Form("");
@@ -218,9 +222,9 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
  
  // tell the factory to use all remaining events in the trees after training for testing:
 //  factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=NumEvents:!V" );
-factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=None:!V");//:nTrain_Background=100000:nTrain_Signal=1000:nTest_Background=100000:nTest_Signal=1000" );
+// factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=None:!V");//:nTrain_Background=100000:nTrain_Signal=1000:nTest_Background=100000:nTest_Signal=1000" );
 
-// factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=NumEvents:!V");//:nTrain_Background=100000:nTrain_Signal=1000:nTest_Background=100000:nTest_Signal=1000" );
+factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=NumEvents:!V");//:nTrain_Background=100000:nTrain_Signal=1000:nTest_Background=100000:nTest_Signal=1000" );
 //  factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=NumEvents:!V:nTrain_Background=1000000:nTrain_Signal=30000");//:nTest_Background=1000:nTest_Signal=1000" );
  
  
@@ -241,7 +245,7 @@ factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=N
 
    if (Use["CutsGA"])
       factory->BookMethod( TMVA::Types::kCuts, "CutsGA",
-                           "H:!V:FitMethod=GA:CutRangeMin[0]=-10:CutRangeMax[0]=10:VarProp[1]=FMax:EffSel:Steps=30:Cycles=3:PopSize=400:SC_steps=10:SC_rate=5:SC_factor=0.95" );
+                           "H:!V:FitMethod=GA:EffSel:Steps=30:Cycles=3:PopSize=400:SC_steps=10:SC_rate=5:SC_factor=0.95" );
    
    if (Use["CutsSA"])
       factory->BookMethod( TMVA::Types::kCuts, "CutsSA",
@@ -372,7 +376,7 @@ factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=N
 
    if (Use["BDT"])  // Adaptive Boost
       factory->BookMethod( TMVA::Types::kBDT, "BDT", 
-			   "!H:!V:NTrees=400:nEventsMin=400:MaxDepth=3:BoostType=AdaBoost:SeparationType=GiniIndex:nCuts=20:PruneMethod=NoPruning" );
+                           "!H:!V:NTrees=100:MaxDepth=3:BoostType=AdaBoost:SeparationType=GiniIndex:nCuts=100:PruneMethod=NoPruning" );
    
    if (Use["BDTB"]) // Bagging
       factory->BookMethod( TMVA::Types::kBDT, "BDTB", 

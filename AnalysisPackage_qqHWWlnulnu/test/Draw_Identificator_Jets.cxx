@@ -14,8 +14,8 @@
 // }
 
 {
- TH1F match1("match1","match1",3,0,3);
- TH1F match2("match2","match2",3,0,3);
+ TH1F match1("match1","MaxPt",3,0,3);
+ TH1F match2("match2","MaxMVA",3,0,3);
  TTree* tree1 = (TTree*) _file0->Get("outTree");
  TTree* tree2 = (TTree*) _file1->Get("outTree");
  TCanvas cc("cc","cc",500,500);
@@ -39,5 +39,6 @@
  match1.DrawNormalized("same");
 
  gPad->SetGrid();
+ gPad->BuildLegend();
  
 }

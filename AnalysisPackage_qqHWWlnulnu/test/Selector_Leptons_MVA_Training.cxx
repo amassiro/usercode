@@ -145,7 +145,8 @@ void Selector_Leptons_MVA_Training( TString myMethodList = "" ) {
  char *nameSamplePrefix[1000];
  char *nameSampleTree[1000];
  double xsection[1000];
- std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/WorkFlow/samples.txt");
+//  std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/WorkFlow/samples.txt");
+ std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/WorkFlow/samples_temp.txt");
  std::string buffer;
 
  int totalSamples = 0;
@@ -172,7 +173,8 @@ void Selector_Leptons_MVA_Training( TString myMethodList = "" ) {
     std::cout << std::endl;
     
     char nameFile[1000];
-    sprintf(nameFile,"output/out_SelectorLeptons_%s.root",nameSample[totalSamples]);  
+    sprintf(nameFile,"output/out_FinalSelection_%s.root",nameSample[totalSamples]);  
+//     sprintf(nameFile,"output/out_SelectorLeptons_%s.root",nameSample[totalSamples]);  
     TFile* f = new TFile(nameFile, "READ");
     
     treeEffVect[totalSamples] = (TTree) f->Get("outTreeSelections");
@@ -191,7 +193,8 @@ void Selector_Leptons_MVA_Training( TString myMethodList = "" ) {
     
     ///**********************************************************************
     weights[totalSamples] = XSection * preselection_efficiency / numEntriesBefore;
-    signal_background[totalSamples] = (TTree*) f->Get("outTreeLep");
+    signal_background[totalSamples] = (TTree) f->Get("outTreeJetLep");
+//     signal_background[totalSamples] = (TTree*) f->Get("outTreeLep");
     ///**********************************************************************
     
     totalSamples++;

@@ -34,7 +34,7 @@ std::cerr << " Cut = " << Cut.Data() << std::endl;
  
  while(!inFile.eof()){
   getline(inFile,buffer);
-  std::cout << "buffer = " << buffer << std::endl;
+//   std::cout << "buffer = " << buffer << std::endl;
   if (buffer != ""){ ///---> save from empty line at the end!
    if (buffer.at(0) != '#'){
     std::stringstream line( buffer );       

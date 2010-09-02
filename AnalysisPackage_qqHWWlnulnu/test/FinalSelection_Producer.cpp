@@ -171,21 +171,47 @@ int main(int argc, char** argv)
  
  double pT_RECO_q1;
  double pT_RECO_q2;
+ double phi_RECO_q1;
+ double phi_RECO_q2;
  double eta_RECO_q1;
  double eta_RECO_q2;
  double eta_RECO_q1_eta_RECO_q2;
  double Deta_RECO_q12;
  double Mjj;
+ int NBjets_trackCountingHighPurBJetTags;
+ int NBjets_trackCountingHighEffBJetTags;
+ int NBjets_combinedSecondaryVertexBJetTags;
+ int NBjets_combinedSecondaryVertexMVABJetTags;
  int JV_20;
  int JV_30;
  int CJV_20;
  int CJV_30;
+ int Z_01_30;
+ int Z_03_30;
+ int Z_05_30;
+ int Z_07_30;
+ int Z_09_30;
+ int Z_10_30;
+ int Z_12_30;
+ int Z_14_30;
+ int Z_01_20;
+ int Z_03_20;
+ int Z_05_20;
+ int Z_07_20;
+ int Z_09_20;
+ int Z_10_20;
+ int Z_12_20;
+ int Z_14_20;
+ 
+ 
  int AnalysisStep; 
  Float_t input_variables_Jet[1000];
  Double_t* MVA_Jet;
  
  outTreeJetLep.Branch("pT_RECO_q1",&pT_RECO_q1,"pT_RECO_q1/D");
  outTreeJetLep.Branch("pT_RECO_q2",&pT_RECO_q2,"pT_RECO_q2/D");
+ outTreeJetLep.Branch("phi_RECO_q1",&phi_RECO_q1,"phi_RECO_q1/D");
+ outTreeJetLep.Branch("phi_RECO_q2",&phi_RECO_q2,"phi_RECO_q2/D");
  outTreeJetLep.Branch("eta_RECO_q1",&eta_RECO_q1,"eta_RECO_q1/D");
  outTreeJetLep.Branch("eta_RECO_q2",&eta_RECO_q2,"eta_RECO_q2/D");
  outTreeJetLep.Branch("eta_RECO_q1_eta_RECO_q2",&eta_RECO_q1_eta_RECO_q2,"eta_RECO_q1_eta_RECO_q2/D");
@@ -197,7 +223,31 @@ int main(int argc, char** argv)
  outTreeJetLep.Branch("CJV_30",&CJV_30,"CJV_30/I");
  outTreeJetLep.Branch("AnalysisStep",&AnalysisStep,"AnalysisStep/I");
  
-  
+ outTreeJetLep.Branch("Z_01_30",&Z_01_30,"Z_01_30/I");
+ outTreeJetLep.Branch("Z_03_30",&Z_03_30,"Z_03_30/I");
+ outTreeJetLep.Branch("Z_05_30",&Z_05_30,"Z_05_30/I");
+ outTreeJetLep.Branch("Z_07_30",&Z_07_30,"Z_07_30/I");
+ outTreeJetLep.Branch("Z_09_30",&Z_09_30,"Z_09_30/I");
+ outTreeJetLep.Branch("Z_10_30",&Z_10_30,"Z_10_30/I");
+ outTreeJetLep.Branch("Z_12_30",&Z_12_30,"Z_12_30/I");
+ outTreeJetLep.Branch("Z_14_30",&Z_14_30,"Z_14_30/I");
+
+ outTreeJetLep.Branch("Z_01_20",&Z_01_20,"Z_01_20/I");
+ outTreeJetLep.Branch("Z_03_20",&Z_03_20,"Z_03_20/I");
+ outTreeJetLep.Branch("Z_05_20",&Z_05_20,"Z_05_20/I");
+ outTreeJetLep.Branch("Z_07_20",&Z_07_20,"Z_07_20/I");
+ outTreeJetLep.Branch("Z_09_20",&Z_09_20,"Z_09_20/I");
+ outTreeJetLep.Branch("Z_10_20",&Z_10_20,"Z_10_20/I");
+ outTreeJetLep.Branch("Z_12_20",&Z_12_20,"Z_12_20/I");
+ outTreeJetLep.Branch("Z_14_20",&Z_14_20,"Z_14_20/I");
+ 
+ 
+ outTreeJetLep.Branch("NBjets_trackCountingHighPurBJetTags",&NBjets_trackCountingHighPurBJetTags,"NBjets_trackCountingHighPurBJetTags/I");
+ outTreeJetLep.Branch("NBjets_trackCountingHighEffBJetTags",&NBjets_trackCountingHighEffBJetTags,"NBjets_trackCountingHighEffBJetTags/I");
+ outTreeJetLep.Branch("NBjets_combinedSecondaryVertexBJetTags",&NBjets_combinedSecondaryVertexBJetTags,"NBjets_combinedSecondaryVertexBJetTags/I");
+ outTreeJetLep.Branch("NBjets_combinedSecondaryVertexMVABJetTags",&NBjets_combinedSecondaryVertexMVABJetTags,"NBjets_combinedSecondaryVertexMVABJetTags/I");
+ 
+ 
  TMVA::Reader *TMVAreader_Jet = new TMVA::Reader( "!Color:!Silent" );
  TMVAreader_Jet->AddVariable("pT_RECO_q1",&input_variables_Jet[0]);
  TMVAreader_Jet->AddVariable("pT_RECO_q2",&input_variables_Jet[1]);
@@ -314,8 +364,7 @@ int main(int argc, char** argv)
   std::vector<ROOT::Math::XYZTVector>* jets = reader.Get4V("jets");
 //   std::vector<ROOT::Math::XYZTVector>* muons = reader.Get4V("muons");
 //   std::vector<ROOT::Math::XYZTVector>* electrons = reader.Get4V("electrons");
-  
-  
+    
   
   ///*********************************************************************************************
   ///*********************************************************************************************
@@ -355,6 +404,8 @@ int main(int argc, char** argv)
   int nJets = jets->size();
   std::vector<int> whitelistJet;
   std::vector<int> blacklistJet;
+  std::vector<int> blacklistJet_forCJV;
+  std::vector<int> blacklistJet_forBtag;
   for (int iJet = 0; iJet < nJets; iJet++){
    bool skipJet = false;
    if (jets->at(iJet).Et() < 10.0) skipJet = true;
@@ -365,6 +416,8 @@ int main(int argc, char** argv)
    if (skipJet) {
     whitelistJet.push_back(0); ///---- reject
     blacklistJet.push_back(iJet); ///---- reject ///== black list is in a different format
+    blacklistJet_forCJV.push_back(iJet); ///---- reject ///== black list is in a different format
+    blacklistJet_forBtag.push_back(iJet); ///---- reject ///== black list is in a different format
    }
    else {
     whitelistJet.push_back(1); ///---- select
@@ -385,7 +438,7 @@ int main(int argc, char** argv)
   stdHistograms -> Fill1("met","met",step,0); 
   
    
-   
+  
    ///**************************************
    ///**** STEP 2 - Super-Preselections ****
    ///************* tighter preselections to start the analysis from the same point
@@ -451,6 +504,8 @@ int main(int argc, char** argv)
     }
    }
    
+//    std::cerr << "ciao!!!" << std::endl;
+   
    
    ///   Muon
    ///   PromptTightMuonID
@@ -459,12 +514,20 @@ int main(int argc, char** argv)
    std::vector<int> whitelistMu;
    std::vector<int> blacklistMu;
    int nMus = reader.Get4V("muons")->size();
+//    std::cerr << "mu = " << nMus << std::endl;
+   
    for (int iMu = 0; iMu < nMus; iMu++){    
     bool skipMu = false;
     if (reader.Get4V("muons")->at(iMu).pt() < 10.0) skipMu = true;
+//     std::cerr << "mu = " << nMus << std::endl;
+    
     if (fabs(reader.Get4V("muons")->at(iMu).Eta()) > 2.5) skipMu = true;
-    if( (reader.GetFloat("muons_tkIso")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > 0.5 ) skipMu = true;
-    if( (reader.GetFloat("muons_goodMuon")->at(iMu)) < 1. )  skipMu = true;    
+//     std::cerr << "mu = " << nMus << " " << reader.GetFloat("muons_tkIsoR03")->at(iMu) << std::endl;
+    
+    if( (reader.GetFloat("muons_tkIsoR03")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > 0.5 ) skipMu = true;
+//     std::cerr << "mu = " << nMus << std::endl;
+    
+    if( (reader.GetInt("muons_goodMuon")->at(iMu)) < 1. )  skipMu = true;    
     if (skipMu) {
      whitelistMu.push_back(0); ///---- reject
      blacklistMu.push_back(iMu); ///---- reject ///== black list is in a different format
@@ -474,7 +537,8 @@ int main(int argc, char** argv)
     }
    }
    
-    
+//    std::cerr << "ele = " << nEles << std::endl;
+   
    ///   Jet
    ///   Antikt5, L2L3 correction, Pt>30GeV & |eta|<5  
    ///   Remove jet with
@@ -483,6 +547,9 @@ int main(int argc, char** argv)
    ///   an electron (the ones defined above) in cone=0.1
    electrons_jetCleaning.clear();
    // build the collection of electros for jet cleaning
+   
+//    std::cerr << "ele = " << nEles << std::endl;
+   
    for(unsigned int iEle = 0; iEle < nEles; ++iEle)
    {
     if (whitelistEle.at(iEle) == 0) continue;
@@ -494,21 +561,22 @@ int main(int argc, char** argv)
 //      skipJet = true;
      continue; //---- otherwise blacklistJet.push_back(iJet) and blacklistJet becomes too long
      //-------------- and then it's faster!
-    }
+    }   
     if (jets->at(iJet).Et() < 30.0) skipJet = true;
-    if (jets->at(iJet).Et() > 5.0) skipJet = true;
+    if (jets->at(iJet).Eta() > 5.0) skipJet = true;
     for(unsigned int eleIt = 0; eleIt < electrons_jetCleaning.size(); eleIt++) {
      ROOT::Math::XYZTVector ele = electrons_jetCleaning.at(eleIt);
      if (ROOT::Math::VectorUtil::DeltaR(jets->at(iJet),ele) < 0.3 ) skipJet = true;
     }
     if (skipJet) {
-     whitelistJet.push_back(0); ///---- reject
+     whitelistJet.at(iJet) = 0; ///---- reject
      blacklistJet.push_back(iJet); ///---- reject ///== black list is in a different format
     }
     else {
-     whitelistJet.push_back(1); ///---- select
+     whitelistJet.at(iJet) = 1; ///---- select
     }
    }
+//    std::cerr << "ciao!!!" << std::endl;
    
    ///   At least 2 leptons
    ///   Muon (from the collections defined above)
@@ -522,6 +590,9 @@ int main(int argc, char** argv)
    for (int iEle = 0; iEle < nEles; iEle++){  
     if (whitelistEle.at(iEle) == 1 && reader.Get4V("electrons")->at(iEle).pt() > 15.0) numLeptons_Accepted++;
    }
+   
+//    std::cerr << "numLeptons_Accepted = " << numLeptons_Accepted << std::endl;
+   
    if (numLeptons_Accepted < 2) continue;
    
    ///   At least two calo jets or two pf jets with pt>30GeV
@@ -530,6 +601,9 @@ int main(int argc, char** argv)
    for (int iJet = 0; iJet < nJets; iJet++){  
     if (whitelistJet.at(iJet) == 1) numJets_Accepted++;
    }
+
+// std::cerr << "numJets_Accepted = " << numJets_Accepted << " = " << GetNumList(whitelistJet) << " = " << nJets << " - " << blacklistJet.size() << std::endl;
+
    if (numJets_Accepted < 2) continue;
    
   
@@ -544,6 +618,7 @@ int main(int argc, char** argv)
    stdHistograms -> Fill1("met","met",step,0); 
    
    
+   
     
   ///*************************
   ///**** STEP 3 - Jet ID ****
@@ -551,6 +626,10 @@ int main(int argc, char** argv)
     
   std::vector<int> itSelJet;
   double maxPt_jets_selected = SelectJets(itSelJet,*jets,"maxSumPt",-1.,&blacklistJet);
+  
+//   std::cerr << "itSelJet.at(0) = " << itSelJet.at(0) << " : " << nJets << std::endl;
+//   std::cerr << "itSelJet.at(1) = " << itSelJet.at(1) << " : " << nJets << std::endl;
+  
   
   int q1 = itSelJet.at(0);
   int q2 = itSelJet.at(1);
@@ -561,32 +640,78 @@ int main(int argc, char** argv)
    q2 = tempq;
   }
   
+//   std::cerr << "here is ok" <<  std::endl;
+  
   ///---- update white/black list jets ----
-//   blacklistJet.clear();
-  for (int iList = 0; iList < whitelistJet.size(); iList++){
-   if (q1 == iList || q2 == iList) {
-    whitelistJet.at(iList) = 1;
-    blacklistJet.push_back(iList); ///===>  blacklistJet used for CJV => no 2 tag jets to be considered!
+  for (int iJet = 0; iJet < nJets; iJet++){
+   if (q1 == iJet || q2 == iJet) {
+    whitelistJet.at(iJet) = 1;
+    blacklistJet.push_back(iJet); ///===>  blacklistJet used for CJV => no 2 tag jets to be considered!
+    blacklistJet_forCJV.push_back(iJet); ///===>  blacklistJet used for CJV => no 2 tag jets to be considered!
    }
    else {
-    whitelistJet.at(iList) = 0;
+    whitelistJet.at(iJet) = 0;
    }
   }
   
   pT_RECO_q1 = jets->at(q1).Pt();
   pT_RECO_q2 = jets->at(q2).Pt();
+  phi_RECO_q1 = jets->at(q1).Phi();
+  phi_RECO_q2 = jets->at(q2).Phi();
   eta_RECO_q1 = jets->at(q1).Eta();
   eta_RECO_q2 = jets->at(q2).Eta();
   eta_RECO_q1_eta_RECO_q2 = eta_RECO_q1 * eta_RECO_q2;
   Deta_RECO_q12 = fabs(eta_RECO_q1-eta_RECO_q2); 
   Mjj = (jets->at(q1) + jets->at(q2)).M();
-  CJV_20 = getCJV(*jets,q1,q2,20.,&blacklistJet);
-  CJV_30 = getCJV(*jets,q1,q2,30.,&blacklistJet);
+  CJV_20 = getCJV(*jets,q1,q2,20.,&blacklistJet_forCJV);
+  CJV_30 = getCJV(*jets,q1,q2,30.,&blacklistJet_forCJV);
 
-  JV_20 = getJV(*jets,20.,&blacklistJet);
-  JV_30 = getJV(*jets,30.,&blacklistJet);
+  JV_20 = getJV(*jets,20.,&blacklistJet_forCJV);
+  JV_30 = getJV(*jets,30.,&blacklistJet_forCJV);
+
+  
+  JV_20 = getJV(*jets,20.,&blacklistJet_forCJV);
+  JV_30 = getJV(*jets,30.,&blacklistJet_forCJV);
+   
+  Z_01_30 = getZepp(*jets,q1,q2,30.,0.1,&blacklistJet_forCJV);
+  Z_03_30 = getZepp(*jets,q1,q2,30.,0.3,&blacklistJet_forCJV);
+  Z_05_30 = getZepp(*jets,q1,q2,30.,0.5,&blacklistJet_forCJV);
+  Z_07_30 = getZepp(*jets,q1,q2,30.,0.7,&blacklistJet_forCJV);
+  Z_09_30 = getZepp(*jets,q1,q2,30.,0.9,&blacklistJet_forCJV);
+  Z_10_30 = getZepp(*jets,q1,q2,30.,1.0,&blacklistJet_forCJV);
+  Z_12_30 = getZepp(*jets,q1,q2,30.,1.2,&blacklistJet_forCJV);
+  Z_14_30 = getZepp(*jets,q1,q2,30.,1.4,&blacklistJet_forCJV);
+
+  Z_01_20 = getZepp(*jets,q1,q2,20.,0.1,&blacklistJet_forCJV);
+  Z_03_20 = getZepp(*jets,q1,q2,20.,0.3,&blacklistJet_forCJV);
+  Z_05_20 = getZepp(*jets,q1,q2,20.,0.5,&blacklistJet_forCJV);
+  Z_07_20 = getZepp(*jets,q1,q2,20.,0.7,&blacklistJet_forCJV);
+  Z_09_20 = getZepp(*jets,q1,q2,20.,0.9,&blacklistJet_forCJV);
+  Z_10_20 = getZepp(*jets,q1,q2,20.,1.0,&blacklistJet_forCJV);
+  Z_12_20 = getZepp(*jets,q1,q2,20.,1.2,&blacklistJet_forCJV);
+  Z_14_20 = getZepp(*jets,q1,q2,20.,1.4,&blacklistJet_forCJV);
+   
+  NBjets_trackCountingHighPurBJetTags = 0;
+  NBjets_trackCountingHighEffBJetTags = 0;
+  NBjets_combinedSecondaryVertexBJetTags = 0;
+  NBjets_combinedSecondaryVertexMVABJetTags = 0;
+  for (int iJet = 0; iJet < nJets; iJet++){
+   bool skipJet = false;
+   for(unsigned int kk = 0; kk < blacklistJet_forBtag.size(); ++kk) {
+    if(blacklistJet_forBtag.at(kk) == static_cast<int>(iJet)) skipJet = true;
+   }
+   if (reader.Get4V("jets")->at(iJet).pt() < 10.0) skipJet = true;
+   if (skipJet) continue;
+   if (reader.GetFloat("jets_trackCountingHighPurBJetTags")->at(iJet) > -50.0) NBjets_trackCountingHighPurBJetTags++;
+   if (reader.GetFloat("jets_trackCountingHighEffBJetTags")->at(iJet) > -50.0) NBjets_trackCountingHighEffBJetTags++;
+   if (reader.GetFloat("jets_combinedSecondaryVertexBJetTags")->at(iJet) > -5.0) NBjets_combinedSecondaryVertexBJetTags++;
+   if (reader.GetFloat("jets_combinedSecondaryVertexMVABJetTags")->at(iJet) > -5.0) NBjets_combinedSecondaryVertexMVABJetTags++;
+  }
   
   AnalysisStep = step;
+  
+//   std::cerr << "here is ok" <<  std::endl;
+  
   
   ///==== filling ====
   step = 3;
@@ -623,8 +748,9 @@ int main(int argc, char** argv)
   
   
   ///********************************
-  ///**** STEP 5 - Lepton Number ****
-   
+  ///**** STEP 5 - Lepton ID ****
+  ///************* Identification of the two 
+  
   std::vector<ROOT::Math::XYZTVector> electrons;
   std::vector<ROOT::Math::XYZTVector> muons;
   std::vector<ROOT::Math::XYZTVector> leptons;
@@ -636,56 +762,52 @@ int main(int argc, char** argv)
   std::vector<float> leptons_tipSig;
   std::vector<float> leptons_3DipSig;
   
-  double eleIdValueMIN = 1;
-  double lepNMIN = 2;
+//   std::cerr << "here is ok 3" <<  std::endl;
   
-  for(unsigned int eleIt = 0; eleIt < (reader.Get4V("electrons")->size()); ++eleIt)
-  {
-   if( reader.Get4V("electrons")->at(eleIt).pt() < 10. ) continue;
-   if( (reader.GetFloat("electrons_tkIso")->at(eleIt)) / reader.Get4V("electrons")->at(eleIt).pt() > 0.5 ) continue;
-   if( (reader.GetFloat("electrons_IdRobustTight")->at(eleIt)) < eleIdValueMIN ) continue;
-   
-   electrons.push_back( reader.Get4V("electrons")->at(eleIt) );
-   leptons.push_back( reader.Get4V("electrons")->at(eleIt) );      
-   leptonFlavours.push_back("electron");
-   leptonFlavours_pdgId.push_back(11);
-   leptons_charge.push_back(reader.GetFloat("electrons_charge")->at(eleIt));
-   leptons_tkIso.push_back(reader.GetFloat("electrons_tkIso")->at(eleIt));
-   leptons_lipSig.push_back(reader.GetFloat("electrons_lipSignificance")->at(eleIt));
-   leptons_tipSig.push_back(reader.GetFloat("electrons_tipSignificance")->at(eleIt));
-   leptons_3DipSig.push_back(reader.GetFloat("electrons_3DipSignificance")->at(eleIt));
+  for(unsigned int iEle = 0; iEle < nEles; iEle++){
+   if (whitelistEle.at(iEle) == 1){
+//     std::cerr << "here is ok 3.1 iEle = " << iEle <<  std::endl;
+    //    electrons.push_back( reader.Get4V("electrons")->at(iEle) );
+    leptons.push_back( reader.Get4V("electrons")->at(iEle) );  
+//     std::cerr << "here is ok 3.1" <<  std::endl;
+    leptonFlavours.push_back("electron");
+//     std::cerr << "here is ok 3.2" <<  std::endl;
+    leptonFlavours_pdgId.push_back(11);
+    leptons_charge.push_back(reader.GetFloat("electrons_charge")->at(iEle));
+//     std::cerr << "here is ok 3.3" <<  std::endl;
+    leptons_tkIso.push_back(reader.GetFloat("electrons_tkIso")->at(iEle));
+//     std::cerr << "here is ok 3.4" <<  std::endl;
+    leptons_lipSig.push_back(reader.GetFloat("electrons_lipSignificance")->at(iEle));
+//     std::cerr << "here is ok 3.5" <<  std::endl;
+    leptons_tipSig.push_back(reader.GetFloat("electrons_tipSignificance")->at(iEle));
+//     std::cerr << "here is ok 3.6" <<  std::endl;
+    leptons_3DipSig.push_back(reader.GetFloat("electrons_3DipSignificance")->at(iEle));
+   }
   }
   
-  for(unsigned int muIt = 0; muIt < (reader.Get4V("muons")->size()); ++muIt)
-  {
-   if( reader.Get4V("muons")->at(muIt).pt() < 10. ) continue;
-   if( (reader.GetFloat("muons_tkIsoR03")->at(muIt)) / reader.Get4V("muons")->at(muIt).pt() > 0.5 ) continue;
-   
-   muons.push_back( reader.Get4V("muons")->at(muIt) );
-   leptons.push_back( reader.Get4V("muons")->at(muIt) );      
-   leptonFlavours.push_back("muon");
-   leptonFlavours_pdgId.push_back(13);
-   leptons_charge.push_back(reader.GetFloat("muons_charge")->at(muIt));
-   leptons_tkIso.push_back(reader.GetFloat("muons_tkIsoR03")->at(muIt));
-   leptons_lipSig.push_back(reader.GetFloat("muons_lipSignificance")->at(muIt));
-   leptons_tipSig.push_back(reader.GetFloat("muons_tipSignificance")->at(muIt));
-   leptons_3DipSig.push_back(reader.GetFloat("muons_3DipSignificance")->at(muIt));
+//   std::cerr << "here is ok 4" <<  std::endl;
+  
+  
+  for(unsigned int iMu = 0; iMu < nMus; iMu++){
+   if (whitelistMu.at(iMu) == 1){
+//     muons.push_back( reader.Get4V("muons")->at(iMu) );
+    leptons.push_back( reader.Get4V("muons")->at(iMu) );      
+    leptonFlavours.push_back("muon");
+    leptonFlavours_pdgId.push_back(13);
+    leptons_charge.push_back(reader.GetFloat("muons_charge")->at(iMu));
+    leptons_tkIso.push_back(reader.GetFloat("muons_tkIsoR03")->at(iMu));
+    leptons_lipSig.push_back(reader.GetFloat("muons_lipSignificance")->at(iMu));
+    leptons_tipSig.push_back(reader.GetFloat("muons_tipSignificance")->at(iMu));
+    leptons_3DipSig.push_back(reader.GetFloat("muons_3DipSignificance")->at(iMu));
+   }
   }
   
-  if( (int)(leptons.size()) < lepNMIN ) continue;
+//   std::cerr << "leptons.size() = " << leptons.size() << std::endl;
   
-  step = 5;
-  stepName[step] = "Lepton Number";
-  stepEvents[step] += 1;
+  if (leptons.size() < 2) continue; ///=== I want at least 2 leptons!!!
   
   
-  ///****************************
-  ///**** STEP 6 - Lepton ID ****
-  
-  step = 6;
-  stepName[step] = "Lepton ID";
-  stepEvents[step] += 1;
-  
+   
   std::vector<int> itSelLep;
   double maxPt_lept_selected = SelectJets(itSelLep,leptons,"maxSumPt",-1.,0);
   
@@ -710,14 +832,23 @@ int main(int argc, char** argv)
   Mll = (leptons.at(l1) + leptons.at(l2)).M();
   charge_RECO_l1_charge_RECO_l2 = leptons_charge.at(l1) * leptons_charge.at(l2);  
   
-  stdHistograms -> Fill1("muons","muons",step,0);
-  stdHistograms -> Fill1("electrons","electrons",step,0);
+  stdHistograms -> Fill1("muons","muons",step,&whitelistMu);
+  stdHistograms -> Fill1("electrons","electrons",step,&whitelistEle);
   stdHistograms -> Fill1("jets","jets",step,&whitelistJet);
   stdHistograms -> Fill1("met","met",step,0);  
   stdHistograms -> Fill2(jets->at(q1),jets->at(q2), "JJ", step);
   stdHistograms -> Fill2(leptons.at(l1),leptons.at(l2), "ll", step);
   
+  
+  step = 5;
+  stepName[step] = "Lepton ID";
+  stepEvents[step] += 1;
+  
+  
  
+ 
+  ///*************************
+  ///*************************
   ///*************************
   ///**** STEP Production ****
   
@@ -767,27 +898,6 @@ int main(int argc, char** argv)
   outTreeJetLep.Fill();
 //   outTreeJetLep.Fill();
 //   std::cerr << "======================================= end " << std::endl;
-  
-  ///************************************
-  ///**** STEP 7 - Lepton Selections ****
-  
-  
- 
-  
-  //   step = 7;
-  //   stepName[step] = "Lepton selections";
-  //   stepEvents[step] += 1;
-  
-  
-  ///****************************************
-  ///**** STEP 8 - Lepton Selections MVA ****
-  
-  //   step = 8;
-  //   stepName[step] = "Lepton Selections MVA";
-  //   stepEvents[step] += 1;
-  
-  
-  
   
   
   ///==== ... to be continued in next program ... ====
