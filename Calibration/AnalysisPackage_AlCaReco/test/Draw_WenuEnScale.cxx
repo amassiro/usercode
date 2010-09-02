@@ -1,117 +1,106 @@
 {
 
- int NUM = 1;
- char NAME = {"EoP_EB_mod1"};
- char* VAR = {"fbrem0203"};
-
- double MIN = -0.2;
- double MAX = 0.2;
+ int NUM = 3;
+ std::string NAME = "EoP_EB_mod1";
+ 
+ char* VAR[100] = {"fbrem0002","fbrem0204","fbrem0406"};
+ double VALUE[100] = {0.1,0.3,0.5};
+ 
+//  char* VAR[100] = {"fbrem0001","fbrem0102","fbrem0203","fbrem0304","fbrem0405","fbrem0506","fbrem0607","fbrem0708"};
+//  double VALUE[100] = {0.05,0.15,0.25,0.35,0.45,0.55,0.65,0.75};
+ std::string NAME_TEST = "grLL";
+//  std::string NAME_TEST = "Graph;1"; //-> KS
+//   std::string NAME_TEST = "Graph;2"; //-> Chi2
+  
+ double MIN = -0.1;
+ double MAX = 0.05;
  int BIN = 200;
 //  double MinScanRange = -0.04;
 //  double MaxScanRange = 0.01;
 
- double MinScanRange = -0.1;
- double MaxScanRange = 0.04;
+//  double MinScanRange[100] = {-0.05,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1};
+//  double MaxScanRange[100] = {0.02,0.04,0.04,0.04,0.04,0.04,0.05};
+ 
+//  double MinScanRange[100] = {-0.05,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1};
+//  double MaxScanRange[100] = {0.02,0.04,0.04,0.04,0.04,0.04,0.05};
+ 
+ double MinScanRange[100] = {-0.03,-0.03,-0.08,-0.1,-0.1,-0.1,-0.1};
+ double MaxScanRange[100] = { 0.01, 0.02, 0.00,0.04,0.04,0.04,0.05};
+ 
+ ///=========================================================================
+ 
+ 
+ 
+ 
  
  TCanvas* ResultPlot = new TCanvas ("ResultPlot","ResultPlot",800,800) ;
- ResultPlot.Divide(sqrt(NUM),sqrt(NUM)+1);
+ ResultPlot.Divide(sqrt(NUM)+1,sqrt(NUM)+1);
 
+ TCanvas* ResultPlotBest = new TCanvas ("ResultPlotBest","ResultPlotBest",800,800) ;
+ ResultPlotBest.Divide(sqrt(NUM)+1,sqrt(NUM)+1);
+ 
  TCanvas* Result = new TCanvas ("Result","Result",800,800) ;
-
+ TGraphErrors* grResult = new TGraphErrors();
  for (int iNUM = 0; iNUM < NUM; iNUM++){
-  TString nameFile = Form("output/out_WenuEnScale_%s_%s.root",NAME,VAR[iNUM]);
+  std::cerr << " iNUM = " << iNUM << " : " << NUM << std::endl;
+  std::cerr << " NAME = " << NAME.c_str() << " VAR[" << iNUM << "] = " << VAR[iNUM] << std::endl;
+  TString nameFile = Form("output/out_WenuEnScale_%s_%s.root",NAME.c_str(),VAR[iNUM]);
   std::cerr << " File = " << nameFile.Data() << std::endl;
   TFile* file = TFile::Open(nameFile.Data());
-  TGraph* grLL = (TGraph*) file->Get("grLL");
+  TGraph* grLL = (TGraph*) file->Get(NAME_TEST.c_str());
   ResultPlot.cd(iNUM+1);
   TF1* fitMinLL = new TF1("fitMinLL","pol2");
-  fitMinLL->SetRange(MinScanRange,MaxScanRange);
+  fitMinLL->SetRange(MinScanRange[iNUM],MaxScanRange[iNUM]);
   grLL->Fit("fitMinLL","RMQ");
   grLL->Draw("APL");
+  grLL->SetMarkerStyle(20);
+  grLL->SetMarkerColor(kRed);
   gPad->SetGrid();
 
   double c = fitMinLL->GetParameter(0);
   double b = fitMinLL->GetParameter(1);
   double a = fitMinLL->GetParameter(2);
   std::cerr << "alpha = " << -b / (2*a) << " +/-" << 1./sqrt(2*a) << std::endl; 
- 
- }
-
-
-///==== Plot LL ====
-
- TCanvas* cLL_1;
- TCanvas* cLL_2;
- TCanvas* cLL_3;
-if (PLOT){
- cLL_1 = new TCanvas("cLL_1","cLL_1",800,800);
- cLL_2 = new TCanvas("cLL_2","cLL_2",800,800);
- cLL_3 = new TCanvas("cLL_3","cLL_3",800,800);
- }
-
- TF1* fitMinLL = new TF1("fitMinLL","pol2");
- fitMinLL->SetRange(MinScanRange,MaxScanRange);
- grLL->Fit("fitMinLL","RMQ");
-//  std::cerr << " alpha LL = " << -fitMinLL->GetParameter(1) / 2. / fitMinLL->GetParameter(2) << std::endl;
-
-
- TCanvas cLL("cLL","cLL",1200,1200);
- cLL.Divide(2,2);
- 
- cLL.cd(1);
- hLL->SetTitle("LogLikelihood: - LL");
- hLL->GetYaxis()->SetTitle("- LL");
- hLL->GetXaxis()->SetTitle("#alpha");
-//  hLL->Draw("colz");
+  grResult->SetPoint(iNUM,VALUE[iNUM],-b/(2*a));
   
- if (PLOT){
-  cLL_1->cd();
-//  hLL->Draw("colz");
-//  grLL->Draw("P");
- grLL->Draw("ALP");
- gPad->SetGrid();
- }
+  if (NAME_TEST=="Graph;2") grResult->SetPointError(iNUM,0.05,1/sqrt(a));
+  else grResult->SetPointError(iNUM,0.05,1/sqrt(2*a));
+  
+  
+  
+  
+  ResultPlotBest->cd(iNUM+1);
+  
+  double ScaleTrue = -1000; ///==== default
+  int Data_or_MC = 1; ///=== 1 = Data;  0 = MC; -1 = MC Fit
+  int nIter = 1000000000; ///==== less than 1000000000 iterations at the end !!!
+  TString nameDATA = Form("hDATA_%d_%d_%.5f",Data_or_MC,nIter,ScaleTrue);
+  TH1F* hDATA = (TH1F*) file->Get(nameDATA.Data());
+  
+  
+  double binSel = ((MAX - MIN) / (BIN-2)) * static_cast<int>((-b/(2*a) - MIN) / ((MAX - MIN) / (BIN-2)) ) + MIN;
  
- cLL.cd(3);
- hLL_Min_Fit->SetTitle("LL test: toy experiments");
- hLL_Min_Fit->GetXaxis()->SetTitle("#alpha");
- hLL_Min_Fit->Draw();
- gPad->SetGrid();
- fitGaus->SetParameter(0,hLL_Min_Fit->GetEntries());
- fitGaus->SetParameter(1,hLL_Min_Fit->GetMean());
- fitGaus->SetParameter(2,hLL_Min_Fit->GetRMS());
- hLL_Min_Fit->Fit("fitGaus","RMQ"); 
-
- if (PLOT){
-  cLL_2->cd();
-  hLL_Min_Fit->Draw();
-  gPad->SetGrid();
-  hLL_Min_Fit->Fit("fitGaus","RMQ"); 
- }
- 
- cLL.cd(2);
- TString NameMC_LL = Form("hMC_Chi2_%.5f",AlphaMean_LL);
- TH1F* hMC_LL = (TH1F*) _file0->Get(NameMC_LL.Data());
- hMC_LL->SetLineWidth(1);
- hMC_LL->SetLineColor(kRed);
- hMC_LL->SetFillColor(kRed);
- hMC_LL->SetFillStyle(3001);
-
- hDATA->Draw("E1");
- hMC_LL->Draw("BARsame");
- hDATA->Draw("E1same");
- TString Result_LL = Form("#alpha = %.4f #pm %.4f",AlphaMean_LL_Fit,hLL_Min_Fit->GetRMS());
-//  TString Result_LL = Form("#alpha = %.4f #pm %.4f",AlphaMean_LL_Fit,fitGaus->GetParameter(2));
- TLatex lResult_LL(hDATA->GetMean(),9,Result_LL);
- lResult_LL->Draw();
-
- if (PLOT){
-  cLL_3->cd();
+  TString NameMC_LL = Form("hMC_Chi2_%.5f",binSel);
+  std::cerr << " NameMC_LL = " << NameMC_LL.Data() << std::endl;
+  TH1F* hMC_LL = (TH1F*) file->Get(NameMC_LL.Data());
+  hMC_LL->SetLineWidth(1);
+  hMC_LL->SetLineColor(kRed);
+  hMC_LL->SetFillColor(kRed);
+  hMC_LL->SetFillStyle(3001);
+  
   hDATA->Draw("E1");
   hMC_LL->Draw("BARsame");
   hDATA->Draw("E1same");
-  lResult_LL->Draw();
+  
+  
  }
+
+ Result.cd();
+ grResult->Draw("APL");
+ grResult->SetMarkerStyle(20);
+ grResult->SetMarkerColor(kBlue);
+ gPad->SetGrid();
+ 
  
  
 }

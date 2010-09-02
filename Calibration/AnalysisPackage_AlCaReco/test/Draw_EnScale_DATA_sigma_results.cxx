@@ -2,8 +2,8 @@
 	
  bool PLOT = false;
  
- double MIN = -0.2;
- double MAX = 0.2;
+ double MIN = -0.1;
+ double MAX = 0.05;
  int BIN = 200;
 //  double MinScanRange = -0.04;
 //  double MaxScanRange = 0.01;
@@ -322,7 +322,26 @@ if (PLOT){
  }
  
  cLL.cd(2);
- TString NameMC_LL = Form("hMC_Chi2_%.5f",AlphaMean_LL);
+ 
+ double c = fitMinLL->GetParameter(0);
+ double b = fitMinLL->GetParameter(1);
+ double a = fitMinLL->GetParameter(2);
+ 
+ std::cerr << " MAX = " << MAX << std::endl;
+ std::cerr << " MIN = " << MIN << std::endl;
+ std::cerr << " BIN = " << BIN << std::endl;
+ std::cerr << " bin = " << static_cast<int>((-b/(2*a) - MIN) / ((MAX - MIN) / (BIN-2)) + 1 ) << std::endl;
+ std::cerr << " ((MAX - MIN) / (BIN-2)) = " << ((MAX - MIN) / (BIN-2)) << std::endl;
+ double binSel = ((MAX - MIN) / (BIN-2)) * static_cast<int>((-b/(2*a) - MIN) / ((MAX - MIN) / (BIN-2)) ) + MIN;
+//  std::cerr << " binSel = " << binSel << " AlphaMean_LL_Fit = " << AlphaMean_LL_Fit << " -b/(2*a) = " << -b/(2*a) << std::endl;
+ 
+//  std::cerr << " -1 " << ((MAX - MIN) / (BIN-2)) * static_cast<int>((-b/(2*a) - MIN) / ((MAX - MIN) / (BIN-2)) - 1 ) + MIN << " " << static_cast<int>((-b/(2*a) - MIN) / ((MAX - MIN) / (BIN-2)) - 1 ) << std::endl;
+//  std::cerr << " +0 " << ((MAX - MIN) / (BIN-2)) * static_cast<int>((-b/(2*a) - MIN) / ((MAX - MIN) / (BIN-2)) + 0 ) + MIN << " " << static_cast<int>((-b/(2*a) - MIN) / ((MAX - MIN) / (BIN-2)) + 0 ) << std::endl;
+//  std::cerr << " +1 " << ((MAX - MIN) / (BIN-2)) * static_cast<int>((-b/(2*a) - MIN) / ((MAX - MIN) / (BIN-2)) + 1 ) + MIN << " " << static_cast<int>((-b/(2*a) - MIN) / ((MAX - MIN) / (BIN-2)) + 1 ) << std::endl;
+//  std::cerr << " +2 " << ((MAX - MIN) / (BIN-2)) * static_cast<int>((-b/(2*a) - MIN) / ((MAX - MIN) / (BIN-2)) + 2 ) + MIN << " " << static_cast<int>((-b/(2*a) - MIN) / ((MAX - MIN) / (BIN-2)) + 2 ) << std::endl;
+ 
+ TString NameMC_LL = Form("hMC_Chi2_%.5f",binSel);
+ std::cerr << " NameMC_LL = " << NameMC_LL.Data() << std::endl;
  TH1F* hMC_LL = (TH1F*) _file0->Get(NameMC_LL.Data());
  hMC_LL->SetLineWidth(1);
  hMC_LL->SetLineColor(kRed);
@@ -346,10 +365,7 @@ if (PLOT){
  }
  
  std::cerr << Result_LL.Data() << std::endl; 
- double c = fitMinLL->GetParameter(0);
- double b = fitMinLL->GetParameter(1);
- double a = fitMinLL->GetParameter(2);
- std::cerr << "DLL = 0.5" << std::endl; 
+  std::cerr << "DLL = 0.5" << std::endl; 
  std::cerr << "error = " << 1./sqrt(2*a) << std::endl; 
  std::cerr << "alpha = " << -b / (2*a) << " +/-" << 1./sqrt(2*a) << std::endl; 
  
@@ -402,7 +418,9 @@ if (PLOT){
  
  
  cNewChi2.cd(2);
- TString NameMC_NewChi2 = Form("hMC_Chi2_%.5f",AlphaMean_NewChi2);
+ binSel = binSel = ((MAX - MIN) / (BIN-2)) * static_cast<int>(( -fitMinNewChi2->GetParameter(1) / 2. / fitMinNewChi2->GetParameter(2) - MIN) / ((MAX - MIN) / (BIN-2)) ) + MIN;
+ std:cerr << " binSel = " << binSel << std::endl;
+ TString NameMC_NewChi2 = Form("hMC_Chi2_%.5f",binSel);
  TH1F* hMC_NewChi2 = (TH1F*) _file0->Get(NameMC_NewChi2.Data());
  hMC_NewChi2->SetLineWidth(1);
  hMC_NewChi2->SetLineColor(kRed);
