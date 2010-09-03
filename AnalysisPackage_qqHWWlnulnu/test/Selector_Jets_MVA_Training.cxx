@@ -144,8 +144,8 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
  char *nameSamplePrefix[1000];
  char *nameSampleTree[1000];
  double xsection[1000];
-//  std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/WorkFlow/samples.txt");
- std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/WorkFlow/samples_temp.txt");
+ std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/Spring10/samples.txt");
+//  std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/WorkFlow/samples_temp.txt");
  std::string buffer;
 
  int totalSamples = 0;
@@ -167,13 +167,13 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
     nameSampleTree[totalSamples] = new char [1000];
     line >> nameSampleTree[totalSamples];
     
-    line >> xsection[totalSamples]; 
+    line >> xsection[totalSamples];  ///==== unused!
     std::cout << xsection[totalSamples] << " ";
 //     std::cout << std::endl;
     
     char nameFile[1000];
-    sprintf(nameFile,"output/out_FinalSelection_%s.root",nameSample[totalSamples]);  
-//     sprintf(nameFile,"output/out_SelectorJets_%s.root",nameSample[totalSamples]);  
+//     sprintf(nameFile,"output/out_FinalSelection_%s.root",nameSample[totalSamples]);  
+    sprintf(nameFile,"output_Spring10/out_SelectorJets_%s.root",nameSample[totalSamples]);  
     TFile* f = new TFile(nameFile, "READ");
     
     treeEffVect[totalSamples] = (TTree) f->Get("outTreeSelections");

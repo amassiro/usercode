@@ -6,7 +6,7 @@
  char* xsection[1000];
  
  int numberOfSamples = 0;
- std::ifstream inFile("samples.txt");
+ std::ifstream inFile("test/Spring10/samples.txt");
  std::string buffer;
  
  while(!inFile.eof()){
@@ -35,7 +35,7 @@
  }
  
  for (int iSample = 0; iSample < numberOfSamples; iSample++){
-  TString Command2Line = Form("../../bin/FinalSelection_Producer.exe ./dir_cfg/FinalSelection_%s.cfg",nameSample[iSample]);
+  TString Command2Line = Form("./bin/FinalSelection_Producer.exe test/Spring10/dir_cfg/FinalSelection_%s.cfg",nameSample[iSample]);
   gSystem->Exec(Command2Line);
  }
 }

@@ -10,7 +10,7 @@
  char* xsection[1000];
  
  int numberOfSamples = 0;
- std::ifstream inFile("samples.txt");
+ std::ifstream inFile("test/Spring10/samples.txt");
  std::string buffer;
  
  while(!inFile.eof()){

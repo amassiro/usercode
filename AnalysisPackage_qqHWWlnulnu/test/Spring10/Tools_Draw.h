@@ -83,6 +83,8 @@ void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
  bkgHist->SetLineWidth(1);
  sigHist->SetLineColor(kBlue);
  bkgHist->SetLineColor(kRed);
+ sigHist->SetFillColor(kBlue);
+ bkgHist->SetFillColor(kRed);
  bkgHist->Draw();
  sigHist->Draw("same");
  gPad->SetLogy();

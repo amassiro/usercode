@@ -15,32 +15,67 @@
 3.2) Draw purity results
       Draw_Identificator_Jets.cxx
 
+///=== till now using Summer09 sample => ptMAX criterion chosen
+
 4) Signal division
       SignalSplitter.cpp
+      split the signal according to WW decays
       Divide WW decays ee, emu, ... for signal sample
 
+      ~/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/Signal_Splitter.cfg
+      ~/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/    ./bin/Signal_Splitter.exe test/Signal_Splitter.cfg
+      do this for all signal samples: modify test/Signal_Splitter.cfg
+       
+5)  creation of name of samples
+      ~/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/Spring10
+      r00t Sample_Converter.cxx
+      then modify "samples.txt" for signal channel different analysis
+       
+///==== tag jets ====
 5) Selection on jets Tag
-      Selector_Jets.cpp
-      and test/WorkFlow/
-	 cfgCreator_SelectorJets.cxx
-	 cfgLauncher_SelectorJets.cxx      
-      Save variables of jets identified -> output/out_SelectorJets*
+        cfgCreator_SelectorJets.cxx
+        cfgLauncher_SelectorJets.cxx
+      Save variables of jets identified -> output_Spring10/out_SelectorJets*
+      It uses FinalSelection_Producer.exe but it stops at the "jet" step analysis. Other branches are empty.
       
 6) Train MVA Jet Selections
       Selector_Jets_MVA_Training.cxx
-      
+      r00t test/Selector_Jets_MVA_Training.cxx\(\"Cuts,MLP,BDT,CutsGA,Likelihood,LikelihoodD,Fisher,BDTD\"\)
+     to test: 
+      r00t test/TMVAGui.C\(\"output/Selector_Jets_trained.root\"\)
+
+///==== leptons ====
 7) Selection leptons
-      Selector_Leptons.cpp
       Save variables of leptons (loose jets selections required)
+            e.g. see distribution with
+              r00t test/Spring10/Draw_Results_Tree.cxx\(\"eta_RECO_q1_eta_RECO_q2\"\,-30,30,100,500\)
+            after modifying Draw_Results_Tree.cxx "nameFile"
+
+        cfgCreator_SelectorLeptons.cxx
+        cfgLauncher_SelectorLeptons.cxx
+
+       Save variables of leptons identified -> output_Spring10/out_SelectorLeptons*
+       It uses FinalSelection_Producer.exe but it stops at the "lepton" step analysis. Other branches are empty.
 
 8) Train MVA lepton selection
       Selector_Leptons_MVA_Training.cxx
+      r00t test/Selector_Leptons_MVA_Training.cxx\(\"Cuts,MLP,BDT,CutsGA,Likelihood,LikelihoodD,Fisher,BDTD\"\)
+     to test:
+      r00t test/TMVAGui.C\(\"output/Selector_Leptons_trained.root\"\)
+      
+///==== final selection ====
 
 9) Final Selection
       FinalSelection_Producer.cpp
-       Save all variables of leptons and of jets in 2 separated tree (filled at the same time)
+       Save all variables of leptons and of jets in a tree
        All kind of MVAs saved at the same time
-       
+      
+        cfgCreator_SelectorLeptons.cxx
+        cfgLauncher_SelectorLeptons.cxx
+     or using cluster
+        cfgCreator_FinalSelector_HERCULES.cxx
+        cfgLauncher_FinalSelection_HERCULES.cxx
+        
 10) Draw and Select best cut from the last tree (9)
       Draw_Results_Tree.cxx
          -> Tools_Draw.h

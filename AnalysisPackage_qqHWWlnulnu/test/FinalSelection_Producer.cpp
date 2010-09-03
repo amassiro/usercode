@@ -52,6 +52,18 @@ int main(int argc, char** argv)
  std::cout << ">>>>> input::entryMAX  " << entryMAX  << std::endl;  
  std::cout << ">>>>> input::entryMOD  " << entryMOD  << std::endl;  
  
+ 
+ int nStepToDo = 1000;
+ try {
+  nStepToDo = gConfigParser -> readIntOption("Input::nStepToDo");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+  nStepToDo = 1000;
+ }
+ std::cout << ">>>>> input::nStepToDo  " << nStepToDo  << std::endl;  
+ 
+ 
  // Open ntple
  TChain* chain = new TChain(treeName.c_str());
  chain->Add(inputFile.c_str());
@@ -123,8 +135,6 @@ int main(int argc, char** argv)
  
  ///-------------------
  ///---- selection ----
- //  std::string OutFileName    = gConfigParser -> readStringOption("Output::outFileName");
- //  std::cout << ">>>>> Output::outFileName  " << OutFileName  << std::endl;  
  std::string OutFileNameEfficiencies    = gConfigParser -> readStringOption("Output::OutFileNameEfficiencies");
  std::cout << ">>>>> Output::OutFileNameEfficiencies  " << OutFileNameEfficiencies  << std::endl;  
  
@@ -260,9 +270,23 @@ int main(int argc, char** argv)
  
  ///==== book MVA Jet ====
 
- std::vector<std::string> stdstrMethod_Jet = gConfigParser -> readStringListOption ("Jet::Methods");
- std::vector<std::string> stdstrAdditionalInputFile_Jet = gConfigParser -> readStringListOption ("Jet::AdditionalInputFiles");
-
+ std::vector<std::string> stdstrMethod_Jet;
+ try {
+  stdstrMethod_Jet = gConfigParser -> readStringListOption ("Jet::Methods");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ 
+ 
+ std::vector<std::string> stdstrAdditionalInputFile_Jet;
+ try {
+  stdstrAdditionalInputFile_Jet = gConfigParser -> readStringListOption ("Jet::AdditionalInputFiles");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ 
  MVA_Jet = new Double_t [stdstrMethod_Jet.size()];
  
  for (int iMethod=0; iMethod<stdstrMethod_Jet.size(); iMethod++){
@@ -327,8 +351,23 @@ int main(int argc, char** argv)
  
  
  ///==== book MVA Lepton ====
- std::vector<std::string> stdstrMethod_Lep = gConfigParser -> readStringListOption ("Lepton::Methods");
- std::vector<std::string> stdstrAdditionalInputFile_Lep = gConfigParser -> readStringListOption ("Lepton::AdditionalInputFiles");
+ 
+ 
+ std::vector<std::string> stdstrMethod_Lep;
+ try {
+  stdstrMethod_Lep = gConfigParser -> readStringListOption ("Lepton::Methods");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ 
+ std::vector<std::string> stdstrAdditionalInputFile_Lep;
+ try {
+  stdstrAdditionalInputFile_Lep = gConfigParser -> readStringListOption ("Lepton::AdditionalInputFiles");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
  
  MVA_Lep = new Double_t [stdstrMethod_Lep.size()];
  
@@ -375,7 +414,11 @@ int main(int argc, char** argv)
   ///**** STEP 0 - Ntuplizer ****
   ///************* no additional selections applied
   
-  step = 0;
+  step = 0;  
+  if (step > nStepToDo) {
+   outTreeJetLep.Fill();
+   continue;
+  }  
   stepName[step] = "Jet cleaning";
   stepEvents[step] += 1;
   
@@ -390,6 +433,12 @@ int main(int argc, char** argv)
   ///**** STEP 1 - Jet cleaning ****
   ///************* it's performed another time here to make sure that the cleaning worked well
   ///************* possible problems with electron ID
+    
+  step = 1;
+  if (step > nStepToDo) {
+   outTreeJetLep.Fill();
+   continue;
+  }  
     
   std::vector<ROOT::Math::XYZTVector> electrons_jetCleaning;   
   // build the collection of electros for jet cleaning
@@ -427,7 +476,6 @@ int main(int argc, char** argv)
   if (GetNumList(whitelistJet) < 2) continue; ///==== at least 2 jets "isolated"
  
    
-  step = 1;
   stepName[step] = "Jet cleaning";
   stepEvents[step] += 1;
   
@@ -481,6 +529,12 @@ int main(int argc, char** argv)
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+  step = 2;
+  if (step > nStepToDo) {
+   outTreeJetLep.Fill();
+   continue;
+  }  
   
    ///   Electron
    ///   Pt>10GeV & |eta|<2.5
@@ -608,7 +662,6 @@ int main(int argc, char** argv)
    
   
    ///==== filling ====
-   step = 2;
    stepName[step] = "Super Pre-Selections";
    stepEvents[step] += 1;
   
@@ -623,7 +676,12 @@ int main(int argc, char** argv)
   ///*************************
   ///**** STEP 3 - Jet ID ****
   ///************* Identification of two tag jets
-    
+  step = 3;
+  if (step > nStepToDo) {
+   outTreeJetLep.Fill();
+   continue;
+  }  
+  
   std::vector<int> itSelJet;
   double maxPt_jets_selected = SelectJets(itSelJet,*jets,"maxSumPt",-1.,&blacklistJet);
   
@@ -714,7 +772,6 @@ int main(int argc, char** argv)
   
   
   ///==== filling ====
-  step = 3;
   stepName[step] = "Jet ID";
   stepEvents[step] += 1;
   
@@ -728,6 +785,11 @@ int main(int argc, char** argv)
   ///*********************************
   ///**** STEP 4 - Jet Selections ****
   ///************* Loose selections of tag jets
+  step = 4;
+  if (step > nStepToDo) {
+   outTreeJetLep.Fill();
+   continue;
+  }  
   
   if (pT_RECO_q1 < 30.) continue;
   if (pT_RECO_q2 < 20.) continue;
@@ -736,7 +798,6 @@ int main(int argc, char** argv)
   if (eta_RECO_q1_eta_RECO_q2 > 0.) continue;
   
   ///==== filling ====
-  step = 4;
   stepName[step] = "Jet Selections";
   stepEvents[step] += 1;
   
@@ -750,6 +811,11 @@ int main(int argc, char** argv)
   ///********************************
   ///**** STEP 5 - Lepton ID ****
   ///************* Identification of the two 
+  step = 5;
+  if (step > nStepToDo) {
+   outTreeJetLep.Fill();
+   continue;
+  }  
   
   std::vector<ROOT::Math::XYZTVector> electrons;
   std::vector<ROOT::Math::XYZTVector> muons;
@@ -839,18 +905,23 @@ int main(int argc, char** argv)
   stdHistograms -> Fill2(jets->at(q1),jets->at(q2), "JJ", step);
   stdHistograms -> Fill2(leptons.at(l1),leptons.at(l2), "ll", step);
   
-  
-  step = 5;
   stepName[step] = "Lepton ID";
   stepEvents[step] += 1;
   
   
  
  
-  ///*************************
-  ///*************************
-  ///*************************
-  ///**** STEP Production ****
+  ///************************************
+  ///**** STEP 6 - Final Production *****
+  ///************************************
+  ///**** No more selections applied ****
+
+
+  step = 6;
+  if (step > nStepToDo) {
+   outTreeJetLep.Fill();
+   continue;
+  }  
   
   ///=== Jets ===
   
