@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<MethodSetup Method="Fisher::Fisher">
+  <GeneralInfo>
+    <Info name="TMVA Release" value="4.0.4 [262148]"/>
+    <Info name="ROOT Release" value="5.27/03 [334595]"/>
+    <Info name="Creator" value="andrea"/>
+    <Info name="Date" value="Fri Sep  3 15:04:14 2010"/>
+    <Info name="Host" value="Linux andrea-laptop 2.6.32-21-generic #32-Ubuntu SMP Fri Apr 16 08:10:02 UTC 2010 i686 GNU/Linux"/>
+    <Info name="Dir" value="/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu"/>
+    <Info name="Training events" value="15884"/>
+    <Info name="TrainingTime" value="0.109222"/>
+    <Info name="AnalysisType" value="Classification"/>
+  </GeneralInfo>
+  <Options>
+    <Option name="V" modified="Yes">False</Option>
+    <Option name="VerbosityLevel" modified="No">Default</Option>
+    <Option name="VarTransform" modified="No">None</Option>
+    <Option name="H" modified="Yes">True</Option>
+    <Option name="CreateMVAPdfs" modified="Yes">True</Option>
+    <Option name="IgnoreNegWeightsInTraining" modified="No">False</Option>
+    <Option name="Method" modified="Yes">Fisher</Option>
+  </Options>
+  <Variables NVar="11">
+    <Variable VarIndex="0" Expression="pdgId_RECO_l1" Label="pdgId_RECO_l1" Title="pdgId_RECO_l1" Unit="" Internal="pdgId_RECO_l1" Type="I" Min="11" Max="13"/>
+    <Variable VarIndex="1" Expression="pdgId_RECO_l2" Label="pdgId_RECO_l2" Title="pdgId_RECO_l2" Unit="" Internal="pdgId_RECO_l2" Type="I" Min="11" Max="13"/>
+    <Variable VarIndex="2" Expression="pT_RECO_l1" Label="pT_RECO_l1" Title="pT_RECO_l1" Unit="" Internal="pT_RECO_l1" Type="D" Min="15.3938" Max="459.828"/>
+    <Variable VarIndex="3" Expression="pT_RECO_l2" Label="pT_RECO_l2" Title="pT_RECO_l2" Unit="" Internal="pT_RECO_l2" Type="D" Min="15.0025" Max="261.129"/>
+    <Variable VarIndex="4" Expression="eta_RECO_l1" Label="eta_RECO_l1" Title="eta_RECO_l1" Unit="" Internal="eta_RECO_l1" Type="D" Min="-2.49519" Max="2.49816"/>
+    <Variable VarIndex="5" Expression="eta_RECO_l2" Label="eta_RECO_l2" Title="eta_RECO_l2" Unit="" Internal="eta_RECO_l2" Type="D" Min="-2.49558" Max="2.49063"/>
+    <Variable VarIndex="6" Expression="eta_RECO_l1_eta_RECO_l2" Label="eta_RECO_l1_eta_RECO_l2" Title="eta_RECO_l1_eta_RECO_l2" Unit="" Internal="eta_RECO_l1_eta_RECO_l2" Type="D" Min="-5.29619" Max="6.14895"/>
+    <Variable VarIndex="7" Expression="Deta_RECO_l12" Label="Deta_RECO_l12" Title="Deta_RECO_l12" Unit="" Internal="Deta_RECO_l12" Type="D" Min="0" Max="4.60514"/>
+    <Variable VarIndex="8" Expression="Dphi_RECO_l12" Label="Dphi_RECO_l12" Title="Dphi_RECO_l12" Unit="" Internal="Dphi_RECO_l12" Type="D" Min="0" Max="3.14154"/>
+    <Variable VarIndex="9" Expression="Mll" Label="Mll" Title="Mll" Unit="" Internal="Mll" Type="D" Min="-0.0811042" Max="684.36"/>
+    <Variable VarIndex="10" Expression="charge_RECO_l1_charge_RECO_l2" Label="charge_RECO_l1_charge_RECO_l2" Title="charge_RECO_l1_charge_RECO_l2" Unit="" Internal="charge_RECO_l1_charge_RECO_l2" Type="D" Min="-1" Max="1"/>
+  </Variables>
+  <Spectators NSpec="0"/>
+  <Transformations NTransformations="0"/>
+  <MVAPdfs>
+    <PDF Name="Fisher_PDFSig" MinNSmooth="10" MaxNSmooth="10" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
+      <Histogram Name="Fisher_tr_S_original" NBins="60" XMin="-1.8676988780498505e-01" XMax="1.6135694086551666e-01" HasEquidistantBins="1">
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.0264789 0.0264789 0 0 0.0264789 0 0 0 0.158873 0.291267 0.609014 1.3769 2.01239 2.96563 3.81296 4.68676 7.33465 7.70535 9.05577 9.9031 12.8952 13.0276 13.5837 14.6428 13.2394 13.0806 9.95606 8.63211 7.04338 5.1369 3.57465 2.56845 1.53577 1.32394 0.714929 0.423662 0.344225 0.211831 0.0794366 0.158873 0.0264789 0.0264789 0.0794366 0.0264789 0.0264789 0 
+      </Histogram>
+    </PDF>
+    <PDF Name="Fisher_PDFBkg" MinNSmooth="10" MaxNSmooth="10" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
+      <Histogram Name="Fisher_tr_B_original" NBins="60" XMin="-1.8676988780498505e-01" XMax="1.6135694086551666e-01" HasEquidistantBins="1">
+        0.0414532 0.0207266 0 0.0414532 0 0.0414532 0.0829064 0.0829064 0.207266 0.207266 0.269446 0.499395 0.248719 0.580345 0.871496 1.03633 1.9483 2.42501 2.71616 4.3526 5.30896 6.0956 7.7981 9.1729 9.94466 11.7528 11.0035 11.4822 12.1869 11.262 11.482 9.96584 7.67419 6.63279 6.5192 4.82957 4.30358 3.01478 2.37617 1.12671 1.06257 0.746779 0.383842 0.2239 0.0531947 0.153892 0.0483024 0.023662 0.00293539 0.000978462 0.0246405 0.0207266 0 0 0 0 0 0 0 0 
+      </Histogram>
+    </PDF>
+  </MVAPdfs>
+  <Weights NCoeff="12">
+    <Coefficient Index="0" Value="2.5036475806771391e-01"/>
+    <Coefficient Index="1" Value="-1.0956787721481308e-02"/>
+    <Coefficient Index="2" Value="-1.1073140760405687e-02"/>
+    <Coefficient Index="3" Value="2.8412796033554372e-05"/>
+    <Coefficient Index="4" Value="9.5415937939354186e-04"/>
+    <Coefficient Index="5" Value="-3.0760625340212636e-04"/>
+    <Coefficient Index="6" Value="-3.4068382693487175e-04"/>
+    <Coefficient Index="7" Value="7.4806165211990724e-03"/>
+    <Coefficient Index="8" Value="5.3040012302321363e-03"/>
+    <Coefficient Index="9" Value="-1.5865975183589866e-02"/>
+    <Coefficient Index="10" Value="-3.7344586544435629e-04"/>
+    <Coefficient Index="11" Value="-1.6401596549807478e-02"/>
+  </Weights>
+</MethodSetup>
