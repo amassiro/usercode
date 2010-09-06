@@ -21,7 +21,7 @@ void Draw_Results_Tree(TString WhatToPlot = "", double MIN = -10, double MAX = 1
  double xsection[1000];
  
  int numberOfSamples = 0;
- std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/Spring10/samples.txt");
+ std::ifstream inFile("test/Spring10/samples_draw.txt");
  std::string buffer;
  
  while(!inFile.eof()){
@@ -46,7 +46,7 @@ void Draw_Results_Tree(TString WhatToPlot = "", double MIN = -10, double MAX = 1
     std::cout << std::endl;
     
     char nameFile[1000];
-    sprintf(nameFile,"output_Spring10/out_FinalSelector_%s.root",nameSample[numberOfSamples]);  
+    sprintf(nameFile,"output_Spring10/out_FinalSelection_%s.root",nameSample[numberOfSamples]);  
     TFile* f = new TFile(nameFile, "READ");
     
     treeEffVect[numberOfSamples] = (TTree) f->Get("outTreeSelections");
@@ -134,7 +134,7 @@ void Draw_Results_Tree(TString WhatToPlot = "", double MIN = -10, double MAX = 1
  gPad->BuildLegend();
  
  
- DrawSB(hs,3,25,0);
+ DrawSB(hs,4,numberOfSamples-4,0);
   
  
  std::cerr << " ******************************************* end *******************************************" << std::endl;

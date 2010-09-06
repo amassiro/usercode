@@ -245,7 +245,7 @@ factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=N
 
    if (Use["CutsGA"])
       factory->BookMethod( TMVA::Types::kCuts, "CutsGA",
-                           "H:!V:FitMethod=GA:CutRangeMin[0]=-10:CutRangeMax[0]=10:VarProp[1]=FMax:EffSel:Steps=30:Cycles=3:PopSize=400:SC_steps=10:SC_rate=5:SC_factor=0.95" );
+                           "H:!V:FitMethod=GA:EffSel:Steps=30:Cycles=3:PopSize=400:SC_steps=10:SC_rate=5:SC_factor=0.95" );
    
    if (Use["CutsSA"])
       factory->BookMethod( TMVA::Types::kCuts, "CutsSA",
@@ -254,16 +254,16 @@ factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=N
    // Likelihood
    if (Use["Likelihood"])
       factory->BookMethod( TMVA::Types::kLikelihood, "Likelihood", 
-                           "H:!V:TransformOutput:PDFInterpol=Spline2:NSmoothSig[0]=20:NSmoothBkg[0]=20:NSmoothBkg[1]=10:NSmooth=1:NAvEvtPerBin=50" ); 
+                           "H:!V:TransformOutput:PDFInterpol=Spline2:NSmooth=5:NAvEvtPerBin=50" ); 
 
    // test the decorrelated likelihood
    if (Use["LikelihoodD"])
       factory->BookMethod( TMVA::Types::kLikelihood, "LikelihoodD", 
-                           "!H:!V:!TransformOutput:PDFInterpol=Spline2:NSmoothSig[0]=20:NSmoothBkg[0]=20:NSmooth=5:NAvEvtPerBin=50:VarTransform=Decorrelate" ); 
+                           "!H:!V:!TransformOutput:PDFInterpol=Spline2:NSmooth=5:NAvEvtPerBin=50:VarTransform=Decorrelate" ); 
 
    if (Use["LikelihoodPCA"])
       factory->BookMethod( TMVA::Types::kLikelihood, "LikelihoodPCA", 
-                           "!H:!V:!TransformOutput:PDFInterpol=Spline2:NSmoothSig[0]=20:NSmoothBkg[0]=20:NSmooth=5:NAvEvtPerBin=50:VarTransform=PCA" ); 
+                           "!H:!V:!TransformOutput:PDFInterpol=Spline2:NSmooth=5:NAvEvtPerBin=50:VarTransform=PCA" ); 
  
    // test the new kernel density estimator
    if (Use["LikelihoodKDE"])
@@ -351,7 +351,7 @@ factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=N
 
    // TMVA ANN: MLP (recommended ANN) -- all ANNs in TMVA are Multilayer Perceptrons
    if (Use["MLP"])
-      factory->BookMethod( TMVA::Types::kMLP, "MLP", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5" );
+      factory->BookMethod( TMVA::Types::kMLP, "MLP", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=400:HiddenLayers=N+4:TestRate=5" );
 
    if (Use["MLPBFGS"])
       factory->BookMethod( TMVA::Types::kMLP, "MLPBFGS", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:TrainingMethod=BFGS" );
@@ -376,7 +376,7 @@ factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=N
 
    if (Use["BDT"])  // Adaptive Boost
       factory->BookMethod( TMVA::Types::kBDT, "BDT", 
-			   "!H:!V:NTrees=400:nEventsMin=400:MaxDepth=3:BoostType=AdaBoost:SeparationType=GiniIndex:nCuts=20:PruneMethod=NoPruning" );
+          "!H:!V:NTrees=300:nEventsMin=400:MaxDepth=4:BoostType=AdaBoost:SeparationType=GiniIndex:nCuts=20:PruneMethod=NoPruning" );
    
    if (Use["BDTB"]) // Bagging
       factory->BookMethod( TMVA::Types::kBDT, "BDTB", 
@@ -384,7 +384,7 @@ factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=N
 
    if (Use["BDTD"]) // Decorrelation + Adaptive Boost
       factory->BookMethod( TMVA::Types::kBDT, "BDTD", 
-                           "!H:!V:NTrees=400:nEventsMin=400:MaxDepth=3:BoostType=AdaBoost:SeparationType=GiniIndex:nCuts=20:PruneMethod=NoPruning:VarTransform=Decorrelate" );
+                           "!H:!V:NTrees=300:nEventsMin=400:MaxDepth=4:BoostType=AdaBoost:SeparationType=GiniIndex:nCuts=20:PruneMethod=NoPruning:VarTransform=Decorrelate" );
    
    // RuleFit -- TMVA implementation of Friedman's method
    if (Use["RuleFit"])

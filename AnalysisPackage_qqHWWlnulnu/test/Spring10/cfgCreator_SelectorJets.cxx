@@ -56,7 +56,7 @@
   myfile << "entryMIN = 0 " << std::endl;
   myfile << "entryMAX = -1 " << std::endl;
   myfile << "entryMOD = 1000 " << std::endl;
-  myfile << "nStepToDo = 3 " << std::endl;
+  myfile << "nStepToDo = 5 " << std::endl;
   myfile << std::endl;
   myfile << "[Output]" << std::endl;
   myfile << "OutFileNameEfficiencies = /home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/output_Spring10/out_SelectorJets_" << nameSample[iSample] << ".root" << std::endl;

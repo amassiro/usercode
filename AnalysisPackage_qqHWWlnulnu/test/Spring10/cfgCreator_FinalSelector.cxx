@@ -42,7 +42,7 @@
  for (int iSample = 0; iSample < numberOfSamples; iSample++){
   std::ofstream myfile;
   char nameFile[1000];
-  sprintf(nameFile,"dir_cfg/FinalSelection_%s.cfg",nameSample[iSample]);
+  sprintf(nameFile,"test/Spring10/dir_cfg/FinalSelection_%s.cfg",nameSample[iSample]);
   myfile.open (nameFile);
   
   myfile << std::fixed;

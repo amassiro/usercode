@@ -1,7 +1,7 @@
 
 void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){ 
  // sb_bs = 0 signal -> bkg
- // sb_bs = 0 bkg    -> signal
+ // sb_bs = 1 bkg    -> signal
  
  TIter Iterator(hs->GetHists());
  TKey *key;
@@ -133,7 +133,7 @@ void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
 
 void DrawSB2D(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){ 
  // sb_bs = 0 signal -> bkg
- // sb_bs = 0 bkg    -> signal
+ // sb_bs = 1 bkg    -> signal
  
  TIter Iterator(hs->GetHists());
  TKey *key;
