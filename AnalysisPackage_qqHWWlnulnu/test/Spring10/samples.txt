@@ -1,0 +1,115 @@
+## name xsection(pb) dbs-name link-where-find-xsection-values number-of-MC-evets-available  NLO-x-sections link-for-NLO (if available)    notes
+
+H160_2W_2lnu_wbf_7TeV VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple  9.0247e-01*0.9053*0.324*0.324
+
+H130_2W_2lnu_wbf_7TeV_ee VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple      1.1866*0.2959*0.324*0.324
+H130_2W_2lnu_wbf_7TeV_emu VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple      1.1866*0.2959*0.324*0.324
+H130_2W_2lnu_wbf_7TeV_mumu VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple      1.1866*0.2959*0.324*0.324
+H130_2W_2lnu_wbf_7TeV_other VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple      1.1866*0.2959*0.324*0.324
+H140_2W_2lnu_wbf_7TeV_ee VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple      1.0811*0.4938*0.324*0.324
+H140_2W_2lnu_wbf_7TeV_emu VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple      1.0811*0.4938*0.324*0.324
+H140_2W_2lnu_wbf_7TeV_mumu VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple      1.0811*0.4938*0.324*0.324
+H140_2W_2lnu_wbf_7TeV_other VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple      1.0811*0.4938*0.324*0.324
+H150_2W_2lnu_wbf_7TeV_ee VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple  9.8681e-01*0.6909*0.324*0.324
+H150_2W_2lnu_wbf_7TeV_emu VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple  9.8681e-01*0.6909*0.324*0.324
+H150_2W_2lnu_wbf_7TeV_mumu VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple  9.8681e-01*0.6909*0.324*0.324
+H150_2W_2lnu_wbf_7TeV_other VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple  9.8681e-01*0.6909*0.324*0.324
+H160_2W_2lnu_wbf_7TeV_ee VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple  9.0247e-01*0.9053*0.324*0.324
+H160_2W_2lnu_wbf_7TeV_emu VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple  9.0247e-01*0.9053*0.324*0.324
+H160_2W_2lnu_wbf_7TeV_mumu VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple  9.0247e-01*0.9053*0.324*0.324
+H160_2W_2lnu_wbf_7TeV_other VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple  9.0247e-01*0.9053*0.324*0.324
+   H170_2W_2lnu_wbf_7TeV_ee VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple  8.2664e-01*0.9639*0.324*0.324
+  H170_2W_2lnu_wbf_7TeV_emu VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple  8.2664e-01*0.9639*0.324*0.324
+ H170_2W_2lnu_wbf_7TeV_mumu VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple  8.2664e-01*0.9639*0.324*0.324
+H170_2W_2lnu_wbf_7TeV_other VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple  8.2664e-01*0.9639*0.324*0.324
+H200_2W_2lnu_wbf_7TeV_ee VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple  6.4243e-01*0.7423*0.324*0.324
+H200_2W_2lnu_wbf_7TeV_emu VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple  6.4243e-01*0.7423*0.324*0.324
+H200_2W_2lnu_wbf_7TeV_mumu VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple  6.4243e-01*0.7423*0.324*0.324
+H200_2W_2lnu_wbf_7TeV_other VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple  6.4243e-01*0.7423*0.324*0.324
+           H130_2W_2lnu_gluonfusion_7TeV VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple      9.3436*0.2959*0.324*0.324
+           H140_2W_2lnu_gluonfusion_7TeV VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple      8.0109*0.4938*0.324*0.324
+           H150_2W_2lnu_gluonfusion_7TeV VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple      6.9338*0.6909*0.324*0.324
+           H160_2W_2lnu_gluonfusion_7TeV VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple      6.0530*0.9053*0.324*0.324
+           H170_2W_2lnu_gluonfusion_7TeV VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple      5.3247*0.9639*0.324*0.324
+           H200_2W_2lnu_gluonfusion_7TeV VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple      3.7753*0.7423*0.324*0.324
+                      TTbarJets_madgraph VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                            165
+#                           TTbar_mcatnlo VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                          148.9
+                          WJets_madgraph VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                          24170
+                          ZJets_madgraph VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                           2400
+                         VVJets_madgraph VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                            4.8
+                      AstarJets_madgraph VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                            310
+             SingleTop_sChannel_madgraph VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                            4.6
+             SingleTop_tChannel_madgraph VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                             63
+            SingleTop_tWChannel_madgraph VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                           10.6
+                                      WW VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                             43
+                                      WZ VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                             18
+                                      ZZ VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                            5.9
+#                 ZinvisibleJets_madgraph VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                           4500
+#                      Wenu_Wminus_powheg VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                           3791
+#                       Wenu_Wplus_powheg VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                           5553
+#                     Wmunu_Wminus_powheg VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                           3791
+#                      Wmunu_Wplus_powheg VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                           5553
+#                                   Zmumu VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                         1606.6
+#                                     Zee VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                           1300
+#                                 Ztautau VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                           1300
+#                                   Wmunu VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                         9679.9
+#                                    Wenu VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                           7899
+#                                  Wtaunu VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                           7899
+#                        VqqJets_madgraph VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                           35.8
+#                            WJets_sherpa VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                        30379.6
+#                 ZJets_M50to10000_sherpa VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                           2977
+#                    ZJets_M10to50_sherpa VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                        11923.5
+#                  W0Jets_Pt0to100_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       2.43e+04
+#                  W1Jets_Pt0to100_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       8.46e+03
+#                W1Jets_Pt100to300_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       1.58e+02
+#                W1Jets_Pt300to800_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       1.72e+00
+#               W1Jets_Pt800to1600_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       4.01e-03
+#                  W2Jets_Pt0to100_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       3.50e+03
+#                W2Jets_Pt100to300_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       2.20e+02
+#                W2Jets_Pt300to800_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       3.44e+00
+#               W2Jets_Pt800to1600_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       9.85e-03
+#                  W3Jets_Pt0to100_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       1.29e+03
+#                W3Jets_Pt100to300_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       1.66e+02
+#                W3Jets_Pt300to800_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       3.57e+00
+#               W3Jets_Pt800to1600_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       1.16e-02
+#                  W4Jets_Pt0to100_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       4.34e+02
+#                W4Jets_Pt100to300_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       8.83e+01
+#                W4Jets_Pt300to800_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       2.47e+00
+#               W4Jets_Pt800to1600_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       8.62e-03
+#                  W5Jets_Pt0to100_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       1.31e+02
+#                W5Jets_Pt100to300_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       3.70e+01
+#                W5Jets_Pt300to800_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       1.30e+00
+#               W5Jets_Pt800to1600_alpgen VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                       4.71e-03
+#                        QCDDiJet_Pt0to15 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      4.844e+10
+#                       QCDDiJet_Pt15to20 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      5.794e+08
+#                       QCDDiJet_Pt20to30 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      2.361e+08
+#                       QCDDiJet_Pt30to50 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      5.311e+07
+#                       QCDDiJet_Pt50to80 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      6.358e+06
+#                      QCDDiJet_Pt80to120 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      7.849e+05
+#                     QCDDiJet_Pt120to170 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      1.151e+05
+#                     QCDDiJet_Pt170to230 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      2.014e+04
+#                     QCDDiJet_Pt230to300 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      4.094e+03
+#                     QCDDiJet_Pt300to380 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      9.346e+02
+#                     QCDDiJet_Pt380to470 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      2.338e+02
+#                     QCDDiJet_Pt470to600 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      7.021e+01
+#                     QCDDiJet_Pt600to800 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      1.557e+01
+#                    QCDDiJet_Pt800to1000 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      1.843e+00
+#                   QCDDiJet_Pt1000to1400 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      3.318e-01
+#                   QCDDiJet_Pt1400to1800 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      1.086e-02
+#                   QCDDiJet_Pt1800to2200 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      3.499e-04
+#                   QCDDiJet_Pt2200to2600 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      7.549e-06
+#                   QCDDiJet_Pt2600to3000 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      6.465e-08
+#                   QCDDiJet_Pt3000to3500 VBFPreselection VBFNtupleL2L3Antikt5CaloJets/SimpleNtple                      6.295e-11
+#        TTToLNuBLNuB_7TeV-powheg-pythia6 VBFPreselection VBFNtupleL2L3Ak5CaloJets/SimpleNtple                              15.86 
+#        TTToLNuBLNuB_7TeV-powheg-herwig6 VBFPreselection VBFNtupleL2L3Ak5CaloJets/SimpleNtple                              15.86 
+#//=====================================================================================
+#[1] https://twiki.cern.ch/twiki/bin/viewauth/CMS/ProductionSummer2009at7TeV#PYTHIA6
+#[2] https://twiki.cern.ch/twiki/bin/viewauth/CMS/ProductionSummer2009at7TeV#MadGraph
+#[3] https://twiki.cern.ch/twiki/bin/viewauth/CMS/ProductionSummer2009at7TeV#SHERPA
+#[4] https://twiki.cern.ch/twiki/bin/viewauth/CMS/ProductionSummer2009at7TeV#MC_NLO
+#[5] https://twiki.cern.ch/twiki/bin/viewauth/CMS/ProductionSummer2009at7TeV#ALPGEN
+#[6] https://twiki.cern.ch/twiki/bin/view/CMS/CrossSections_3XSeries
+#[7] http://ceballos.web.cern.ch/ceballos/hwwlnln/cross_sections_backgrounds.txt
+#[8] http://wwweth.cern.ch/HiggsCrossSections/
+#[9] https://twiki.cern.ch/twiki/bin/view/CMS/ProductionReProcessingSpring10
+#[10] http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/CMSSW/Configuration/GenProduction/python/PYTHIA6_EWK_Zmumu_7TeV_cff.py?revision=1.1&view=markup Inclusive production Z/gamma
