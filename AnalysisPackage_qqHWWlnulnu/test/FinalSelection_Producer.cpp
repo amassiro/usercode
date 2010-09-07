@@ -215,6 +215,9 @@ int main(int argc, char** argv)
  
  
  int AnalysisStep; 
+ 
+ std::vector<Float_t> input_variables_Jet_vector;
+ 
  Float_t input_variables_Jet[1000];
  Double_t* MVA_Jet;
  
@@ -397,7 +400,7 @@ int main(int argc, char** argv)
  start = clock();
  for(int iEvent = entryMIN ; iEvent < entryMAX ; ++iEvent) {
   reader.GetEntry(iEvent);
-  if((iEvent%entryMOD) == 0) std::cout << ">>>>> analysis::GetEntry " << iEvent << std::endl;   
+  if((iEvent%entryMOD) == 0) std::cout << ">>>>> analysis::GetEntry " << iEvent << " : " << entryMAX - entryMIN << std::endl;   
   
   ///==== define variables ==== 
   std::vector<ROOT::Math::XYZTVector>* jets = reader.Get4V("jets");
@@ -935,6 +938,21 @@ int main(int argc, char** argv)
   input_variables_Jet[5] = static_cast<Float_t>(Deta_RECO_q12);
   input_variables_Jet[6] = static_cast<Float_t>(Mjj);
   
+//   std::cerr << "=============================================================================" << std::endl;
+//   std::cerr << "input_variables_Jet = " << input_variables_Jet[0] << " float = " << pT_RECO_q1 << std::endl;
+//   std::cerr << "input_variables_Jet = " << input_variables_Jet[1] << " float = " << pT_RECO_q2 << std::endl;
+//   std::cerr << "input_variables_Jet = " << input_variables_Jet[2] << " float = " << eta_RECO_q1 << std::endl;
+//   std::cerr << "input_variables_Jet = " << input_variables_Jet[3] << " float = " << eta_RECO_q2 << std::endl;
+//   std::cerr << "input_variables_Jet = " << input_variables_Jet[4] << " float = " << eta_RECO_q1_eta_RECO_q2 << std::endl;
+//   std::cerr << "input_variables_Jet = " << input_variables_Jet[5] << " float = " << Deta_RECO_q12 << std::endl;
+//   std::cerr << "input_variables_Jet = " << input_variables_Jet[6] << " float = " << Mjj << std::endl;
+//   std::cerr << "=============================================================================" << std::endl;
+  
+  input_variables_Jet_vector.clear();
+  for (int iVar = 0; iVar<7; iVar++){
+   input_variables_Jet_vector.push_back(input_variables_Jet[iVar]);
+  }
+  
   input_variables_Lep[0] = pdgId_RECO_l1;
   input_variables_Lep[1] = pdgId_RECO_l2;
   input_variables_Lep[2] = pT_RECO_l1;
@@ -952,7 +970,9 @@ int main(int argc, char** argv)
    TString methodName = stdstrMethod_Jet.at(iMethod) + "_method_Jet";
 //    std::cerr << " methodName = " << methodName.Data() << std::endl;
 //    std::cerr << " mva jet = " << TMVAreader_Jet->EvaluateMVA(methodName) << std::endl;
-   MVA_Jet[iMethod] = TMVAreader_Jet->EvaluateMVA(methodName); 
+   MVA_Jet[iMethod] = TMVAreader_Jet->EvaluateMVA(methodName);
+//    MVA_Jet[iMethod] = TMVAreader_Jet->EvaluateMVA(input_variables_Jet_vector,methodName); 
+//    std::cerr << "MVA_Jet[" << iMethod << "] = " << MVA_Jet[iMethod] << " = " << TMVAreader_Jet->EvaluateMVA(methodName) << std::endl; 
   }
   
 //   std::cerr << "======================================= lepton " << std::endl;
