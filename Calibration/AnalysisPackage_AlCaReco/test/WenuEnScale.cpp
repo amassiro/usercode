@@ -153,9 +153,16 @@ double LLFunc(const double *xx ){
  if (!gROOT->FindObject(NameMC.Data())){
   hMC = new TH1F(NameMC,NameMC,NBINTemplate,MinTemplate,MaxTemplate);
   hMC->Reset();
+  
+  MyTreeMC->SetEntryList(0); 
+  MyTreeMC->Draw(">> myListMCTot",(AdditionalCut + Form(" && (ET * (1+(%f)))>%f",scale,minET)).Data(),"entrylist");
+  TEntryList *mylistMCTot = (TEntryList*)gDirectory->Get("myListMCTot");
+  MyTreeMC->SetEntryList(mylistMCTot);
+  
   TString DrawMC = Form("(%s * (1+(%f)))>>%s",variableName.c_str(),scale,NameMC.Data());
 //   std::cerr << " LL CUT = " << (AdditionalCut+Form("&& (ET * (1+(%f)))>%f",scale,minET)).Data() << std::endl;
-  MyTreeMC->Draw(DrawMC,(AdditionalCut+Form("&& (ET * (1+(%f)))>%f",scale,minET)).Data());
+// MyTreeMC->Draw(DrawMC,(AdditionalCut+Form("&& (ET * (1+(%f)))>%f",scale,minET)).Data());
+  MyTreeMC->Draw(DrawMC);
   hMC->Scale(10./numEvents);
   outFile->cd();
   hMC->Write();
@@ -223,8 +230,15 @@ double Chi2F(const double *xx ){
  if (!gROOT->FindObject(NameMC.Data())){
   hMC = new TH1F(NameMC,NameMC,numBINS,minBINS,maxBINS);
   hMC->Reset();
+
+  MyTreeMC->SetEntryList(0); 
+  MyTreeMC->Draw(">> myListMCTot",(AdditionalCut + Form(" && (ET * (1+(%f)))>%f",scale,minET)).Data(),"entrylist");
+  TEntryList *mylistMCTot = (TEntryList*)gDirectory->Get("myListMCTot");
+  MyTreeMC->SetEntryList(mylistMCTot);
+  
   TString DrawMC = Form("(%s * (1+(%f)))>>%s",variableName.c_str(),scale,NameMC.Data());
-  MyTreeMC->Draw(DrawMC,(AdditionalCut+Form("&& (ET * (1+(%f)))>%f",scale,minET)).Data());
+  MyTreeMC->Draw(DrawMC);
+//   MyTreeMC->Draw(DrawMC,(AdditionalCut+Form("&& (ET * (1+(%f)))>%f",scale,minET)).Data());
   hMC->Sumw2();
   hMC->Scale(hDATA->GetEffectiveEntries()/hMC->GetEffectiveEntries());
   outFile->cd();
@@ -273,8 +287,15 @@ double NewChi2Func(const double *xx ){
  if (!gROOT->FindObject(NameMC.Data())){
   hMC = new TH1F(NameMC,NameMC,numBINS,minBINS,maxBINS);
   hMC->Reset();
+  
+  MyTreeMC->SetEntryList(0); 
+  MyTreeMC->Draw(">> myListMCTot",(AdditionalCut + Form(" && (ET * (1+(%f)))>%f",scale,minET)).Data(),"entrylist");
+  TEntryList *mylistMCTot = (TEntryList*)gDirectory->Get("myListMCTot");
+  MyTreeMC->SetEntryList(mylistMCTot);
+  
   TString DrawMC = Form("(%s * (1+(%f)))>>%s",variableName.c_str(),scale,NameMC.Data());
-  MyTreeMC->Draw(DrawMC,(AdditionalCut+Form("&& (ET * (1+(%f)))>%f",scale,minET)).Data());
+  MyTreeMC->Draw(DrawMC);
+//   MyTreeMC->Draw(DrawMC,(AdditionalCut+Form("&& (ET * (1+(%f)))>%f",scale,minET)).Data());
   hMC->Sumw2();
   hMC->Scale(hDATA->GetEffectiveEntries()/hMC->GetEffectiveEntries());
   outFile->cd();
@@ -1005,7 +1026,7 @@ int main(int argc, char** argv){
  const double *errParametersNewChi2 = minuit->Errors();
  double minNewChi2 = grNewChi2->Eval(outParametersNewChi2[0]);
  std::cerr << " numEvents = " << numEvents << " Scale = " << outParametersNewChi2[0] << " +/- " << errParametersNewChi2[0] << std::endl;
- ///==== end likelihood ====
+ ///==== end newChi2 ====
   
  
  

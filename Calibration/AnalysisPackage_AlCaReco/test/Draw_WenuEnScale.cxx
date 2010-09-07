@@ -1,14 +1,17 @@
 {
 
- int NUM = 3;
+ int NUM = 7;
  std::string NAME = "EoP_EB_mod1";
  
- char* VAR[100] = {"fbrem0002","fbrem0204","fbrem0406"};
- double VALUE[100] = {0.1,0.3,0.5};
+//  char* VAR[100] = {"fbrem0002","fbrem0204","fbrem0406","fbrem0608"};
+//  double VALUE[100] = {0.1,0.3,0.5,0.7};
+//  double ERR[100] = {0.1,0.1,0.1,0.1};
  
-//  char* VAR[100] = {"fbrem0001","fbrem0102","fbrem0203","fbrem0304","fbrem0405","fbrem0506","fbrem0607","fbrem0708"};
-//  double VALUE[100] = {0.05,0.15,0.25,0.35,0.45,0.55,0.65,0.75};
- std::string NAME_TEST = "grLL";
+ char* VAR[100] = {"fbrem0001","fbrem0102","fbrem0203","fbrem0304","fbrem0405","fbrem0506","fbrem0607","fbrem0708"};
+ double VALUE[100] = {0.05,0.15,0.25,0.35,0.45,0.55,0.65,0.75};
+ double ERR[100] = {0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05};
+
+std::string NAME_TEST = "grLL";
 //  std::string NAME_TEST = "Graph;1"; //-> KS
 //   std::string NAME_TEST = "Graph;2"; //-> Chi2
   
@@ -64,7 +67,7 @@
   grResult->SetPoint(iNUM,VALUE[iNUM],-b/(2*a));
   
   if (NAME_TEST=="Graph;2") grResult->SetPointError(iNUM,0.05,1/sqrt(a));
-  else grResult->SetPointError(iNUM,0.05,1/sqrt(2*a));
+  else grResult->SetPointError(iNUM,ERR[iNUM],1/sqrt(2*a));
   
   
   
@@ -96,9 +99,14 @@
  }
 
  Result.cd();
- grResult->Draw("APL");
+ grResult->Draw("AP");
+ grResult->GetXaxis()->SetTitle("f_{brem}");
+ grResult->GetYaxis()->SetTitle("#alpha");
  grResult->SetMarkerStyle(20);
- grResult->SetMarkerColor(kBlue);
+ grResult->SetMarkerSize(2);
+ grResult->SetMarkerColor(kRed);
+ grResult->SetLineWidth(2);
+ grResult->SetLineColor(kRed);
  gPad->SetGrid();
  
  
