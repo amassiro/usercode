@@ -13,7 +13,7 @@
 //
 // Original Author:  Andrea Massironi,27 1-020,+41227670757,
 //         Created:  Thu May 13 11:34:24 CEST 2010
-// $Id: AlCaValidation.cc,v 1.11 2010/07/01 10:37:47 amassiro Exp $
+// $Id: AlCaValidation.cc,v 1.12 2010/07/01 13:23:25 amassiro Exp $
 //
 //
 
@@ -32,6 +32,7 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
+#include "DataFormats/Common/interface/ValueMap.h"
 
 //
 // constructors and destructor
@@ -40,6 +41,7 @@ AlCaValidation::AlCaValidation(const edm::ParameterSet& iConfig)
 {
  eventNaiveId_ = 0;
    //now do what ever initialization is needed
+  HLTInputTag_ = iConfig.getParameter<edm::InputTag>("HLTInputTag");
   MetTag_ = iConfig.getParameter<edm::InputTag>("MetTag");
   ElectronLabel_ = iConfig.getParameter<edm::InputTag>("ElectronLabel");
   AlcaBarrelHitCollection_ = iConfig.getParameter<edm::InputTag>("AlcaBarrelHitCollection");
@@ -52,9 +54,37 @@ AlCaValidation::AlCaValidation(const edm::ParameterSet& iConfig)
   hEndcapLocalCrystalsEnergy_  = fs->make <TH2F>("EndcapLocalCrystalsEnergy","EndcapLocalCrystalsEnergy",20,-10,10,20,-10,10);
   hZee_  = fs->make <TH1F>("Zee","Zee",100,0,200);
 
+  doEleId_ = iConfig.getUntrackedParameter<bool> ("doEleId", false);
+  if (doEleId_){
+   eleIDCut_eIDRobustLooseInputTag_      = iConfig.getParameter<edm::InputTag>("eleIDCut_eIDRobustLooseInputTag");
+   eleIDCut_eIDRobustLooseV00InputTag_   = iConfig.getParameter<edm::InputTag>("eleIDCut_eIDRobustLooseV00InputTag");
+   eleIDCut_eIDRobustTightInputTag_      = iConfig.getParameter<edm::InputTag>("eleIDCut_eIDRobustTightInputTag");
+   eleIDCut_eIDRobustHighEnergyInputTag_ = iConfig.getParameter<edm::InputTag>("eleIDCut_eIDRobustHighEnergyInputTag");
+   eleIDCut_eIDLooseInputTag_            = iConfig.getParameter<edm::InputTag>("eleIDCut_eIDLooseInputTag");
+   eleIDCut_eIDTightInputTag_            = iConfig.getParameter<edm::InputTag>("eleIDCut_eIDTightInputTag");
+   eleIDCut_eIDClassesLooseInputTag_     = iConfig.getParameter<edm::InputTag>("eleIDCut_eIDClassesLooseInputTag");
+   eleIDCut_eIDClassesMediumInputTag_    = iConfig.getParameter<edm::InputTag>("eleIDCut_eIDClassesMediumInputTag");
+   eleIDCut_eIDClassesTightInputTag_     = iConfig.getParameter<edm::InputTag>("eleIDCut_eIDClassesTightInputTag");
+  }
+
+  doEleIdCIC_ = iConfig.getUntrackedParameter<bool> ("doEleIdCIC", false);
+  if (doEleIdCIC_){
+   eleIDCut_eidVeryLooseInputTag_        = iConfig.getParameter<edm::InputTag>("eleIDCut_eidVeryLooseInputTag");
+   eleIDCut_eidLooseInputTag_            = iConfig.getParameter<edm::InputTag>("eleIDCut_eidLooseInputTag");
+   eleIDCut_eidMediumInputTag_           = iConfig.getParameter<edm::InputTag>("eleIDCut_eidMediumInputTag");
+   eleIDCut_eidTightInputTag_            = iConfig.getParameter<edm::InputTag>("eleIDCut_eidTightInputTag");
+   eleIDCut_eidSuperTightInputTag_       = iConfig.getParameter<edm::InputTag>("eleIDCut_eidSuperTightInputTag");
+   eleIDCut_eidHyperTight1InputTag_      = iConfig.getParameter<edm::InputTag>("eleIDCut_eidHyperTight1InputTag");
+   eleIDCut_eidHyperTight2InputTag_      = iConfig.getParameter<edm::InputTag>("eleIDCut_eidHyperTight2InputTag");
+   eleIDCut_eidHyperTight3InputTag_      = iConfig.getParameter<edm::InputTag>("eleIDCut_eidHyperTight3InputTag");
+   eleIDCut_eidHyperTight4InputTag_      = iConfig.getParameter<edm::InputTag>("eleIDCut_eidHyperTight4InputTag");
+  }
+
   NtupleFactory_ = new NtupleFactory(outTree_);
 
-   
+  NtupleFactory_->AddInt("iSM"); 
+  NtupleFactory_->AddInt("iSC");
+
   NtupleFactory_->Add4V("met"); ///==== caloMET
   NtupleFactory_->AddFloat("sumEt"); 
   
@@ -78,7 +108,7 @@ AlCaValidation::AlCaValidation(const edm::ParameterSet& iConfig)
   NtupleFactory_->AddFloat("Energy4"); 
   NtupleFactory_->AddFloat("Energy9"); 
   NtupleFactory_->AddFloat("Energy49"); 
-  NtupleFactory_->AddFloat("Presh"); 
+  NtupleFactory_->AddFloat("electrons_ES"); 
   NtupleFactory_->AddFloat("pErr"); 
   NtupleFactory_->AddFloat("recHits"); ///==== recHits_+=itrechit->energy();
 
@@ -117,6 +147,30 @@ AlCaValidation::AlCaValidation(const edm::ParameterSet& iConfig)
   NtupleFactory_->AddFloat("electrons_deltaEtaIn");
   NtupleFactory_->AddInt("electrons_mishits");
 
+  NtupleFactory_->AddFloat("electrons_eIDRobustLoose"); 
+  NtupleFactory_->AddFloat("electrons_eIDRobustLooseV00"); 
+  NtupleFactory_->AddFloat("electrons_eIDRobustTight"); 
+  NtupleFactory_->AddFloat("electrons_eIDRobustHighEnergy"); 
+  NtupleFactory_->AddFloat("electrons_eIDLoose"); 
+  NtupleFactory_->AddFloat("electrons_eIDTight"); 
+  NtupleFactory_->AddFloat("electrons_eIDClassesLoose"); 
+  NtupleFactory_->AddFloat("electrons_eIDClassesMedium"); 
+  NtupleFactory_->AddFloat("electrons_eIDClassesTight"); 
+
+  NtupleFactory_->AddFloat("electrons_eidVeryLoose"); 
+  NtupleFactory_->AddFloat("electrons_eidLoose"); 
+  NtupleFactory_->AddFloat("electrons_eidMedium"); 
+  NtupleFactory_->AddFloat("electrons_eidTight"); 
+  NtupleFactory_->AddFloat("electrons_eidSuperTight"); 
+  NtupleFactory_->AddFloat("electrons_eidHyperTight1"); 
+  NtupleFactory_->AddFloat("electrons_eidHyperTight2"); 
+  NtupleFactory_->AddFloat("electrons_eidHyperTight3"); 
+  NtupleFactory_->AddFloat("electrons_eidHyperTight4"); 
+
+  NtupleFactory_->AddInt("HLT_Photon10_L1R");
+  NtupleFactory_->AddInt("HLT_Photon15_L1R");
+  NtupleFactory_->AddInt("HLT_Photon20_L1R");
+  NtupleFactory_->AddInt("HLT_Ele15_LW_L1R");
 
   NtupleFactory_->AddFloat("E_xtal"); 
   NtupleFactory_->AddInt("ieta_xtal");
@@ -124,6 +178,15 @@ AlCaValidation::AlCaValidation(const edm::ParameterSet& iConfig)
   NtupleFactory_->AddInt("ix_xtal");
   NtupleFactory_->AddInt("iy_xtal");
 
+  
+  NtupleFactory_->AddFloat("electrons_SC_phiWidth");
+  NtupleFactory_->AddFloat("electrons_SC_etaWidth");
+
+  NtupleFactory_->Add3V("electrons_p_atVtx");
+  NtupleFactory_->Add3V("electrons_p_atCalo");
+  NtupleFactory_->AddFloat("electrons_scEt");
+  NtupleFactory_->AddFloat("electrons_scEta");
+  NtupleFactory_->AddFloat("electrons_scPhi");
 }
 
 
@@ -149,6 +212,12 @@ void
 
 //  std::cout << " eventNaiveId = " << eventNaiveId_ << std::endl;
 
+ //*********** HLT INFO
+ edm::Handle<edm::TriggerResults> hltresults;
+ iEvent.getByLabel(HLTInputTag_,hltresults);
+ const edm::TriggerNames & triggerNames = iEvent.triggerNames(*hltresults);
+
+
  double energia5 = 0 ;
  pTk_ = 0. ;
  math::XYZVector Zmoment(0.,0.,0.);
@@ -167,6 +236,32 @@ void
  edm::Handle<reco::GsfElectronCollection> pElectrons ;
  iEvent.getByLabel (ElectronLabel_, pElectrons) ;
   
+  std::vector<edm::Handle<edm::ValueMap<float> > > eleIdCutHandles(9) ;
+  if (doEleId_){
+   iEvent.getByLabel (eleIDCut_eIDRobustLooseInputTag_,      eleIdCutHandles[0]) ;
+   iEvent.getByLabel (eleIDCut_eIDRobustLooseV00InputTag_,   eleIdCutHandles[1]) ;
+   iEvent.getByLabel (eleIDCut_eIDRobustTightInputTag_,      eleIdCutHandles[2]) ;
+   iEvent.getByLabel (eleIDCut_eIDRobustHighEnergyInputTag_, eleIdCutHandles[3]) ;
+   iEvent.getByLabel (eleIDCut_eIDLooseInputTag_,            eleIdCutHandles[4]) ;
+   iEvent.getByLabel (eleIDCut_eIDTightInputTag_,            eleIdCutHandles[5]) ;
+   iEvent.getByLabel (eleIDCut_eIDClassesLooseInputTag_,     eleIdCutHandles[6]) ;
+   iEvent.getByLabel (eleIDCut_eIDClassesMediumInputTag_,    eleIdCutHandles[7]) ;
+   iEvent.getByLabel (eleIDCut_eIDClassesTightInputTag_,     eleIdCutHandles[8]) ;
+ }
+ if (doEleIdCIC_){
+  iEvent.getByLabel (eleIDCut_eidVeryLooseInputTag_,    eleIdCutHandles[0]) ;
+  iEvent.getByLabel (eleIDCut_eidLooseInputTag_,        eleIdCutHandles[1]) ;
+  iEvent.getByLabel (eleIDCut_eidMediumInputTag_,       eleIdCutHandles[2]) ;
+  iEvent.getByLabel (eleIDCut_eidTightInputTag_,        eleIdCutHandles[3]) ;
+  iEvent.getByLabel (eleIDCut_eidSuperTightInputTag_,   eleIdCutHandles[4]) ;
+  iEvent.getByLabel (eleIDCut_eidHyperTight1InputTag_,  eleIdCutHandles[5]) ;
+  iEvent.getByLabel (eleIDCut_eidHyperTight2InputTag_,  eleIdCutHandles[6]) ;
+  iEvent.getByLabel (eleIDCut_eidHyperTight3InputTag_,  eleIdCutHandles[7]) ;
+  iEvent.getByLabel (eleIDCut_eidHyperTight4InputTag_,  eleIdCutHandles[8]) ;
+ }
+
+ 
+ 
   //PG loop on the electrons
  int i=0;
  bool EE=0;
@@ -193,6 +288,8 @@ void
   Zmoment+= eleIt->trackMomentumAtVtx();
   momentum_ = eleIt->p();
    
+  int iSM = -1000;
+  int iSC = -1000;
   seed_energy_ = -1;
   const std::vector<std::pair<DetId,float> > & hits= eleIt->superCluster()->hitsAndFractions();
   for (std::vector<std::pair<DetId,float> > ::const_iterator rh = hits.begin(); rh!=hits.end(); ++rh){
@@ -206,7 +303,11 @@ void
     NtupleFactory_->FillInt("iphi_xtal",barrelId.iphi());
     NtupleFactory_->FillInt("ix_xtal",-1000);
     NtupleFactory_->FillInt("iy_xtal",-1000);
-    if (itrechit->energy() > seed_energy_) seed_energy_ = itrechit->energy();
+    if (itrechit->energy() > seed_energy_) {
+     seed_energy_ = itrechit->energy();
+     iSC = -1000;
+     iSM = barrelId.ism();
+    }
    }
    if ((*rh).first.subdetId()== EcalEndcap){
     EERecHitCollection::const_iterator itrechit = endcapHitsCollection->find((*rh).first);
@@ -218,7 +319,11 @@ void
     NtupleFactory_->FillInt("iy_xtal",endcapId.iy());
     NtupleFactory_->FillInt("ieta_xtal",-1000);
     NtupleFactory_->FillInt("iphi_xtal",-1000);
-    if (itrechit->energy() > seed_energy_) seed_energy_ = itrechit->energy();
+    if (itrechit->energy() > seed_energy_) {
+     seed_energy_ = itrechit->energy();
+     iSC = endcapId.isc();
+     iSM = -1000;
+    }   
    }
    else
    { 
@@ -245,10 +350,29 @@ void
    continue;
   }
   
+  
+  NtupleFactory_->Fill3V("electrons_p_atVtx",eleIt->trackMomentumAtVtx());
+  NtupleFactory_->Fill3V("electrons_p_atCalo",eleIt->trackMomentumAtCalo());
+
+  
   NtupleFactory_->Fill4V("electrons",eleIt->p4()); 
   NtupleFactory_->Fill3V("electrons_tracker_atVtx",eleIt->trackMomentumAtVtx());
   NtupleFactory_->Fill3V("electrons_tracker_Out",eleIt->trackMomentumOut());
 
+  NtupleFactory_->FillFloat("electrons_ES",eleIt->superCluster()->preshowerEnergy());
+  NtupleFactory_->FillFloat("electrons_SC_phiWidth",eleIt->superCluster()->phiWidth());
+  NtupleFactory_->FillFloat("electrons_SC_etaWidth",eleIt->superCluster()->etaWidth());
+
+  double R  = TMath::Sqrt(eleIt->superCluster()->x()*eleIt->superCluster()->x() + eleIt->superCluster()->y()*eleIt->superCluster()->y() +eleIt->superCluster()->z()*eleIt->superCluster()->z());
+  double Rt = TMath::Sqrt(eleIt->superCluster()->x()*eleIt->superCluster()->x() + eleIt->superCluster()->y()*eleIt->superCluster()->y());
+
+  NtupleFactory_->FillFloat("electrons_scE",eleIt->superCluster()->energy());
+  NtupleFactory_->FillFloat("electrons_scEt",eleIt->superCluster()->energy()*(Rt/R));
+  NtupleFactory_->FillFloat("electrons_scEta",eleIt->superCluster()->eta());
+  NtupleFactory_->FillFloat("electrons_scPhi",eleIt->superCluster()->phi());
+
+
+  
   NtupleFactory_->FillFloat("recHits",recHits_);
   ///==== Barrel or Endcap
   if ( Max.subdetId () == EcalBarrel  ) //PG in the barrel
@@ -268,7 +392,7 @@ void
    NtupleFactory_->FillFloat("Energy49",Energy49_); 
    NtupleFactory_->FillFloat("Energy4",Energy4_);   
    NtupleFactory_->FillFloat("MaxEnergy",MaxEnergy_);
-   NtupleFactory_->FillFloat("SwissE4",SwissE4Barrel(EBMax.ieta(),EBMax.iphi(),barrelHitsCollection)); 
+   NtupleFactory_->FillFloat("SwissE4",SwissE4Barrel(EBMax.ieta(),EBMax.iphi(),barrelHitsCollection));
    Zenergy+=energia5;
    fillAroundBarrel (
      barrelHitsCollection, 
@@ -276,7 +400,7 @@ void
    EBMax.iphi (),
    pTk_ 
                     ) ;
-  } //PG in the barrel
+   } //PG in the barrel
      
   else //PG in the endcap
   {      
@@ -312,8 +436,10 @@ void
   NtupleFactory_->FillFloat("ESCoP",ESCoP_); 
   NtupleFactory_->FillFloat("eSeedOverPout",eSeedOverPout_); 
   NtupleFactory_->FillFloat("Calo_Energy",energy_); ///==== eleIt->caloEnergy()
-  
-  
+
+  NtupleFactory_->FillInt("iSM",iSM);
+  NtupleFactory_->FillInt("iSC",iSC);
+
   NtupleFactory_->FillFloat("electrons_charge",(eleIt->charge()));
   NtupleFactory_->FillFloat("electrons_tkIso",(eleIt->dr03TkSumPt()));
   NtupleFactory_->FillFloat("electrons_emIso03",(eleIt->dr03EcalRecHitSumEt()));
@@ -336,9 +462,35 @@ void
   NtupleFactory_->FillFloat("electrons_deltaPhiIn",eleIt->deltaPhiSuperClusterTrackAtVtx());
   NtupleFactory_->FillFloat("electrons_deltaEtaIn",eleIt->deltaEtaSuperClusterTrackAtVtx());
   NtupleFactory_->FillInt("electrons_mishits",eleIt->gsfTrack()->trackerExpectedHitsInner().numberOfHits());
-  
+
+  if (doEleId_){
+   reco::GsfElectronRef eleRef(pElectrons,eleIt - pElectrons->begin ());
+   NtupleFactory_->FillFloat("electrons_eIDRobustLoose",(*(eleIdCutHandles[0]))[eleRef]); 
+   NtupleFactory_->FillFloat("electrons_eIDRobustLooseV00",(*(eleIdCutHandles[1]))[eleRef]); 
+   NtupleFactory_->FillFloat("electrons_eIDRobustTight",(*(eleIdCutHandles[2]))[eleRef]); 
+   NtupleFactory_->FillFloat("electrons_eIDRobustHighEnergy",(*(eleIdCutHandles[3]))[eleRef]); 
+   NtupleFactory_->FillFloat("electrons_eIDLoose",(*(eleIdCutHandles[4]))[eleRef]); 
+   NtupleFactory_->FillFloat("electrons_eIDTight",(*(eleIdCutHandles[5]))[eleRef]); 
+   NtupleFactory_->FillFloat("electrons_eIDClassesLoose",(*(eleIdCutHandles[6]))[eleRef]); 
+   NtupleFactory_->FillFloat("electrons_eIDClassesMedium",(*(eleIdCutHandles[7]))[eleRef]); 
+   NtupleFactory_->FillFloat("electrons_eIDClassesTight",(*(eleIdCutHandles[8]))[eleRef]); 
+  }
+
+  if (doEleIdCIC_){
+   reco::GsfElectronRef eleRef(pElectrons,eleIt - pElectrons->begin ());
+   NtupleFactory_->FillFloat("electrons_eidVeryLoose",(*(eleIdCutHandles[0]))[eleRef]); 
+   NtupleFactory_->FillFloat("electrons_eidLoose",(*(eleIdCutHandles[1]))[eleRef]); 
+   NtupleFactory_->FillFloat("electrons_eidMedium",(*(eleIdCutHandles[2]))[eleRef]); 
+   NtupleFactory_->FillFloat("electrons_eidTight",(*(eleIdCutHandles[3]))[eleRef]); 
+   NtupleFactory_->FillFloat("electrons_eidSuperTight",(*(eleIdCutHandles[4]))[eleRef]); 
+   NtupleFactory_->FillFloat("electrons_eidHyperTight1",(*(eleIdCutHandles[5]))[eleRef]); 
+   NtupleFactory_->FillFloat("electrons_eidHyperTight2",(*(eleIdCutHandles[6]))[eleRef]); 
+   NtupleFactory_->FillFloat("electrons_eidHyperTight3",(*(eleIdCutHandles[7]))[eleRef]); 
+   NtupleFactory_->FillFloat("electrons_eidHyperTight4",(*(eleIdCutHandles[8]))[eleRef]); 
+  }
+
  } //PG loop over electrons
- 
+
  NtupleFactory_->FillInt("runId", iEvent.id().run());
  NtupleFactory_->FillInt("lumiId", iEvent.luminosityBlock());
  NtupleFactory_->FillInt("BXId", iEvent.bunchCrossing());
@@ -352,7 +504,9 @@ void
  NtupleFactory_->Fill4V("met",met->p4());
  
  NtupleFactory_->FillFloat("sumEt",met->sumEt());
-   
+
+ dumpHLTInfo (hltresults,triggerNames);
+
  NtupleFactory_->FillNtuple(); 
  double MZ;
  MZ = sqrt( Zenergy*Zenergy - Zmoment.R()*Zmoment.R());
@@ -376,6 +530,42 @@ AlCaValidation::endJob() {
 
 // ----------------------------------------------------------------
 
+void AlCaValidation::dumpHLTInfo (edm::Handle<edm::TriggerResults>  hltresults, const edm::TriggerNames & triggerNames)
+{
+  unsigned int trigger_size     = 0;
+  unsigned int trigger_position = 0;
+
+  if(hltresults.isValid()) {
+    trigger_size = hltresults->size();
+    trigger_position = triggerNames.triggerIndex("HLT_Photon10_L1R");
+    if (trigger_position < trigger_size) 
+      NtupleFactory_->FillInt("HLT_Photon10_L1R",(int) (hltresults->accept(trigger_position)));
+    else NtupleFactory_->FillInt("HLT_Photon10_L1R",-500);
+
+     trigger_position = triggerNames.triggerIndex("HLT_Photon15_L1R");
+    if (trigger_position < trigger_size) 
+      NtupleFactory_->FillInt("HLT_Photon15_L1R",(int) (hltresults->accept(trigger_position)));
+    else NtupleFactory_->FillInt("HLT_Photon15_L1R",-500);
+
+   trigger_position = triggerNames.triggerIndex("HLT_Photon20_L1R");
+    if (trigger_position < trigger_size) 
+      NtupleFactory_->FillInt("HLT_Photon20_L1R",(int) (hltresults->accept(trigger_position)));
+    else NtupleFactory_->FillInt("HLT_Photon20_L1R",-500);
+
+   trigger_position = triggerNames.triggerIndex("HLT_Ele15_LW_L1R");
+    if (trigger_position < trigger_size) 
+      NtupleFactory_->FillInt("HLT_Ele15_LW_L1R",(int) (hltresults->accept(trigger_position)));
+    else NtupleFactory_->FillInt("HLT_Ele15_LW_L1R",-500);
+  }
+  else {
+    NtupleFactory_->FillInt("HLT_Photon10_L1R",-999);
+    NtupleFactory_->FillInt("HLT_Photon15_L1R",-999);
+    NtupleFactory_->FillInt("HLT_Photon20_L1R",-999);
+    NtupleFactory_->FillInt("HLT_Ele15_LW_L1R",-999);
+  }
+  return ;
+
+} 
 
 
 // ----------------------------------------------------------------

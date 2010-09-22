@@ -13,7 +13,7 @@
 //
 // Original Author:  Andrea Massironi,27 1-020,+41227670757,
 //         Created:  Thu May 13 11:34:24 CEST 2010
-// $Id: AlCaValidation.h,v 1.4 2010/06/01 09:37:12 amassiro Exp $
+// $Id: AlCaValidation.h,v 1.5 2010/06/01 13:33:41 amassiro Exp $
 //
 //
 
@@ -80,6 +80,9 @@
 #include "DataFormats/METReco/interface/MET.h"
 #include "DataFormats/METReco/interface/METFwd.h"
 
+#include "DataFormats/Common/interface/TriggerResults.h"
+#include "FWCore/Common/interface/TriggerNames.h"
+
 #include "PhysicsTools/NtupleUtils/interface/NtupleFactory.h"
 
 #include "TTree.h"
@@ -101,6 +104,8 @@ class AlCaValidation : public edm::EDAnalyzer {
       virtual void beginJob() ;
       virtual void analyze(const edm::Event&, const edm::EventSetup&);
       virtual void endJob() ;
+
+     void dumpHLTInfo (edm::Handle<edm::TriggerResults>  hltresults, const edm::TriggerNames & triggerNames);
 
      double Energy25Barrel (int eta, int phi,int side, const EBRecHitCollection* EBhits) ; //MF
      double Energy25Endcap (int ics, int ips, int z,int side, const EERecHitCollection* EEhits) ; //MF
@@ -168,4 +173,31 @@ class AlCaValidation : public edm::EDAnalyzer {
 
   NtupleFactory* NtupleFactory_;
 
+  edm::InputTag HLTInputTag_;
+
+  bool doEleId_;
+  edm::InputTag eleIDCut_eIDRobustLooseInputTag_;
+  edm::InputTag eleIDCut_eIDRobustLooseV00InputTag_;
+  edm::InputTag eleIDCut_eIDRobustTightInputTag_;
+  edm::InputTag eleIDCut_eIDRobustHighEnergyInputTag_;
+  edm::InputTag eleIDCut_eIDLooseInputTag_;
+  edm::InputTag eleIDCut_eIDTightInputTag_;
+  edm::InputTag eleIDCut_eIDClassesLooseInputTag_;
+  edm::InputTag eleIDCut_eIDClassesMediumInputTag_;
+  edm::InputTag eleIDCut_eIDClassesTightInputTag_;
+
+  bool doEleIdCIC_;
+  edm::InputTag eleIDCut_eidVeryLooseInputTag_;
+  edm::InputTag eleIDCut_eidLooseInputTag_;
+  edm::InputTag eleIDCut_eidMediumInputTag_;
+  edm::InputTag eleIDCut_eidTightInputTag_;
+  edm::InputTag eleIDCut_eidSuperTightInputTag_;
+  edm::InputTag eleIDCut_eidHyperTight1InputTag_;
+  edm::InputTag eleIDCut_eidHyperTight2InputTag_;
+  edm::InputTag eleIDCut_eidHyperTight3InputTag_;
+  edm::InputTag eleIDCut_eidHyperTight4InputTag_;
+
 };
+
+
+
