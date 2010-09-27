@@ -46,7 +46,7 @@ void Draw_Results_Tree(TString WhatToPlot = "", double MIN = -10, double MAX = 1
     std::cout << std::endl;
     
     char nameFile[1000];
-    sprintf(nameFile,"output_Spring10/out_FinalSelection_%s.root",nameSample[numberOfSamples]);  
+    sprintf(nameFile,"output_Spring10/out_NewMET_FinalSelection_%s.root",nameSample[numberOfSamples]);  
     TFile* f = new TFile(nameFile, "READ");
     
     treeEffVect[numberOfSamples] = (TTree) f->Get("outTreeSelections");
@@ -134,7 +134,7 @@ void Draw_Results_Tree(TString WhatToPlot = "", double MIN = -10, double MAX = 1
  gPad->BuildLegend();
  
  
- DrawSB(hs,4,numberOfSamples-4,0);
+ DrawSB(hs,5,numberOfSamples-5,0);
   
  
  std::cerr << " ******************************************* end *******************************************" << std::endl;

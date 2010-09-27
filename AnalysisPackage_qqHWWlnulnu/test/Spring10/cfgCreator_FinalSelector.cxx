@@ -38,7 +38,7 @@
   }
  }
  
- 
+ ///==== FinalSelection ====
  for (int iSample = 0; iSample < numberOfSamples; iSample++){
   std::ofstream myfile;
   char nameFile[1000];
@@ -62,16 +62,35 @@
   myfile << "entryMOD = 1000 " << std::endl;
   myfile << std::endl;
   myfile << "[Output]" << std::endl;
-  myfile << "OutFileNameEfficiencies = /home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/output_Spring10/out_FinalSelection_" << nameSample[iSample] << ".root" << std::endl;
+  myfile << "OutFileNameEfficiencies = output_Spring10/out_NewMET_FinalSelection_" << nameSample[iSample] << ".root" << std::endl;
   myfile << std::endl;
+  
+  myfile.close(); 
+ }
+ 
+ 
+ ///==== FinalSelection JET MVA ====
+ for (int iSample = 0; iSample < numberOfSamples; iSample++){
+  std::ofstream myfile;
+  char nameFile[1000];
+  sprintf(nameFile,"test/Spring10/dir_cfg/FinalSelection_JetMVA_%s.cfg",nameSample[iSample]);
+  myfile.open (nameFile);
+  
+  myfile << std::fixed;
+  myfile << std::setprecision(20);
+  myfile << "[Input]" << std::endl;
+  myfile << "treeName = outTreeJetLep" << std::endl;
+  myfile << "inputFile = output_Spring10/out_NewMET_FinalSelection_" << nameSample[iSample] << ".root" << std::endl;
+  myfile << std::endl;
+  myfile << "entryMOD = 1000 " << std::endl;
   
   myfile << "[Jet]" << std::endl;
   myfile << "AdditionalInputFiles = \\" << std::endl;
-  myfile << "   /home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/weights_Jet/TMVAnalysis_MLP.weights.xml, \\ " << std::endl;
-  myfile << "   /home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/weights_Jet/TMVAnalysis_BDT.weights.xml, \\" << std::endl;
-  myfile << "   /home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/weights_Jet/TMVAnalysis_Fisher.weights.xml, \\" << std::endl;
-  myfile << "   /home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/weights_Jet/TMVAnalysis_Likelihood.weights.xml, \\" << std::endl;
-  myfile << "   /home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/weights_Jet/TMVAnalysis_LikelihoodD.weights.xml" << std::endl;
+  myfile << "   weights_Jet/TMVAnalysis_MLP.weights.xml, \\ " << std::endl;
+  myfile << "   weights_Jet/TMVAnalysis_BDT.weights.xml, \\" << std::endl;
+  myfile << "   weights_Jet/TMVAnalysis_Fisher.weights.xml, \\" << std::endl;
+  myfile << "   weights_Jet/TMVAnalysis_Likelihood.weights.xml, \\" << std::endl;
+  myfile << "   weights_Jet/TMVAnalysis_LikelihoodD.weights.xml" << std::endl;
   
   myfile << "Methods = \\" << std::endl;
   myfile << "   MLP, \\ " << std::endl;
@@ -80,15 +99,32 @@
   myfile << "   Likelihood, \\" << std::endl;
   myfile << "   LikelihoodD" << std::endl;
   myfile << std::endl;
+   
+  myfile.close(); 
+ }
+ 
+ ///==== FinalSelection LEP MVA ====
+ for (int iSample = 0; iSample < numberOfSamples; iSample++){
+  std::ofstream myfile;
+  char nameFile[1000];
+  sprintf(nameFile,"test/Spring10/dir_cfg/FinalSelection_LepMVA_%s.cfg",nameSample[iSample]);
+  myfile.open (nameFile);
   
+  myfile << std::fixed;
+  myfile << std::setprecision(20);
+  myfile << "[Input]" << std::endl;
+  myfile << "treeName = outTreeJetLep" << std::endl;
+  myfile << "inputFile = output_Spring10/out_NewMET_FinalSelection_" << nameSample[iSample] << ".root" << std::endl;
+  myfile << std::endl;
+  myfile << "entryMOD = 1000 " << std::endl;
   
   myfile << "[Lepton]" << std::endl;
   myfile << "AdditionalInputFiles = \\" << std::endl;
-  myfile << "   /home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/weights_Lep/TMVAnalysis_MLP.weights.xml, \\ " << std::endl;
-  myfile << "   /home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/weights_Lep/TMVAnalysis_BDT.weights.xml, \\" << std::endl;
-  myfile << "   /home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/weights_Lep/TMVAnalysis_Fisher.weights.xml, \\" << std::endl;
-  myfile << "   /home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/weights_Lep/TMVAnalysis_Likelihood.weights.xml, \\" << std::endl;
-  myfile << "   /home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/weights_Lep/TMVAnalysis_LikelihoodD.weights.xml" << std::endl;
+  myfile << "   weights_Lep/TMVAnalysis_MLP.weights.xml, \\ " << std::endl;
+  myfile << "   weights_Lep/TMVAnalysis_BDT.weights.xml, \\" << std::endl;
+  myfile << "   weights_Lep/TMVAnalysis_Fisher.weights.xml, \\" << std::endl;
+  myfile << "   weights_Lep/TMVAnalysis_Likelihood.weights.xml, \\" << std::endl;
+  myfile << "   weights_Lep/TMVAnalysis_LikelihoodD.weights.xml" << std::endl;
   
   myfile << "Methods = \\" << std::endl;
   myfile << "   MLP, \\ " << std::endl;
@@ -97,10 +133,12 @@
   myfile << "   Likelihood, \\" << std::endl;
   myfile << "   LikelihoodD" << std::endl;
   myfile << std::endl;
-  
+
   myfile.close(); 
  }
  
 }
+
+
 
 

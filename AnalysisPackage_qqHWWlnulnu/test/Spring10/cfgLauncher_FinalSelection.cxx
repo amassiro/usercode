@@ -37,6 +37,13 @@
  for (int iSample = 0; iSample < numberOfSamples; iSample++){
   TString Command2Line = Form("./bin/FinalSelection_Producer.exe test/Spring10/dir_cfg/FinalSelection_%s.cfg",nameSample[iSample]);
   gSystem->Exec(Command2Line);
+  
+  Command2Line = Form("./bin/FinalSelection_Producer_Jet.exe test/Spring10/dir_cfg/FinalSelection_JetMVA_%s.cfg",nameSample[iSample]);
+  gSystem->Exec(Command2Line);
+  
+  Command2Line = Form("./bin/FinalSelection_Producer_Lep.exe test/Spring10/dir_cfg/FinalSelection_LepMVA_%s.cfg",nameSample[iSample]);
+  gSystem->Exec(Command2Line);
+  
  }
 }
 

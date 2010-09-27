@@ -18,6 +18,8 @@ void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
  gPad->SetLogy();
  gPad->SetGrid();
  gPad->BuildLegend();
+ double bkg_temp = 0;
+ double sig_temp = 0;
  
  int numSample = 0;
  while (key = (TKey *) Iterator()){
@@ -27,7 +29,8 @@ void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
   vectHist[numSample] = temp_h;
   
   if (sb_bs == 0 && numSample < numSignal) {
-   std::cerr << " >>> sig += " << temp_h->Integral() << std::endl;
+   sig_temp += temp_h->Integral();
+   std::cerr << " [" << sig_temp << "] " << " >>> sig += " << temp_h->Integral() << " ~ " << temp_h->GetEntries() << "     =>  " << nameHisto.Data() << std::endl;
    if (numSample == 0) {
     sigHist = (TH1F*) temp_h->Clone("signal");
     sigHist->SetTitle("signal");
@@ -37,7 +40,8 @@ void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
   }
   
   if (sb_bs == 0 && numSample >= numSignal) {
-   std::cerr << " >>> bkg += " << temp_h->Integral() << std::endl;
+   bkg_temp += temp_h->Integral();
+   std::cerr << " [" << bkg_temp << "] >>> bkg += " << temp_h->Integral() << " ~ " << temp_h->GetEntries() << "     =>  " << nameHisto.Data() << std::endl;
    if (numSample == numSignal) {
     bkgHist = (TH1F*) temp_h->Clone("background");
     bkgHist->SetTitle("backgroud");
@@ -47,7 +51,8 @@ void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
   }
   
   if (sb_bs == 1 && numSample < numBkg) {
-   std::cerr << " >>> bkg += " << temp_h->Integral() << std::endl;
+   bkg_temp += temp_h->Integral();
+   std::cerr << " [" << bkg_temp << "] >>> bkg += " << temp_h->Integral() << " ~ " << temp_h->GetEntries() << "     =>  " << nameHisto.Data() << std::endl;
    if (numSample == 0) {
     bkgHist = (TH1F*) temp_h->Clone("background");
     bkgHist->SetTitle("backgroud");
@@ -57,7 +62,8 @@ void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
   }
   
   if (sb_bs == 1 && numSample >= numBkg) {
-   std::cerr << " >>> sig += " << temp_h->Integral() << std::endl;
+   sig_temp += temp_h->Integral();
+   std::cerr << " [" << sig_temp << "] " << " >>> sig += " << temp_h->Integral() << " ~ " << temp_h->GetEntries() << "     =>  " << nameHisto.Data() << std::endl;
    if (numSample == numBkg) {
     sigHist = (TH1F*) temp_h->Clone("signal");
     sigHist->SetTitle("signal");
@@ -83,8 +89,8 @@ void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
  bkgHist->SetLineWidth(1);
  sigHist->SetLineColor(kBlue);
  bkgHist->SetLineColor(kRed);
- sigHist->SetFillColor(kBlue);
- bkgHist->SetFillColor(kRed);
+ sigHist->SetFillColor(0);
+ bkgHist->SetFillColor(0);
  bkgHist->Draw();
  sigHist->Draw("same");
  gPad->SetLogy();
@@ -105,6 +111,7 @@ void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
  
  std::cerr << " sig = " << sigHist->Integral() << std::endl;
  std::cerr << " bkg = " << bkgHist->Integral() << std::endl;
+ std::cerr << " bkg_temp = " << bkg_temp << std::endl;
  
  TH1F* cumulSig = sigHist->Clone();
  Double_t* integSig = sigHist->GetIntegral();
@@ -208,8 +215,8 @@ void DrawSB2D(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
  cCompare->cd(2);
  sigHist->SetLineWidth(1);
  bkgHist->SetLineWidth(1);
- sigHist->SetFillColor(kBlue);
- bkgHist->SetFillColor(kRed);
+//  sigHist->SetFillColor(kBlue);
+//  bkgHist->SetFillColor(kRed);
  sigHist->SetLineColor(kBlue);
  bkgHist->SetLineColor(kRed);
  sigHist->SetMarkerColor(kBlue);

@@ -81,11 +81,81 @@
          -> Tools_Draw.h
       
       Interesting distributions
-      ~/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu$ r00t test/WorkFlow/Draw_Results_Tree_2D.cxx\(\"BDT_Lep\",\"MLP_Jet\",-1,1,80,-5,-2,70,500\)
+      r00t test/Spring10/Draw_Results_Tree_2D.cxx\(\"BDT_Lep\",\"MLP_Jet\",-1,1,80,-5,-2,70,500\)
       
-      ~/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu$ r00t test/WorkFlow/Draw_Results_Tree_2D.cxx\(\"CJV_30\",\"Mll\",0,10,10,0,200,100,500\)
+      r00t test/Spring10/Draw_Results_Tree_2D.cxx\(\"CJV_30\",\"Mll\",0,10,10,0,200,100,500\)
       
-      r00t test/WorkFlow/Draw_Results_Tree.cxx\(\"Dphi_RECO_l12\",0,4,30,500,\"Mjj\>300\ \&\&\ MLP_Jet\>-3\ \&\&\ BDT_Lep\>-0.05\"\)
+      
+      
+      r00t test/Spring10/Draw_Results_Tree.cxx\(\"Dphi_RECO_l12\",0,4,30,500,\"Mjj\>300\ \&\&\ MLP_Jet\>-3\ \&\&\ BDT_Lep\>-0.05\"\)
+      r00t test/Spring10/Draw_Results_Tree.cxx\(\"BDT_Jet\",-1,1,100,1000\)
+      
+      
+      
+      r00t test/Spring10/Draw_Results_Tree_2D.cxx\(\"Likelihood_Lep\",\"MLP_Jet\",-1,1,80,-5,1,70,500\)
+      
+      root -l test/Spring10/Draw_Results_Tree.cxx\(\"MLP_Jet\",-2,2,200,1000,\"pT_RECO_q1\>10\&\&pT_RECO_q2\>10\&\&abs\(eta_RECO_q1\)\>0.2\&\&abs\(eta_RECO_q2\)\>0.2\&\&eta_RECO_q1_eta_RECO_q2\<3.0\&\&Deta_RECO_q12\>1.3\&\&Mjj\>400\&\&CJV_30\<1\&\&JV_30\<2\&\&pT_RECO_l1\>20\&\&pT_RECO_l2\>20\&\&abs\(eta_RECO_l1\)\<2.1\&\&abs\(eta_RECO_l2\)\<2.1\&\&eta_RECO_l1_eta_RECO_l2\<6\&\&eta_RECO_l1_eta_RECO_l2\>0\&\&Deta_RECO_l12\<1.3\&\&Dphi_RECO_l12\<3.0\&\&Mll\<70\&\&Mll\>10\&\&charge_RECO_l1_charge_RECO_l2==-1\&\&MLP_Jet\>0.0\&\&Likelihood_Lep\>0.0\&\&MET\>45\"\)
+      
+      
+      root -l test/Spring10/Draw_Results_Tree.cxx\(\"Dphi_RECO_l12\",0,4,30,500,\"
+      pT_RECO_q1\>10
+      \&\&pT_RECO_q2\>10
+      \&\&abs\(eta_RECO_q1\)\>0.2
+      \&\&abs\(eta_RECO_q2\)\>0.2
+      \&\&eta_RECO_q1_eta_RECO_q2\<3.0
+      \&\&Deta_RECO_q12\>1.3
+      \&\&Mjj\>400
+      \&\&CJV_30\<1
+      \&\&JV_30\<2
+      \&\&pT_RECO_l1\>20\&\&pT_RECO_l2\>20
+      \&\&abs\(eta_RECO_l1\)\<2.1
+      \&\&abs\(eta_RECO_l2\)\<2.1
+      \&\&eta_RECO_l1_eta_RECO_l2\<6\&\&eta_RECO_l1_eta_RECO_l2\>0
+      \&\&Deta_RECO_l12\<1.3
+      \&\&Dphi_RECO_l12\<3.0
+      \&\&Mll\<70\&\&Mll\>10
+      \&\&charge_RECO_l1_charge_RECO_l2==-1
+      \"\)
+      
+      
+      ///==== for plot ====
+      root -l test/Spring10/Draw_Results_Tree.cxx\(\"JV_30\",-1,4,5,1000,\"pT_RECO_q1\>10\&\&pT_RECO_q2\>10\&\&abs\(eta_RECO_q1\)\>0.2\&\&abs\(eta_RECO_q2\)\>0.2\&\&eta_RECO_q1_eta_RECO_q2\<3.0\&\&Deta_RECO_q12\>1.3\&\&Mjj\>400\&\&CJV_30\<1\&\&JV_30\<2\&\&pT_RECO_l1\>20\&\&pT_RECO_l2\>20\&\&abs\(eta_RECO_l1\)\<2.1\&\&abs\(eta_RECO_l2\)\<2.1\&\&eta_RECO_l1_eta_RECO_l2\<6\&\&eta_RECO_l1_eta_RECO_l2\>0\&\&Deta_RECO_l12\<1.3\&\&Dphi_RECO_l12\<3.0\&\&Mll\<70\&\&Mll\>10\&\&charge_RECO_l1_charge_RECO_l2==-1\&\&MLP_Jet\>0.7\&\&Likelihood_Lep\>0.0\&\&MET\>45\"\)
+      
+      root -l test/Spring10/Draw_Results_Tree.cxx\(\"JV_30\",-1,4,5,1000,\"pT_RECO_q1\>10\&\&pT_RECO_q2\>10\&\&abs\(eta_RECO_q1\)\>0.2\&\&abs\(eta_RECO_q2\)\>0.2\&\&eta_RECO_q1_eta_RECO_q2\<3.0\&\&Deta_RECO_q12\>1.3\&\&Mjj\>400\&\&CJV_30\<1\&\&pT_RECO_l1\>20\&\&pT_RECO_l2\>20\&\&abs\(eta_RECO_l1\)\<2.1\&\&abs\(eta_RECO_l2\)\<2.1\&\&eta_RECO_l1_eta_RECO_l2\<6\&\&eta_RECO_l1_eta_RECO_l2\>0\&\&Deta_RECO_l12\<1.3\&\&Dphi_RECO_l12\<3.0\&\&Mll\<70\&\&Mll\>10\&\&charge_RECO_l1_charge_RECO_l2==-1\&\&MLP_Jet\>0.7\&\&Likelihood_Lep\>0.0\&\&MET\>45\"\)
+      
+      
+      root -l test/Spring10/Draw_Results_Tree_2D.cxx\(\"abs\(eta_RECO_q1\)\",\"abs\(eta_RECO_q2\)\",0,5,10,0,5,10,1000,\"pT_RECO_q1\>10\&\&pT_RECO_q2\>10\"\)
+      ///==== end for plot ====
+      
+      root -l test/Spring10/Draw_Results_Tree.cxx\(\"Dphi_RECO_l12\",0,5,100,1000,"1"\)
+      
+      
+      root -l test/Spring10/Draw_Results_Tree.cxx\(\"MLP_Jet\",-2,2,200,1000,\"pT_RECO_q1\>10\&\&pT_RECO_q2\>10\&\&abs\(eta_RECO_q1\)\>0.2\&\&abs\(eta_RECO_q2\)\>0.2\&\&eta_RECO_q1_eta_RECO_q2\<3.0\&\&Deta_RECO_q12\>1.3\&\&Mjj\>400\&\&CJV_30\<1\&\&JV_30\<2\&\&pT_RECO_l1\>20\&\&pT_RECO_l2\>20\&\&abs\(eta_RECO_l1\)\<2.1\&\&abs\(eta_RECO_l2\)\<2.1\&\&eta_RECO_l1_eta_RECO_l2\<6\&\&eta_RECO_l1_eta_RECO_l2\>0\&\&Deta_RECO_l12\<1.3\&\&Dphi_RECO_l12\<3.0\&\&Mll\<70\&\&Mll\>10\&\&charge_RECO_l1_charge_RECO_l2==-1\&\&Likelihood_Lep\>0.0\"\)
+      
+      
+      
+      root -l test/Spring10/Draw_Results_Tree.cxx\(\"MLP_Jet\",-2,2,200,1000,\"pT_RECO_q1\>10\&\&pT_RECO_q2\>10\&\&abs\(eta_RECO_q1\)\>0.2\&\&abs\(eta_RECO_q2\)\>0.2\&\&eta_RECO_q1_eta_RECO_q2\<3.0\&\&Deta_RECO_q12\>1.3\&\&Mjj\>400\&\&CJV_30\<1\&\&JV_30\<2\&\&pT_RECO_l1\>20\&\&pT_RECO_l2\>20\&\&abs\(eta_RECO_l1\)\<2.1\&\&abs\(eta_RECO_l2\)\<2.1\&\&eta_RECO_l1_eta_RECO_l2\<6\&\&eta_RECO_l1_eta_RECO_l2\>0\&\&Deta_RECO_l12\<1.3\&\&Dphi_RECO_l12\<3.0\&\&Mll\<70\&\&Mll\>10\&\&charge_RECO_l1_charge_RECO_l2==-1\&\&Likelihood_Lep\>0.0\"\)
+      
+      root -l test/Spring10/Draw_Results_Tree.cxx\(\"MLP_Jet\",-2,2,200,1000,\"pT_RECO_q1\>10\&\&pT_RECO_q2\>10\&\&abs\(eta_RECO_q1\)\>0.2\&\&abs\(eta_RECO_q2\)\>0.2\&\&eta_RECO_q1_eta_RECO_q2\<3.0\&\&Deta_RECO_q12\>1.3\&\&Mjj\>400\&\&CJV_30\<1\&\&JV_30\<2\&\&pT_RECO_l1\>20\&\&pT_RECO_l2\>20\&\&abs\(eta_RECO_l1\)\<2.1\&\&abs\(eta_RECO_l2\)\<2.1\&\&eta_RECO_l1_eta_RECO_l2\<6\&\&eta_RECO_l1_eta_RECO_l2\>0\&\&Deta_RECO_l12\<1.3\&\&Dphi_RECO_l12\<3.0\&\&Mll\<70\&\&Mll\>10\&\&charge_RECO_l1_charge_RECO_l2==-1\&\&MLP_Jet\>0.0\&\&Likelihood_Lep\>0.0\&\&MET\>45\&\&NBjets_trackCountingHighPurBJetTags\<2\"\)
+      
+      root -l test/Spring10/Draw_Results_Tree.cxx\(\"MLP_Jet\",-2,2,200,1000\)
+      root -l test/Spring10/Draw_Results_Tree.cxx\(\"Likelihood_Lep\",-2,2,200,1000\)
+      
+      
+      root -l test/Spring10/Draw_Results_Tree.cxx\(\"MLP_Jet\",-2,2,200,1000,\"pT_RECO_q1\>10\&\&pT_RECO_q2\>10\&\&abs\(eta_RECO_q1\)\>0.2\&\&abs\(eta_RECO_q2\)\>0.2\&\&eta_RECO_q1_eta_RECO_q2\<3.0\&\&Deta_RECO_q12\>1.3\&\&Mjj\>400\&\&CJV_30\<1\&\&JV_30\<2\&\&pT_RECO_l1\>20\&\&pT_RECO_l2\>20\&\&abs\(eta_RECO_l1\)\<2.1\&\&abs\(eta_RECO_l2\)\<2.1\&\&eta_RECO_l1_eta_RECO_l2\<6\&\&eta_RECO_l1_eta_RECO_l2\>0\&\&Deta_RECO_l12\<1.3\&\&Dphi_RECO_l12\<3.0\&\&Mll\<70\&\&Mll\>10\&\&charge_RECO_l1_charge_RECO_l2==-1\&\&Likelihood_Lep\>0.0\&\&MLP_Jet\>0.90\"\)
+      
+      
+      root -l test/Spring10/Draw_Results_Tree.cxx\(\"MLP_Jet\",-2,2,200,1000,\"pT_RECO_q1\>10\&\&pT_RECO_q2\>10\&\&abs\(eta_RECO_q1\)\>0.2\&\&abs\(eta_RECO_q2\)\>0.2\&\&eta_RECO_q1_eta_RECO_q2\<3.0\&\&Deta_RECO_q12\>1.3\&\&Mjj\>400\&\&CJV_30\<1\&\&JV_30\<2\&\&pT_RECO_l1\>20\&\&pT_RECO_l2\>20\&\&abs\(eta_RECO_l1\)\<2.1\&\&abs\(eta_RECO_l2\)\<2.1\&\&eta_RECO_l1_eta_RECO_l2\<6\&\&eta_RECO_l1_eta_RECO_l2\>0\&\&Deta_RECO_l12\<1.3\&\&Dphi_RECO_l12\<3.0\&\&Mll\<70\&\&Mll\>10\&\&charge_RECO_l1_charge_RECO_l2==-1\&\&Likelihood_Lep\>0.0\&\&MLP_Jet\>0.80\"\)
+      
+      
+      
+      
+      root -l test/Spring10/Draw_Results_Tree.cxx\(\"Dphi_RECO_l12\",0,4,30,1000,\"pT_RECO_q1\>25\&\&pT_RECO_q2\>30\&\&abs\(eta_RECO_q1\)\>0.2\&\&abs\(eta_RECO_q2\)\>0.2\&\&eta_RECO_q1_eta_RECO_q2\<3.0\&\&Deta_RECO_q12\>1.3\&\&Mjj\>470\&\&CJV_30\<1\&\&JV_30\<2\&\&pT_RECO_l1\>40\&\&pT_RECO_l2\>30\&\&abs\(eta_RECO_l1\)\<2.1\&\&abs\(eta_RECO_l2\)\<2.1\&\&eta_RECO_l1_eta_RECO_l2\<6\&\&eta_RECO_l1_eta_RECO_l2\>0\&\&Deta_RECO_l12\<1.3\&\&Dphi_RECO_l12\<3.0\&\&Mll\<70\&\&Mll\>10\&\&charge_RECO_l1_charge_RECO_l2==-1\"\)
+      
+      root -l test/Spring10/Draw_Results_Tree.cxx\(\"Dphi_RECO_l12\",0,4,30,500,\"pT_RECO_q1\>25\&\&pT_RECO_q2\>30\&\&abs\(eta_RECO_q1\)\>0.2\&\&abs\(eta_RECO_q2\)\>0.2\&\&eta_RECO_q1_eta_RECO_q2\<3.0\&\&Deta_RECO_q12\>1.3\&\&Mjj\>470\&\&CJV_30\<1\&\&JV_30\<2\&\&pT_RECO_l1\>40\&\&pT_RECO_l2\>30\&\&abs\(eta_RECO_l1\)\<2.1\&\&abs\(eta_RECO_l2\)\<2.1\&\&eta_RECO_l1_eta_RECO_l2\<6\&\&eta_RECO_l1_eta_RECO_l2\>0\&\&Deta_RECO_l12\<1.3\&\&Dphi_RECO_l12\<3.0\&\&Mll\<70\&\&Mll\>10\&\&charge_RECO_l1_charge_RECO_l2==-1\"\)
+      
+      
+      
       ///---- just to see ----
 
 

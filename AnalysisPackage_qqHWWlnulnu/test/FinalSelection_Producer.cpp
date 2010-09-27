@@ -213,14 +213,10 @@ int main(int argc, char** argv)
  int Z_12_20;
  int Z_14_20;
  
+ double MET;
  
  int AnalysisStep; 
- 
- std::vector<Float_t> input_variables_Jet_vector;
- 
- Float_t input_variables_Jet[1000];
- Double_t* MVA_Jet;
- 
+  
  outTreeJetLep.Branch("pT_RECO_q1",&pT_RECO_q1,"pT_RECO_q1/D");
  outTreeJetLep.Branch("pT_RECO_q2",&pT_RECO_q2,"pT_RECO_q2/D");
  outTreeJetLep.Branch("phi_RECO_q1",&phi_RECO_q1,"phi_RECO_q1/D");
@@ -254,57 +250,14 @@ int main(int argc, char** argv)
  outTreeJetLep.Branch("Z_12_20",&Z_12_20,"Z_12_20/I");
  outTreeJetLep.Branch("Z_14_20",&Z_14_20,"Z_14_20/I");
  
+ outTreeJetLep.Branch("MET",&MET,"MET/D");
  
  outTreeJetLep.Branch("NBjets_trackCountingHighPurBJetTags",&NBjets_trackCountingHighPurBJetTags,"NBjets_trackCountingHighPurBJetTags/I");
  outTreeJetLep.Branch("NBjets_trackCountingHighEffBJetTags",&NBjets_trackCountingHighEffBJetTags,"NBjets_trackCountingHighEffBJetTags/I");
  outTreeJetLep.Branch("NBjets_combinedSecondaryVertexBJetTags",&NBjets_combinedSecondaryVertexBJetTags,"NBjets_combinedSecondaryVertexBJetTags/I");
  outTreeJetLep.Branch("NBjets_combinedSecondaryVertexMVABJetTags",&NBjets_combinedSecondaryVertexMVABJetTags,"NBjets_combinedSecondaryVertexMVABJetTags/I");
  
- 
- TMVA::Reader *TMVAreader_Jet = new TMVA::Reader( "!Color:!Silent" );
- TMVAreader_Jet->AddVariable("pT_RECO_q1",&input_variables_Jet[0]);
- TMVAreader_Jet->AddVariable("pT_RECO_q2",&input_variables_Jet[1]);
- TMVAreader_Jet->AddVariable("eta_RECO_q1",&input_variables_Jet[2]);
- TMVAreader_Jet->AddVariable("eta_RECO_q2",&input_variables_Jet[3]);
- TMVAreader_Jet->AddVariable("eta_RECO_q1_eta_RECO_q2",&input_variables_Jet[4]);
- TMVAreader_Jet->AddVariable("Deta_RECO_q12",&input_variables_Jet[5]);
- TMVAreader_Jet->AddVariable("Mjj",&input_variables_Jet[6]);
- 
- 
- ///==== book MVA Jet ====
 
- std::vector<std::string> stdstrMethod_Jet;
- try {
-  stdstrMethod_Jet = gConfigParser -> readStringListOption ("Jet::Methods");
- }
- catch (char const* exceptionString){
-  std::cerr << " exception = " << exceptionString << std::endl;
- }
- 
- 
- std::vector<std::string> stdstrAdditionalInputFile_Jet;
- try {
-  stdstrAdditionalInputFile_Jet = gConfigParser -> readStringListOption ("Jet::AdditionalInputFiles");
- }
- catch (char const* exceptionString){
-  std::cerr << " exception = " << exceptionString << std::endl;
- }
- 
- MVA_Jet = new Double_t [stdstrMethod_Jet.size()];
- 
- for (int iMethod=0; iMethod<stdstrMethod_Jet.size(); iMethod++){
-  TString methodName = stdstrMethod_Jet.at(iMethod) + "_method_Jet";
-  TString weightfile = Form(stdstrAdditionalInputFile_Jet.at(iMethod).c_str());
-  TMVAreader_Jet->BookMVA( methodName, weightfile );
-  
-  TString methodName4Tree = stdstrMethod_Jet.at(iMethod) + "_Jet";
-  TString methodName4Tree2 = stdstrMethod_Jet.at(iMethod) + "_Jet/D";
-  std::cerr << " methodName = " << methodName.Data() << std::endl;
-  std::cerr << " methodName4Tree  = " << methodName4Tree.Data() << std::endl;
-  std::cerr << " methodName4Tree2 = " << methodName4Tree2.Data() << std::endl;  
-  outTreeJetLep.Branch(methodName4Tree,MVA_Jet+iMethod,methodName4Tree2);
- }
-  
   
   ///=================
   ///==== leptons ====
@@ -322,8 +275,10 @@ int main(int argc, char** argv)
  double Dphi_RECO_l12;
  double Mll;
  double charge_RECO_l1_charge_RECO_l2;
- Float_t input_variables_Lep[1000];
- Double_t* MVA_Lep;
+ 
+ double Z_l1;
+ double Z_l2;
+ 
  
  outTreeJetLep.Branch("pdgId_RECO_l1",&pdgId_RECO_l1,"pdgId_RECO_l1/I");
  outTreeJetLep.Branch("pdgId_RECO_l2",&pdgId_RECO_l2,"pdgId_RECO_l2/I");
@@ -337,56 +292,8 @@ int main(int argc, char** argv)
  outTreeJetLep.Branch("Mll",&Mll,"Mll/D");
  outTreeJetLep.Branch("charge_RECO_l1_charge_RECO_l2",&charge_RECO_l1_charge_RECO_l2,"charge_RECO_l1_charge_RECO_l2/D");
  outTreeJetLep.Branch("AnalysisStep",&AnalysisStep,"AnalysisStep/I");
- 
- TMVA::Reader *TMVAreader_Lep = new TMVA::Reader( "!Color:!Silent" );
- TMVAreader_Lep->AddVariable("pdgId_RECO_l1",&input_variables_Lep[0]);
- TMVAreader_Lep->AddVariable("pdgId_RECO_l2",&input_variables_Lep[1]);
- TMVAreader_Lep->AddVariable("pT_RECO_l1",&input_variables_Lep[2]);
- TMVAreader_Lep->AddVariable("pT_RECO_l2",&input_variables_Lep[3]);
- TMVAreader_Lep->AddVariable("eta_RECO_l1",&input_variables_Lep[4]);
- TMVAreader_Lep->AddVariable("eta_RECO_l2",&input_variables_Lep[5]);
- TMVAreader_Lep->AddVariable("eta_RECO_l1_eta_RECO_l2",&input_variables_Lep[6]);
- TMVAreader_Lep->AddVariable("Deta_RECO_l12",&input_variables_Lep[7]);
- TMVAreader_Lep->AddVariable("Dphi_RECO_l12",&input_variables_Lep[8]);
- TMVAreader_Lep->AddVariable("Mll",&input_variables_Lep[9]);
- TMVAreader_Lep->AddVariable("charge_RECO_l1_charge_RECO_l2",&input_variables_Lep[10]);
- 
- 
- 
- ///==== book MVA Lepton ====
- 
- 
- std::vector<std::string> stdstrMethod_Lep;
- try {
-  stdstrMethod_Lep = gConfigParser -> readStringListOption ("Lepton::Methods");
- }
- catch (char const* exceptionString){
-  std::cerr << " exception = " << exceptionString << std::endl;
- }
- 
- std::vector<std::string> stdstrAdditionalInputFile_Lep;
- try {
-  stdstrAdditionalInputFile_Lep = gConfigParser -> readStringListOption ("Lepton::AdditionalInputFiles");
- }
- catch (char const* exceptionString){
-  std::cerr << " exception = " << exceptionString << std::endl;
- }
- 
- MVA_Lep = new Double_t [stdstrMethod_Lep.size()];
- 
- for (int iMethod=0; iMethod<stdstrMethod_Lep.size(); iMethod++){
-  TString methodName = stdstrMethod_Lep.at(iMethod) + "_method_Lep";
-  TString weightfile = Form(stdstrAdditionalInputFile_Lep.at(iMethod).c_str());
-  TMVAreader_Lep->BookMVA( methodName, weightfile );
-  
-  TString methodName4Tree = stdstrMethod_Lep.at(iMethod) + "_Lep";
-  TString methodName4Tree2 = stdstrMethod_Lep.at(iMethod) + "_Lep/D";
-  std::cerr << " methodName  = " << methodName.Data() << std::endl;
-  std::cerr << " methodName4Tree  = " << methodName4Tree.Data() << std::endl;
-  std::cerr << " methodName4Tree2 = " << methodName4Tree2.Data() << std::endl;  
-  outTreeJetLep.Branch(methodName4Tree,MVA_Lep+iMethod,methodName4Tree2);
- }
- 
+ outTreeJetLep.Branch("Z_l1",&Z_l1,"Z_l1/D");
+ outTreeJetLep.Branch("Z_l2",&Z_l2,"Z_l2/D");
  
  double start, end;
  
@@ -674,8 +581,6 @@ int main(int argc, char** argv)
    stdHistograms -> Fill1("met","met",step,0); 
    
    
-   
-    
   ///*************************
   ///**** STEP 3 - Jet ID ****
   ///************* Identification of two tag jets
@@ -714,6 +619,8 @@ int main(int argc, char** argv)
     whitelistJet.at(iJet) = 0;
    }
   }
+  
+  MET = reader.Get4V("met")->at(0).Et();
   
   pT_RECO_q1 = jets->at(q1).Pt();
   pT_RECO_q2 = jets->at(q2).Pt();
@@ -901,6 +808,19 @@ int main(int argc, char** argv)
   Mll = (leptons.at(l1) + leptons.at(l2)).M();
   charge_RECO_l1_charge_RECO_l2 = leptons_charge.at(l1) * leptons_charge.at(l2);  
   
+  
+  
+  ///==== Zepp for lepton ====
+  double etaMin = jets->at(q1).Eta();
+  double etaMax = jets->at(q2).Eta();
+  if (etaMax < etaMin) std::swap(etaMin,etaMax);
+  double etaMean = (etaMax + etaMin) / 2.;
+  double dEta = (etaMax - etaMin);
+  Z_l1 = (leptons.at(l1).Eta() - etaMean)/dEta;
+  Z_l2 = (leptons.at(l2).Eta() - etaMean)/dEta;
+  ///=========================  
+  
+  
   stdHistograms -> Fill1("muons","muons",step,&whitelistMu);
   stdHistograms -> Fill1("electrons","electrons",step,&whitelistEle);
   stdHistograms -> Fill1("jets","jets",step,&whitelistJet);
@@ -930,62 +850,7 @@ int main(int argc, char** argv)
   
   AnalysisStep = step;
   
-  input_variables_Jet[0] = static_cast<Float_t>(pT_RECO_q1);
-  input_variables_Jet[1] = static_cast<Float_t>(pT_RECO_q2);
-  input_variables_Jet[2] = static_cast<Float_t>(eta_RECO_q1);
-  input_variables_Jet[3] = static_cast<Float_t>(eta_RECO_q2);
-  input_variables_Jet[4] = static_cast<Float_t>(eta_RECO_q1_eta_RECO_q2);
-  input_variables_Jet[5] = static_cast<Float_t>(Deta_RECO_q12);
-  input_variables_Jet[6] = static_cast<Float_t>(Mjj);
-  
-//   std::cerr << "=============================================================================" << std::endl;
-//   std::cerr << "input_variables_Jet = " << input_variables_Jet[0] << " float = " << pT_RECO_q1 << std::endl;
-//   std::cerr << "input_variables_Jet = " << input_variables_Jet[1] << " float = " << pT_RECO_q2 << std::endl;
-//   std::cerr << "input_variables_Jet = " << input_variables_Jet[2] << " float = " << eta_RECO_q1 << std::endl;
-//   std::cerr << "input_variables_Jet = " << input_variables_Jet[3] << " float = " << eta_RECO_q2 << std::endl;
-//   std::cerr << "input_variables_Jet = " << input_variables_Jet[4] << " float = " << eta_RECO_q1_eta_RECO_q2 << std::endl;
-//   std::cerr << "input_variables_Jet = " << input_variables_Jet[5] << " float = " << Deta_RECO_q12 << std::endl;
-//   std::cerr << "input_variables_Jet = " << input_variables_Jet[6] << " float = " << Mjj << std::endl;
-//   std::cerr << "=============================================================================" << std::endl;
-  
-  input_variables_Jet_vector.clear();
-  for (int iVar = 0; iVar<7; iVar++){
-   input_variables_Jet_vector.push_back(input_variables_Jet[iVar]);
-  }
-  
-  input_variables_Lep[0] = pdgId_RECO_l1;
-  input_variables_Lep[1] = pdgId_RECO_l2;
-  input_variables_Lep[2] = pT_RECO_l1;
-  input_variables_Lep[3] = pT_RECO_l2;
-  input_variables_Lep[4] = eta_RECO_l1;
-  input_variables_Lep[5] = eta_RECO_l2;
-  input_variables_Lep[6] = eta_RECO_l1_eta_RECO_l2;
-  input_variables_Lep[7] = Deta_RECO_l12;
-  input_variables_Lep[8] = Dphi_RECO_l12;
-  input_variables_Lep[9] = Mll;
-  input_variables_Lep[10] = charge_RECO_l1_charge_RECO_l2;
-  
-//   std::cerr << "======================================= jets " << std::endl;
-  for (int iMethod=0; iMethod<stdstrMethod_Jet.size(); iMethod++){
-   TString methodName = stdstrMethod_Jet.at(iMethod) + "_method_Jet";
-//    std::cerr << " methodName = " << methodName.Data() << std::endl;
-//    std::cerr << " mva jet = " << TMVAreader_Jet->EvaluateMVA(methodName) << std::endl;
-   MVA_Jet[iMethod] = TMVAreader_Jet->EvaluateMVA(methodName);
-//    MVA_Jet[iMethod] = TMVAreader_Jet->EvaluateMVA(input_variables_Jet_vector,methodName); 
-//    std::cerr << "MVA_Jet[" << iMethod << "] = " << MVA_Jet[iMethod] << " = " << TMVAreader_Jet->EvaluateMVA(methodName) << std::endl; 
-  }
-  
-//   std::cerr << "======================================= lepton " << std::endl;
-  for (int iMethod=0; iMethod<stdstrMethod_Lep.size(); iMethod++){
-   TString methodName = stdstrMethod_Lep.at(iMethod) + "_method_Lep";
-//    std::cerr << " methodName = " << methodName.Data() << std::endl;
-//    std::cerr << " mva lep = " << TMVAreader_Lep->EvaluateMVA(methodName) << std::endl;
-      MVA_Lep[iMethod] = TMVAreader_Lep->EvaluateMVA(methodName); 
-  }
-
-//   std::cerr << "======================================= end " << std::endl;
-
-
+ 
   outTreeJetLep.Fill();
 //   outTreeJetLep.Fill();
 //   std::cerr << "======================================= end " << std::endl;
@@ -1021,8 +886,6 @@ int main(int argc, char** argv)
  
  std::cerr << " === end === " << std::endl;
  delete stdHistograms;
- delete TMVAreader_Jet;
- delete TMVAreader_Lep;
  
 }
 

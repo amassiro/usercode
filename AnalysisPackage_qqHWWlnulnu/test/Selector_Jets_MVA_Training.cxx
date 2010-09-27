@@ -125,14 +125,14 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
  int Match4;
 
 
- factory->AddVariable( "pT_RECO_q1" , 'D');
- factory->AddVariable( "pT_RECO_q2" , 'D');
- factory->AddVariable( "eta_RECO_q1" , 'D');
- factory->AddVariable( "eta_RECO_q2" , 'D');
+ factory->AddVariable( "pT_RECO_q1" , 'F');
+ factory->AddVariable( "pT_RECO_q2" , 'F');
+ factory->AddVariable( "eta_RECO_q1" , 'F');
+ factory->AddVariable( "eta_RECO_q2" , 'F');
  
- factory->AddVariable( "eta_RECO_q1_eta_RECO_q2" , 'D');
- factory->AddVariable( "Deta_RECO_q12" , 'D');
- factory->AddVariable( "Mjj" , 'D');
+ factory->AddVariable( "eta_RECO_q1_eta_RECO_q2" , 'F');
+ factory->AddVariable( "Deta_RECO_q12" , 'F');
+ factory->AddVariable( "Mjj" , 'F');
   
  //==== Define the input samples ====
  
@@ -144,7 +144,7 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
  char *nameSamplePrefix[1000];
  char *nameSampleTree[1000];
  double xsection[1000];
- std::ifstream inFile("test/Spring10/samples.txt");
+ std::ifstream inFile("test/Spring10/samples_training.txt");
 //  std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/WorkFlow/samples_temp.txt");
  std::string buffer;
 
@@ -173,7 +173,7 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
     
     char nameFile[1000];
 //     sprintf(nameFile,"output/out_FinalSelection_%s.root",nameSample[totalSamples]);  
-sprintf(nameFile,"output_Spring10/out_FinalSelection_%s.root",nameSample[totalSamples]);  
+    sprintf(nameFile,"output_Spring10/out_FinalSelection_%s.root",nameSample[totalSamples]);  
 // sprintf(nameFile,"output_Spring10/out_SelectorLeptons_%s.root",nameSample[totalSamples]);  
 //     sprintf(nameFile,"output_Spring10/out_SelectorJets_%s.root",nameSample[totalSamples]);  
     TFile* f = new TFile(nameFile, "READ");
@@ -226,7 +226,10 @@ sprintf(nameFile,"output_Spring10/out_FinalSelection_%s.root",nameSample[totalSa
 //  factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=NumEvents:!V" );
 // factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=None:!V");//:nTrain_Background=100000:nTrain_Signal=1000:nTest_Background=100000:nTest_Signal=1000" );
 
-factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=NumEvents:!V");//:nTrain_Background=100000:nTrain_Signal=1000:nTest_Background=100000:nTest_Signal=1000" );
+//  factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=None:!V");
+ factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=NumEvents:!V");
+ 
+// factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=NumEvents:!V");//:nTrain_Background=100000:nTrain_Signal=1000:nTest_Background=100000:nTest_Signal=1000" );
 //  factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=NumEvents:!V:nTrain_Background=1000000:nTrain_Signal=30000");//:nTest_Background=1000:nTest_Signal=1000" );
  
  
@@ -256,12 +259,12 @@ factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=N
    // Likelihood
    if (Use["Likelihood"])
       factory->BookMethod( TMVA::Types::kLikelihood, "Likelihood", 
-                           "H:!V:TransformOutput:PDFInterpol=Spline2:NSmoothSig[0]=20:NSmoothBkg[0]=20:NSmoothBkg[1]=10:NSmooth=1:NAvEvtPerBin=50" ); 
+                           "H:!V:TransformOutput:PDFInterpol=Spline2:NSmooth=1:NAvEvtPerBin=50" ); 
 
    // test the decorrelated likelihood
    if (Use["LikelihoodD"])
       factory->BookMethod( TMVA::Types::kLikelihood, "LikelihoodD", 
-                           "!H:!V:!TransformOutput:PDFInterpol=Spline2:NSmoothSig[0]=20:NSmoothBkg[0]=20:NSmooth=5:NAvEvtPerBin=50:VarTransform=Decorrelate" ); 
+                           "!H:!V:!TransformOutput:PDFInterpol=Spline2:NSmooth=5:NAvEvtPerBin=50:VarTransform=Decorrelate" ); 
 
    if (Use["LikelihoodPCA"])
       factory->BookMethod( TMVA::Types::kLikelihood, "LikelihoodPCA", 
@@ -353,7 +356,7 @@ factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=N
 
    // TMVA ANN: MLP (recommended ANN) -- all ANNs in TMVA are Multilayer Perceptrons
    if (Use["MLP"])
-      factory->BookMethod( TMVA::Types::kMLP, "MLP", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5" );
+      factory->BookMethod( TMVA::Types::kMLP, "MLP", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=300:HiddenLayers=N+1:TestRate=5" );
 
    if (Use["MLPBFGS"])
       factory->BookMethod( TMVA::Types::kMLP, "MLPBFGS", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:TrainingMethod=BFGS" );
@@ -378,7 +381,7 @@ factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=N
 
    if (Use["BDT"])  // Adaptive Boost
       factory->BookMethod( TMVA::Types::kBDT, "BDT", 
-                           "!H:!V:NTrees=100:MaxDepth=3:BoostType=AdaBoost:SeparationType=GiniIndex:nCuts=100:PruneMethod=NoPruning" );
+			   "!H:!V:NTrees=500:BoostType=AdaBoost:SeparationType=GiniIndex:nCuts=20:PruneMethod=CostComplexity:PruneStrength=2.5" );
    
    if (Use["BDTB"]) // Bagging
       factory->BookMethod( TMVA::Types::kBDT, "BDTB", 
@@ -386,7 +389,7 @@ factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=N
 
    if (Use["BDTD"]) // Decorrelation + Adaptive Boost
       factory->BookMethod( TMVA::Types::kBDT, "BDTD", 
-                           "!H:!V:NTrees=400:nEventsMin=400:MaxDepth=3:BoostType=AdaBoost:SeparationType=GiniIndex:nCuts=20:PruneMethod=NoPruning:VarTransform=Decorrelate" );
+                           "!H:!V:NTrees=400:BoostType=AdaBoost:SeparationType=GiniIndex:nCuts=20:PruneMethod=NoPruning:VarTransform=Decorrelate" );
    
    // RuleFit -- TMVA implementation of Friedman's method
    if (Use["RuleFit"])

@@ -125,15 +125,15 @@ void Selector_Leptons_MVA_Training( TString myMethodList = "" ) {
  
  factory->AddVariable( "pdgId_RECO_l1" , 'I');
  factory->AddVariable( "pdgId_RECO_l2" , 'I');
- factory->AddVariable( "pT_RECO_l1" , 'D');
- factory->AddVariable( "pT_RECO_l2" , 'D');
- factory->AddVariable( "eta_RECO_l1" , 'D');
- factory->AddVariable( "eta_RECO_l2" , 'D');
- factory->AddVariable( "eta_RECO_l1_eta_RECO_l2" , 'D');
- factory->AddVariable( "Deta_RECO_l12" , 'D');
- factory->AddVariable( "Dphi_RECO_l12" , 'D');
- factory->AddVariable( "Mll" , 'D');
- factory->AddVariable( "charge_RECO_l1_charge_RECO_l2" , 'D');
+ factory->AddVariable( "pT_RECO_l1" , 'F');
+ factory->AddVariable( "pT_RECO_l2" , 'F');
+ factory->AddVariable( "eta_RECO_l1" , 'F');
+ factory->AddVariable( "eta_RECO_l2" , 'F');
+ factory->AddVariable( "eta_RECO_l1_eta_RECO_l2" , 'F');
+ factory->AddVariable( "Deta_RECO_l12" , 'F');
+ factory->AddVariable( "Dphi_RECO_l12" , 'F');
+ factory->AddVariable( "Mll" , 'F');
+ factory->AddVariable( "charge_RECO_l1_charge_RECO_l2" , 'F');
   
  //==== Define the input samples ====
  
@@ -145,7 +145,8 @@ void Selector_Leptons_MVA_Training( TString myMethodList = "" ) {
  char *nameSamplePrefix[1000];
  char *nameSampleTree[1000];
  double xsection[1000];
- std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/Spring10/samples.txt");
+ std::ifstream inFile("test/Spring10/samples_training.txt");
+//  std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/Spring10/samples.txt");
 //  std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/WorkFlow/samples_temp.txt");
  std::string buffer;
 
