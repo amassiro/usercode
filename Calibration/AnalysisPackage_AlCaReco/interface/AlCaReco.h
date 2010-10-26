@@ -6,6 +6,7 @@
 #include "TProfile.h"
 #include "TCanvas.h"
 #include "TFile.h"
+#include <cmath>
 
 
 /** to integrate a function in a user defined range*/
@@ -16,3 +17,6 @@ std::vector<double> getSigmaBands (TH1 & histo) ;
 
 /** find the x coordinate that divides into two the area*/
 double findMedian (TH1 & h1) ;
+
+TH1D * smartGausProfileX_sqrtN (TH2F * strip, double width);
+ 

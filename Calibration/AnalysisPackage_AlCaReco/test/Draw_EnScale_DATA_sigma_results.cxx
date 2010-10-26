@@ -8,8 +8,8 @@
 //  double MinScanRange = -0.04;
 //  double MaxScanRange = 0.01;
 
- double MinScanRange = -0.1;
- double MaxScanRange = 0.04;
+ double MinScanRange = -0.04;
+ double MaxScanRange = 0.02;
  
 //  double MinScanRange = -0.05;
 //  double MaxScanRange = 0.1;
@@ -284,7 +284,10 @@ if (PLOT){
  grLL->Fit("fitMinLL","RMQ");
 //  std::cerr << " alpha LL = " << -fitMinLL->GetParameter(1) / 2. / fitMinLL->GetParameter(2) << std::endl;
 
-
+ grLL->SetMarkerColor(kRed);
+ grLL->SetMarkerSize(1);
+ grLL->SetMarkerStyle(20);
+ 
  TCanvas cLL("cLL","cLL",1200,1200);
  cLL.Divide(2,2);
  
@@ -293,14 +296,14 @@ if (PLOT){
  hLL->GetYaxis()->SetTitle("- LL");
  hLL->GetXaxis()->SetTitle("#alpha");
 //  hLL->Draw("colz");
- grLL->Draw("APL");
+ grLL->Draw("AP");
  gPad->SetGrid();
  
  if (PLOT){
   cLL_1->cd();
 //  hLL->Draw("colz");
 //  grLL->Draw("P");
- grLL->Draw("ALP");
+ grLL->Draw("AP");
  gPad->SetGrid();
  }
  

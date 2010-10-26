@@ -31,6 +31,8 @@
 
 #include "TLatex.h"
 
+#include "AlCaReco.h"
+
 
 void CorrectString(std::string &inString){
  int pos = 1;
@@ -72,6 +74,11 @@ void CorrectString(std::string &inString){
  while (pos!=std::string::npos){
   pos = inString.find("PLUS");
   if (pos!=std::string::npos) inString.replace(pos,4,"+");
+ }
+ pos = 1;
+ while (pos!=std::string::npos){
+  pos = inString.find("NOT");
+  if (pos!=std::string::npos) inString.replace(pos,3,"!");
  }
 }
 
@@ -133,10 +140,57 @@ int main(int argc, char** argv){
  std::cout << ">>>>> InputDATA::luminosity " << luminosity  << std::endl;
 
  std::string treeNameMC  = gConfigParser -> readStringOption("InputMC::treeName");
- std::vector< std::string > inputFileMC = gConfigParser -> readStringListOption("InputMC::inputFile");
- std::vector< std::string > inputSampleMC = gConfigParser -> readStringListOption("InputMC::nameSample");
- std::vector< double > xSecAndEfficiency = gConfigParser -> readDoubleListOption("InputMC::xsecEff");
-
+ 
+ 
+ std::vector< std::string > inputFileMC;
+ std::vector< std::string > inputSampleMC;
+ std::vector< double > xSecAndEfficiency;
+ std::vector< int > join;
+ std::vector< std::string > nameJoin;
+ 
+ try {
+  inputFileMC = gConfigParser -> readStringListOption("InputMC::inputFile");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " InputMC :: " << exceptionString << std::endl;
+  return 0;}
+ 
+ try {
+  inputSampleMC = gConfigParser -> readStringListOption("InputMC::nameSample");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " InputMC :: " << exceptionString << std::endl;
+  return 0;
+ }
+ 
+ try {
+  xSecAndEfficiency = gConfigParser -> readDoubleListOption("InputMC::xsecEff");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " InputMC :: " << exceptionString << std::endl;
+  return 0;
+ }
+ 
+ try {
+  join = gConfigParser -> readIntListOption("InputMC::join");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " InputMC :: " << exceptionString << std::endl;
+  for (int iMC = 0; iMC < inputFileMC.size(); iMC++) { 
+   join.push_back(iMC);
+  }
+ }
+ 
+ try {
+  nameJoin = gConfigParser -> readStringListOption("InputMC::nameJoin");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " InputMC :: " << exceptionString << std::endl;
+  nameJoin = inputSampleMC;
+ }
+ 
+ 
+ 
  std::cout << ">>>>> InputMC::treeName  " << treeNameMC  << std::endl;
  std::cout << ">>>>> InputMC::inputFile size " << inputFileMC.size()  << std::endl;
  if (inputFileMC.size() != xSecAndEfficiency.size() || inputFileMC.size() != inputSampleMC.size()) {
@@ -144,6 +198,8 @@ int main(int argc, char** argv){
      return 0;
     }
  int nMC = inputFileMC.size();
+ std::cout << " nMC = " << nMC << std::endl;
+ 
  for (int iMC = 0; iMC < nMC; iMC++) {
     std::cout << ">>>>> InputMC::inputFile[" << iMC << "] = " << inputSampleMC.at(iMC) << " => " << inputFileMC.at(iMC)  << " : " << xSecAndEfficiency.at(iMC) << " : " << luminosity * xSecAndEfficiency.at(iMC) << std::endl;
  }
@@ -189,32 +245,82 @@ int main(int argc, char** argv){
  std::string outputFile = gConfigParser -> readStringOption("Output::outputFile");
  std::cout << ">>>>> Output::outputFile  " << outputFile  << std::endl;
 
- std::string cut = gConfigParser -> readStringOption("Options::cut");
- std::cout << ">>>>> Output::cut  " << cut  << std::endl;
- CorrectString(cut);
- std::cout << ">>>>> Output::cut  " << cut  << std::endl;
+ std::string cut;
+ try {
+  cut = gConfigParser -> readStringOption("Options::cut");
+  std::cout << ">>>>> Output::cut  " << cut  << std::endl;
+  CorrectString(cut);
+  std::cout << ">>>>> Output::cut  " << cut  << std::endl;
+  
+ }
+ catch (char const* exceptionString){
+  std::cerr << " cut :: " << exceptionString << std::endl;
+  cut = "1";
+ }
+ std::cout << ">>>>> Option::cut  " << cut  << std::endl;  
+ 
+ 
+ 
+ 
  
  
  int EEEB = gConfigParser -> readIntOption("Options::EEorEB");
  std::cout << ">>>>> Options::EEEB " << EEEB << std::endl;
  TString AdditionalCut = Form("%s",cut.c_str());
  if (EEEB == 1) { ///==== EE
-   AdditionalCut = Form("%s && (eta > 1.5 || eta < -1.5)",AdditionalCut.Data());
+  AdditionalCut = Form("%s && (eta > 1.5 || eta < -1.5)",AdditionalCut.Data());
  }
-
  if (EEEB == 2) { ///==== EB
   AdditionalCut = Form("%s && (eta < 1.5 && eta > -1.5)",AdditionalCut.Data());
  }
- 
  if (EEEB == 3) { ///==== EE+
   AdditionalCut = Form("%s && (eta > 1.5)",AdditionalCut.Data());
  }
- 
  if (EEEB == 4) { ///==== EE-
   AdditionalCut = Form("%s && (eta < -1.5)",AdditionalCut.Data());
  }
+ if (EEEB == 5) { ///==== EB mod 1
+  AdditionalCut = Form("%s && (abs(eta) < 0.435)",AdditionalCut.Data());
+ }
+ if (EEEB == 6) { ///==== EB mod 2
+  AdditionalCut = Form("%s && (abs(eta) < 0.783 && abs(eta) > 0.435)",AdditionalCut.Data());
+ }
+ if (EEEB == 7) { ///==== EB mod 3
+  AdditionalCut = Form("%s && (abs(eta) < 1.131 && abs(eta) > 0.783)",AdditionalCut.Data());
+ }
+ if (EEEB == 8) { ///==== EB mod 4
+  AdditionalCut = Form("%s && (abs(eta) < 1.479 && abs(eta) > 1.131)",AdditionalCut.Data());
+ }
+ if (EEEB == 9) { ///==== EE No ES
+  AdditionalCut = Form("%s && (abs(eta) > 2.5)",AdditionalCut.Data());
+ }
+ if (EEEB == 10) { ///==== EE + ES
+  AdditionalCut = Form("%s && (abs(eta) < 2.5 && abs(eta) > 1.5)",AdditionalCut.Data());
+ }
+ if (EEEB == 11) { ///==== EE- + ES
+  AdditionalCut = Form("%s && (eta > -2.5 && eta < -1.5)",AdditionalCut.Data());
+ }
+ if (EEEB == 12) { ///==== EE+ + ES
+  AdditionalCut = Form("%s && (eta < 2.5 && eta > 1.5)",AdditionalCut.Data());
+ }
  
  std::cout << ">>>>>        :: " << AdditionalCut.Data() << std::endl;
+ 
+ 
+ ///==== 0 = Normalize to lumi (default)
+ ///==== 1 = Normalize to data
+ int Normalize = 0;
+ try {
+  Normalize = gConfigParser -> readIntOption("Options::Normalize");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " Normalize :: " << exceptionString << std::endl;
+  Normalize = 0;
+ }
+ std::cout << ">>>>> Options::Normalize  " << Normalize  << std::endl;  
+ 
+ 
+ 
  
  ///==== HLT cut added ====
 //  AdditionalCut += Form(" && HLT_Ele15_LW_L1R==1");
@@ -222,12 +328,13 @@ int main(int argc, char** argv){
  
  
  EColor vColor[100] = {
-  kBlue,(EColor)(kBlue+1),(EColor) (kBlue+2),
+  kGreen,(EColor)(kGreen+1),(EColor) (kGreen+2),
   kRed,(EColor) (kRed+1),(EColor) (kRed+2),
-  kGreen,(EColor) (kGreen+1),(EColor) (kGreen+2),
+  kGreen,(EColor) (kGreen+1),
+  //kMagenta,(EColor) (kMagenta+1),(EColor) (kMagenta+2),
   kTeal,(EColor) (kTeal+1),
   kOrange,(EColor) (kOrange+1),
-  kMagenta,(EColor) (kMagenta+1),(EColor) (kViolet),(EColor) (kYellow),(EColor) (kGray)};
+  kBlue,(EColor) (kBlue+1),(EColor) (kViolet),(EColor) (kYellow),(EColor) (kGray)};
  
  ///==== DATA ====
  TFile* fileInDATA = new TFile(inputFileDATA.c_str(),"READ");
@@ -261,36 +368,70 @@ int main(int argc, char** argv){
   HistoDATA->GetXaxis()->SetTitle(variable.c_str());
   leg->AddEntry(HistoDATA,HistoDATA->GetTitle(),"p");
   legDown->AddEntry(HistoDATA,HistoDATA->GetTitle(),"p");
-
+   
+  int numEntriesData = HistoDATA->GetEffectiveEntries();
+  std::cerr << " numEntriesData = " << numEntriesData << std::endl;
+  
   TH1F* HistoMC[nMC];
   TTree* MyTreeMC[nMC];
   THStack* hsMC = new THStack("hsMC","hsMC");
  
   double MC_Expected = 0;
- 
-  for (int iMC = 0; iMC < nMC; iMC++) {
- // for (int iMC = nMC-1; iMC >= 0; iMC--) {
-  MyTreeMC[iMC] = (TTree*) fileInMC[iMC]->Get(treeNameMC.c_str());
-  MyTreeMC[iMC]->SetBranchAddress("initialNumber",&initialNumber);
-  MyTreeMC[iMC]->GetEntry(0);
-  xSecAndEfficiency.at(iMC) = xSecAndEfficiency.at(iMC) / initialNumber; ///==== normalize to initial number of events
-  HistoMC[iMC] = new TH1F(inputSampleMC.at(iMC).c_str(),inputSampleMC.at(iMC).c_str(),bin,min,max);
-  TString Draw = Form("%s >>%s",variable.c_str(),inputSampleMC.at(iMC).c_str());
-  MyTreeMC[iMC]->Draw(Draw.Data(),AdditionalCut.Data());
-  std::cout << ">>>>>> " << inputSampleMC.at(iMC) << " : " << xSecAndEfficiency.at(iMC) << " : " << luminosity << " : " << HistoMC[iMC]->GetEntries() << " = " << luminosity * xSecAndEfficiency.at(iMC) * HistoMC[iMC]->GetEntries() << std::endl;
-  std::cout << "    >> " << Draw.Data() << std::endl;
-  MC_Expected += luminosity * xSecAndEfficiency.at(iMC) * HistoMC[iMC]->GetEntries();
-  HistoMC[iMC]->Scale(luminosity * xSecAndEfficiency.at(iMC)); // / HistoMC[iMC]->GetEntries());
-  SetColorAndStyleHisto(*(HistoMC[iMC]),vColor[iMC]);
-  HistoMC[iMC]->SetAxisRange(0,HistoDATA->GetMaximum() * 2.5,"Y");
-  HistoMC[iMC]->GetXaxis()->SetTitle(variable.c_str());
-  hsMC->Add(HistoMC[iMC]);
-  if (iMC == 0) hsMC->Add(HistoMC[iMC]);
-  leg->AddEntry(HistoMC[iMC],HistoMC[iMC]->GetTitle(),"f");
-  legDown->AddEntry(HistoMC[iMC],HistoMC[iMC]->GetTitle(),"f");
- }
+  double MC_Expected_effective = 0;
   
-
+  for (int iMC = 0; iMC < nMC; iMC++) {
+   // for (int iMC = nMC-1; iMC >= 0; iMC--) {
+    MyTreeMC[iMC] = (TTree*) fileInMC[iMC]->Get(treeNameMC.c_str());
+    MyTreeMC[iMC]->SetBranchAddress("initialNumber",&initialNumber);
+    MyTreeMC[iMC]->GetEntry(0);
+    xSecAndEfficiency.at(iMC) = xSecAndEfficiency.at(iMC) / initialNumber; ///==== normalize to initial number of events
+    HistoMC[iMC] = new TH1F(inputSampleMC.at(iMC).c_str(),inputSampleMC.at(iMC).c_str(),bin,min,max);
+    TString Draw = Form("%s >>%s",variable.c_str(),inputSampleMC.at(iMC).c_str());
+    MyTreeMC[iMC]->Draw(Draw.Data(),AdditionalCut.Data());
+    std::cout << ">>>>>> " << inputSampleMC.at(iMC) << " : " << xSecAndEfficiency.at(iMC) << " : " << luminosity << " : " << HistoMC[iMC]->GetEntries() << " = " << luminosity * xSecAndEfficiency.at(iMC) * HistoMC[iMC]->GetEntries() << std::endl;
+    std::cout << "    >> " << Draw.Data() << std::endl;
+    MC_Expected += luminosity * xSecAndEfficiency.at(iMC) * HistoMC[iMC]->GetEntries();
+    MC_Expected_effective += luminosity * xSecAndEfficiency.at(iMC) * HistoMC[iMC]->GetEffectiveEntries();
+    HistoMC[iMC]->Scale(luminosity * xSecAndEfficiency.at(iMC));
+   }
+  
+  
+  ///==== join sample ====
+   std::vector < int > used;
+   for (int iMC = 0; iMC < nMC; iMC++) { 
+    used.push_back(0);
+   }
+   
+   for (int iMC = 0; iMC < nMC; iMC++) {
+    if (used.at(iMC) != 1){
+     for (int iMCJoin = 0; iMCJoin < nMC; iMCJoin++) {
+      if ((iMC != iMCJoin) && (join.at(iMC) == join.at(iMCJoin))) {
+       HistoMC[iMC]->Add(HistoMC[iMCJoin]);
+       used.at(iMCJoin) = 1;
+       std::cout << " used iMC = " << iMC << " : iMCJoin " << iMCJoin << std::endl;
+      }
+     }
+    }
+   }
+   ///==== end sample ==== 
+   
+   
+   for (int iMC = 0; iMC < nMC; iMC++) {
+    if (Normalize == 1) {
+     HistoMC[iMC]->Scale(numEntriesData/MC_Expected_effective);
+     std::cout << " DATA: MC = " << numEntriesData << " : " << MC_Expected_effective << std::endl;
+    }
+    SetColorAndStyleHisto(*(HistoMC[iMC]),vColor[iMC]);
+    HistoMC[iMC]->SetAxisRange(0,HistoDATA->GetMaximum() * 2.5,"Y");
+    HistoMC[iMC]->GetXaxis()->SetTitle(variable.c_str());
+    if (used.at(iMC) != 1) {
+     hsMC->Add(HistoMC[iMC]);
+     leg->AddEntry(HistoMC[iMC],nameJoin.at(iMC).c_str(),"f");
+     legDown->AddEntry(HistoMC[iMC],nameJoin.at(iMC).c_str(),"f");
+    }
+   }
+   
+   
  ///----------------------
  ///---- Plot results ----
  ///----------------------
@@ -300,11 +441,11 @@ int main(int argc, char** argv){
   std::cerr << " HistoDATA->GetEntries() = " << HistoDATA->GetEntries() << std::endl;
   outFile->cd();
   TCanvas cResultDistro("cResultDistro","cResultDistro",800,800);
-  HistoDATA->SetAxisRange(0.01,HistoDATA->GetMaximum() * 2.0,"Y");
-  HistoDATA->DrawClone("E1");
+  HistoDATA->SetAxisRange(0.01,HistoDATA->GetMaximum() * 2.5,"Y");
+  HistoDATA->DrawClone("A");
   DrawStack(hsMC);
  //  hsMC->DrawClone("same");
- //  hsMC->DrawClone("BARsame");
+//   hsMC->DrawClone("BARsame");
   HistoDATA->DrawClone("E1same");
 
  // HistoMC[0]->Draw("BAR");
@@ -312,7 +453,7 @@ int main(int argc, char** argv){
   // std::cerr << " HistoMC[0]->GetEntries() = " << HistoMC[0]->GetEntries() << std::endl;
   leg->Draw();
   gPad->SetGrid();
-  TString tLumiName = Form("#int L = %.4f pb^{-1}",luminosity);
+  TString tLumiName = Form("#int L = %.2f pb^{-1}",luminosity);
   TLatex tLumi(1.5 * HistoDATA->GetMean(1),0.1 * HistoDATA->GetMaximum(),tLumiName.Data());
   tLumi.DrawClone();
 
@@ -320,22 +461,28 @@ int main(int argc, char** argv){
   TLatex tEle(1.5 * HistoDATA->GetMean(1),0.3 * HistoDATA->GetMaximum(),tEleName.Data());
   tEle.DrawClone();
  
-  TString nameImage = Form("%s_%d.png",variableNameFile.c_str(),EEEB);
+  TString nameImage = Form("%s_%d_%d.png",variableNameFile.c_str(),EEEB,Normalize);
   cResultDistro.SaveAs(nameImage.Data());
 
-  TString nameImageRoot = Form("%s_%d.root",variableNameFile.c_str(),EEEB);
-  cResultDistro.SaveAs(nameImageRoot.Data());
+  TString nameImageRoot = Form("%s_%d_%d.root",variableNameFile.c_str(),EEEB,Normalize);
+  TFile outFile(nameImageRoot,"RECREATE");
+  for (int iMC = 0; iMC < nMC; iMC++) {
+   HistoMC[iMC]->Write();
+  }
+  hsMC->Write();
+  HistoDATA->Write();
+  cResultDistro.Write();
 
   TCanvas cResultDistroLog("cResultDistroLog","cResultDistroLog",800,800);
   HistoDATA->DrawClone("E1");
   DrawStack(hsMC);
  // hsMC->DrawClone("same");
- // hsMC->DrawClone("BARsame");
+//   hsMC->DrawClone("BARsame");
   HistoDATA->DrawClone("E1same");
   legDown->Draw();
   gPad->SetGrid();
   gPad->SetLogy();
-  TString nameImageLog = Form("%s_%d_log.png",variableNameFile.c_str(),EEEB);
+  TString nameImageLog = Form("%s_%d_%d_log.png",variableNameFile.c_str(),EEEB,Normalize);
   tLumi.Draw();
   cResultDistroLog.SaveAs(nameImageLog.Data());
   }
@@ -366,7 +513,8 @@ int main(int argc, char** argv){
   TH2F* HistoMC[nMC];
   TTree* MyTreeMC[nMC];
   TH2F* hsMC = new TH2F("MC","MC",bin,min,max,binY,minY,maxY);
- 
+  TH2F* hsMC_Unscaled = new TH2F("MC_Unscaled","MC_Unscaled",bin,min,max,binY,minY,maxY);
+  
   double MC_Expected = 0;
  
   for (int iMC = 0; iMC < nMC; iMC++) {
@@ -381,6 +529,7 @@ int main(int argc, char** argv){
   std::cout << ">>>>>> " << inputSampleMC.at(iMC) << " : " << xSecAndEfficiency.at(iMC) << " : " << luminosity << " : " << HistoMC[iMC]->GetEntries() << " = " << luminosity * xSecAndEfficiency.at(iMC) * HistoMC[iMC]->GetEntries() << std::endl;
   std::cout << "    >> " << Draw.Data() << std::endl;
   MC_Expected += luminosity * xSecAndEfficiency.at(iMC) * HistoMC[iMC]->GetEntries();
+  hsMC_Unscaled->Add(HistoMC[iMC],1.);
   HistoMC[iMC]->Scale(luminosity * xSecAndEfficiency.at(iMC)); // / HistoMC[iMC]->GetEntries());
   SetColorAndStyleHisto(*(HistoMC[iMC]),vColor[iMC]);
   HistoMC[iMC]->GetXaxis()->SetTitle(variable.c_str()); 
@@ -403,7 +552,7 @@ int main(int argc, char** argv){
    HistoDATA->DrawClone("boxSAME");
   
    gPad->SetGrid();
-   TString tLumiName = Form("#int L = %.4f pb^{-1}",luminosity);
+   TString tLumiName = Form("#int L = %.2f pb^{-1}",luminosity);
    TLatex tLumi(1.5 * (max+min)/2. ,0.2 * (maxY+minY)/2.,tLumiName.Data());
    tLumi.DrawClone();
   
@@ -426,6 +575,37 @@ int main(int argc, char** argv){
    TString nameImageLog = Form("%s_%s_%d_log.png",variableNameFile.c_str(),variableNameFileY.c_str(),EEEB);
    tLumi.Draw();
    cResultDistroLog.SaveAs(nameImageLog.Data());
+   
+   
+   TCanvas cResultDistroSlices("cResultDistroSlices","cResultDistroSlices",800,800);  
+   TH1D* hsMCProfile = smartGausProfileX_sqrtN (hsMC_Unscaled,3);
+   TH1D* hsDATAProfile = smartGausProfileX_sqrtN (HistoDATA,3);
+
+   hsMCProfile->SetTitle("MC");
+   hsDATAProfile->SetTitle("data");
+   
+   SetColorAndStyleHisto(*hsMCProfile,kRed);
+   SetColorAndStyleHisto(*hsDATAProfile,kBlue);
+
+//    hsMC->DrawClone("COLZ");
+
+   TLegend* legProfile = new TLegend(0.65,0.2,0.85,0.35);
+   legProfile->SetFillColor(0);
+   legProfile->AddEntry(hsMCProfile,hsMCProfile->GetTitle(),"p");
+   legProfile->AddEntry(hsDATAProfile,hsDATAProfile->GetTitle(),"p");
+   
+   
+   hsMCProfile->GetXaxis()->SetTitle(variable.c_str()); 
+   hsMCProfile->GetYaxis()->SetTitle(variableY.c_str());
+   hsMCProfile->SetAxisRange(minY,maxY,"Y");
+   
+   hsMCProfile->Draw("E");
+   hsDATAProfile->Draw("Esame");
+   legProfile->Draw();
+   gPad->SetGrid();
+   TString nameImageProfile = Form("%s_%s_%d_profile.png",variableNameFile.c_str(),variableNameFileY.c_str(),EEEB);
+   cResultDistroSlices.SaveAs(nameImageProfile.Data());
+   
    }
 }
 
