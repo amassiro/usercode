@@ -40,7 +40,7 @@
      r00t Correlation.cxx\(\"TTbarJets_madgraph\"\)
      r00t Correlation.cxx\(\"TTbarJets_madgraph\",\"pT_RECO_l1\>20\&\&pT_RECO_l2\>10\&\&pT_RECO_l1\<90\&\&pT_RECO_l2\<70\&\&Z_03_20==0\&\&Deta_RECO_q12\>3.5\&\&Mjj\>450\&\&Mll\<70\&\&Mll\>10\"\)
      
-     B_1) DatAdriven method using MC information
+     B_1) DataDriven method using MC information
      ~/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/Spring10/    r00t DD_1.cxx\(\"NAME_SAMPLE\",CUT\)
      e.g. r00t DD_1.cxx\(\"H160_2W_2lnu_wbf_7TeV_ee\",0.4\)
      r00t DD_1.cxx\(\"TTbarJets_madgraph\",0.4\)

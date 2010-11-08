@@ -103,7 +103,7 @@
  char* xsection[1000];
  
  int numberOfSamples = 0;
- std::ifstream inFile("samples.txt");
+ std::ifstream inFile("samples_training.txt");
  std::string buffer;
  
  while(!inFile.eof()){

@@ -179,6 +179,24 @@ int main(int argc, char** argv)
  
  TTree outTreeJetLep("outTreeJetLep","outTreeJetLep");
  
+ double bTag_trackCountingHighPurBJetTags_q1;
+ double bTag_trackCountingHighEffBJetTags_q1;
+ double bTag_combinedSecondaryVertexBJetTags_q1;
+ double bTag_combinedSecondaryVertexMVABJetTags_q1;
+ 
+ double bTag_trackCountingHighPurBJetTags_q2;
+ double bTag_trackCountingHighEffBJetTags_q2;
+ double bTag_combinedSecondaryVertexBJetTags_q2;
+ double bTag_combinedSecondaryVertexMVABJetTags_q2; 
+ 
+ double tkIso_l1;
+ double emIso_l1;
+ double hadIso_l1;
+
+ double tkIso_l2;
+ double emIso_l2;
+ double hadIso_l2;
+  
  double pT_RECO_q1;
  double pT_RECO_q2;
  double phi_RECO_q1;
@@ -217,6 +235,26 @@ int main(int argc, char** argv)
  
  int AnalysisStep; 
   
+
+ outTreeJetLep.Branch("bTag_trackCountingHighPurBJetTags_q1",&bTag_trackCountingHighPurBJetTags_q1,"bTag_trackCountingHighPurBJetTags_q1/D");
+ outTreeJetLep.Branch("bTag_trackCountingHighEffBJetTags_q1",&bTag_trackCountingHighEffBJetTags_q1,"bTag_trackCountingHighEffBJetTags_q1/D");
+ outTreeJetLep.Branch("bTag_combinedSecondaryVertexBJetTags_q1",&bTag_combinedSecondaryVertexBJetTags_q1,"bTag_combinedSecondaryVertexBJetTags_q1/D");
+ outTreeJetLep.Branch("bTag_combinedSecondaryVertexMVABJetTags_q1",&bTag_combinedSecondaryVertexMVABJetTags_q1,"bTag_combinedSecondaryVertexMVABJetTags_q1/D");
+ 
+ outTreeJetLep.Branch("bTag_trackCountingHighPurBJetTags_q2",&bTag_trackCountingHighPurBJetTags_q2,"bTag_trackCountingHighPurBJetTags_q2/D");
+ outTreeJetLep.Branch("bTag_trackCountingHighEffBJetTags_q2",&bTag_trackCountingHighEffBJetTags_q2,"bTag_trackCountingHighEffBJetTags_q2/D");
+ outTreeJetLep.Branch("bTag_combinedSecondaryVertexBJetTags_q2",&bTag_combinedSecondaryVertexBJetTags_q2,"bTag_combinedSecondaryVertexBJetTags_q2/D");
+ outTreeJetLep.Branch("bTag_combinedSecondaryVertexMVABJetTags_q2",&bTag_combinedSecondaryVertexMVABJetTags_q2,"bTag_combinedSecondaryVertexMVABJetTags_q2/D");
+ 
+ 
+ outTreeJetLep.Branch("tkIso_l1",&tkIso_l1,"tkIso_l1/D");
+ outTreeJetLep.Branch("emIso_l1",&emIso_l1,"emIso_l1/D");
+ outTreeJetLep.Branch("hadIso_l1",&hadIso_l1,"hadIso_l1/D");
+ outTreeJetLep.Branch("tkIso_l2",&tkIso_l2,"tkIso_l2/D");
+ outTreeJetLep.Branch("emIso_l2",&emIso_l2,"emIso_l2/D");
+ outTreeJetLep.Branch("hadIso_l2",&hadIso_l2,"hadIso_l2/D");
+ 
+ 
  outTreeJetLep.Branch("pT_RECO_q1",&pT_RECO_q1,"pT_RECO_q1/D");
  outTreeJetLep.Branch("pT_RECO_q2",&pT_RECO_q2,"pT_RECO_q2/D");
  outTreeJetLep.Branch("phi_RECO_q1",&phi_RECO_q1,"phi_RECO_q1/D");
@@ -423,6 +461,7 @@ int main(int argc, char** argv)
    ///   an electron (the ones defined above) in cone=0.1
    
    
+   
    ///   Preselections
    
    ///   At least 2 leptons
@@ -457,8 +496,13 @@ int main(int argc, char** argv)
     bool skipEle = false;
     if (reader.Get4V("electrons")->at(iEle).pt() < 10.0) skipEle = true;
     if (fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 2.5) skipEle = true;
-    if( (reader.GetFloat("electrons_tkIso")->at(iEle)) / reader.Get4V("electrons")->at(iEle).pt() > 0.5 ) skipEle = true;
-    if( (reader.GetFloat("electrons_IdRobustLoose")->at(iEle)) < 1. )  skipEle = true;    
+    if ( (reader.GetFloat("electrons_tkIso")->at(iEle)) / reader.Get4V("electrons")->at(iEle).pt() > 0.5 ) skipEle = true;
+    if ( (reader.GetFloat("electrons_IdRobustLoose")->at(iEle)) < 1. )  skipEle = true;    
+    
+    if ( (reader.GetFloat("electrons_tkIso")->at(iEle)) / reader.Get4V("electrons")->at(iEle).pt() > 0.1 ) skipEle = true;
+    if ( (reader.GetFloat("electrons_emIso03")->at(iEle)) / reader.Get4V("electrons")->at(iEle).pt() > 0.1 ) skipEle = true;
+    if ( (reader.GetFloat("electrons_hadIso03_1")->at(iEle) + reader.GetFloat("electrons_hadIso03_2")->at(iEle)) / reader.Get4V("electrons")->at(iEle).pt() > 0.1 ) skipEle = true;
+    
     if (skipEle) {
      whitelistEle.push_back(0); ///---- reject
      blacklistEle.push_back(iEle); ///---- reject ///== black list is in a different format
@@ -488,8 +532,12 @@ int main(int argc, char** argv)
     if (fabs(reader.Get4V("muons")->at(iMu).Eta()) > 2.5) skipMu = true;
 //     std::cerr << "mu = " << nMus << " " << reader.GetFloat("muons_tkIsoR03")->at(iMu) << std::endl;
     
-    if( (reader.GetFloat("muons_tkIsoR03")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > 0.5 ) skipMu = true;
+    if ( (reader.GetFloat("muons_tkIsoR03")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > 0.5 ) skipMu = true;
 //     std::cerr << "mu = " << nMus << std::endl;
+    
+    if ( (reader.GetFloat("muons_tkIsoR03")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > 0.1 ) skipMu = true;
+    if ( (reader.GetFloat("muons_emIsoR03")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > 0.1 ) skipMu = true;
+    if ( (reader.GetFloat("muons_hadIsoR03")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > 0.1 ) skipMu = true;
     
     if( (reader.GetInt("muons_goodMuon")->at(iMu)) < 1. )  skipMu = true;    
     if (skipMu) {
@@ -622,6 +670,17 @@ int main(int argc, char** argv)
   
   MET = reader.Get4V("met")->at(0).Et();
   
+  
+  bTag_trackCountingHighPurBJetTags_q1 = reader.GetFloat("jets_trackCountingHighPurBJetTags")->at(q1);
+  bTag_trackCountingHighEffBJetTags_q1 = reader.GetFloat("jets_trackCountingHighEffBJetTags")->at(q1);
+  bTag_combinedSecondaryVertexBJetTags_q1 = reader.GetFloat("jets_combinedSecondaryVertexBJetTags")->at(q1);
+  bTag_combinedSecondaryVertexMVABJetTags_q1 = reader.GetFloat("jets_combinedSecondaryVertexMVABJetTags")->at(q1); 
+  
+  bTag_trackCountingHighPurBJetTags_q2 = reader.GetFloat("jets_trackCountingHighPurBJetTags")->at(q2);
+  bTag_trackCountingHighEffBJetTags_q2 = reader.GetFloat("jets_trackCountingHighEffBJetTags")->at(q2);
+  bTag_combinedSecondaryVertexBJetTags_q2 = reader.GetFloat("jets_combinedSecondaryVertexBJetTags")->at(q2);
+  bTag_combinedSecondaryVertexMVABJetTags_q2 = reader.GetFloat("jets_combinedSecondaryVertexMVABJetTags")->at(q2); 
+  
   pT_RECO_q1 = jets->at(q1).Pt();
   pT_RECO_q2 = jets->at(q2).Pt();
   phi_RECO_q1 = jets->at(q1).Phi();
@@ -702,7 +761,7 @@ int main(int argc, char** argv)
   }  
   
   if (pT_RECO_q1 < 30.) continue;
-  if (pT_RECO_q2 < 20.) continue;
+  if (pT_RECO_q2 < 30.) continue;
   if (Mjj < 200.) continue;
   if (Deta_RECO_q12 < 1.) continue;
   if (eta_RECO_q1_eta_RECO_q2 > 0.) continue;
@@ -734,6 +793,8 @@ int main(int argc, char** argv)
   std::vector<int> leptonFlavours_pdgId;    
   std::vector<float> leptons_charge;
   std::vector<float> leptons_tkIso;
+  std::vector<float> leptons_emIso;
+  std::vector<float> leptons_hadIso;
   std::vector<float> leptons_lipSig;
   std::vector<float> leptons_tipSig;
   std::vector<float> leptons_3DipSig;
@@ -742,21 +803,15 @@ int main(int argc, char** argv)
   
   for(unsigned int iEle = 0; iEle < nEles; iEle++){
    if (whitelistEle.at(iEle) == 1){
-//     std::cerr << "here is ok 3.1 iEle = " << iEle <<  std::endl;
-    //    electrons.push_back( reader.Get4V("electrons")->at(iEle) );
     leptons.push_back( reader.Get4V("electrons")->at(iEle) );  
-//     std::cerr << "here is ok 3.1" <<  std::endl;
     leptonFlavours.push_back("electron");
-//     std::cerr << "here is ok 3.2" <<  std::endl;
     leptonFlavours_pdgId.push_back(11);
     leptons_charge.push_back(reader.GetFloat("electrons_charge")->at(iEle));
-//     std::cerr << "here is ok 3.3" <<  std::endl;
     leptons_tkIso.push_back(reader.GetFloat("electrons_tkIso")->at(iEle));
-//     std::cerr << "here is ok 3.4" <<  std::endl;
+    leptons_emIso.push_back(reader.GetFloat("electrons_emIso03")->at(iEle));
+    leptons_hadIso.push_back(reader.GetFloat("electrons_hadIso03_1")->at(iEle)+reader.GetFloat("electrons_hadIso03_2")->at(iEle));
     leptons_lipSig.push_back(reader.GetFloat("electrons_lipSignificance")->at(iEle));
-//     std::cerr << "here is ok 3.5" <<  std::endl;
     leptons_tipSig.push_back(reader.GetFloat("electrons_tipSignificance")->at(iEle));
-//     std::cerr << "here is ok 3.6" <<  std::endl;
     leptons_3DipSig.push_back(reader.GetFloat("electrons_3DipSignificance")->at(iEle));
    }
   }
@@ -772,6 +827,8 @@ int main(int argc, char** argv)
     leptonFlavours_pdgId.push_back(13);
     leptons_charge.push_back(reader.GetFloat("muons_charge")->at(iMu));
     leptons_tkIso.push_back(reader.GetFloat("muons_tkIsoR03")->at(iMu));
+    leptons_emIso.push_back(reader.GetFloat("muons_emIsoR03")->at(iMu));
+    leptons_hadIso.push_back(reader.GetFloat("muons_hadIsoR03")->at(iMu));
     leptons_lipSig.push_back(reader.GetFloat("muons_lipSignificance")->at(iMu));
     leptons_tipSig.push_back(reader.GetFloat("muons_tipSignificance")->at(iMu));
     leptons_3DipSig.push_back(reader.GetFloat("muons_3DipSignificance")->at(iMu));
@@ -807,6 +864,16 @@ int main(int argc, char** argv)
   Dphi_RECO_l12 = deltaPhi(leptons.at(l1).Phi(),leptons.at(l2).Phi());
   Mll = (leptons.at(l1) + leptons.at(l2)).M();
   charge_RECO_l1_charge_RECO_l2 = leptons_charge.at(l1) * leptons_charge.at(l2);  
+  
+  
+  tkIso_l1 = leptons_tkIso.at(l1);
+  emIso_l1 = leptons_emIso.at(l1);
+  hadIso_l1 = leptons_hadIso.at(l1);
+
+  tkIso_l2 = leptons_tkIso.at(l2);
+  emIso_l2 = leptons_emIso.at(l2);
+  hadIso_l2 = leptons_hadIso.at(l2);
+  
   
   
   

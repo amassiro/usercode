@@ -44,40 +44,40 @@ void DD_1( TString nameSampleIN = "" , double MinCutValue){
  
  
  char NameVar[1000] = {
-  "Likelihood_Lep"
-/*  "pT_RECO_q1"
-  "pT_RECO_q2",
-  "eta_RECO_q1",
-  "eta_RECO_q2",
-  "eta_RECO_q1_eta_RECO_q2",
-  "Deta_RECO_q12",
-  "Mjj",
-  "JV_20",
-  "JV_30",
-  "CJV_20",
-  "CJV_30",
-  "AnalysisStep", 
-  "MLP_Jet",
-  "BDT_Jet",
-  "Fisher_Jet",
-  "Likelihood_Jet",
-  "LikelihoodD_Jet", 
-  "pdgId_RECO_l1",
-  "pdgId_RECO_l2",
-  "pT_RECO_l1",
-  "pT_RECO_l2",
-  "eta_RECO_l1",
-  "eta_RECO_l2",
-  "eta_RECO_l1_eta_RECO_l2",
-  "Deta_RECO_l12",
-  "Dphi_RECO_l12",
+//   "Likelihood_Lep"
+//  "pT_RECO_q1"
+//   "pT_RECO_q2",
+//   "eta_RECO_q1",
+//   "eta_RECO_q2",
+//   "eta_RECO_q1_eta_RECO_q2",
+//   "Deta_RECO_q12",
+//   "Mjj",
+//   "JV_20",
+//   "JV_30",
+//   "CJV_20",
+//   "CJV_30",
+//   "AnalysisStep", 
+//   "MLP_Jet",
+//   "BDT_Jet",
+//   "Fisher_Jet",
+//   "Likelihood_Jet",
+//   "LikelihoodD_Jet", 
+//   "pdgId_RECO_l1",
+//   "pdgId_RECO_l2",
+//   "pT_RECO_l1",
+//   "pT_RECO_l2",
+//   "eta_RECO_l1",
+//   "eta_RECO_l2",
+//   "eta_RECO_l1_eta_RECO_l2",
+//   "Deta_RECO_l12",
+//   "Dphi_RECO_l12",
   "Mll",
-  "charge_RECO_l1_charge_RECO_l2",
-  "MLP_Lep",
-  "BDT_Lep",
-  "Fisher_Lep",
-  "Likelihood_Lep",
-  "LikelihoodD_Lep"*/
+//   "charge_RECO_l1_charge_RECO_l2",
+//   "MLP_Lep",
+//   "BDT_Lep",
+//   "Fisher_Lep",
+//   "Likelihood_Lep",
+//   "LikelihoodD_Lep"
  };
  
  
@@ -90,7 +90,7 @@ void DD_1( TString nameSampleIN = "" , double MinCutValue){
  char *nameSamplePrefix[1000];
  char *nameSampleTree[1000];
  double xsection[1000];
- std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/Spring10/samples.txt");
+ std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/Spring10/samples_draw.txt");
  std::string buffer;
  
  int totalSamples = 0;
@@ -124,7 +124,7 @@ void DD_1( TString nameSampleIN = "" , double MinCutValue){
     std::cout << xsection[totalSamples] << " ";
     
     char nameFile[1000];
-    sprintf(nameFile,"/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/output_Spring10/out_FinalSelection_%s.root",nameSample[totalSamples]);  
+    sprintf(nameFile,"/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/output_Spring10/out_NewMET_FinalSelection_%s.root",nameSample[totalSamples]);  
     TFile* f = new TFile(nameFile, "READ");
     
     treeEffVect[totalSamples] = (TTree) f->Get("outTreeSelections");
