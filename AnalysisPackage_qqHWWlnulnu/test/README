@@ -63,6 +63,13 @@
      to test:
       r00t test/TMVAGui.C\(\"output/Selector_Leptons_trained.root\"\)
       
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+r00t test/Spring10/cfgCreator_FinalSelector.cxx
+r00t test/Spring10/cfgLauncher_FinalSelection.cxx
+   the second instruction makes standard selections and add MVAs for lepton and jet
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 ///==== final selection ====
 
 9) Final Selection

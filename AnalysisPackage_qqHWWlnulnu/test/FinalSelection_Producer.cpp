@@ -210,6 +210,7 @@ int main(int argc, char** argv)
  int NBjets_trackCountingHighEffBJetTags;
  int NBjets_combinedSecondaryVertexBJetTags;
  int NBjets_combinedSecondaryVertexMVABJetTags;
+ int NBjets_simpleSecondaryVertexBJetTags;
  int JV_20;
  int JV_30;
  int CJV_20;
@@ -294,6 +295,8 @@ int main(int argc, char** argv)
  outTreeJetLep.Branch("NBjets_trackCountingHighEffBJetTags",&NBjets_trackCountingHighEffBJetTags,"NBjets_trackCountingHighEffBJetTags/I");
  outTreeJetLep.Branch("NBjets_combinedSecondaryVertexBJetTags",&NBjets_combinedSecondaryVertexBJetTags,"NBjets_combinedSecondaryVertexBJetTags/I");
  outTreeJetLep.Branch("NBjets_combinedSecondaryVertexMVABJetTags",&NBjets_combinedSecondaryVertexMVABJetTags,"NBjets_combinedSecondaryVertexMVABJetTags/I");
+ 
+ outTreeJetLep.Branch("NBjets_simpleSecondaryVertexBJetTags",&NBjets_simpleSecondaryVertexBJetTags,"NBjets_simpleSecondaryVertexBJetTags/I");
  
 
   
@@ -722,6 +725,8 @@ int main(int argc, char** argv)
   NBjets_trackCountingHighEffBJetTags = 0;
   NBjets_combinedSecondaryVertexBJetTags = 0;
   NBjets_combinedSecondaryVertexMVABJetTags = 0;
+  NBjets_simpleSecondaryVertexBJetTags = 0;
+  
   for (int iJet = 0; iJet < nJets; iJet++){
    bool skipJet = false;
    for(unsigned int kk = 0; kk < blacklistJet_forBtag.size(); ++kk) {
@@ -733,7 +738,9 @@ int main(int argc, char** argv)
    if (reader.GetFloat("jets_trackCountingHighEffBJetTags")->at(iJet) > -50.0) NBjets_trackCountingHighEffBJetTags++;
    if (reader.GetFloat("jets_combinedSecondaryVertexBJetTags")->at(iJet) > -5.0) NBjets_combinedSecondaryVertexBJetTags++;
    if (reader.GetFloat("jets_combinedSecondaryVertexMVABJetTags")->at(iJet) > -5.0) NBjets_combinedSecondaryVertexMVABJetTags++;
+   if (reader.GetFloat("jets_simpleSecondaryVertexBJetTags")->at(iJet) > 2.5) NBjets_simpleSecondaryVertexBJetTags++;
   }
+  
   
   AnalysisStep = step;
   
@@ -751,35 +758,11 @@ int main(int argc, char** argv)
   stdHistograms -> Fill2(jets->at(q1),jets->at(q2), "JJ", step);
   
   
-  ///*********************************
-  ///**** STEP 4 - Jet Selections ****
-  ///************* Loose selections of tag jets
-  step = 4;
-  if (step > nStepToDo) {
-   outTreeJetLep.Fill();
-   continue;
-  }  
-  
-  if (pT_RECO_q1 < 30.) continue;
-  if (pT_RECO_q2 < 30.) continue;
-  if (Mjj < 200.) continue;
-  if (Deta_RECO_q12 < 1.) continue;
-  if (eta_RECO_q1_eta_RECO_q2 > 0.) continue;
-  
-  ///==== filling ====
-  stepName[step] = "Jet Selections";
-  stepEvents[step] += 1;
-  
-  stdHistograms -> Fill1("muons","muons",step,&whitelistMu);
-  stdHistograms -> Fill1("electrons","electrons",step,&whitelistEle);
-  stdHistograms -> Fill1("jets","jets",step,&whitelistJet);
-  stdHistograms -> Fill1("met","met",step,0); 
-  stdHistograms -> Fill2(jets->at(q1),jets->at(q2), "JJ", step);
-  
+ 
   
   ///********************************
-  ///**** STEP 5 - Lepton ID ****
-  ///************* Identification of the two 
+  ///**** STEP 4 - Lepton ID ****
+  ///************* Identification of the two leptons
   step = 5;
   if (step > nStepToDo) {
    outTreeJetLep.Fill();
@@ -899,7 +882,33 @@ int main(int argc, char** argv)
   stepEvents[step] += 1;
   
   
- 
+  ///*********************************
+  ///**** STEP 5 - Jet Selections ****
+  ///************* Loose selections of tag jets
+  step = 4;
+  if (step > nStepToDo) {
+   outTreeJetLep.Fill();
+   continue;
+  }  
+  
+  if (pT_RECO_q1 < 30.) continue;
+  if (pT_RECO_q2 < 30.) continue;
+  if (Mjj < 200.) continue;
+  if (Deta_RECO_q12 < 1.) continue;
+  if (eta_RECO_q1_eta_RECO_q2 > 0.) continue;
+  
+  ///==== filling ====
+  stepName[step] = "Jet Selections";
+  stepEvents[step] += 1;
+  
+  stdHistograms -> Fill1("muons","muons",step,&whitelistMu);
+  stdHistograms -> Fill1("electrons","electrons",step,&whitelistEle);
+  stdHistograms -> Fill1("jets","jets",step,&whitelistJet);
+  stdHistograms -> Fill1("met","met",step,0); 
+  stdHistograms -> Fill2(jets->at(q1),jets->at(q2), "JJ", step);
+  
+  
+  
  
   ///************************************
   ///**** STEP 6 - Final Production *****
