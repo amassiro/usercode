@@ -76,6 +76,16 @@ void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
   numSample++;
  }
  
+ 
+ 
+ ///==================
+ TCanvas* cCompareSum = new TCanvas("cCompareSum","cCompareSum",800,800);
+ hs->Draw();
+ gPad->SetLogy();
+ gPad->SetGrid();
+ gPad->BuildLegend();
+ ///==================
+ 
  TCanvas* cHistos = new TCanvas("cHistos","cHistos",600,600);
  cHistos->Divide(sqrt(numSample)+1,sqrt(numSample)+1);
  for (int iSample = 0; iSample < numSample; iSample++){

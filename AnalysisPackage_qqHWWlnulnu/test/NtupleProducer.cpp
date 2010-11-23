@@ -363,7 +363,9 @@ int main(int argc, char** argv)
   ///*******************************
   ///**** STEP 1 - Jet cleaning ****
   ///************* it's performed another time here to make sure that the cleaning worked well
-  ///************* possible problems with electron ID
+  ///************* Jet - electrons
+  ///************* Jet - muons
+  
     
   step = 1;
   if (step > nStepToDo) {
@@ -371,17 +373,44 @@ int main(int argc, char** argv)
    continue;
   }  
     
-  std::vector<ROOT::Math::XYZTVector> electrons_jetCleaning;   
+  std::vector<ROOT::Math::XYZTVector> leptons_jetCleaning;   
   // build the collection of electros for jet cleaning
+  
+  ///==== CLEANING WITH ELECTRONS ====
   for(unsigned int eleIt = 0; eleIt < (reader.Get4V("electrons")->size()); ++eleIt)
   {
    if( reader.Get4V("electrons")->at(eleIt).pt() < 5. ) continue;
-   if( (reader.GetFloat("electrons_tkIsoR03")->at(eleIt)) / reader.Get4V("electrons")->at(eleIt).pt() > 0.5 ) continue;
+   if ((reader.GetFloat("electrons_tkIsoR03")->at(eleIt) + reader.GetFloat("electrons_emIsoR03")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth1")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(eleIt))/reader.Get4V("electrons")->at(eleIt).pt() > 0.07) continue;
+   if ((reader.GetFloat("electrons_tkIsoR03")->at(eleIt))/reader.Get4V("electrons")->at(eleIt).pt() > 0.09) continue;
+   if ((reader.GetFloat("electrons_emIsoR03")->at(eleIt))/reader.Get4V("electrons")->at(eleIt).pt() > 0.09) continue;
+   if ((reader.GetFloat("electrons_hadIsoR03_depth1")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(eleIt))/reader.Get4V("electrons")->at(eleIt).pt() > 0.09) continue;   
+   if (reader.GetFloat("electrons_hOverE")->at(eleIt) > 0.040) continue;
+   if (reader.GetFloat("electrons_sigmaIetaIeta")->at(eleIt) > 0.040) continue;
+
 //    if( (reader.GetFloat("electrons_IdRobustLoose")->at(eleIt)) < 1. ) continue; 
-   electrons_jetCleaning.push_back( reader.Get4V("electrons")->at(eleIt) );
+   leptons_jetCleaning.push_back( reader.Get4V("electrons")->at(eleIt) );
   }
   
   
+  
+  
+  
+  ///==== CLEANING WITH MUONS ====
+  for (int iMu = 0; iMu < reader.Get4V("muons")->size(); iMu++){    
+   bool skipMu = false;
+   if (reader.Get4V("muons")->at(iMu).pt() < 5.0) skipMu = true;
+   if (fabs(reader.Get4V("muons")->at(iMu).Eta()) > 2.5) skipMu = true;
+   if ( (reader.GetFloat("muons_tkIsoR03")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > 0.5 ) skipMu = true;
+   if ( (reader.GetFloat("muons_tkIsoR03")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > 0.1 ) skipMu = true;
+   if ( (reader.GetFloat("muons_emIsoR03")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > 0.1 ) skipMu = true;
+   if ( (reader.GetFloat("muons_hadIsoR03")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > 0.1 ) skipMu = true;
+   if( (reader.GetInt("muons_global")->at(iMu)) < 1. )  skipMu = true;    
+   
+   if (skipMu == false) leptons_jetCleaning.push_back( reader.Get4V("muons")->at(iMu) );
+  }
+  
+  
+  ///==== now clean jet collection ====
   
   int nJets = jets->size();
   std::vector<int> whitelistJet;
@@ -391,9 +420,9 @@ int main(int argc, char** argv)
   for (int iJet = 0; iJet < nJets; iJet++){
    bool skipJet = false;
    if (jets->at(iJet).Et() < 10.0) skipJet = true;
-   for(unsigned int eleIt = 0; eleIt < electrons_jetCleaning.size(); eleIt++) {
-    ROOT::Math::XYZTVector ele = electrons_jetCleaning.at(eleIt);
-    if (ROOT::Math::VectorUtil::DeltaR(jets->at(iJet),ele) < 0.3 ) skipJet = true;
+   for(unsigned int lepIt = 0; lepIt < leptons_jetCleaning.size(); lepIt++) {
+    ROOT::Math::XYZTVector lep = leptons_jetCleaning.at(lepIt);
+    if (ROOT::Math::VectorUtil::DeltaR(jets->at(iJet),lep) < 0.3 ) skipJet = true;
    }
    if (skipJet) {
     whitelistJet.push_back(0); ///---- reject
@@ -480,12 +509,15 @@ int main(int argc, char** argv)
     bool skipEle = false;
     if (reader.Get4V("electrons")->at(iEle).pt() < 10.0) skipEle = true;
     if (fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 2.5) skipEle = true;
-    if ( (reader.GetFloat("electrons_tkIsoR03")->at(iEle)) / reader.Get4V("electrons")->at(iEle).pt() > 0.5 ) skipEle = true;
-//     if ( (reader.GetFloat("electrons_IdRobustLoose")->at(iEle)) < 1. )  skipEle = true;    
     
-    if ( (reader.GetFloat("electrons_tkIsoR03")->at(iEle)) / reader.Get4V("electrons")->at(iEle).pt() > 0.1 ) skipEle = true;
-    if ( (reader.GetFloat("electrons_emIsoR03")->at(iEle)) / reader.Get4V("electrons")->at(iEle).pt() > 0.1 ) skipEle = true;
-    if ( (reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle)) / reader.Get4V("electrons")->at(iEle).pt() > 0.1 ) skipEle = true;
+    
+    if ((reader.GetFloat("electrons_tkIsoR03")->at(iEle) + reader.GetFloat("electrons_emIsoR03")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle))/reader.Get4V("electrons")->at(iEle).pt() > 0.07)  skipEle = true;   
+    if ( (reader.GetFloat("electrons_tkIsoR03")->at(iEle)) / reader.Get4V("electrons")->at(iEle).pt() > 0.07 ) skipEle = true;
+    if ( (reader.GetFloat("electrons_emIsoR03")->at(iEle)) / reader.Get4V("electrons")->at(iEle).pt() > 0.09 ) skipEle = true;
+    if ( (reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle)) / reader.Get4V("electrons")->at(iEle).pt() > 0.09 ) skipEle = true;
+    if (reader.GetFloat("electrons_hOverE")->at(iEle) > 0.040) skipEle = true;
+    if (reader.GetFloat("electrons_sigmaIetaIeta")->at(iEle) > 0.040) skipEle = true;
+    
     
     if (skipEle) {
      whitelistEle.push_back(0); ///---- reject
@@ -542,37 +574,37 @@ int main(int argc, char** argv)
    ///   a lepton(e/mu) with pt>10GeV in cone=0.3
    ///   or
    ///   an electron (the ones defined above) in cone=0.1
-   electrons_jetCleaning.clear();
-   // build the collection of electros for jet cleaning
-   
-//    std::cerr << "ele = " << nEles << std::endl;
-   
-   for(unsigned int iEle = 0; iEle < nEles; ++iEle)
-   {
-    if (whitelistEle.at(iEle) == 0) continue;
-    electrons_jetCleaning.push_back( reader.Get4V("electrons")->at(iEle) );
-   }
-   for (int iJet = 0; iJet < nJets; iJet++){
-    bool skipJet = false;
-    if (whitelistJet.at(iJet) == 0) {
-//      skipJet = true;
-     continue; //---- otherwise blacklistJet.push_back(iJet) and blacklistJet becomes too long
-     //-------------- and then it's faster!
-    }   
-    if (jets->at(iJet).Et() < 30.0) skipJet = true;
-    if (jets->at(iJet).Eta() > 5.0) skipJet = true;
-    for(unsigned int eleIt = 0; eleIt < electrons_jetCleaning.size(); eleIt++) {
-     ROOT::Math::XYZTVector ele = electrons_jetCleaning.at(eleIt);
-     if (ROOT::Math::VectorUtil::DeltaR(jets->at(iJet),ele) < 0.3 ) skipJet = true;
-    }
-    if (skipJet) {
-     whitelistJet.at(iJet) = 0; ///---- reject
-     blacklistJet.push_back(iJet); ///---- reject ///== black list is in a different format
-    }
-    else {
-     whitelistJet.at(iJet) = 1; ///---- select
-    }
-   }
+//    leptons_jetCleaning.clear();
+//    // build the collection of electros for jet cleaning
+//    
+// //    std::cerr << "ele = " << nEles << std::endl;
+//    
+//    for(unsigned int iEle = 0; iEle < nEles; ++iEle)
+//    {
+//     if (whitelistEle.at(iEle) == 0) continue;
+//     leptons_jetCleaning.push_back( reader.Get4V("electrons")->at(iEle) );
+//    }
+//    for (int iJet = 0; iJet < nJets; iJet++){
+//     bool skipJet = false;
+//     if (whitelistJet.at(iJet) == 0) {
+// //      skipJet = true;
+//      continue; //---- otherwise blacklistJet.push_back(iJet) and blacklistJet becomes too long
+//      //-------------- and then it's faster!
+//     }   
+//     if (jets->at(iJet).Et() < 30.0) skipJet = true;
+//     if (jets->at(iJet).Eta() > 5.0) skipJet = true;
+//     for(unsigned int eleIt = 0; eleIt < leptons_jetCleaning.size(); eleIt++) {
+//      ROOT::Math::XYZTVector ele = leptons_jetCleaning.at(eleIt);
+//      if (ROOT::Math::VectorUtil::DeltaR(jets->at(iJet),ele) < 0.3 ) skipJet = true;
+//     }
+//     if (skipJet) {
+//      whitelistJet.at(iJet) = 0; ///---- reject
+//      blacklistJet.push_back(iJet); ///---- reject ///== black list is in a different format
+//     }
+//     else {
+//      whitelistJet.at(iJet) = 1; ///---- select
+//     }
+//    }
 //    std::cerr << "ciao!!!" << std::endl;
    
    ///   At least 2 leptons
