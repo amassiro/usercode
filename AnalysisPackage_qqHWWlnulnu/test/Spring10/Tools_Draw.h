@@ -93,12 +93,34 @@ void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
   vectHist[iSample]->DrawClone();
  }
  
- 
- cCompare->cd(2);
- sigHist->SetLineWidth(1);
- bkgHist->SetLineWidth(1);
+ ///==================
+ TCanvas* cCompareSumSB = new TCanvas("cCompareSumSB","cCompareSumSB",800,800);
+ sigHist->SetLineWidth(2);
+ bkgHist->SetLineWidth(2);
  sigHist->SetLineColor(kBlue);
  bkgHist->SetLineColor(kRed);
+ sigHist->SetMarkerColor(kBlue);
+ bkgHist->SetMarkerColor(kRed);
+ sigHist->SetMarkerStyle(20);
+ bkgHist->SetMarkerStyle(20);
+ sigHist->SetMarkerSize(4);
+ bkgHist->SetMarkerSize(4);
+ sigHist->SetFillColor(0);
+ bkgHist->SetFillColor(0);
+ bkgHist->DrawNormalized();
+ sigHist->DrawNormalized("same");
+ gPad->SetLogy();
+ gPad->SetGrid();
+ gPad->BuildLegend();
+ ///==================
+ 
+ cCompare->cd(2);
+ sigHist->SetLineWidth(2);
+ bkgHist->SetLineWidth(2);
+ sigHist->SetLineColor(kBlue);
+ bkgHist->SetLineColor(kRed);
+ sigHist->SetMarkerColor(kBlue);
+ bkgHist->SetMarkerColor(kRed);
  sigHist->SetFillColor(0);
  bkgHist->SetFillColor(0);
  bkgHist->Draw();
