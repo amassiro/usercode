@@ -172,7 +172,7 @@ void DrawDistribution1D(TString fileSamples, TString WhatToPlot = "", double MIN
   histo[iName]->SetMarkerColor(vColor[iName]);
   histo[iName]->SetLineColor(vColor[iName]);
   histo[iName]->SetFillColor(vColor[iName]);
-  histo[iName]->SetLineWidth(1);
+  histo[iName]->SetLineWidth(2);
   histo[iName]->SetFillStyle(3001);  
   if (reduced_name_samples.at(iName) != "DATA") {
    hs->Add(histo[iName]);
@@ -183,7 +183,7 @@ void DrawDistribution1D(TString fileSamples, TString WhatToPlot = "", double MIN
    histo[iName]->SetMarkerColor(kBlack);
    histo[iName]->SetLineColor(kBlack);
    histo[iName]->SetFillColor(kBlack);
-   histo[iName]->SetLineWidth(1);
+   histo[iName]->SetLineWidth(2);
    histo[iName]->SetFillStyle(3001);  
   }
  }
@@ -210,6 +210,29 @@ void DrawDistribution1D(TString fileSamples, TString WhatToPlot = "", double MIN
    histo[iName]->Draw("EsameB");
   }
  }
+ 
+ 
+ TCanvas* cNormalized = new TCanvas("cNormalized","cNormalized",800,800);
+ bool already_drawn = false;
+ for (int iName=0; iName<reduced_name_samples.size(); iName++){
+  if (reduced_name_samples.at(iName) == "DATA") {
+//    histo[iName]->Draw("EsameB");
+  }
+  else {
+   if (already_drawn == false) {
+    histo[iName]->SetFillStyle(0);
+    histo[iName]->DrawNormalized();
+    already_drawn = true;
+   }
+   else {
+    histo[iName]->SetFillStyle(0);
+    histo[iName]->DrawNormalized("same");
+   }
+  }
+ }
+ gPad->SetGrid();
+ gPad->BuildLegend();
+ 
  
  std::cerr << " ******************************************* end *******************************************" << std::endl;
  
