@@ -172,22 +172,23 @@ int main(int argc, char** argv) {
  ///===== cicle on reduced sample names and add to counter ====
  
  for (int iName=0; iName<reduced_name_samples.size(); iName++){
-  bool firstTime = true;
-  for (int iSample=0; iSample<numberOfSamples; iSample++){
-   if (name_samples.at(iSample) == reduced_name_samples.at(iName)) {
-    if (firstTime) {
-     firstTime = false;
-     samples.push_back (coll (reduced_name_samples.at(iName))) ;
+  if (reduced_name_samples.at(iName) != "DATA") {
+   bool firstTime = true;
+   for (int iSample=0; iSample<numberOfSamples; iSample++){
+    if (name_samples.at(iSample) == reduced_name_samples.at(iName)) {
+     if (firstTime) {
+      firstTime = false;
+      samples.push_back (coll (reduced_name_samples.at(iName))) ;
+     }
+     char nameFile[1000];
+     sprintf(nameFile,"output/out_NtupleProducer_%s.root",nameSample[iSample]);  
+     TFile* f = new TFile(nameFile, "READ");
+     std::pair<TTree*, TTree*> pair_vbf_temp ((TTree*) f->Get ("outTreeJetLep"), (TTree*) f->Get ("outTreeSelections"));
+     samples.back ().add (xsection[iSample], pair_vbf_temp) ;
     }
-    char nameFile[1000];
-    sprintf(nameFile,"output/out_NtupleProducer_%s.root",nameSample[iSample]);  
-    TFile* f = new TFile(nameFile, "READ");
-    std::pair<TTree*, TTree*> pair_vbf_temp ((TTree*) f->Get ("outTreeJetLep"), (TTree*) f->Get ("outTreeSelections"));
-    samples.back ().add (xsection[iSample], pair_vbf_temp) ;
    }
   }
- }
- 
+ } 
 
 
  vector<TCut> selections ;
@@ -206,7 +207,7 @@ int main(int argc, char** argv) {
  
  for (int iSample = 0 ; iSample < samples.size () ; ++iSample)
  {
-  std::cout << setw (8) << samples.at (iSample).m_name ;
+  std::cout << setw (10) << samples.at (iSample).m_name ;
   std::cout << "  |  " << setw (8) << samples.at (iSample).getAll () ;
   std::cout << "  |  " << setw (8) << samples.at (iSample).getEqSigma (selections.at (0)) ;
   for (int iSel = 1 ; iSel < selections.size () ; ++iSel) 
