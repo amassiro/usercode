@@ -132,6 +132,7 @@ int main(int argc, char** argv)
  else preselection_efficiency = 1;
  
  vars.numEntriesBefore = numEntriesBefore;
+ vars.preselection_efficiency = preselection_efficiency;
  
  FillEfficiencyTree(vars);
  

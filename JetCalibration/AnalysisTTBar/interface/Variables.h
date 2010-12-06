@@ -25,7 +25,7 @@ struct Variables
  int lumiId; 
  int eventId; 
  int numEntriesBefore;
- 
+ double preselection_efficiency;
  
  //---- lepton variables
  double lep_pX;
