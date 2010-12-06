@@ -124,8 +124,6 @@ int main(int argc, char** argv)
  vars.XSection = inputXSection;
  vars.dataFlag = dataFlag;  ///~~~~ 0 = MC       1 = DATA
  
- FillEfficiencyTree(vars);
- 
  if (entryMAX == -1) entryMAX = reader.GetEntries();
  else if (reader.GetEntries() < entryMAX) entryMAX = reader.GetEntries();
  numEntriesBefore = entryMAX - entryMIN;
@@ -134,6 +132,9 @@ int main(int argc, char** argv)
  else preselection_efficiency = 1;
  
  vars.numEntriesBefore = numEntriesBefore;
+ 
+ FillEfficiencyTree(vars);
+ 
  
  ///*************************************
  ///**** definition of electron ID ****
