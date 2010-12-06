@@ -14,6 +14,8 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
   
   vars.m_efficiencyTree -> Branch("XSection", &vars.XSection, "XSection/D");
   vars.m_efficiencyTree -> Branch("dataFlag",     &vars.dataFlag,         "dataFlag/I");
+  vars.m_efficiencyTree -> Branch("numEntriesBefore",     &vars.numEntriesBefore,         "numEntriesBefore/I");
+  
   
   
   
