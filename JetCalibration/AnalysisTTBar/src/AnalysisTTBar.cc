@@ -86,11 +86,14 @@ std::pair<double,int> GetCombinationGeneral(treeReader& reader, std::vector<std:
      if (jets_trackCountingHighEffBJetTags->at(b1) < jets_trackCountingHighEffBJetTags->at(q2)) continue;
      if (jets_trackCountingHighEffBJetTags->at(b2) < jets_trackCountingHighEffBJetTags->at(q1)) continue;
      if (jets_trackCountingHighEffBJetTags->at(b2) < jets_trackCountingHighEffBJetTags->at(q2)) continue;
-     
+
+     if (jets_trackCountingHighEffBJetTags->at(b1) < jets_trackCountingHighEffBJetTags->at(b2)) continue;
+
      double btagCombined_temp  = jets_trackCountingHighEffBJetTags->at(b1) + jets_trackCountingHighEffBJetTags->at(b2);
      if ( btagCombined > btagCombined_temp) continue;
      btagCombined = btagCombined_temp;
      
+     if ( jets->at(q1).Pt() < jets->at(q2).Pt()) continue;
      double pTCombined_temp = jets->at(q1).Pt() + jets->at(q2).Pt();
      if ( pTCombined > pTCombined_temp) continue;
      pTCombined = pTCombined_temp;
