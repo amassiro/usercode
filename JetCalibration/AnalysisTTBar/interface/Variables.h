@@ -120,6 +120,7 @@ struct Variables
 
 void InitializeTree(Variables&, const std::string&);
 void FillTree(Variables& vars);
+void FillEfficiencyTree(Variables& vars);
 
 void SetLeptonMuVariables(Variables& vars, treeReader& reader,const int& iLep);
 void SetLeptonEleVariables(Variables& vars, treeReader& reader,const int& iLep);

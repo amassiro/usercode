@@ -124,6 +124,8 @@ int main(int argc, char** argv)
  vars.XSection = inputXSection;
  vars.dataFlag = dataFlag;  ///~~~~ 0 = MC       1 = DATA
  
+ FillEfficiencyTree(vars);
+ 
  if (entryMAX == -1) entryMAX = reader.GetEntries();
  else if (reader.GetEntries() < entryMAX) entryMAX = reader.GetEntries();
  numEntriesBefore = entryMAX - entryMIN;
@@ -218,7 +220,7 @@ int main(int argc, char** argv)
   ///************* Jet - electrons (pT > 5)
   ///************* Jet - muons     (pT > 5)
   ///************ In addition only jets with pT > 15 are considered from now on!
-  ///**** Require at least 4 jets of this kind and at most 6 (!!!) ****
+  ///**** Require at least 4 jets of this kind and at most 10 (!!!) ****
   
     
   step = 1;
@@ -276,7 +278,7 @@ int main(int argc, char** argv)
   }
   
   if (GetNumList(whitelistJet) < 4) continue; ///==== at least 4 jets "isolated"
-  if (GetNumList(whitelistJet) > 6) continue; ///==== no more than 6 jets!!!
+  if (GetNumList(whitelistJet) > 10) continue; ///==== no more than 6 jets!!!
   
   ///*************************************************************
   ///**** STEP 2 - lepton selections and identification ****
@@ -374,7 +376,7 @@ int main(int argc, char** argv)
    std::vector<std::vector<int> > combinations;
    if (debug) std::cout << " STEP 3 :: nJets = " << nJets << " ::: " << GetNumList(whitelistJet) << std::endl;     
    int buffer = Build4ObjectsCombinations(combinations,nJets,&whitelistJet);
-   if (debug) std::cout << " STEP 3 :: numCombinations = " << buffer << std::endl;     
+   if (debug) std::cout << " STEP 3 :: numCombinations = " << buffer << " : " << combinations.size() << std::endl;     
    
     std::pair<double,int> bestCombination = GetCombinationGeneral(reader,combinations,&whitelistJet);
    
@@ -411,10 +413,7 @@ int main(int argc, char** argv)
     ///**** No more selections applied ****
     
     step = 5;
-    if (step > nStepToDo) {
-     FillTree(vars);
-     continue;
-    }
+    FillTree(vars);
     
  ///==== ... to be continued in next program ... ====
   ///=================================================

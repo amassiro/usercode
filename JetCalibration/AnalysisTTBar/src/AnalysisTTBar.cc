@@ -73,10 +73,14 @@ std::pair<double,int> GetCombinationGeneral(treeReader& reader, std::vector<std:
    int q2 = combinations.at(iComb).at(1);
    int b1 = combinations.at(iComb).at(2); //---> in this analysis this is the bjet that couple with qq
    int b2 = combinations.at(iComb).at(3);    
-    
+
+//    std::cout << " q1 = " << q1 << " q2 = " << q2 << " b1 = " << b1 << " b2 = " << b2 <<  std::endl;        
+   
    if(whitelistJet != NULL)
      if( (whitelistJet -> at(q1)) != 1 || (whitelistJet -> at(q2)) != 1 || (whitelistJet -> at(b1)) != 1 || (whitelistJet -> at(b2)) != 1)
       continue;
+     
+//    std::cout << " passed ... " << std::endl;  
      
      if (jets_trackCountingHighEffBJetTags->at(b1) < jets_trackCountingHighEffBJetTags->at(q1)) continue;
      if (jets_trackCountingHighEffBJetTags->at(b1) < jets_trackCountingHighEffBJetTags->at(q2)) continue;
