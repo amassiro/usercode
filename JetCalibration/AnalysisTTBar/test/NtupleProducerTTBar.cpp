@@ -163,6 +163,7 @@ int main(int argc, char** argv)
   EndCapSelections.push_back(0.01); ///==== dEta
   */
   
+  /*
   ///**** 80% ****
   BarrelSelections.push_back(0.09); ///==== iso Tk
   BarrelSelections.push_back(0.09); ///==== iso em
@@ -181,7 +182,29 @@ int main(int argc, char** argv)
   EndCapSelections.push_back(0.03); ///==== sigmaIetaIeta
   EndCapSelections.push_back(0.03); ///==== dPhi
   EndCapSelections.push_back(0.007); ///==== dEta
+   */
    
+   
+  ///**** 70% ****
+  BarrelSelections.push_back(0.05); ///==== iso Tk
+  BarrelSelections.push_back(0.06); ///==== iso em
+  BarrelSelections.push_back(0.03); ///==== iso had
+  BarrelSelections.push_back(0.04); ///==== iso combined
+  BarrelSelections.push_back(0.025); ///==== hOe
+  BarrelSelections.push_back(0.01); ///==== sigmaIetaIeta
+  BarrelSelections.push_back(0.004); ///==== dPhi
+  BarrelSelections.push_back(0.004); ///==== dEta
+  
+  EndCapSelections.push_back(0.025); ///==== iso Tk
+  EndCapSelections.push_back(0.025); ///==== iso em
+  EndCapSelections.push_back(0.02); ///==== iso had
+  EndCapSelections.push_back(0.03); ///==== iso combined
+  EndCapSelections.push_back(0.025); ///==== hOe
+  EndCapSelections.push_back(0.03); ///==== sigmaIetaIeta
+  EndCapSelections.push_back(0.02); ///==== dPhi
+  EndCapSelections.push_back(0.005); ///==== dEta
+  
+  
   
   ///***********************************
   ///**** definition of muon ID ****
