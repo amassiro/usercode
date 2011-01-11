@@ -75,6 +75,35 @@ int main(int argc, char** argv)
  chain->Add(inputFile.c_str());
  treeReader reader((TTree*)(chain));
  
+ 
+ bool  debug = false; 
+ try {
+  debug = gConfigParser -> readBoolOption("Input::debug");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ std::cout << ">>>>> input::debug  " << debug  << std::endl;  
+ 
+ 
+ 
+ ///****************************
+ ///**** DATA JSON file ****
+ 
+  std::string inFileNameJSON;
+  try {
+  inFileNameJSON = gConfigParser -> readStringOption("Input::inFileNameJSON");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ std::cout << ">>>>> Input::inFileNameJSON  " << inFileNameJSON  << std::endl;  
+ std::map<int, std::vector<std::pair<int, int> > > jsonMap;
+ if( dataFlag == 1 ) {
+   jsonMap = readJSONFile(inFileNameJSON);
+}
+
+ 
  ///---- Efficiency preselections ---- 
  
  std::string histoNameEvents      = gConfigParser -> readStringOption("Input::histoNameEvents"); 
@@ -370,6 +399,8 @@ int main(int argc, char** argv)
  double Z_l1;
  double Z_l2;
  
+ double Z_ll;
+ 
  
  outTreeJetLep.Branch("pdgId_RECO_l1",&pdgId_RECO_l1,"pdgId_RECO_l1/I");
  outTreeJetLep.Branch("pdgId_RECO_l2",&pdgId_RECO_l2,"pdgId_RECO_l2/I");
@@ -387,6 +418,7 @@ int main(int argc, char** argv)
  outTreeJetLep.Branch("AnalysisStep",&AnalysisStep,"AnalysisStep/I");
  outTreeJetLep.Branch("Z_l1",&Z_l1,"Z_l1/D");
  outTreeJetLep.Branch("Z_l2",&Z_l2,"Z_l2/D");
+ outTreeJetLep.Branch("Z_ll",&Z_ll,"Z_ll/D");
  
  double start, end;
  
@@ -416,10 +448,11 @@ int main(int argc, char** argv)
   ///*********************************************************************************************
   ///*********************************************************************************************
   
-  ///*******************************************
-  ///**** STEP -1 - Check no copies in DATA ****
-  ///*******************************************
   
+  ///***************************************************
+  ///**** STEP -1 - Check no copies in DATA ****
+  ///***************************************************
+  if (debug) std::cout << " STEP -1 " << std::endl;
   
   if( dataFlag == 1 )
   {
@@ -429,7 +462,20 @@ int main(int argc, char** argv)
    if( eventsMap[eventRUNandLSandID] == 1 ) continue;
    else eventsMap[eventRUNandLSandID] = 1;
   }
-  
+
+  ///*************************************************
+  ///**** Check comparison with JSON file ***
+  ///*************************************************
+
+
+  if( dataFlag == 1 )
+    {
+      int runId  = reader.GetInt("runId")->at(0);
+      int lumiId = reader.GetInt("lumiId")->at(0);
+      if(AcceptEventByRunAndLumiSection(runId, lumiId, jsonMap) == false) continue;      
+    }
+
+
   
   
   ///****************************
@@ -471,26 +517,52 @@ int main(int argc, char** argv)
   for(unsigned int eleIt = 0; eleIt < (reader.Get4V("electrons")->size()); ++eleIt)
   {
    if( reader.Get4V("electrons")->at(eleIt).pt() < 5. ) continue;
-
-   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && reader.GetFloat("electrons_tkIsoR03")->at(eleIt) > 0.09) continue;    
-   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && reader.GetFloat("electrons_emIsoR03")->at(eleIt) > 0.09) continue;    
-   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && (reader.GetFloat("electrons_hadIsoR03_depth1")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(eleIt))/reader.Get4V("electrons")->at(eleIt).pt() > 0.10) continue;      
-   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && (reader.GetFloat("electrons_tkIsoR03")->at(eleIt) + reader.GetFloat("electrons_emIsoR03")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth1")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(eleIt))/reader.Get4V("electrons")->at(eleIt).pt() > 0.07) continue;
-   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && reader.GetFloat("electrons_hOverE")->at(eleIt) > 0.040) continue;    
+   
+   ///==== VBTF 80% ====
+//    if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && reader.GetFloat("electrons_tkIsoR03")->at(eleIt) > 0.09) continue;    
+//    if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && reader.GetFloat("electrons_emIsoR03")->at(eleIt) > 0.09) continue;    
+//    if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && (reader.GetFloat("electrons_hadIsoR03_depth1")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(eleIt))/reader.Get4V("electrons")->at(eleIt).pt() > 0.10) continue;      
+//    if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && (reader.GetFloat("electrons_tkIsoR03")->at(eleIt) + reader.GetFloat("electrons_emIsoR03")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth1")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(eleIt))/reader.Get4V("electrons")->at(eleIt).pt() > 0.07) continue;
+//    if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && reader.GetFloat("electrons_hOverE")->at(eleIt) > 0.040) continue;    
+//    if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && reader.GetFloat("electrons_sigmaIetaIeta")->at(eleIt) > 0.01) continue;    
+//    if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && reader.GetFloat("electrons_deltaPhiIn")->at(eleIt) > 0.06) continue;
+//    if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && reader.GetFloat("electrons_deltaEtaIn")->at(eleIt) > 0.004) continue;
+//    
+//    
+//    if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && reader.GetFloat("electrons_tkIsoR03")->at(eleIt) > 0.04) continue;    
+//    if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && reader.GetFloat("electrons_emIsoR03")->at(eleIt) > 0.05) continue;    
+//    if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && (reader.GetFloat("electrons_hadIsoR03_depth1")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(eleIt))/reader.Get4V("electrons")->at(eleIt).pt() > 0.025) continue;      
+//    if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && (reader.GetFloat("electrons_tkIsoR03")->at(eleIt) + reader.GetFloat("electrons_emIsoR03")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth1")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(eleIt))/reader.Get4V("electrons")->at(eleIt).pt() > 0.06) continue;
+//    if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && reader.GetFloat("electrons_hOverE")->at(eleIt) > 0.025) continue;    
+//    if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && reader.GetFloat("electrons_sigmaIetaIeta")->at(eleIt) > 0.03) continue;    
+//    if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && reader.GetFloat("electrons_deltaPhiIn")->at(eleIt) > 0.03) continue;
+//    if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && reader.GetFloat("electrons_deltaEtaIn")->at(eleIt) > 0.007) continue;
+   
+   
+   ///==== VBTF 90% ====   
+   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && reader.GetFloat("electrons_tkIsoR03")->at(eleIt) > 0.15) continue;    
+   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && reader.GetFloat("electrons_emIsoR03")->at(eleIt) > 2.00) continue;    
+   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && (reader.GetFloat("electrons_hadIsoR03_depth1")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(eleIt))/reader.Get4V("electrons")->at(eleIt).pt() > 0.12) continue;      
+   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && (reader.GetFloat("electrons_tkIsoR03")->at(eleIt) + reader.GetFloat("electrons_emIsoR03")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth1")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(eleIt))/reader.Get4V("electrons")->at(eleIt).pt() > 0.15) continue;
+   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && reader.GetFloat("electrons_hOverE")->at(eleIt) > 0.015) continue;    
    if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && reader.GetFloat("electrons_sigmaIetaIeta")->at(eleIt) > 0.01) continue;    
-   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && reader.GetFloat("electrons_deltaPhiIn")->at(eleIt) > 0.06) continue;
-   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && reader.GetFloat("electrons_deltaEtaIn")->at(eleIt) > 0.004) continue;
+   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && reader.GetFloat("electrons_deltaPhiIn")->at(eleIt) > 0.8) continue;
+   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) < 1.5) && reader.GetFloat("electrons_deltaEtaIn")->at(eleIt) > 0.007) continue;
    
    
-   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && reader.GetFloat("electrons_tkIsoR03")->at(eleIt) > 0.04) continue;    
-   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && reader.GetFloat("electrons_emIsoR03")->at(eleIt) > 0.05) continue;    
-   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && (reader.GetFloat("electrons_hadIsoR03_depth1")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(eleIt))/reader.Get4V("electrons")->at(eleIt).pt() > 0.025) continue;      
-   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && (reader.GetFloat("electrons_tkIsoR03")->at(eleIt) + reader.GetFloat("electrons_emIsoR03")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth1")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(eleIt))/reader.Get4V("electrons")->at(eleIt).pt() > 0.06) continue;
-   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && reader.GetFloat("electrons_hOverE")->at(eleIt) > 0.025) continue;    
+   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && reader.GetFloat("electrons_tkIsoR03")->at(eleIt) > 0.08) continue;    
+   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && reader.GetFloat("electrons_emIsoR03")->at(eleIt) > 0.06) continue;    
+   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && (reader.GetFloat("electrons_hadIsoR03_depth1")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(eleIt))/reader.Get4V("electrons")->at(eleIt).pt() > 0.05) continue;      
+   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && (reader.GetFloat("electrons_tkIsoR03")->at(eleIt) + reader.GetFloat("electrons_emIsoR03")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth1")->at(eleIt) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(eleIt))/reader.Get4V("electrons")->at(eleIt).pt() > 0.10) continue;
+   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && reader.GetFloat("electrons_hOverE")->at(eleIt) > 0.07) continue;    
    if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && reader.GetFloat("electrons_sigmaIetaIeta")->at(eleIt) > 0.03) continue;    
-   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && reader.GetFloat("electrons_deltaPhiIn")->at(eleIt) > 0.03) continue;
-   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && reader.GetFloat("electrons_deltaEtaIn")->at(eleIt) > 0.007) continue;
+   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && reader.GetFloat("electrons_deltaPhiIn")->at(eleIt) > 0.7) continue;
+   if ((fabs(reader.Get4V("electrons")->at(eleIt).Eta()) > 1.5) && reader.GetFloat("electrons_deltaEtaIn")->at(eleIt) > 0.01) continue;
    
+   
+
+
+    
    
 //    if( (reader.GetFloat("electrons_IdRobustLoose")->at(eleIt)) < 1. ) continue; 
    leptons_jetCleaning.push_back( reader.Get4V("electrons")->at(eleIt) );
@@ -499,21 +571,25 @@ int main(int argc, char** argv)
   
   
   
-  
+
   ///==== CLEANING WITH MUONS ====
   for (int iMu = 0; iMu < reader.Get4V("muons")->size(); iMu++){    
    bool skipMu = false;
    if (reader.Get4V("muons")->at(iMu).pt() < 5.0) skipMu = true;
    if (fabs(reader.Get4V("muons")->at(iMu).Eta()) > 2.5) skipMu = true;
-   if ( (reader.GetFloat("muons_tkIsoR03")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > 0.5 ) skipMu = true;
-   if ( (reader.GetFloat("muons_emIsoR03")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > 0.1 ) skipMu = true;
-   if ( (reader.GetFloat("muons_hadIsoR03")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > 0.1 ) skipMu = true;
+
+   if ( (reader.GetFloat("muons_tkIsoR03")->at(iMu) + reader.GetFloat("muons_emIsoR03")->at(iMu) + reader.GetFloat("muons_hadIsoR03")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > 0.15 ) skipMu = true;
+   
+   if (reader.GetFloat("muons_normalizedChi2")->at(iMu) >= 10 )           skipMu = true;
+   if (reader.GetInt("muons_numberOfValidTrackerHits")->at(iMu) <= 10 ) skipMu = true;
+   if (reader.GetInt("muons_numberOfValidMuonHits")->at(iMu) == 0  )    skipMu = true;
+
    if( (reader.GetInt("muons_global")->at(iMu)) < 1. )  skipMu = true;    
    
    if (skipMu == false) leptons_jetCleaning.push_back( reader.Get4V("muons")->at(iMu) );
   }
   
-  
+
   ///==== now clean jet collection ====
   
   int nJets = jets->size();
@@ -614,25 +690,45 @@ int main(int argc, char** argv)
     if (reader.Get4V("electrons")->at(iEle).pt() < 10.0) skipEle = true;
     if (fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 2.5) skipEle = true;
     
+    ///==== VBTF 80% ====
+//     if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_tkIsoR03")->at(iEle) > 0.09) skipEle = true;    
+//     if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_emIsoR03")->at(iEle) > 0.09) skipEle = true;    
+//     if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && (reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle))/reader.Get4V("electrons")->at(iEle).pt() > 0.10) skipEle = true;      
+//     if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && (reader.GetFloat("electrons_tkIsoR03")->at(iEle) + reader.GetFloat("electrons_emIsoR03")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle))/reader.Get4V("electrons")->at(iEle).pt() > 0.07) skipEle = true;
+//     if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_hOverE")->at(iEle) > 0.040) skipEle = true;    
+//     if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_sigmaIetaIeta")->at(iEle) > 0.01) skipEle = true;    
+//     if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_deltaPhiIn")->at(iEle) > 0.06) skipEle = true;
+//     if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_deltaEtaIn")->at(iEle) > 0.004) skipEle = true;
+//     
+//     
+//     if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_tkIsoR03")->at(iEle) > 0.04) skipEle = true;    
+//     if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_emIsoR03")->at(iEle) > 0.05) skipEle = true;    
+//     if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && (reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle))/reader.Get4V("electrons")->at(iEle).pt() > 0.025) skipEle = true;      
+//     if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && (reader.GetFloat("electrons_tkIsoR03")->at(iEle) + reader.GetFloat("electrons_emIsoR03")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle))/reader.Get4V("electrons")->at(iEle).pt() > 0.06) skipEle = true;
+//     if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_hOverE")->at(iEle) > 0.025) skipEle = true;    
+//     if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_sigmaIetaIeta")->at(iEle) > 0.03) skipEle = true;    
+//     if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_deltaPhiIn")->at(iEle) > 0.03) skipEle = true;
+//     if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_deltaEtaIn")->at(iEle) > 0.007) skipEle = true;
     
-    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_tkIsoR03")->at(iEle) > 0.09) skipEle = true;    
-    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_emIsoR03")->at(iEle) > 0.09) skipEle = true;    
-    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && (reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle))/reader.Get4V("electrons")->at(iEle).pt() > 0.10) skipEle = true;      
-    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && (reader.GetFloat("electrons_tkIsoR03")->at(iEle) + reader.GetFloat("electrons_emIsoR03")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle))/reader.Get4V("electrons")->at(iEle).pt() > 0.07) skipEle = true;
-    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_hOverE")->at(iEle) > 0.040) skipEle = true;    
+    ///==== VBTF 95% ====
+    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_tkIsoR03")->at(iEle) > 0.15) skipEle = true;    
+    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_emIsoR03")->at(iEle) > 2.00) skipEle = true;    
+    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && (reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle))/reader.Get4V("electrons")->at(iEle).pt() > 0.12) skipEle = true;      
+    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && (reader.GetFloat("electrons_tkIsoR03")->at(iEle) + reader.GetFloat("electrons_emIsoR03")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle))/reader.Get4V("electrons")->at(iEle).pt() > 0.15) skipEle = true;
+    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_hOverE")->at(iEle) > 0.015) skipEle = true;    
     if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_sigmaIetaIeta")->at(iEle) > 0.01) skipEle = true;    
-    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_deltaPhiIn")->at(iEle) > 0.06) skipEle = true;
-    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_deltaEtaIn")->at(iEle) > 0.004) skipEle = true;
+    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_deltaPhiIn")->at(iEle) > 0.8) skipEle = true;
+    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_deltaEtaIn")->at(iEle) > 0.007) skipEle = true;
     
     
-    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_tkIsoR03")->at(iEle) > 0.04) skipEle = true;    
-    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_emIsoR03")->at(iEle) > 0.05) skipEle = true;    
-    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && (reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle))/reader.Get4V("electrons")->at(iEle).pt() > 0.025) skipEle = true;      
-    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && (reader.GetFloat("electrons_tkIsoR03")->at(iEle) + reader.GetFloat("electrons_emIsoR03")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle))/reader.Get4V("electrons")->at(iEle).pt() > 0.06) skipEle = true;
-    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_hOverE")->at(iEle) > 0.025) skipEle = true;    
+    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_tkIsoR03")->at(iEle) > 0.08) skipEle = true;    
+    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_emIsoR03")->at(iEle) > 0.06) skipEle = true;    
+    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && (reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle))/reader.Get4V("electrons")->at(iEle).pt() > 0.05) skipEle = true;      
+    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && (reader.GetFloat("electrons_tkIsoR03")->at(iEle) + reader.GetFloat("electrons_emIsoR03")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle))/reader.Get4V("electrons")->at(iEle).pt() > 0.10) skipEle = true;
+    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_hOverE")->at(iEle) > 0.07) skipEle = true;    
     if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_sigmaIetaIeta")->at(iEle) > 0.03) skipEle = true;    
-    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_deltaPhiIn")->at(iEle) > 0.03) skipEle = true;
-    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_deltaEtaIn")->at(iEle) > 0.007) skipEle = true;
+    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_deltaPhiIn")->at(iEle) > 0.7) skipEle = true;
+    if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_deltaEtaIn")->at(iEle) > 0.01) skipEle = true;
     
 
     if (skipEle) {
@@ -646,7 +742,8 @@ int main(int argc, char** argv)
    
 //    std::cerr << "ciao!!!" << std::endl;
    
-   
+
+       
    ///   Muon
    ///   PromptTightMuonID
    ///   Pt>10GeV, eta<2.5
@@ -662,6 +759,12 @@ int main(int argc, char** argv)
 //     std::cerr << "mu = " << nMus << std::endl;
     
     if (fabs(reader.Get4V("muons")->at(iMu).Eta()) > 2.5) skipMu = true;    
+
+   if ( (reader.GetFloat("muons_tkIsoR03")->at(iMu) + reader.GetFloat("muons_emIsoR03")->at(iMu) + reader.GetFloat("muons_hadIsoR03")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > 0.15 ) skipMu = true;
+          
+   if (reader.GetFloat("muons_normalizedChi2")->at(iMu) >= 10 )           skipMu = true;
+   if (reader.GetInt("muons_numberOfValidTrackerHits")->at(iMu) <= 10 )  skipMu = true;
+   if (reader.GetInt("muons_numberOfValidMuonHits")->at(iMu) == 0  )     skipMu = true;
 
 //     if ( (reader.GetFloat("muons_tkIsoR03")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > 0.1 ) skipMu = true;
 //     if ( (reader.GetFloat("muons_emIsoR03")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > 0.1 ) skipMu = true;
@@ -722,15 +825,15 @@ int main(int argc, char** argv)
    
    ///   At least 2 leptons
    ///   Muon (from the collections defined above)
-   ///   Pt > 15 GeV
+   ///   Pt > 10 GeV
    int numLeptons_Accepted = 0;
    for (int iMu = 0; iMu < nMus; iMu++){  
-    if (whitelistMu.at(iMu) == 1 && reader.Get4V("muons")->at(iMu).pt() > 15.0) numLeptons_Accepted++;
+    if (whitelistMu.at(iMu) == 1 && reader.Get4V("muons")->at(iMu).pt() > 10.0) numLeptons_Accepted++;
    }
    ///   Electron (from the collection defined above)
    ///   Pt>15 GeV
    for (int iEle = 0; iEle < nEles; iEle++){  
-    if (whitelistEle.at(iEle) == 1 && reader.Get4V("electrons")->at(iEle).pt() > 15.0) numLeptons_Accepted++;
+    if (whitelistEle.at(iEle) == 1 && reader.Get4V("electrons")->at(iEle).pt() > 10.0) numLeptons_Accepted++;
    }
    
 //    std::cerr << "numLeptons_Accepted = " << numLeptons_Accepted << std::endl;
@@ -768,6 +871,7 @@ int main(int argc, char** argv)
    continue;
   }  
   
+  
   std::vector<int> itSelJet;
   double maxPt_jets_selected = SelectJets(itSelJet,*jets,"maxSumPt",-1.,&blacklistJet);
   
@@ -798,16 +902,16 @@ int main(int argc, char** argv)
    }
   }
   
-  MET = reader.Get4V("met")->at(0).Et();
+  MET = reader.Get4V("PFMet")->at(0).Et();
   
   
-  bTag_trackCountingHighPurBJetTags_q1 = reader.GetFloat("jets_trackCountingHighPurBJetTags")->at(q1);
-  bTag_trackCountingHighEffBJetTags_q1 = reader.GetFloat("jets_trackCountingHighEffBJetTags")->at(q1);
+  bTag_trackCountingHighPurBJetTags_q1 = reader.GetFloat("trackCountingHighPurBJetTags")->at(q1);
+  bTag_trackCountingHighEffBJetTags_q1 = reader.GetFloat("trackCountingHighEffBJetTags")->at(q1);
   bTag_combinedSecondaryVertexBJetTags_q1 = 0;
   bTag_combinedSecondaryVertexMVABJetTags_q1 = 0;
   
-  bTag_trackCountingHighPurBJetTags_q2 = reader.GetFloat("jets_trackCountingHighPurBJetTags")->at(q2);
-  bTag_trackCountingHighEffBJetTags_q2 = reader.GetFloat("jets_trackCountingHighEffBJetTags")->at(q2);
+  bTag_trackCountingHighPurBJetTags_q2 = reader.GetFloat("trackCountingHighPurBJetTags")->at(q2);
+  bTag_trackCountingHighEffBJetTags_q2 = reader.GetFloat("trackCountingHighEffBJetTags")->at(q2);
   bTag_combinedSecondaryVertexBJetTags_q2 = 0;
   bTag_combinedSecondaryVertexMVABJetTags_q2 = 0;
   
@@ -854,6 +958,7 @@ int main(int argc, char** argv)
   NBjets_combinedSecondaryVertexMVABJetTags = 0;
   NBjets_simpleSecondaryVertexBJetTags = 0;
   
+  
   for (int iJet = 0; iJet < nJets; iJet++){
    bool skipJet = false;
    for(unsigned int kk = 0; kk < blacklistJet_forBtag.size(); ++kk) {
@@ -861,8 +966,8 @@ int main(int argc, char** argv)
    }
    if (reader.Get4V("jets")->at(iJet).pt() < 10.0) skipJet = true;
    if (skipJet) continue;
-   if (reader.GetFloat("jets_trackCountingHighPurBJetTags")->at(iJet) > -50.0) NBjets_trackCountingHighPurBJetTags++;
-   if (reader.GetFloat("jets_trackCountingHighEffBJetTags")->at(iJet) > -50.0) NBjets_trackCountingHighEffBJetTags++;
+   if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) > -50.0) NBjets_trackCountingHighPurBJetTags++;
+   if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) > -50.0) NBjets_trackCountingHighEffBJetTags++;
 //    if (reader.GetFloat("jets_combinedSecondaryVertexBJetTags")->at(iJet) > -5.0) NBjets_combinedSecondaryVertexBJetTags++;
 //    if (reader.GetFloat("jets_combinedSecondaryVertexMVABJetTags")->at(iJet) > -5.0) NBjets_combinedSecondaryVertexMVABJetTags++;
 //    if (reader.GetFloat("jets_simpleSecondaryVertexBJetTags")->at(iJet) > 2.5) NBjets_simpleSecondaryVertexBJetTags++;
@@ -927,7 +1032,7 @@ int main(int argc, char** argv)
     leptons_hadIso.push_back(reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle)+reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle));
 //     leptons_lipSig.push_back(reader.GetFloat("electrons_lipSignificance")->at(iEle));
 //     leptons_tipSig.push_back(reader.GetFloat("electrons_tipSignificance")->at(iEle));
-    leptons_3DipSig.push_back(reader.GetFloat("electrons_3DipSignificance")->at(iEle));
+//    leptons_3DipSig.push_back(reader.GetFloat("electrons_3DipSignificance")->at(iEle));
     leptons_HoE.push_back(reader.GetFloat("electrons_hOverE")->at(iEle));
     leptons_sigmaIetaIeta.push_back(reader.GetFloat("electrons_sigmaIetaIeta")->at(iEle));
     leptons_DeltaEtaIn.push_back(reader.GetFloat("electrons_deltaPhiIn")->at(iEle));
@@ -950,7 +1055,7 @@ int main(int argc, char** argv)
     leptons_hadIso.push_back(reader.GetFloat("muons_hadIsoR03")->at(iMu));
 //     leptons_lipSig.push_back(reader.GetFloat("muons_lipSignificance")->at(iMu));
 //     leptons_tipSig.push_back(reader.GetFloat("muons_tipSignificance")->at(iMu));
-    leptons_3DipSig.push_back(reader.GetFloat("muons_3DipSignificance")->at(iMu));
+//    leptons_3DipSig.push_back(reader.GetFloat("muons_3DipSignificance")->at(iMu));
     
     leptons_HoE.push_back(0);
     leptons_sigmaIetaIeta.push_back(0);
@@ -1028,6 +1133,10 @@ int main(int argc, char** argv)
   Z_l2 = (leptons.at(l2).Eta() - etaMean)/dEta;
   ///=========================  
   
+  
+  ///==== Zepp for lepton system ====
+  Z_ll = ((leptons.at(l1) + leptons.at(l2)).Eta() - etaMean)/dEta;
+  ///================================
   
   stdHistograms -> Fill1("muons","muons",step,&whitelistMu);
   stdHistograms -> Fill1("electrons","electrons",step,&whitelistEle);
