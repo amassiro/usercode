@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <MethodSetup Method="MLP::MLP">
   <GeneralInfo>
-    <Info name="TMVA Release" value="4.0.4 [262148]"/>
-    <Info name="ROOT Release" value="5.27/03 [334595]"/>
+    <Info name="TMVA Release" value="2.0.4 [262148]"/>
+    <Info name="ROOT Release" value="5.22/00 [29532]"/>
     <Info name="Creator" value="andrea"/>
-    <Info name="Date" value="Fri Sep  3 09:32:29 2010"/>
+    <Info name="Date" value="Fri Sep  3 09:12:59 2010"/>
     <Info name="Host" value="Linux andrea-laptop 2.6.32-21-generic #32-Ubuntu SMP Fri Apr 16 08:10:02 UTC 2010 i686 GNU/Linux"/>
-    <Info name="Dir" value="/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu"/>
+    <Info name="Dir" value="/gwpool/users/amassiro/VBF/Analysis/AnalysisPackage_qqHWWlnuln"/>
     <Info name="Training events" value="62908"/>
-    <Info name="TrainingTime" value="1166.06"/>
+    <Info name="TrainingTime" value="0.718834"/>
     <Info name="AnalysisType" value="Classification"/>
   </GeneralInfo>
   <Options>
