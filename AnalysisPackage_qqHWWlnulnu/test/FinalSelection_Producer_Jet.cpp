@@ -57,8 +57,8 @@ int main(int argc, char** argv)
  TMVA::Reader *TMVAreader_Jet = new TMVA::Reader( "!Color:!Silent" );
  TMVAreader_Jet->AddVariable("pT_RECO_q1",&input_variables_Jet[0]);
  TMVAreader_Jet->AddVariable("pT_RECO_q2",&input_variables_Jet[1]);
- TMVAreader_Jet->AddVariable("eta_RECO_q1",&input_variables_Jet[2]);
- TMVAreader_Jet->AddVariable("eta_RECO_q2",&input_variables_Jet[3]);
+ TMVAreader_Jet->AddVariable("abs(eta_RECO_q1)",&input_variables_Jet[2]);
+ TMVAreader_Jet->AddVariable("abs(eta_RECO_q2)",&input_variables_Jet[3]);
  TMVAreader_Jet->AddVariable("eta_RECO_q1_eta_RECO_q2",&input_variables_Jet[4]);
  TMVAreader_Jet->AddVariable("Deta_RECO_q12",&input_variables_Jet[5]);
  TMVAreader_Jet->AddVariable("Mjj",&input_variables_Jet[6]);
@@ -121,8 +121,8 @@ int main(int argc, char** argv)
   
   input_variables_Jet[0] = static_cast<Float_t>(pT_RECO_q1);
   input_variables_Jet[1] = static_cast<Float_t>(pT_RECO_q2);
-  input_variables_Jet[2] = static_cast<Float_t>(eta_RECO_q1);
-  input_variables_Jet[3] = static_cast<Float_t>(eta_RECO_q2);
+  input_variables_Jet[2] = static_cast<Float_t>(fabs(eta_RECO_q1));
+  input_variables_Jet[3] = static_cast<Float_t>(fabs(eta_RECO_q2));
   input_variables_Jet[4] = static_cast<Float_t>(eta_RECO_q1_eta_RECO_q2);
   input_variables_Jet[5] = static_cast<Float_t>(Deta_RECO_q12);
   input_variables_Jet[6] = static_cast<Float_t>(Mjj);

@@ -51,11 +51,11 @@ struct coll
  {
   samples[XS] = al ;
  }
+ 
+ ///=================================================
  double getEqSigma (TCut cut){
   double events = 0. ;
-  for (map<double, std::pair<TTree*,TTree*> >::iterator it = samples.begin () ;
-  it != samples.end () ; 
-  ++it){
+  for (map<double, std::pair<TTree*,TTree*> >::iterator it = samples.begin () ;  it != samples.end () ;   ++it){
    it->second.second->SetBranchAddress ("preselection_efficiency", &preselection_efficiency) ;
    it->second.second->SetBranchAddress ("numEntriesBefore", &numEntriesBefore) ;
    it->second.second->GetEntry (0) ;
@@ -66,23 +66,28 @@ struct coll
   }
   return events ;
  } ;
- 
+ ///=================================================
  double getAll () {
   double events = 0. ;
-  for (map<double, std::pair<TTree*,TTree*> >::iterator it = samples.begin () ;
-  it != samples.end () ; 
-  ++it){
+  for (map<double, std::pair<TTree*,TTree*> >::iterator it = samples.begin () ;  it != samples.end () ;   ++it){
    it->second.second->SetBranchAddress("preselection_efficiency",&preselection_efficiency);
    it->second.second->SetBranchAddress("numEntriesBefore",&numEntriesBefore);
    it->second.second->GetEntry(0);
-   
-   if (it->second.first->GetEntries () != 0) {
     events += (it->first * 1000.);
-   }
   }
   return events ;
  } ;
  
+ ///=================================================
+ double getMC (TCut cut){
+  double events = 0. ;
+  for (map<double, std::pair<TTree*,TTree*> >::iterator it = samples.begin () ;  it != samples.end () ;   ++it){
+    events += (it->second.first->GetEntries (cut)) ;
+  }
+  return events ;
+ } ;
+ 
+ ///=================================================
  map<double, std::pair<TTree*,TTree*> > samples ;
  string m_name ; 
  
@@ -190,34 +195,101 @@ int main(int argc, char** argv) {
   }
  } 
 
+vector<TCut> selections ;
 
- vector<TCut> selections ;
- selections.push_back ("") ;
- selections.push_back ("Mjj>200") ;
- selections.push_back ("Mjj>200&&Deta_RECO_q12>1.5") ;
- //   selections.push_back ("Mjj>200&&Deta_RECO_q12>2&&CJV_20<1") ;
- //   selections.push_back ("Mjj>200&&Deta_RECO_q12>2&&CJV_20<1&&Mll<80&&Mll>12") ;
- selections.push_back ("Mjj>200&&Deta_RECO_q12>2&&CJV_20<1&&Mll<80&&Mll>12&&Dphi_RECO_l12<2") ;
- //   selections.push_back ("Mjj>500&&Deta_RECO_q12>2&&CJV_20<1&&Mll<80&&Mll>12&&Dphi_RECO_l12<2") ;
- //   selections.push_back ("  pT_RECO_q1>30&&pT_RECO_q2>30&&abs(eta_RECO_q1)>0.2&&abs(eta_RECO_q2)>0.2&&eta_RECO_q1_eta_RECO_q2<0.0&&Deta_RECO_q12>1.3&&Mjj>550&&CJV_30<1&&pT_RECO_l1>10&&pT_RECO_l2>10&&abs(eta_RECO_l1)<2.1&&abs(eta_RECO_l2)<2.1&&eta_RECO_l1_eta_RECO_l2<6&&eta_RECO_l1_eta_RECO_l2>0&&Deta_RECO_l12<1.3&&Dphi_RECO_l12<3.0&&((Mll<70&&Mll>10&&pdgId_RECO_l1==pdgId_RECO_l2)||(pdgId_RECO_l1!=pdgId_RECO_l2))&&charge_RECO_l1_charge_RECO_l2==-1&&tkIso_l1/pT_RECO_l1<0.05&&emIso_l1/pT_RECO_l1<0.05&&hadIso_l1/pT_RECO_l1<0.03&&NBjets_trackCountingHighEffBJetTags<3&&NBjets_trackCountingHighPurBJetTags<2&&MET>20");
- selections.push_back ("  pT_RECO_q1>30&&pT_RECO_q2>30&&abs(eta_RECO_q1)>0.2&&abs(eta_RECO_q2)>0.2&&eta_RECO_q1_eta_RECO_q2<0.0&&Deta_RECO_q12>1.3&&Mjj>400&&CJV_30<1&&pT_RECO_l1>10&&pT_RECO_l2>10&&abs(eta_RECO_l1)<2.1&&abs(eta_RECO_l2)<2.1&&eta_RECO_l1_eta_RECO_l2<6&&eta_RECO_l1_eta_RECO_l2>0&&Deta_RECO_l12<1.3&&Dphi_RECO_l12<3.0&&((Mll<70&&Mll>10&&pdgId_RECO_l1==pdgId_RECO_l2)||(pdgId_RECO_l1!=pdgId_RECO_l2))&&charge_RECO_l1_charge_RECO_l2==-1&&MET>20");
- 
- cout.precision (2) ;
- cout.unsetf(ios::scientific);
- 
- for (int iSample = 0 ; iSample < samples.size () ; ++iSample)
+
+///==== cut based ====
+///*  -  */ selections.push_back ("") ;
+///* VBF */ selections.push_back ("pT_RECO_q1>20&&pT_RECO_q2>20&&abs(eta_RECO_q1)>0.1&&abs(eta_RECO_q2)>0.1&&Deta_RECO_q12>2.0&&Mjj>350") ;
+///* CJV */ selections.push_back ("CJV_30<1") ;
+///* LEP */ selections.push_back ("pT_RECO_l1>30&&pT_RECO_l2>10&&abs(eta_RECO_l1)<2.5&&abs(eta_RECO_l2)<2.5&&Deta_RECO_l12<3.8&&Dphi_RECO_l12<1.5&&charge_RECO_l1_charge_RECO_l2==-1&&abs(Z_ll)<0.5") ;
+///* Z_V */ selections.push_back ("((Mll<70&&Mll>20&&pdgId_RECO_l1==pdgId_RECO_l2)||(pdgId_RECO_l1!=pdgId_RECO_l2))") ;
+///* MET */ selections.push_back ("MET>30");
+///* Btag */ selections.push_back ("bTag_trackCountingHighPurBJetTags_q2<1.0&&bTag_trackCountingHighPurBJetTags_q1<1.0");
+
+
+
+///==== MVA ====
+/*  -  */ selections.push_back ("") ;
+/* VBF */ selections.push_back ("pT_RECO_q1>20&&pT_RECO_q2>20&&abs(eta_RECO_q1)>0.1&&abs(eta_RECO_q2)>0.1&&Deta_RECO_q12>0.0&&Mjj>200") ;
+/* CJV */ selections.push_back ("CJV_30<1") ;
+/* LEP */ selections.push_back ("pT_RECO_l1>30&&pT_RECO_l2>10&&abs(eta_RECO_l1)<2.5&&abs(eta_RECO_l2)<2.5&&charge_RECO_l1_charge_RECO_l2==-1") ;
+/* Z_V */ selections.push_back ("((Mll<70&&Mll>20&&pdgId_RECO_l1==pdgId_RECO_l2)||(pdgId_RECO_l1!=pdgId_RECO_l2))") ;
+/* MET */ selections.push_back ("MET>30");
+/* Btag */ selections.push_back ("bTag_trackCountingHighPurBJetTags_q2<1.0&&bTag_trackCountingHighPurBJetTags_q1<1.0");
+///*MVA Jet*/ selections.push_back ("BDT_Jet>0.1");
+///*MVA Lep*/ selections.push_back ("BDT_Lep>-0.2");
+
+std::cout.precision (2) ;
+std::cout.unsetf(ios::scientific);
+
+std::cout << setw (8) << " sample ";
+std::cout << "  |" << setw (8) << "  No sel  ";
+std::cout << "  |  " << setw (8) << "2j+2l";
+std::cout << "  |  " << setw (17) << "  VBF ";
+std::cout << "  |  " << setw (17) << "  CJV ";
+std::cout << "  |  " << setw (17) << "  LEP ";
+std::cout << "  |  " << setw (17) << "Z veto ";
+std::cout << "  |  " << setw (17) << " MET   ";
+std::cout << "  |  " << setw (17) << " BTag ";
+// std::cout << "  |  " << setw (17) << " MVA Jet ";
+// std::cout << "  |  " << setw (17) << " MVA Lep";
+std::cout << std::endl;
+cout << "----------+------------+------------+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+\n" ;
+
+for (int iSample = 0 ; iSample < samples.size () ; ++iSample)
+{
+ //PG efficiencies of the full chain wrt beginning 
+ //      std::cout << "        " ;
+ std::cout << setw (8) << samples.at (iSample).m_name ;
+ std::cout << " | " << setw (8) << samples.at (iSample).getAll () ;
+ std::cout << " | " << setw (8) << samples.at (iSample).getEqSigma (selections.at (0)) ;
+ TCut total_cut = selections.at (0) ;
+ for (int iSel = 1 ; iSel < selections.size () ; ++iSel) 
  {
-  std::cout << setw (10) << samples.at (iSample).m_name ;
-  std::cout << "  |  " << setw (8) << samples.at (iSample).getAll () ;
-  std::cout << "  |  " << setw (8) << samples.at (iSample).getEqSigma (selections.at (0)) ;
-  for (int iSel = 1 ; iSel < selections.size () ; ++iSel) 
-  {
-   std::cout << "  |  " << setw (8) << samples.at (iSample).getEqSigma (selections.at (iSel));
-   std:cout  << " (" << setw (6) << samples.at (iSample).getEqSigma (selections.at (iSel)) / samples.at (iSample).getEqSigma (selections.at (iSel-1)) << ")" ;
-  }
-  std::cout << endl ;            
- }  
+  total_cut = total_cut && selections.at (iSel) ;
+  cout << " | " << setw (8) << samples.at (iSample).getEqSigma (total_cut) ;
+//   cout  << " (" << setw (6) << samples.at (iSample).getEqSigma (total_cut) / 
+//   samples.at (iSample).getAll () << ")";
+  std::cout << "[" <<samples.at (iSample). getMC(total_cut) << "]" ;
+  //                                       samples.at (iSample).getEqSigma (selections.at (0)) << ")" ;
+ }
+ std::cout << " | absolute " << endl ;            
  
+ //PG efficiencies of the full chain wrt previous cut
+ //      std::cout << "        " ;
+//  std::cout << setw (8) << samples.at (iSample).m_name ;
+//  std::cout << " | " << setw (8) << samples.at (iSample).getAll () ;
+//  std::cout << " | " << setw (8) << samples.at (iSample).getEqSigma (selections.at (0)) ;
+//  total_cut = selections.at (0) ;
+/* TCut previous_cut = selections.at (0) ;
+ for (int iSel = 1 ; iSel < selections.size () ; ++iSel) 
+ {
+  previous_cut = total_cut ;
+  total_cut = total_cut && selections.at (iSel) ;
+  cout << " | " << setw (8) << samples.at (iSample).getEqSigma (total_cut) ;
+//   cout  << " (" << setw (6) << samples.at (iSample).getEqSigma (total_cut) / 
+//   samples.at (iSample).getEqSigma (previous_cut) << ")" ;
+ }
+ std::cout << " | relative " << endl ;            
+ 
+ //PG efficiencies of single selections wrt no cuts
+ std::cout << setw (8) << samples.at (iSample).m_name ;
+ std::cout << " | " << setw (8) << samples.at (iSample).getAll () ;
+ std::cout << " | " << setw (8) << samples.at (iSample).getEqSigma (selections.at (0)) ;
+ for (int iSel = 1 ; iSel < selections.size () ; ++iSel) 
+ {
+  cout << " | " << setw (8) << samples.at (iSample).getEqSigma (selections.at (iSel)) ;
+  //          cout  << " (" << setw (6) << samples.at (iSample).getEqSigma (selections.at (iSel)) / samples.at (iSample).getEqSigma (selections.at (iSel-1)) << ")" ;
+//   cout  << " (" << setw (6) << samples.at (iSample).getEqSigma (selections.at (iSel)) / 
+//   samples.at (iSample).getAll () << ")" ;
+  //                                       samples.at (iSample).getEqSigma (selections.at (0)) << ")" ;
+ }
+ std::cout << " | indip " << endl ;    */        
+ 
+ 
+} 
+
  return 0 ;
  
 }

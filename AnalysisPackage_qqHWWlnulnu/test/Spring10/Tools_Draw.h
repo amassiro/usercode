@@ -44,8 +44,8 @@ void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
    std::cerr << " [" << bkg_temp << "] >>> bkg += " << temp_h->Integral() << " ~ " << temp_h->GetEntries() << "     =>  " << nameHisto.Data() << std::endl;
    if (numSample == numSignal) {
     bkgHist = (TH1F*) temp_h->Clone("background");
-    bkgHist->SetTitle("backgroud");
-    std::cerr << "  ====> backgroud = " << numSample << " => nameHisto = " << nameHisto.Data() << std::endl;
+    bkgHist->SetTitle("background");
+    std::cerr << "  ====> background = " << numSample << " => nameHisto = " << nameHisto.Data() << std::endl;
    }
    else bkgHist -> Add (temp_h);
   }
@@ -55,8 +55,8 @@ void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
    std::cerr << " [" << bkg_temp << "] >>> bkg += " << temp_h->Integral() << " ~ " << temp_h->GetEntries() << "     =>  " << nameHisto.Data() << std::endl;
    if (numSample == 0) {
     bkgHist = (TH1F*) temp_h->Clone("background");
-    bkgHist->SetTitle("backgroud");
-    std::cerr << "  ====> backgroud = " << numSample << " => nameHisto = " << nameHisto.Data() << std::endl;
+    bkgHist->SetTitle("background");
+    std::cerr << "  ====> background = " << numSample << " => nameHisto = " << nameHisto.Data() << std::endl;
    }
    else bkgHist -> Add (temp_h);
   }
@@ -83,7 +83,7 @@ void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
  hs->Draw();
  gPad->SetLogy();
  gPad->SetGrid();
- gPad->BuildLegend();
+//  gPad->BuildLegend();
  ///==================
  
  TCanvas* cHistos = new TCanvas("cHistos","cHistos",600,600);
@@ -95,8 +95,8 @@ void DrawSB(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
  
  ///==================
  TCanvas* cCompareSumSB = new TCanvas("cCompareSumSB","cCompareSumSB",800,800);
- sigHist->SetLineWidth(2);
- bkgHist->SetLineWidth(2);
+ sigHist->SetLineWidth(4);
+ bkgHist->SetLineWidth(4);
  sigHist->SetLineColor(kBlue);
  bkgHist->SetLineColor(kRed);
  sigHist->SetMarkerColor(kBlue);
@@ -210,8 +210,8 @@ void DrawSB2D(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
   if (sb_bs == 0 && numSample >= numSignal) {
    if (numSample == numSignal) {
     bkgHist = (TH2F*) temp_h->Clone("background");
-    bkgHist->SetTitle("backgroud");
-    std::cerr << "  ====> backgroud = " << numSample << " => nameHisto = " << nameHisto.Data() << std::endl;
+    bkgHist->SetTitle("background");
+    std::cerr << "  ====> background = " << numSample << " => nameHisto = " << nameHisto.Data() << std::endl;
    }
    else bkgHist -> Add (temp_h);
   }
@@ -219,8 +219,8 @@ void DrawSB2D(THStack* hs,int numSignal, int numBkg, int sb_bs = 0){
   if (sb_bs == 1 && numSample < numBkg) {
    if (numSample == 0) {
     bkgHist = (TH2F*) temp_h->Clone("background");
-    bkgHist->SetTitle("backgroud");
-    std::cerr << "  ====> backgroud = " << numSample << " => nameHisto = " << nameHisto.Data() << std::endl;
+    bkgHist->SetTitle("background");
+    std::cerr << "  ====> background = " << numSample << " => nameHisto = " << nameHisto.Data() << std::endl;
    }
    else bkgHist -> Add (temp_h);
   }

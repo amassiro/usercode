@@ -1,6 +1,7 @@
 ///==== draw results from "FinalSelection_Producer.exe" ====
 
 #include "test/Spring10/Tools_Draw.h"
+#include <iomanip>
 
 void DrawDistribution1D(TString fileSamples, TString WhatToPlot = "", double MIN = -10, double MAX = 10, int NBIN = 1000, double LUMI = 500, TString Cut = "", int HowManySignalSamples = 5){
   
@@ -98,8 +99,8 @@ void DrawDistribution1D(TString fileSamples, TString WhatToPlot = "", double MIN
  gStyle->SetLabelFont(42, "XYZ");
  gStyle->SetLabelOffset(0.007, "XYZ");
  
- //gStyle->SetLabelSize(0.05, "XYZ");
- gStyle->SetLabelSize(0.02, "XYZ");
+ gStyle->SetLabelSize(0.05, "XYZ");
+ //gStyle->SetLabelSize(0.02, "XYZ");
  
  // For the axis:
  gStyle->SetAxisColor(1, "XYZ");
@@ -144,7 +145,7 @@ void DrawDistribution1D(TString fileSamples, TString WhatToPlot = "", double MIN
  gStyle->SetPadBottomMargin(0.15);
  gStyle->SetPadTopMargin(0.05);
  gStyle->SetPadLeftMargin(0.15);
- gStyle->SetPadRightMargin(0.05);
+ gStyle->SetPadRightMargin(0.10);
  /*  //PlotEffvsEff=====================
  gStyle->SetPadBottomMargin(0.15);
  gStyle->SetPadTopMargin(0.05);
@@ -176,6 +177,10 @@ void DrawDistribution1D(TString fileSamples, TString WhatToPlot = "", double MIN
  gStyle->SetLineStyleString(8,"20 12 4 12 4 12");
  gStyle->SetLineStyleString(9,"80 20");
  
+ 
+//  TGaxis::SetMaxDigits(2);
+ 
+ 
  gStyle->cd(); 
  
  ///===========================================================================
@@ -200,6 +205,22 @@ void DrawDistribution1D(TString fileSamples, TString WhatToPlot = "", double MIN
   kYellow,
   kGray,(EColor) (kGray+1),(EColor) (kViolet),(EColor) (kYellow),(EColor) (kGray)
  };
+ 
+ 
+//  EColor vColor[1000] = {
+//   (EColor) (kGreen+2),kBlue,
+//   kBlack,
+//   //kMagenta,(EColor) (kMagenta+1),(EColor) (kMagenta+2),
+//   kRed,
+//   kTeal,//(EColor) (kTeal+1),
+//   kGray,
+//   kOrange,(EColor) (kOrange+1),
+//   //kBlue,//(EColor)(kBlue+1),(EColor) (kBlue+2),
+//   (EColor) (kPink+2),//(EColor) (kPink+1),(EColor) (kPink+2),
+//   kViolet,
+//   kYellow,
+//   kGray,(EColor) (kGray+1),(EColor) (kViolet),(EColor) (kYellow),(EColor) (kGray)
+//  };
  
  
  
@@ -325,6 +346,9 @@ void DrawDistribution1D(TString fileSamples, TString WhatToPlot = "", double MIN
   treeEffVect[iSample]->SetBranchAddress("numEntriesBefore",&numEntriesBefore);
   treeEffVect[iSample]->GetEntry(0);
   
+  std::cout << " Xsection = " << XSection << " ~~~> " << xsection[iSample] << std::endl;
+  XSection = xsection[iSample];
+  
   TString name_histo_temp = Form("%s_temp",nameSample[iSample]);
   
   histo_temp[iSample] = new TH1F(name_histo_temp,name_histo_temp,NBIN,MIN,MAX);
@@ -386,6 +410,26 @@ void DrawDistribution1D(TString fileSamples, TString WhatToPlot = "", double MIN
  
  DrawSB(hs,HowManySignalSamples,numberOfSamples-HowManySignalSamples,0);
   
+ std::cout.precision (3) ;
+ std::cout.unsetf(ios::scientific);
+ 
+ double total_MC_expected = 0;
+ double total_DATA_measured = 0;
+ std::cout << std::endl << std::endl << std::endl << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
+ for (int iName=0; iName<reduced_name_samples.size(); iName++){
+  std::cout << "  " << setw (12) << reduced_name_samples.at(iName) << " | " << histo[iName]->Integral() << std::endl;
+  if (reduced_name_samples.at(iName) != "DATA") total_MC_expected += histo[iName]->Integral();
+  else total_DATA_measured += histo[iName]->Integral();
+ }
+ std::cout << std::endl;
+ std::cout << " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+ 
+ std::cout << " MC expected   = " << total_MC_expected << " +/- " << sqrt(total_MC_expected) << std::endl;
+ std::cout << " DATA measured = " << total_DATA_measured << " +/- " << sqrt(total_DATA_measured) << std::endl;
+ 
+ std::cout << " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+ 
+ 
 //  TCanvas* cCompare = (TCanvas*) gDirectory->Get("cCompare");
  for (int iName=0; iName<reduced_name_samples.size(); iName++){
   if (reduced_name_samples.at(iName) == "DATA") {
@@ -408,11 +452,13 @@ void DrawDistribution1D(TString fileSamples, TString WhatToPlot = "", double MIN
   else {
    if (already_drawn == false) {
     histo[iName]->SetFillStyle(0);
+    histo[iName]->SetLineWidth(4);
     histo[iName]->DrawNormalized("");
     already_drawn = true;
    }
    else {
     histo[iName]->SetFillStyle(0);
+    histo[iName]->SetLineWidth(4);
     histo[iName]->DrawNormalized("same");
    }
   }

@@ -122,60 +122,57 @@ void Selector_Leptons_MVA_Training( TString myMethodList = "" ) {
  double Dphi_RECO_l12;
  double Mll;
  double charge_RECO_l1_charge_RECO_l2;
+ double Z_ll;
+ 
  
  factory->AddVariable( "pdgId_RECO_l1" , 'I');
  factory->AddVariable( "pdgId_RECO_l2" , 'I');
  factory->AddVariable( "pT_RECO_l1" , 'F');
  factory->AddVariable( "pT_RECO_l2" , 'F');
- factory->AddVariable( "eta_RECO_l1" , 'F');
- factory->AddVariable( "eta_RECO_l2" , 'F');
+ factory->AddVariable( "abs(eta_RECO_l1)" , 'F');
+ factory->AddVariable( "abs(eta_RECO_l2)" , 'F');
  factory->AddVariable( "eta_RECO_l1_eta_RECO_l2" , 'F');
  factory->AddVariable( "Deta_RECO_l12" , 'F');
  factory->AddVariable( "Dphi_RECO_l12" , 'F');
  factory->AddVariable( "Mll" , 'F');
- factory->AddVariable( "charge_RECO_l1_charge_RECO_l2" , 'F');
-  
+//  factory->AddVariable( "charge_RECO_l1_charge_RECO_l2" , 'F');
+ factory->AddVariable( "abs(Z_ll)" , 'F');
+ 
  //==== Define the input samples ====
  
  TTree *signal_background[100]; 
  double weights[100];
-
+ 
  TTree *treeEffVect[100];
  char *nameSample[1000];
- char *nameSamplePrefix[1000];
+ char *nameSampleFile[1000];
  char *nameSampleTree[1000];
  double xsection[1000];
- std::ifstream inFile("test/Spring10/samples_training.txt");
-//  std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/Spring10/samples.txt");
-//  std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/WorkFlow/samples_temp.txt");
+ std::ifstream inFile("test/samples_skimmed_training.txt");
+ //  std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/WorkFlow/samples_temp.txt");
  std::string buffer;
-
+ 
  int totalSamples = 0;
  
  while(!inFile.eof()){
   getline(inFile,buffer);
-  std::cout << "buffer = " << buffer << std::endl;
+  //   std::cout << "buffer = " << buffer << std::endl;
   if (buffer != ""){ ///---> save from empty line at the end!
-   //    std::cout << "buffer.at(0) = " << buffer.at(0) << std::endl;
-   if (buffer.at(0) != '#'){
+   if (buffer.at(0) != '#'){ ///--------------------------------------- NON FUNZIONA!!!
     std::stringstream line( buffer );       
     nameSample[totalSamples] = new char [1000];
     line >> nameSample[totalSamples]; 
     std::cout << nameSample[totalSamples] << " ";
     
-    nameSamplePrefix[totalSamples] = new char [1000];
-    line >> nameSamplePrefix[totalSamples];
-    
-    nameSampleTree[totalSamples] = new char [1000];
-    line >> nameSampleTree[totalSamples];
+    nameSampleFile[totalSamples] = new char [1000];
+    line >> nameSampleFile[totalSamples];
     
     line >> xsection[totalSamples];  ///==== unused!
     std::cout << xsection[totalSamples] << " ";
-    std::cout << std::endl;
+    
     
     char nameFile[1000];
-//     sprintf(nameFile,"output/out_FinalSelection_%s.root",nameSample[totalSamples]);  
-    sprintf(nameFile,"output_Spring10/out_SelectorLeptons_%s.root",nameSample[totalSamples]);  
+    sprintf(nameFile,"output/out_NtupleProducer_%s.root",nameSample[totalSamples]);  
     TFile* f = new TFile(nameFile, "READ");
     
     treeEffVect[totalSamples] = (TTree) f->Get("outTreeSelections");
@@ -195,9 +192,8 @@ void Selector_Leptons_MVA_Training( TString myMethodList = "" ) {
     ///**********************************************************************
     weights[totalSamples] = XSection * preselection_efficiency / numEntriesBefore;
     signal_background[totalSamples] = (TTree) f->Get("outTreeJetLep");
-//     signal_background[totalSamples] = (TTree*) f->Get("outTreeLep");
     ///**********************************************************************
-    
+    std::cout << std::endl;
     totalSamples++;
    } 
   }
@@ -206,7 +202,7 @@ void Selector_Leptons_MVA_Training( TString myMethodList = "" ) {
  
  for (int iSample=0; iSample<totalSamples; iSample++){
   std::cerr << "iSample = " << iSample << std::endl;
-  if (iSample < 3) {
+  if (iSample < 1) {
    if (signal_background[iSample]->GetEntries() != 0) factory->AddSignalTree( signal_background[iSample], weights[iSample] );
   }
   else {
@@ -216,8 +212,8 @@ void Selector_Leptons_MVA_Training( TString myMethodList = "" ) {
  
  
  
- TString mycuts_s = Form("");
- TString mycuts_b = Form("");
+ TString mycuts_s = Form("abs(Z_ll)<10&&CJV_30==0&&charge_RECO_l1_charge_RECO_l2==-1&&((Mll<70&&Mll>15&&pdgId_RECO_l1==pdgId_RECO_l2)||(pdgId_RECO_l1!=pdgId_RECO_l2))");
+ TString mycuts_b = Form("abs(Z_ll)<10&&CJV_30==0&&charge_RECO_l1_charge_RECO_l2==-1&&((Mll<70&&Mll>15&&pdgId_RECO_l1==pdgId_RECO_l2)||(pdgId_RECO_l1!=pdgId_RECO_l2))");
  
  TCut mycuts = mycuts_s;
  TCut mycutb = mycuts_b;

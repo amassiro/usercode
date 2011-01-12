@@ -51,6 +51,7 @@ int main(int argc, char** argv)
  double Dphi_RECO_l12;
  double Mll;
  double charge_RECO_l1_charge_RECO_l2;
+ double Z_ll;
  
  Float_t input_variables_Lep[1000];
  Double_t* MVA_Lep;
@@ -62,13 +63,13 @@ int main(int argc, char** argv)
  TMVAreader_Lep->AddVariable("pdgId_RECO_l2",&input_variables_Lep[1]);
  TMVAreader_Lep->AddVariable("pT_RECO_l1",&input_variables_Lep[2]);
  TMVAreader_Lep->AddVariable("pT_RECO_l2",&input_variables_Lep[3]);
- TMVAreader_Lep->AddVariable("eta_RECO_l1",&input_variables_Lep[4]);
- TMVAreader_Lep->AddVariable("eta_RECO_l2",&input_variables_Lep[5]);
+ TMVAreader_Lep->AddVariable("abs(eta_RECO_l1)",&input_variables_Lep[4]);
+ TMVAreader_Lep->AddVariable("abs(eta_RECO_l2)",&input_variables_Lep[5]);
  TMVAreader_Lep->AddVariable("eta_RECO_l1_eta_RECO_l2",&input_variables_Lep[6]);
  TMVAreader_Lep->AddVariable("Deta_RECO_l12",&input_variables_Lep[7]);
  TMVAreader_Lep->AddVariable("Dphi_RECO_l12",&input_variables_Lep[8]);
  TMVAreader_Lep->AddVariable("Mll",&input_variables_Lep[9]);
- TMVAreader_Lep->AddVariable("charge_RECO_l1_charge_RECO_l2",&input_variables_Lep[10]);
+ TMVAreader_Lep->AddVariable("abs(Z_ll)",&input_variables_Lep[10]);
  
  
  ///==== book MVA Lepton ====
@@ -106,6 +107,7 @@ int main(int argc, char** argv)
  tree->SetBranchAddress("Dphi_RECO_l12",&Dphi_RECO_l12);
  tree->SetBranchAddress("Mll",&Mll);
  tree->SetBranchAddress("charge_RECO_l1_charge_RECO_l2",&charge_RECO_l1_charge_RECO_l2);
+ tree->SetBranchAddress("Z_ll",&Z_ll);
  
  ///==== add new branches ====
  for (int iMethod=0; iMethod<stdstrMethod_Lep.size(); iMethod++){
@@ -133,13 +135,14 @@ int main(int argc, char** argv)
   input_variables_Lep[1] = static_cast<float>( pdgId_RECO_l2 );
   input_variables_Lep[2] = static_cast<float>( pT_RECO_l1 );
   input_variables_Lep[3] = static_cast<float>( pT_RECO_l2 );
-  input_variables_Lep[4] = static_cast<float>( eta_RECO_l1 );
-  input_variables_Lep[5] = static_cast<float>( eta_RECO_l2 );
+  input_variables_Lep[4] = static_cast<float>( fabs(eta_RECO_l1) );
+  input_variables_Lep[5] = static_cast<float>( fabs(eta_RECO_l2) );
   input_variables_Lep[6] = static_cast<float>( eta_RECO_l1_eta_RECO_l2 );
   input_variables_Lep[7] = static_cast<float>( Deta_RECO_l12 );
   input_variables_Lep[8] = static_cast<float>( Dphi_RECO_l12 );
   input_variables_Lep[9] = static_cast<float>( Mll );
-  input_variables_Lep[10] = static_cast<float>( charge_RECO_l1_charge_RECO_l2 );
+  input_variables_Lep[10] = static_cast<float>( fabs(Z_ll) );
+//   input_variables_Lep[10] = static_cast<float>( charge_RECO_l1_charge_RECO_l2 );
   
   for (int iMethod=0; iMethod<stdstrMethod_Lep.size(); iMethod++){
    TString methodName = stdstrMethod_Lep.at(iMethod) + "_method_Lep";

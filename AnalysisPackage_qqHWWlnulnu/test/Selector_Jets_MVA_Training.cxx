@@ -127,8 +127,8 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
 
  factory->AddVariable( "pT_RECO_q1" , 'F');
  factory->AddVariable( "pT_RECO_q2" , 'F');
- factory->AddVariable( "eta_RECO_q1" , 'F');
- factory->AddVariable( "eta_RECO_q2" , 'F');
+ factory->AddVariable( "abs(eta_RECO_q1)" , 'F');
+ factory->AddVariable( "abs(eta_RECO_q2)" , 'F');
  
  factory->AddVariable( "eta_RECO_q1_eta_RECO_q2" , 'F');
  factory->AddVariable( "Deta_RECO_q12" , 'F');
@@ -141,10 +141,10 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
 
  TTree *treeEffVect[100];
  char *nameSample[1000];
- char *nameSamplePrefix[1000];
+ char *nameSampleFile[1000];
  char *nameSampleTree[1000];
  double xsection[1000];
- std::ifstream inFile("test/Spring10/samples_training.txt");
+ std::ifstream inFile("test/samples_skimmed_training.txt");
 //  std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/WorkFlow/samples_temp.txt");
  std::string buffer;
 
@@ -154,28 +154,21 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
   getline(inFile,buffer);
 //   std::cout << "buffer = " << buffer << std::endl;
   if (buffer != ""){ ///---> save from empty line at the end!
-   //    std::cout << "buffer.at(0) = " << buffer.at(0) << std::endl;
    if (buffer.at(0) != '#'){ ///--------------------------------------- NON FUNZIONA!!!
     std::stringstream line( buffer );       
     nameSample[totalSamples] = new char [1000];
     line >> nameSample[totalSamples]; 
     std::cout << nameSample[totalSamples] << " ";
     
-    nameSamplePrefix[totalSamples] = new char [1000];
-    line >> nameSamplePrefix[totalSamples];
-    
-    nameSampleTree[totalSamples] = new char [1000];
-    line >> nameSampleTree[totalSamples];
-    
+    nameSampleFile[totalSamples] = new char [1000];
+    line >> nameSampleFile[totalSamples];
+       
     line >> xsection[totalSamples];  ///==== unused!
     std::cout << xsection[totalSamples] << " ";
-//     std::cout << std::endl;
+    
     
     char nameFile[1000];
-//     sprintf(nameFile,"output/out_FinalSelection_%s.root",nameSample[totalSamples]);  
-    sprintf(nameFile,"output_Spring10/out_FinalSelection_%s.root",nameSample[totalSamples]);  
-// sprintf(nameFile,"output_Spring10/out_SelectorLeptons_%s.root",nameSample[totalSamples]);  
-//     sprintf(nameFile,"output_Spring10/out_SelectorJets_%s.root",nameSample[totalSamples]);  
+    sprintf(nameFile,"output/out_NtupleProducer_%s.root",nameSample[totalSamples]);  
     TFile* f = new TFile(nameFile, "READ");
     
     treeEffVect[totalSamples] = (TTree) f->Get("outTreeSelections");
@@ -195,9 +188,7 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
     ///**********************************************************************
     weights[totalSamples] = XSection * preselection_efficiency / numEntriesBefore;
     signal_background[totalSamples] = (TTree) f->Get("outTreeJetLep");
-    //     signal_background[totalSamples] = (TTree) f->Get("outTree");
     ///**********************************************************************
-//     std::cout << " " << weights[totalSamples] << " " << treeEffVect[totalSamples] << ;
     std::cout << std::endl;
     totalSamples++;
    } 
@@ -206,7 +197,7 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
  
  
  for (int iSample=0; iSample<totalSamples; iSample++){
-  if (iSample < 3) {
+  if (iSample < 1) {
    factory->AddSignalTree( signal_background[iSample], weights[iSample] );
   }
   else {
@@ -216,8 +207,8 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
  
  std::cerr << "==== exec ==== " << std::endl;
  
- TString mycuts_s = Form("");
- TString mycuts_b = Form("");
+ TString mycuts_s = Form("CJV_30==0");
+ TString mycuts_b = Form("CJV_30==0");
  
  TCut mycuts = mycuts_s;
  TCut mycutb = mycuts_b;
