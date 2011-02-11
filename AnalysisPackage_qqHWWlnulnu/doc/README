@@ -3,11 +3,35 @@
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Step:
-1) vbfPreselections
-
+1) MiBiCommonNT producer
+2) vbfPreselections
+3) ntuple producer
 
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-1) vbfPreselection.cpp
-          require minimum number of leptons and jets (with Deta and Mjj requirements)
+1) MiBiCommonNT producer 
+    see https://twiki.cern.ch/twiki/bin/view/Main/MiBiCommonPAT
+    Description: require at least 1 lepton and 2 jets
     
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2) vbf preselections
+    File:  vbfPreselection.cpp
+    Description: require minimum number of leptons and jets (with Deta and Mjj requirements)
+     At this stage select "JetAlgorithm" 
+	  Script to submit to MiB cluster
+	  and save on cluster
+	  
+			cd scripts/submit/
+			perl launchJobs_hercules.pl params_hercules.CFG
+			
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3) ntuple producer
+    File: NtupleProducer.cpp
+    Description: selection of the objects in the analysis (2 leptons and 2 jets) and  produce ntuples with information
+   
+   To test: ./bin/NtupleProducer.exe test/testNtupleProducer.cfg
+   
+   
+   
+   

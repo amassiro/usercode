@@ -1,3 +1,8 @@
+/**
+   vbfPreselection
+   require minimum number of leptons and jets (with Deta and Mjj requirements)
+*/
+
 #include "treeReader.h"
 #include "ConfigParser.h"
 #include "ntpleUtils.h"

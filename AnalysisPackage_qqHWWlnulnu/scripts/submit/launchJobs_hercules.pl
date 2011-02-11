@@ -23,14 +23,14 @@ while (<USERCONFIG>)
     $User_Preferences{$var} = $value;
   }
 
-$BASEDir          = "/gwpool/users/amassiro/VBF/Analysis/AnalysisPackage_qqHWWlnulnu";
-$JETAlgorithm     = $User_Preferences{"JETAlgorithm"} ;
-$LISTOFSamples    = $User_Preferences{"LISTOFSamples"} ;
-$JOBCfgTemplate   = $User_Preferences{"JOBCfgTemplate"} ;
-$INPUTSAVEPath    = $User_Preferences{"INPUTSAVEPath"} ;
-$OUTPUTSAVEPath   = $User_Preferences{"OUTPUTSAVEPath"} ;
+$BASEDir                       = $User_Preferences{"BASEDir"} ; 
+$JETAlgorithm              = $User_Preferences{"JETAlgorithm"} ;
+$LISTOFSamples          = $User_Preferences{"LISTOFSamples"} ;
+$JOBCfgTemplate        = $User_Preferences{"JOBCfgTemplate"} ;
+$INPUTSAVEPath        = $User_Preferences{"INPUTSAVEPath"} ;
+$OUTPUTSAVEPath    = $User_Preferences{"OUTPUTSAVEPath"} ;
 $OUTPUTFILEName   = $User_Preferences{"OUTPUTFILEName"} ;
-$JOBModulo        = $User_Preferences{"JOBModulo"} ;
+$JOBModulo                 = $User_Preferences{"JOBModulo"} ;
 
 $LISTOFSamples  = $BASEDir."/".$LISTOFSamples;
 $JOBCfgTemplate = $BASEDir."/".$JOBCfgTemplate;
