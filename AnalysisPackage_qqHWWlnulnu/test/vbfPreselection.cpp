@@ -29,7 +29,6 @@ int main (int argc, char** argv)
   std::string outputRootFilePath = gConfigParser -> readStringOption ("Output::outputRootFilePath") ;
   std::string outputRootFileName = gConfigParser -> readStringOption ("Output::outputRootFileName") ;  
   
-  int entryMAX = gConfigParser -> readIntOption ("Options::entryMAX") ;
   int entryMODULO = gConfigParser -> readIntOption ("Options::entryMODULO") ;
   
   int nJetMIN = gConfigParser -> readIntOption ("Cuts::nJetMIN") ;
@@ -104,20 +103,15 @@ int main (int argc, char** argv)
       std::vector<ROOT::Math::XYZTVector> electrons ;
       std::vector<ROOT::Math::XYZTVector> muons ;
       std::vector<ROOT::Math::XYZTVector> leptons ;
-      std::vector<std::string> leptonFlavours ;    
-      std::vector<float> leptonTkIso ;
   
       for (unsigned int eleIt = 0 ; eleIt < (reader.Get4V ("electrons")->size ()) ; ++eleIt)
         {
           if ( reader.Get4V ("electrons")->at (eleIt).pt () < lepPtMIN ) continue ;
           if ( (reader.GetFloat ("electrons_tkIsoR03")->at (eleIt)) / reader.Get4V ("electrons")->at (eleIt).pt () > lepTkIsoOverPtMAX ) continue ;
-//          if ( (reader.GetFloat ("electrons_IdRobustLoose")->at (eleIt)) < eleIdValueMIN ) continue ;
           ++nLep ;
           
           electrons.push_back ( reader.Get4V ("electrons")->at (eleIt) ) ;
           leptons.push_back ( reader.Get4V ("electrons")->at (eleIt) ) ;      
-          leptonFlavours.push_back ("electron") ;
-          leptonTkIso.push_back (reader.GetFloat ("electrons_tkIsoR03")->at (eleIt)) ;
         }
       
       for (unsigned int muIt = 0 ; muIt < (reader.Get4V ("muons")->size ()) ; ++muIt)
@@ -128,7 +122,6 @@ int main (int argc, char** argv)
           
           muons.push_back ( reader.Get4V ("muons")->at (muIt) ) ;
           leptons.push_back ( reader.Get4V ("muons")->at (muIt) ) ;      
-          leptonFlavours.push_back ("muon") ;
         }
       
       if ( nLep < nLepMIN ) continue ;
@@ -168,9 +161,8 @@ int main (int argc, char** argv)
       
        bool isVBFCutsOk = false ;
        
-       for (unsigned int jetIt1 = 0 ; jetIt1 < jets.size () ; ++jetIt1)
-         for (unsigned int jetIt2 = jetIt1+1 ; jetIt2 < jets.size () ; ++jetIt2)
-           {
+       for (unsigned int jetIt1 = 0 ; jetIt1 < jets.size () ; ++jetIt1) {
+         for (unsigned int jetIt2 = jetIt1+1 ; jetIt2 < jets.size () ; ++jetIt2) {
              ROOT::Math::XYZTVector jet1 = jets.at (jetIt1) ;
              ROOT::Math::XYZTVector jet2 = jets.at (jetIt2) ;
              ROOT::Math::XYZTVector jet12 = jet1 + jet2 ;
@@ -179,7 +171,7 @@ int main (int argc, char** argv)
                  (jet12.mass () > VBFMjjMIN) )
                isVBFCutsOk = true ;
            }    
-      
+       }
       if (isVBFCutsOk == false) continue ;
       stepEvents[step] += 1 ;
       
