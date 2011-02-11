@@ -1,0 +1,14 @@
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+///~~~~ framework for qqH > WW > lnln analysis ~~~~
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Step:
+1) vbfPreselections
+
+
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) vbfPreselection.cpp
+
+    require minimum number of leptons and jets (with Deta and Mjj requirements)
+    
