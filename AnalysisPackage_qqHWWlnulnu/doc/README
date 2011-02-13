@@ -2,11 +2,22 @@
 ///~~~~ framework for qqH > WW > lnln analysis ~~~~
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Code:
+    http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/UserCode/AMassironi/AnalysisPackage_qqHWWlnulnu/
+
+
+    export CVS_RSH=ssh
+    export CVSROOT=:ext:amassiro@cmscvs.cern.ch:/cvs_server/repositories/CMSSW
+    cvs co -d NtuplePackage UserCode/Bicocca/PhysicsTools/NtuplePackage
+    cvs co -d AnalysisPackage_qqHWWlnulnu UserCode/AMassironi/AnalysisPackage_qqHWWlnulnu
+
+
+
 Step:
 1) MiBiCommonNT producer
 2) vbfPreselections
 3) ntuple producer
-
+4*) Plot tool
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 1) MiBiCommonNT producer 
@@ -31,6 +42,38 @@ Step:
     Description: selection of the objects in the analysis (2 leptons and 2 jets) and  produce ntuples with information
    
    To test: ./bin/NtupleProducer.exe test/testNtupleProducer.cfg
+   
+   To run on cluster:
+     root -l test/Winter10/cfgCreator_FinalSelector_HERCULES.cxx
+     root -l test/Winter10/cfgLauncher_FinalSelection_HERCULES.cxx
+     
+   
+   ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   4) Plot tool.
+   From this moment on it's possible to plot distributions.
+       r00t test/Winter10/Draw.cxx\(\"nameFileWithListOfSamples\"\,\"Variable\",min, max, nbins, lumitoNormalize, \"selections\"\)
+   
+       e.g.: 
+         r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"Mjj\",0,1000,100,40.5,\"Mjj\>100\&\&Deta_RECO_q12\>1\&\&pT_RECO_l1\>20\&\&pT_RECO_q1\>20\&\&pT_RECO_q2\>20\"\)
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    
