@@ -1,9 +1,9 @@
 {
  #include "Read.cc"
  
- char *nameSample[10000];
- char *nameHumanReadable[10000];
- char* xsection[10000];
+ char *nameSample[1000];
+ char *nameHumanReadable[1000];
+ char* xsection[1000];
 
  char nameFileIn[1000] = {"test/Winter10/samples_skimmed.txt"};
  int numberOfSamples =  ReadFile(nameFileIn,nameSample,nameHumanReadable, xsection);

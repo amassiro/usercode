@@ -20,6 +20,8 @@
 #include "TMVA/Tools.h"
 #endif
 
+#include "test/Winter10/Read.cc"
+
 Bool_t ReadDataFromAsciiIFormat = kFALSE;
 
 
@@ -144,60 +146,42 @@ void Selector_Leptons_MVA_Training( TString myMethodList = "" ) {
  double weights[100];
  
  TTree *treeEffVect[100];
+
  char *nameSample[1000];
- char *nameSampleFile[1000];
- char *nameSampleTree[1000];
- double xsection[1000];
- std::ifstream inFile("test/samples_skimmed_training.txt");
- //  std::ifstream inFile("/home/andrea/Cern/Code/VBF/qqHWW/AnalysisPackage_qqHWWlnulnu/test/WorkFlow/samples_temp.txt");
- std::string buffer;
+ char *nameHumanReadable[1000];
+ char* xsection[1000];
  
- int totalSamples = 0;
+ char nameFileIn[1000] = {"test/Winter10/samples_skimmed_training.txt"};
+ int totalSamples =  ReadFile(nameFileIn,nameSample,nameHumanReadable, xsection);
  
- while(!inFile.eof()){
-  getline(inFile,buffer);
-  //   std::cout << "buffer = " << buffer << std::endl;
-  if (buffer != ""){ ///---> save from empty line at the end!
-   if (buffer.at(0) != '#'){ ///--------------------------------------- NON FUNZIONA!!!
-    std::stringstream line( buffer );       
-    nameSample[totalSamples] = new char [1000];
-    line >> nameSample[totalSamples]; 
-    std::cout << nameSample[totalSamples] << " ";
-    
-    nameSampleFile[totalSamples] = new char [1000];
-    line >> nameSampleFile[totalSamples];
-    
-    line >> xsection[totalSamples];  ///==== unused!
-    std::cout << xsection[totalSamples] << " ";
-    
-    
-    char nameFile[1000];
-    sprintf(nameFile,"output/out_NtupleProducer_%s.root",nameSample[totalSamples]);  
-    TFile* f = new TFile(nameFile, "READ");
-    
-    treeEffVect[totalSamples] = (TTree) f->Get("outTreeSelections");
-    char nameTreeEff[100];
-    sprintf(nameTreeEff,"treeEff_%d",totalSamples); 
-    treeEffVect[totalSamples]->SetName(nameTreeEff);      
-    
-    double XSection;
-    double eff_Channel_Filter;
-    double preselection_efficiency;
-    int numEntriesBefore;
-    treeEffVect[totalSamples]->SetBranchAddress("XSection",&XSection);
-    treeEffVect[totalSamples]->SetBranchAddress("preselection_efficiency",&preselection_efficiency);
-    treeEffVect[totalSamples]->SetBranchAddress("numEntriesBefore",&numEntriesBefore);
-    treeEffVect[totalSamples]->GetEntry(0);
-    
-    ///**********************************************************************
-    weights[totalSamples] = XSection * preselection_efficiency / numEntriesBefore;
-    signal_background[totalSamples] = (TTree) f->Get("outTreeJetLep");
-    ///**********************************************************************
-    std::cout << std::endl;
-    totalSamples++;
-   } 
-  }
- }
+ for (int iSample=0; iSample<totalSamples; iSample++){
+  std::cout << " Sample[" << iSample << " : " << totalSamples << "] = " << nameSample[iSample] << std::endl;
+  
+  
+  char nameFile[1000];
+  sprintf(nameFile,"output/out_NtupleProducer_%s.root",nameSample[iSample]);  
+  TFile* f = new TFile(nameFile, "READ");
+  
+  treeEffVect[iSample] = (TTree) f->Get("outTreeSelections");
+  char nameTreeEff[100];
+  sprintf(nameTreeEff,"treeEff_%d",iSample); 
+  treeEffVect[iSample]->SetName(nameTreeEff);      
+  
+  double XSection;
+  double eff_Channel_Filter;
+  double preselection_efficiency;
+  int numEntriesBefore;
+  treeEffVect[iSample]->SetBranchAddress("XSection",&XSection);
+  treeEffVect[iSample]->SetBranchAddress("preselection_efficiency",&preselection_efficiency);
+  treeEffVect[iSample]->SetBranchAddress("numEntriesBefore",&numEntriesBefore);
+  treeEffVect[iSample]->GetEntry(0);
+  
+  ///**********************************************************************
+  weights[iSample] = XSection * preselection_efficiency / numEntriesBefore;
+  signal_background[iSample] = (TTree) f->Get("outTreeJetLep");
+  ///**********************************************************************
+  std::cout << std::endl;
+ } 
  
  
  for (int iSample=0; iSample<totalSamples; iSample++){
