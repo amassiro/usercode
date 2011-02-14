@@ -35,7 +35,9 @@ struct Variables
  double l1_pZ;
  double l1_pT;
  double l1_E;
- 
+ double l1_Eta;
+ double l1_Phi;
+  
  double l1_charge;
  int          l1_flavour;
  double l1_dxy;
@@ -65,6 +67,8 @@ struct Variables
  double l2_pZ;
  double l2_pT;
  double l2_E;
+ double l2_Eta;
+ double l2_Phi;
  
  double l2_charge;
  int          l2_flavour;

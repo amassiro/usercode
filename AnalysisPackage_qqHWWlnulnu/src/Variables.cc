@@ -37,6 +37,8 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
  vars.m_reducedTree -> Branch("l1_pZ",  &vars.l1_pZ,   "l1_pZ/D");
  vars.m_reducedTree -> Branch("l1_pT",  &vars.l1_pT,   "l1_pT/D");
  vars.m_reducedTree -> Branch("l1_E",  &vars.l1_E,   "l1_E/D");
+ vars.m_reducedTree -> Branch("l1_Eta",  &vars.l1_Eta,   "l1_Eta/D");
+ vars.m_reducedTree -> Branch("l1_Phi",  &vars.l1_Phi,   "l1_Phi/D"); 
  
  vars.m_reducedTree -> Branch("l1_charge",  &vars.l1_charge,   "l1_charge/D");
  vars.m_reducedTree -> Branch("l1_flavour", &vars.l1_flavour, "l1_flavour/I");
@@ -65,6 +67,8 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
  vars.m_reducedTree -> Branch("l2_pZ",  &vars.l2_pZ,   "l2_pZ/D");
  vars.m_reducedTree -> Branch("l2_pT",  &vars.l2_pT,   "l2_pT/D");
  vars.m_reducedTree -> Branch("l2_E",  &vars.l2_E,   "l2_E/D");
+ vars.m_reducedTree -> Branch("l2_Eta",  &vars.l2_Eta,   "l2_Eta/D");
+ vars.m_reducedTree -> Branch("l2_Phi",  &vars.l2_Phi,   "l2_Phi/D"); 
  
  vars.m_reducedTree -> Branch("l2_charge",  &vars.l2_charge,   "l2_charge/D");
  vars.m_reducedTree -> Branch("l2_flavour", &vars.l2_flavour, "l2_flavour/I");
@@ -196,6 +200,8 @@ void SetLeptonsVariables(Variables& vars, treeReader& reader,const int& iLep1, c
   vars.l1_pZ = reader.Get4V("muons")->at(iLep1).Z();
   vars.l1_pT = reader.Get4V("muons")->at(iLep1).pt(); 
   vars.l1_E = reader.Get4V("muons")->at(iLep1).E();
+  vars.l1_Eta = reader.Get4V("muons")->at(iLep1).Eta();
+  vars.l1_Phi = reader.Get4V("muons")->at(iLep1).Phi(); 
   
   vars.l1_charge = reader.GetFloat("muons_charge")->at(iLep1);
   vars.l1_flavour = 13;
@@ -225,6 +231,8 @@ void SetLeptonsVariables(Variables& vars, treeReader& reader,const int& iLep1, c
   vars.l2_pZ = reader.Get4V("muons")->at(iLep2).Z();
   vars.l2_pT = reader.Get4V("muons")->at(iLep2).pt(); 
   vars.l2_E = reader.Get4V("muons")->at(iLep2).E();
+  vars.l2_Eta = reader.Get4V("muons")->at(iLep2).Eta();
+  vars.l2_Phi = reader.Get4V("muons")->at(iLep2).Phi();
   
   vars.l2_charge = reader.GetFloat("muons_charge")->at(iLep2);
   vars.l2_flavour = 13;
@@ -255,6 +263,8 @@ void SetLeptonsVariables(Variables& vars, treeReader& reader,const int& iLep1, c
   vars.l1_pZ = reader.Get4V("electrons")->at(iLep1).Z();
   vars.l1_pT = reader.Get4V("electrons")->at(iLep1).pt(); 
   vars.l1_E = reader.Get4V("electrons")->at(iLep1).E();
+  vars.l1_Eta = reader.Get4V("electrons")->at(iLep1).Eta();
+  vars.l1_Phi = reader.Get4V("electrons")->at(iLep1).Phi();
   
   vars.l1_charge = reader.GetFloat("electrons_charge")->at(iLep1);
   vars.l1_flavour = 11;
@@ -284,6 +294,8 @@ void SetLeptonsVariables(Variables& vars, treeReader& reader,const int& iLep1, c
   vars.l2_pZ = reader.Get4V("electrons")->at(iLep2).Z();
   vars.l2_pT = reader.Get4V("electrons")->at(iLep2).pt(); 
   vars.l2_E = reader.Get4V("electrons")->at(iLep2).E();
+  vars.l2_Eta = reader.Get4V("electrons")->at(iLep2).Eta();
+  vars.l2_Phi = reader.Get4V("electrons")->at(iLep2).Phi();
   
   vars.l2_charge = reader.GetFloat("electrons_charge")->at(iLep2);
   vars.l2_flavour = 11;
