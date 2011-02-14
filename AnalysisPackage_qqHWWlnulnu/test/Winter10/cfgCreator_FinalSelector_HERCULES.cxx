@@ -27,7 +27,7 @@
   myfile << "[Input]" << std::endl;
   myfile << "treeName = SimpleNtuple " << std::endl;
   myfile << "inputFile = /gwterax1/users/amassiro/VBF/Fall10_Feb11MCandDATA/" << nameSample[iSample] << "/Jets2Lepton2_MiBiCommonNTOneLeptonTwoJetsPFlow_TOT.root" << std::endl;
-  myfile << "  inFileNameJSON = /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions10/7TeV/Reprocessing/Cert_136033-149442_7TeV_Dec22ReReco_Collisions10_CMSSWConfig.txt " << std::endl;
+  myfile << "  inFileNameJSON = /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions10/7TeV/Reprocessing/Cert_136033-149442_7TeV_Dec22ReReco_Collisions10_JSON_v3.txt " << std::endl;
 
   char toDo[1000];
   sprintf(toDo,"double xsec = %s",xsection[iSample]);
@@ -41,7 +41,7 @@
   myfile << "nStepToDo = 5 " << std::endl;
   myfile << std::endl;
   myfile << "[Output]" << std::endl;
-  myfile << "OutFileNameEfficiencies = /gwpool/users/amassiro/VBF/Analysis/AnalysisPackage_qqHWWlnulnu/output_Winter10/out_NtupleProducer_" << nameSample[iSample] << ".root" << std::endl;
+  myfile << "outFileName = /gwpool/users/amassiro/VBF/Analysis/AnalysisPackage_qqHWWlnulnu/output_Winter10/out_NtupleProducer_" << nameSample[iSample] << ".root" << std::endl;
   myfile << std::endl;
   
   myfile.close(); 

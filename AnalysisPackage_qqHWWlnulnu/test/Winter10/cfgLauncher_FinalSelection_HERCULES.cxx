@@ -27,7 +27,7 @@
   TString Command2Line = Form("chmod +x %s",nameFile);
   gSystem->Exec(Command2Line);
 
-  Command2Line = Form("qsub -V -d ./ -q shortcms %s",nameFile);
+  Command2Line = Form("qsub -V -d ./ -q longcms %s",nameFile);
   gSystem->Exec(Command2Line);
   
  }

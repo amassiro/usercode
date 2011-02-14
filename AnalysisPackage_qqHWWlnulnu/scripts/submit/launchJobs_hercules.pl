@@ -188,7 +188,7 @@ while (<LISTOFSamples>)
     # submit job
     ############
     
-    $command = "qsub -V -d ".$jobDir." -q shortcms ".$tempBjob."\n" ;      
+    $command = "qsub -V -d ".$jobDir." -q longcms ".$tempBjob."\n" ;      
     print ($command);
     system ($command);
     
