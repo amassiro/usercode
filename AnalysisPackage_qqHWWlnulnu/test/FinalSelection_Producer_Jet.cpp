@@ -40,29 +40,28 @@ int main(int argc, char** argv)
  
  int entryMOD = gConfigParser -> readIntOption("Input::entryMOD");
  
- double pT_RECO_q1;
- double pT_RECO_q2;
- double phi_RECO_q1;
- double phi_RECO_q2;
- double eta_RECO_q1;
- double eta_RECO_q2;
- double eta_RECO_q1_eta_RECO_q2;
- double Deta_RECO_q12;
- double Mjj;
-
+ double q1_pT;
+ double q2_pT;
+ double q1_Eta;
+ double q2_Eta;
+ double DEta_qq;
+ double DPhi_qq;
+ double M_qq;
+ int CJV_30;
  
  Float_t input_variables_Jet[1000];
  Double_t* MVA_Jet;
  
  TMVA::Reader *TMVAreader_Jet = new TMVA::Reader( "!Color:!Silent" );
- TMVAreader_Jet->AddVariable("pT_RECO_q1",&input_variables_Jet[0]);
- TMVAreader_Jet->AddVariable("pT_RECO_q2",&input_variables_Jet[1]);
- TMVAreader_Jet->AddVariable("abs(eta_RECO_q1)",&input_variables_Jet[2]);
- TMVAreader_Jet->AddVariable("abs(eta_RECO_q2)",&input_variables_Jet[3]);
- TMVAreader_Jet->AddVariable("eta_RECO_q1_eta_RECO_q2",&input_variables_Jet[4]);
- TMVAreader_Jet->AddVariable("Deta_RECO_q12",&input_variables_Jet[5]);
- TMVAreader_Jet->AddVariable("Mjj",&input_variables_Jet[6]);
- 
+ TMVAreader_Jet->AddVariable("q1_pT",&input_variables_Jet[0]);
+ TMVAreader_Jet->AddVariable("q2_pT",&input_variables_Jet[1]);
+ TMVAreader_Jet->AddVariable("abs(q1_Eta)",&input_variables_Jet[2]);
+ TMVAreader_Jet->AddVariable("abs(q2_Eta)",&input_variables_Jet[3]);
+ TMVAreader_Jet->AddVariable("q1_Eta*q2_Eta",&input_variables_Jet[4]);
+ TMVAreader_Jet->AddVariable("DEta_qq",&input_variables_Jet[5]);
+ TMVAreader_Jet->AddVariable("DPhi_qq",&input_variables_Jet[6]);
+ TMVAreader_Jet->AddVariable("M_qq",&input_variables_Jet[7]);
+ TMVAreader_Jet->AddVariable("CJV_30",&input_variables_Jet[8]);
  
  
  ///==== book MVA Jet ====
@@ -89,13 +88,14 @@ int main(int argc, char** argv)
  
  TFile* file = new TFile(inputFile.c_str(), "update");
  TTree *tree = (TTree*)file->Get("outTreeJetLep");
- tree->SetBranchAddress("pT_RECO_q1",&pT_RECO_q1);
- tree->SetBranchAddress("pT_RECO_q2",&pT_RECO_q2);
- tree->SetBranchAddress("eta_RECO_q1",&eta_RECO_q1);
- tree->SetBranchAddress("eta_RECO_q2",&eta_RECO_q2);
- tree->SetBranchAddress("eta_RECO_q1_eta_RECO_q2",&eta_RECO_q1_eta_RECO_q2);
- tree->SetBranchAddress("Deta_RECO_q12",&Deta_RECO_q12);
- tree->SetBranchAddress("Mjj",&Mjj);
+ tree->SetBranchAddress("q1_pT",&q1_pT);
+ tree->SetBranchAddress("q2_pT",&q2_pT);
+ tree->SetBranchAddress("q1_Eta",&q1_Eta);
+ tree->SetBranchAddress("q2_Eta",&q2_Eta);
+ tree->SetBranchAddress("DEta_qq",&DEta_qq);
+ tree->SetBranchAddress("DPhi_qq",&DPhi_qq);
+ tree->SetBranchAddress("M_qq",&M_qq);
+ tree->SetBranchAddress("CJV_30",&CJV_30);
  
  ///==== add new branches ====
  for (int iMethod=0; iMethod<stdstrMethod_Jet.size(); iMethod++){
@@ -119,14 +119,16 @@ int main(int argc, char** argv)
   
   tree->GetEntry(iEntry);
   
-  input_variables_Jet[0] = static_cast<Float_t>(pT_RECO_q1);
-  input_variables_Jet[1] = static_cast<Float_t>(pT_RECO_q2);
-  input_variables_Jet[2] = static_cast<Float_t>(fabs(eta_RECO_q1));
-  input_variables_Jet[3] = static_cast<Float_t>(fabs(eta_RECO_q2));
-  input_variables_Jet[4] = static_cast<Float_t>(eta_RECO_q1_eta_RECO_q2);
-  input_variables_Jet[5] = static_cast<Float_t>(Deta_RECO_q12);
-  input_variables_Jet[6] = static_cast<Float_t>(Mjj);
-
+  input_variables_Jet[0] = static_cast<Float_t>(q1_pT);
+  input_variables_Jet[1] = static_cast<Float_t>(q2_pT);
+  input_variables_Jet[2] = static_cast<Float_t>(fabs(q1_Eta));
+  input_variables_Jet[3] = static_cast<Float_t>(fabs(q2_Eta));
+  input_variables_Jet[4] = static_cast<Float_t>(q1_Eta*q2_Eta);
+  input_variables_Jet[5] = static_cast<Float_t>(DEta_qq);
+  input_variables_Jet[6] = static_cast<Float_t>(DPhi_qq);  
+  input_variables_Jet[7] = static_cast<Float_t>(M_qq);
+  input_variables_Jet[8] = static_cast<Float_t>(CJV_30);
+  
   for (int iMethod=0; iMethod<stdstrMethod_Jet.size(); iMethod++){
    TString methodName = stdstrMethod_Jet.at(iMethod) + "_method_Jet";
    MVA_Jet[iMethod] = TMVAreader_Jet->EvaluateMVA(methodName);

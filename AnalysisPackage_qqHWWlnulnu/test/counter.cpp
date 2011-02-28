@@ -1,20 +1,3 @@
-/* 
-TO COMPILE:
-
-export ROOTSYS=~/Desktop/root
-export PATH=$ROOTSYS/bin:$PATH
-export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
-export DYLD_LIBRARY_PATH=$ROOTSYS/lib:$DYLD_LIBRARY_PATH 
-
-c++ -o counter `root-config --glibs --cflags` counter.cpp
-
-TO RUN:     
-
-./count
-
-
-*/
-
 #include <cmath>
 #include <iostream>
 #include "TF1.h"
@@ -41,6 +24,7 @@ TO RUN:
 #include <fstream>
 #include <sstream>
 
+#include "Winter10/Read.cc"
 
 using namespace std ;
 
@@ -101,9 +85,11 @@ struct coll
 
 
 int main(int argc, char** argv) {
+ char nameFileIn[1000];
+ 
  TString fileSamples;
- if (argc>=2) fileSamples = Form("%s",argv[1]);
- else fileSamples = Form("test/samples_skimmed_counter.txt");
+ if (argc>=2) sprintf(nameFileIn,"%s",argv[1]);
+ else  sprintf(nameFileIn,"test/Winter10/samples_skimmed.txt");
   
  vector<coll> samples ;
  
@@ -114,65 +100,41 @@ int main(int argc, char** argv) {
  TH1F* histo_temp[100];
  
  char *nameSample[1000];
- char *nameSampleFile[1000];
- char *joinSampleName[1000];
- 
+ char *nameHumanReadable[1000];
+ char* xsectionName[1000];
  double xsection[1000];
  
- int numberOfSamples = 0;
- std::ifstream inFile(fileSamples.Data());
- std::string buffer;
+ int numberOfSamples =  ReadFile(nameFileIn,nameSample,nameHumanReadable, xsectionName);
  
- while(!inFile.eof()){
-  getline(inFile,buffer);
-  //   std::cout << "buffer = " << buffer << std::endl;
-  if (buffer != ""){ ///---> save from empty line at the end!
-   if (buffer.at(0) != '#'){
-    std::stringstream line( buffer );       
-    nameSample[numberOfSamples] = new char [1000];
-    line >> nameSample[numberOfSamples]; 
-    std::cout << nameSample[numberOfSamples] << " ";
-    
-    nameSampleFile[numberOfSamples] = new char [1000];
-    line >> nameSampleFile[numberOfSamples]; 
-    std::cout << nameSampleFile[numberOfSamples] << " ";
-    
-    line >> xsection[numberOfSamples]; 
-    std::cout << xsection[numberOfSamples] << " ";
-    std::cout << std::endl;
-    
-    joinSampleName[numberOfSamples] = new char [1000];
-    line >> joinSampleName[numberOfSamples]; 
-    std::cout << joinSampleName[numberOfSamples] << " ";
-    std::cout << std::endl;
-  
-    numberOfSamples++;
-   } 
-  }
+ for (int iSample=0; iSample<numberOfSamples; iSample++){
+  xsection[iSample] = atof(xsectionName[iSample]);
  }
  
- ///===== create map for joint sample ====
  
+ ///===== create map for joint sample ====
  
  std::vector<int> join_samples;
  std::vector<std::string> name_samples;
  for (int iSample=0; iSample<numberOfSamples; iSample++){
-  name_samples.push_back(joinSampleName[iSample]);
+  name_samples.push_back(nameHumanReadable[iSample]);
   join_samples.push_back(-1);
  }
  
+ 
  std::vector<std::string> reduced_name_samples;
  std::vector<int>         reduced_name_samples_flag;
- for (int iSample=0; iSample<numberOfSamples; iSample++){
-  bool flag_name = false;
-  for (int iName=0; iName<reduced_name_samples.size(); iName++){
-   if (reduced_name_samples.at(iName) == name_samples.at(iSample)) flag_name = true;
+ //  for (int iSample=0; iSample<numberOfSamples; iSample++){
+  for (int iSample = (numberOfSamples-1); iSample>= 0; iSample--){
+   bool flag_name = false;
+   for (int iName=0; iName<reduced_name_samples.size(); iName++){
+    if (reduced_name_samples.at(iName) == name_samples.at(iSample)) flag_name = true;
+   }
+   if (flag_name == false) {
+    reduced_name_samples.push_back(name_samples.at(iSample));
+    reduced_name_samples_flag.push_back(-1);
+   }
   }
-  if (flag_name == false) {
-   reduced_name_samples.push_back(name_samples.at(iSample));
-   reduced_name_samples_flag.push_back(-1);
-  }
- }
+  
  
  ///===== cicle on reduced sample names and add to counter ====
  
@@ -186,7 +148,7 @@ int main(int argc, char** argv) {
       samples.push_back (coll (reduced_name_samples.at(iName))) ;
      }
      char nameFile[1000];
-     sprintf(nameFile,"output/out_NtupleProducer_%s.root",nameSample[iSample]);  
+     sprintf(nameFile,"output_Fall10/out_NtupleProducer_%s.root",nameSample[iSample]);  
      TFile* f = new TFile(nameFile, "READ");
      std::pair<TTree*, TTree*> pair_vbf_temp ((TTree*) f->Get ("outTreeJetLep"), (TTree*) f->Get ("outTreeSelections"));
      samples.back ().add (xsection[iSample], pair_vbf_temp) ;
@@ -199,24 +161,25 @@ vector<TCut> selections ;
 
 
 ///==== cut based ====
-///*  -  */ selections.push_back ("") ;
-///* VBF */ selections.push_back ("pT_RECO_q1>20&&pT_RECO_q2>20&&abs(eta_RECO_q1)>0.1&&abs(eta_RECO_q2)>0.1&&Deta_RECO_q12>2.0&&Mjj>350") ;
-///* CJV */ selections.push_back ("CJV_30<1") ;
-///* LEP */ selections.push_back ("pT_RECO_l1>30&&pT_RECO_l2>10&&abs(eta_RECO_l1)<2.5&&abs(eta_RECO_l2)<2.5&&Deta_RECO_l12<3.8&&Dphi_RECO_l12<1.5&&charge_RECO_l1_charge_RECO_l2==-1&&abs(Z_ll)<0.5") ;
-///* Z_V */ selections.push_back ("((Mll<70&&Mll>20&&pdgId_RECO_l1==pdgId_RECO_l2)||(pdgId_RECO_l1!=pdgId_RECO_l2))") ;
-///* MET */ selections.push_back ("MET>30");
-///* Btag */ selections.push_back ("bTag_trackCountingHighPurBJetTags_q2<1.0&&bTag_trackCountingHighPurBJetTags_q1<1.0");
+/*  -  */ selections.push_back ("") ;
+/* VBF */ selections.push_back ("q1_pT>20&&q2_pT>20&&abs(q1_Eta)>0.1&&abs(q2_Eta)>0.1&&DEta_qq>2.0&&M_qq>350") ;
+/* CJV */ selections.push_back ("CJV_30<1") ;
+ /* LEP */ selections.push_back ("l1_pT>30 && l2_pT>10 && abs(l1_Eta)<2.5 && abs(l2_Eta)<2.5 && DEta_ll<3.8 && DPhi_ll<1.5 && l1_charge * l2_charge == -1 && abs(Z_ll)<0.5") ;
+/* Z_V */ selections.push_back ("((M_ll<70&&M_ll>20&&l1_flavour==l2_flavour)||(l1_flavour!=l2_flavour))") ;
+/* MET */ selections.push_back ("met>30");
+ /* Btag */ selections.push_back ("q2_bTag_trackCountingHighPurBJetTags<1.0&&q1_bTag_trackCountingHighPurBJetTags<1.0");
 
 
 
 ///==== MVA ====
-/*  -  */ selections.push_back ("") ;
-/* VBF */ selections.push_back ("pT_RECO_q1>20&&pT_RECO_q2>20&&abs(eta_RECO_q1)>0.1&&abs(eta_RECO_q2)>0.1&&Deta_RECO_q12>0.0&&Mjj>200") ;
-/* CJV */ selections.push_back ("CJV_30<1") ;
-/* LEP */ selections.push_back ("pT_RECO_l1>30&&pT_RECO_l2>10&&abs(eta_RECO_l1)<2.5&&abs(eta_RECO_l2)<2.5&&charge_RECO_l1_charge_RECO_l2==-1") ;
-/* Z_V */ selections.push_back ("((Mll<70&&Mll>20&&pdgId_RECO_l1==pdgId_RECO_l2)||(pdgId_RECO_l1!=pdgId_RECO_l2))") ;
-/* MET */ selections.push_back ("MET>30");
-/* Btag */ selections.push_back ("bTag_trackCountingHighPurBJetTags_q2<1.0&&bTag_trackCountingHighPurBJetTags_q1<1.0");
+// /*  -  */ selections.push_back ("") ;
+// /* VBF */ selections.push_back ("q1_pT>20&&q2_pT>20&&abs(q1_Eta)>0.1&&abs(q2_Eta)>0.1&&DEta_qq>0.0&&M_qq>300") ;
+// /* CJV */ selections.push_back ("CJV_30<1") ;
+// /* LEP */ selections.push_back ("l1_pT>30&&l2_pT>10&&(l1_charge*l2_charge)==-1") ;
+// /* Z_V */ selections.push_back ("((M_ll<70&&M_ll>20&&l1_flavour==l2_flavour)||(l1_flavour!=l2_flavour))") ;
+// /* MET */ selections.push_back ("met>30");
+// // // /* Btag */ selections.push_back ("q2_bTag_trackCountingHighPurBJetTags<1.0&&q1_bTag_trackCountingHighPurBJetTags<1.0&&NBjets_trackCountingHighEffBJetTags==0");
+// /* Btag */ selections.push_back ("q2_bTag_trackCountingHighPurBJetTags<1.0&&q1_bTag_trackCountingHighPurBJetTags<1.0");
 ///*MVA Jet*/ selections.push_back ("BDT_Jet>0.1");
 ///*MVA Lep*/ selections.push_back ("BDT_Lep>-0.2");
 
@@ -237,10 +200,14 @@ std::cout << "  |  " << setw (17) << " BTag ";
 std::cout << std::endl;
 cout << "----------+------------+------------+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+\n" ;
 
+double totalBkg = 0;
+double totalBkgError = 0;
+
+double totalSig = 0;
+double totalSigError = 0;
+
 for (int iSample = 0 ; iSample < samples.size () ; ++iSample)
 {
- //PG efficiencies of the full chain wrt beginning 
- //      std::cout << "        " ;
  std::cout << setw (8) << samples.at (iSample).m_name ;
  std::cout << " | " << setw (8) << samples.at (iSample).getAll () ;
  std::cout << " | " << setw (8) << samples.at (iSample).getEqSigma (selections.at (0)) ;
@@ -249,12 +216,15 @@ for (int iSample = 0 ; iSample < samples.size () ; ++iSample)
  {
   total_cut = total_cut && selections.at (iSel) ;
   cout << " | " << setw (8) << samples.at (iSample).getEqSigma (total_cut) ;
-//   cout  << " (" << setw (6) << samples.at (iSample).getEqSigma (total_cut) / 
-//   samples.at (iSample).getAll () << ")";
-  std::cout << "[" <<samples.at (iSample). getMC(total_cut) << "]" ;
-  //                                       samples.at (iSample).getEqSigma (selections.at (0)) << ")" ;
+  std::cout << "[" << setw (8) <<samples.at (iSample). getMC(total_cut) << "]" ;
  }
- std::cout << " | absolute " << endl ;            
+ std::cout << " | absolute " << endl ;  
+ 
+ 
+ 
+ if (reduced_name_samples[iSample]!="qqH" && reduced_name_samples[iSample]!="ggH") totalBkg += samples.at (iSample).getEqSigma (total_cut);
+ else totalSig += samples.at (iSample).getEqSigma (total_cut);
+
  
  //PG efficiencies of the full chain wrt previous cut
  //      std::cout << "        " ;
@@ -289,6 +259,10 @@ for (int iSample = 0 ; iSample < samples.size () ; ++iSample)
  
  
 } 
+
+std::cerr << " totalBkg = " << totalBkg << std::endl;
+std::cerr << " totalSig = " << totalSig << std::endl;
+
 
  return 0 ;
  

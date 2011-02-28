@@ -64,6 +64,7 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
  Use["FDA_GAMT"]        = 1;
  Use["FDA_MCMT"]        = 1;
  // ---
+ Use["MLPCat"]             = 1; // this is the recommended ANN ---- done by me!
  Use["MLP"]             = 1; // this is the recommended ANN
  Use["MLPBFGS"]         = 1; // recommended ANN with optional training method
  Use["CFMlpANN"]        = 1; // *** missing
@@ -112,28 +113,23 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
  
  
  //==== Add the input variable names to be used to train the MVAs to the factory ====
-
- double pT_RECO_q1;
- double pT_RECO_q2;
-
- double eta_RECO_q1;
- double eta_RECO_q2;
-
- double eta_RECO_q1_eta_RECO_q2;
- double Deta_RECO_q12;
-
- double Mjj;
-
+ 
  int Match4;
 
- factory->AddVariable( "pT_RECO_q1" , 'F');
- factory->AddVariable( "pT_RECO_q2" , 'F');
- factory->AddVariable( "abs(eta_RECO_q1)" , 'F');
- factory->AddVariable( "abs(eta_RECO_q2)" , 'F');
+ factory->AddVariable( "log(q1_pT)" , 'F');
+ factory->AddVariable( "log(q2_pT)" , 'F');
+ factory->AddVariable( "abs(q1_Eta)" , 'F');
+ factory->AddVariable( "abs(q2_Eta)" , 'F');
+ factory->AddVariable( "q1_Eta*q2_Eta" , 'F');
+ factory->AddVariable( "DEta_qq" , 'F');
+ factory->AddVariable( "DPhi_qq" , 'F');
+ factory->AddVariable( "log(M_qq)" , 'F');
+ factory->AddSpectator( "q1_bTag_trackCountingHighPurBJetTags" , 'F');
+ factory->AddSpectator( "q2_bTag_trackCountingHighPurBJetTags" , 'F');
+ factory->AddVariable( "CJV_30" , 'I');
  
- factory->AddVariable( "eta_RECO_q1_eta_RECO_q2" , 'F');
- factory->AddVariable( "Deta_RECO_q12" , 'F');
- factory->AddVariable( "Mjj" , 'F');
+ 
+ 
   
  //==== Define the input samples ====
  
@@ -144,10 +140,15 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
  
  char *nameSample[1000];
  char *nameHumanReadable[1000];
- char* xsection[1000];
+ char* xsectionName[1000];
+ double xsection[1000];
  
  char nameFileIn[1000] = {"test/Winter10/samples_skimmed_training.txt"};
- int totalSamples =  ReadFile(nameFileIn,nameSample,nameHumanReadable, xsection);
+ int totalSamples =  ReadFile(nameFileIn,nameSample,nameHumanReadable, xsectionName);
+ 
+ for (int iSample=0; iSample<totalSamples; iSample++){
+  xsection[iSample] = atof(xsectionName[iSample]);
+ }
  
  for (int iSample=0; iSample<totalSamples; iSample++){
   std::cout << " Sample[" << iSample << " : " << totalSamples << "] = " << nameSample[iSample] << std::endl;
@@ -170,6 +171,7 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
   treeEffVect[iSample]->GetEntry(0);
   
   ///**********************************************************************
+  XSection = xsection[iSample];
   weights[iSample] = XSection * preselection_efficiency / numEntriesBefore;
   signal_background[iSample] = (TTree) f->Get("outTreeJetLep");
   ///**********************************************************************
@@ -188,8 +190,10 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
  
  std::cerr << "==== exec ==== " << std::endl;
  
- TString mycuts_s = Form("CJV_30==0");
- TString mycuts_b = Form("CJV_30==0");
+//  TString mycuts_s = Form("CJV_30==0");
+//  TString mycuts_b = Form("CJV_30==0");
+ TString mycuts_s = Form("1");
+ TString mycuts_b = Form("1");
  
  TCut mycuts = mycuts_s;
  TCut mycutb = mycuts_b;
@@ -329,9 +333,25 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
    // TMVA ANN: MLP (recommended ANN) -- all ANNs in TMVA are Multilayer Perceptrons
    if (Use["MLP"])
 //       factory->BookMethod( TMVA::Types::kMLP, "MLP", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=300:HiddenLayers=N+1:TestRate=5" );
-      factory->BookMethod( TMVA::Types::kMLP, "MLP", "H:!V:NeuronType=tanh:VarTransform=N,D,G:NCycles=300:HiddenLayers=N+1:TestRate=5" );
-   
-   
+      factory->BookMethod( TMVA::Types::kMLP, "MLP", "H:!V:NeuronType=tanh:VarTransform=N,D,G:NCycles=300:HiddenLayers=N+2:TestRate=5" );
+      
+      
+      if (Use["MLPCat"]) {
+       // ---------------------------
+       // ---- define categories ----
+       TMVA::MethodCategory* mcat = 0;
+       TMVA::MethodBase* liCat = factory->BookMethod( TMVA::Types::kCategory, "MLPCat","" );
+       mcat = dynamic_cast<TMVA::MethodCategory*>(liCat);
+       
+       TString theCat1Vars = "log(q1_pT):log(q2_pT):abs(q1_Eta):abs(q2_Eta):q1_Eta*q2_Eta:DEta_qq:DPhi_qq:log(M_qq):CJV_30";      
+       mcat->AddMethod( "q1_bTag_trackCountingHighPurBJetTags>-90&&q2_bTag_trackCountingHighPurBJetTags>-90",theCat1Vars, TMVA::Types::kMLP,
+			"Category_MLP_2b","H:!V:NeuronType=tanh:VarTransform=N,D,G:NCycles=300:HiddenLayers=N+2:TestRate=5" );
+       mcat->AddMethod( "(q1_bTag_trackCountingHighPurBJetTags>-90&&q2_bTag_trackCountingHighPurBJetTags<-90)||(q1_bTag_trackCountingHighPurBJetTags<-90&&q2_bTag_trackCountingHighPurBJetTags>-90)",theCat1Vars, TMVA::Types::kMLP,
+			"Category_MLP_1b","H:!V:NeuronType=tanh:VarTransform=N,D,G:NCycles=300:HiddenLayers=N+2:TestRate=5" );
+       mcat->AddMethod( "q1_bTag_trackCountingHighPurBJetTags<-90&&q2_bTag_trackCountingHighPurBJetTags<-90",theCat1Vars, TMVA::Types::kMLP,
+			"Category_MLP_0b","H:!V:NeuronType=tanh:VarTransform=N,D,G:NCycles=300:HiddenLayers=N+2:TestRate=5" );
+      }
+      
    if (Use["MLPBFGS"])
       factory->BookMethod( TMVA::Types::kMLP, "MLPBFGS", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:TrainingMethod=BFGS" );
 
@@ -373,7 +393,11 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
    // --------------------------------------------------------------------------------------------------
    // ---- Now you can tell the factory to train, test, and evaluate the MVAs
 
-  
+
+   
+   //==== Optimize parameters in MVA methods
+//    factory->OptimizeAllMethods()
+   factory->OptimizeAllMethods("ROCIntegral","Scan");
    //==== Train MVAs using the set of training events ====
    factory->TrainAllMethods();
 

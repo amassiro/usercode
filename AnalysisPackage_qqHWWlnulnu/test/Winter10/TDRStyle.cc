@@ -74,8 +74,8 @@ void TDRStyle(){
  // gStyle->SetStatY(.9);
  
  // For the Global title:
-//  gStyle->SetOptTitle(0);
-  gStyle->SetOptTitle(1);
+ gStyle->SetOptTitle(0);
+//   gStyle->SetOptTitle(1);
  gStyle->SetTitleFont(42);
  gStyle->SetTitleColor(1);
  gStyle->SetTitleTextColor(1);

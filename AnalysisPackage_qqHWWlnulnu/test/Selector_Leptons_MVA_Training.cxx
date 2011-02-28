@@ -108,7 +108,7 @@ void Selector_Leptons_MVA_Training( TString myMethodList = "" ) {
  TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
  
  //==== Create the factory ====
- TMVA::Factory *factory = new TMVA::Factory( "TMVAnalysis", outputFile, Form("!V:!Silent:%sColor", gROOT->IsBatch()?"!":"") );
+ TMVA::Factory *factory = new TMVA::Factory( "TMVAnalysis", outputFile, Form("Transformations=I;D;P;G:!V:!Silent:%sColor", gROOT->IsBatch()?"!":"") );
  
  
  //==== Add the input variable names to be used to train the MVAs to the factory ====
@@ -159,7 +159,7 @@ void Selector_Leptons_MVA_Training( TString myMethodList = "" ) {
   
   
   char nameFile[1000];
-  sprintf(nameFile,"output/out_NtupleProducer_%s.root",nameSample[iSample]);  
+  sprintf(nameFile,"output_Winter10/out_NtupleProducer_%s.root",nameSample[iSample]);  
   TFile* f = new TFile(nameFile, "READ");
   
   treeEffVect[iSample] = (TTree) f->Get("outTreeSelections");
@@ -196,8 +196,8 @@ void Selector_Leptons_MVA_Training( TString myMethodList = "" ) {
  
  
  
- TString mycuts_s = Form("abs(Z_ll)<10&&CJV_30==0&&charge_RECO_l1_charge_RECO_l2==-1&&((Mll<70&&Mll>15&&pdgId_RECO_l1==pdgId_RECO_l2)||(pdgId_RECO_l1!=pdgId_RECO_l2))");
- TString mycuts_b = Form("abs(Z_ll)<10&&CJV_30==0&&charge_RECO_l1_charge_RECO_l2==-1&&((Mll<70&&Mll>15&&pdgId_RECO_l1==pdgId_RECO_l2)||(pdgId_RECO_l1!=pdgId_RECO_l2))");
+ TString mycuts_s = Form("abs(Z_ll)<10&&CJV_30==0&&charge_RECO_l1_charge_RECO_l2==-1&&((Mll<70&&Mll>10&&pdgId_RECO_l1==pdgId_RECO_l2)||(pdgId_RECO_l1!=pdgId_RECO_l2))");
+ TString mycuts_b = Form("abs(Z_ll)<10&&CJV_30==0&&charge_RECO_l1_charge_RECO_l2==-1&&((Mll<70&&Mll>10&&pdgId_RECO_l1==pdgId_RECO_l2)||(pdgId_RECO_l1!=pdgId_RECO_l2))");
  
  TCut mycuts = mycuts_s;
  TCut mycutb = mycuts_b;
@@ -332,7 +332,7 @@ factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=N
 
    // TMVA ANN: MLP (recommended ANN) -- all ANNs in TMVA are Multilayer Perceptrons
    if (Use["MLP"])
-      factory->BookMethod( TMVA::Types::kMLP, "MLP", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=400:HiddenLayers=N+4:TestRate=5" );
+      factory->BookMethod( TMVA::Types::kMLP, "MLP", "H:!V:NeuronType=tanh:VarTransform=N,D,G:NCycles=400:HiddenLayers=N+4:TestRate=5" );
 
    if (Use["MLPBFGS"])
       factory->BookMethod( TMVA::Types::kMLP, "MLPBFGS", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:TrainingMethod=BFGS" );
@@ -372,10 +372,32 @@ factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:NormMode=N
       factory->BookMethod( TMVA::Types::kRuleFit, "RuleFit",
                            "H:!V:RuleFitModule=RFTMVA:Model=ModRuleLinear:MinImp=0.001:RuleMinDist=0.001:NTrees=20:fEventsMin=0.01:fEventsMax=0.5:GDTau=-1.0:GDTauPrec=0.01:GDStep=0.01:GDNSteps=10000:GDErrScale=1.02" );
 
+      
+      
+      
+      
+      
+      // --------------------------------------------------------------------------------------------------
+      // ---- define categories ----
+      
+      TMVA::MethodCategory* mcat = 0;
+      TMVA::MethodBase* liCat = factory->BookMethod( TMVA::Types::kCategory, "MLPCat","" );
+      mcat = dynamic_cast<TMVA::MethodCategory*>(liCat);
+      
+      TString theCat1Vars = "pT_RECO_l1:pT_RECO_l2:abs(eta_RECO_l1):abs(eta_RECO_l2):eta_RECO_l1_eta_RECO_l2:Deta_RECO_l12:Dphi_RECO_l12:Mll:abs(Z_ll)";      
+      mcat->AddMethod( "pdgId_RECO_l1==11&&pdgId_RECO_l2==11",theCat1Vars, TMVA::Types::kMLP,
+		       "Category_MLP_ee","H:!V:NeuronType=tanh:VarTransform=N,D,G:NCycles=400:HiddenLayers=N+4:TestRate=5" );
+      mcat->AddMethod( "pdgId_RECO_l1==11&&pdgId_RECO_l2==13",theCat1Vars, TMVA::Types::kMLP,
+		       "Category_MLP_emu","H:!V:NeuronType=tanh:VarTransform=N,D,G:NCycles=400:HiddenLayers=N+4:TestRate=5" );
+      mcat->AddMethod( "pdgId_RECO_l1==13&&pdgId_RECO_l2==11",theCat1Vars, TMVA::Types::kMLP,
+		       "Category_MLP_mue","H:!V:NeuronType=tanh:VarTransform=N,D,G:NCycles=400:HiddenLayers=N+4:TestRate=5" );
+      mcat->AddMethod( "pdgId_RECO_l1==13&&pdgId_RECO_l2==13",theCat1Vars, TMVA::Types::kMLP,
+		       "Category_MLP_mumu","H:!V:NeuronType=tanh:VarTransform=N,D,G:NCycles=400:HiddenLayers=N+4:TestRate=5" );
+            
+      
    // --------------------------------------------------------------------------------------------------
    // ---- Now you can tell the factory to train, test, and evaluate the MVAs
-
-  
+      
    //==== Train MVAs using the set of training events ====
    factory->TrainAllMethods();
 

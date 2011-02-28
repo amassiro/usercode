@@ -3,9 +3,13 @@
 #include <iomanip>
 #include "TDRStyle.cc"
 #include "Read.cc"
+#include "DrawTools.h"
 
-void Draw(TString fileSamples, TString WhatToPlot = "", double MIN = -10, double MAX = 10, int NBIN = 1000, double LUMI = 500, TString Cut = ""){
- 
+void Draw(TString fileSamples, TString WhatToPlot = "", double MIN = -10, double MAX = 10, int NBIN = 1000, double LUMI = 500, TString Cut = "", TString WhatToPlotHumanReadable = "",  TString nameSignal = "qqH"
+){
+
+ if (WhatToPlotHumanReadable == "") WhatToPlotHumanReadable = WhatToPlot;
+  
  TDRStyle();
  
  
@@ -60,6 +64,11 @@ void Draw(TString fileSamples, TString WhatToPlot = "", double MIN = -10, double
  int numberOfSamples =  ReadFile(nameFileIn,nameSample,nameHumanReadable, xsectionName);
  
  for (int iSample=0; iSample<numberOfSamples; iSample++){
+  xsection[iSample] = atof(xsectionName[iSample]);
+ }
+ 
+ for (int iSample=0; iSample<numberOfSamples; iSample++){
+  
   char nameFile[20000];
   sprintf(nameFile,"output_Fall10/out_NtupleProducer_%s.root",nameSample[iSample]);  
   TFile* f = new TFile(nameFile, "READ");
@@ -83,36 +92,26 @@ void Draw(TString fileSamples, TString WhatToPlot = "", double MIN = -10, double
   name_samples.push_back(nameHumanReadable[iSample]);
   join_samples.push_back(-1);
  }
- //  int name_counter = 0;
+
+
+ std::vector<std::string> reduced_name_samples;
+ std::vector<int>         reduced_name_samples_flag;
  //  for (int iSample=0; iSample<numberOfSamples; iSample++){
-  //   for (int jSample=iSample; jSample<numberOfSamples; jSample++){   
-   //    if (join_samples.at(jSample) == -1 && name_samples.at(jSample) == name_samples.at(iSample)) join_samples.at(jSample) = name_counter;
-   //   }
-   //   name_counter++;
-   //  }
-   //  
-   //  for (int iSample=0; iSample<numberOfSamples; iSample++){
-    //   std::cout << " sample = " << name_samples.at(iSample) << " : " << join_samples.at(iSample) << std::endl;
-    //  }
-    
-    std::vector<std::string> reduced_name_samples;
-    std::vector<int>         reduced_name_samples_flag;
-    //  for (int iSample=0; iSample<numberOfSamples; iSample++){
-     for (int iSample = (numberOfSamples-1); iSample>= 0; iSample--){
-      bool flag_name = false;
-      for (int iName=0; iName<reduced_name_samples.size(); iName++){
-       if (reduced_name_samples.at(iName) == name_samples.at(iSample)) flag_name = true;
-      }
-      if (flag_name == false) {
-       reduced_name_samples.push_back(name_samples.at(iSample));
-       reduced_name_samples_flag.push_back(-1);
-      }
-     }
-     
-     
-     
-     
-     
+  for (int iSample = (numberOfSamples-1); iSample>= 0; iSample--){
+   bool flag_name = false;
+   for (int iName=0; iName<reduced_name_samples.size(); iName++){
+    if (reduced_name_samples.at(iName) == name_samples.at(iSample)) flag_name = true;
+   }
+   if (flag_name == false) {
+    reduced_name_samples.push_back(name_samples.at(iSample));
+    reduced_name_samples_flag.push_back(-1);
+   }
+  }
+  
+  
+  
+  
+  
      
      
      
@@ -133,7 +132,7 @@ void Draw(TString fileSamples, TString WhatToPlot = "", double MIN = -10, double
        treeEffVect[iSample]->GetEntry(0);
        
        std::cout << " Xsection = " << XSection << " ~~~> " << xsection[iSample] << std::endl;
-//       XSection = xsection[iSample];
+      XSection = xsection[iSample];
        
        TString name_histo_temp = Form("%s_temp",nameSample[iSample]);
        histo_temp[iSample] = new TH1F(name_histo_temp,name_histo_temp,NBIN,MIN,MAX);
@@ -164,7 +163,7 @@ void Draw(TString fileSamples, TString WhatToPlot = "", double MIN = -10, double
       
       
       for (int iName=0; iName<reduced_name_samples.size(); iName++){
-       histo[iName]->GetXaxis()->SetTitle(WhatToPlot);
+       histo[iName]->GetXaxis()->SetTitle(WhatToPlotHumanReadable);
        histo[iName]->SetMarkerColor(vColor[iName]);
        histo[iName]->SetLineColor(vColor[iName]);
        histo[iName]->SetFillColor(vColor[iName]);
@@ -184,17 +183,23 @@ void Draw(TString fileSamples, TString WhatToPlot = "", double MIN = -10, double
        }
       }
       
+      TLegend* leg = new TLegend(0.7,0.7,0.9,0.9);
+      for (int iName=0; iName<reduced_name_samples.size(); iName++){
+       leg->AddEntry(histo[iName],reduced_name_samples.at(iName).c_str(),"pf");    
+      }
       
       //  TCanvas cHisto("cHisto","cHisto",800,600);
-      hs->Draw();
-      hs->GetXaxis()->SetTitle(WhatToPlot);
+      DrawStack(hs);
+//       hs->Draw();
+//       hs->GetXaxis()->SetTitle(WhatToPlot);
       gPad->SetLogy();
       gPad->SetGrid();
-      gPad->BuildLegend();
+//       gPad->BuildLegend();
+      leg->Draw();
       
       std::cout.precision (3) ;
       std::cout.unsetf(ios::scientific);
-      
+
       double total_MC_expected = 0;
       double total_DATA_measured = 0;
       std::cout << std::endl << std::endl << std::endl << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
@@ -202,6 +207,7 @@ void Draw(TString fileSamples, TString WhatToPlot = "", double MIN = -10, double
        std::cout << "  " << setw (12) << reduced_name_samples.at(iName) << " | " << histo[iName]->Integral() << std::endl;
        if (reduced_name_samples.at(iName) != "DATA") total_MC_expected += histo[iName]->Integral();
 	   else total_DATA_measured += histo[iName]->Integral();
+
       }
       std::cout << std::endl;
       std::cout << " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
@@ -231,14 +237,16 @@ void Draw(TString fileSamples, TString WhatToPlot = "", double MIN = -10, double
       TCanvas* cCompare = new TCanvas("cCompare","cCompare",800,800);
        cCompare->Divide(2,2);
        cCompare->cd(1);
-       hs->Draw();
+//        hs->Draw();
+       DrawStack(hs);
        gPad->SetLogy();
        gPad->SetGrid();
-       gPad->BuildLegend();
+//        gPad->BuildLegend();
+       leg->Draw();
        double bkg_temp = 0;
        double sig_temp = 0;
        
-       TString nameSignal = "ttbar";
+//        TString nameSignal = "qqH";
        int numSample = 0;
        
        while (key = (TKey *) Iterator()){
@@ -269,44 +277,13 @@ void Draw(TString fileSamples, TString WhatToPlot = "", double MIN = -10, double
 	numSample++;
        }
        
-       
-       //  int numBkg = (reduced_name_samples.size()-numSignal-1);
-       //  while (key = (TKey *) Iterator()){
-	   //   TString nameHisto;
-	   //   nameHisto = key->GetName();  
-	   //   TH1F* temp_h = gROOT->FindObject(nameHisto);
-	   //   vectHist[numSample] = temp_h;
-	   //   
-	   //   if (numSample < numBkg) {
-	//    bkg_temp += temp_h->Integral();
-	//    std::cerr << " [" << bkg_temp << "] >>> bkg += " << temp_h->Integral() << " ~ " << temp_h->GetEntries() << "     =>  " << nameHisto.Data() << std::endl;
-	//    if (numSample == 0) {
-	 //     bkgHist = (TH1F*) temp_h->Clone("background");
-	 //     bkgHist->SetTitle("background");
-	 //     std::cerr << "  ====> background = " << numSample << " => nameHisto = " << nameHisto.Data() << std::endl;
-	 //    }
-	 //    else bkgHist -> Add (temp_h);
-	 //   }
-	 //   
-	 //   if (numSample >= numBkg) {
-	  //    sig_temp += temp_h->Integral();
-	  //    std::cerr << " [" << sig_temp << "] " << " >>> sig += " << temp_h->Integral() << " ~ " << temp_h->GetEntries() << "     =>  " << nameHisto.Data() << std::endl;
-	  //    if (numSample == numBkg) {
-	   //     sigHist = (TH1F*) temp_h->Clone("signal");
-	   //     sigHist->SetTitle("signal");
-	   //     std::cerr << "  ====> signal = " << numSample << " => nameHisto = " << nameHisto.Data() << std::endl;
-	   //    }
-	   //    else sigHist -> Add (temp_h);
-	   //   }
-	   //   
-	   //   std::cerr << " numSample = " << numSample << " => nameHisto = " << nameHisto.Data() << std::endl;
-	   //   numSample++;
-	   //  }
-	   
+
 	   
 	   ///==================
-	   TCanvas* cCompareSum = new TCanvas("cCompareSum","cCompareSum",800,800);
-	   hs->Draw();
+	   TString nameDATAMCCanvas = Form ("cCompareSum_%s",WhatToPlot.Data());
+	   TCanvas* cCompareSum = new TCanvas(nameDATAMCCanvas,nameDATAMCCanvas,800,800);
+// 	   hs->Draw();
+	   DrawStack(hs);
 	   gPad->SetLogy();
 	   gPad->SetGrid();
 	   //   gPad->BuildLegend();
@@ -431,7 +408,8 @@ void Draw(TString fileSamples, TString WhatToPlot = "", double MIN = -10, double
 	    }
 	   }
 	   gPad->SetGrid();
-	   gPad->BuildLegend();
+// 	   gPad->BuildLegend();
+	   leg->Draw();
 	   
 	   
 	   
@@ -439,7 +417,8 @@ void Draw(TString fileSamples, TString WhatToPlot = "", double MIN = -10, double
 	   cCompareSum->cd();
 	   gPad->SetLogy();
 	   gPad->SetGrid();
-	   gPad->BuildLegend();
+// 	   gPad->BuildLegend();
+	   leg->Draw();
 	   gPad->Update();
 	   
 	   //   int cstop;

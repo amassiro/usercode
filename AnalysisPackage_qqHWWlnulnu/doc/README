@@ -18,6 +18,9 @@ Step:
 2) vbfPreselections
 3) ntuple producer
 4*) Plot tool
+5) Train MV discriminants or Selections
+
+
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 1) MiBiCommonNT producer 
@@ -34,8 +37,12 @@ Step:
 	  
 			cd scripts/submit/
 			perl launchJobs_hercules.pl params_hercules.CFG
+		then add results together
+			ls -d */  | awk '{print "hadd "$1"/Jets2Lepton2_MiBiCommonNTOneLeptonTwoJetsPFlow_TOT.root "$1"/*PFlow.root"}' | /bin/sh
+		And add DATA samples:
+			mkdir DATA
+			hadd DATA/Jets2Lepton2_MiBiCommonNTOneLeptonTwoJetsPFlow_TOT.root  EG_Run2010A-Nov4ReReco_v1/Jets2Lepton2_MiBiCommonNTOneLeptonTwoJetsPFlow_TOT.root  Electron_Run2010B-Nov4ReReco_v1/Jets2Lepton2_MiBiCommonNTOneLeptonTwoJetsPFlow_TOT.root Mu_Run2010A-Nov4ReReco_v1/Jets2Lepton2_MiBiCommonNTOneLeptonTwoJetsPFlow_TOT.root Mu_Run2010B-Nov4ReReco_v1/Jets2Lepton2_MiBiCommonNTOneLeptonTwoJetsPFlow_TOT.root
 			
-
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 3) ntuple producer
     File: NtupleProducer.cpp
@@ -47,18 +54,35 @@ Step:
      root -l test/Winter10/cfgCreator_FinalSelector_HERCULES.cxx
      root -l test/Winter10/cfgLauncher_FinalSelection_HERCULES.cxx
      
-   
    ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    4) Plot tool.
    From this moment on it's possible to plot distributions.
        r00t test/Winter10/Draw.cxx\(\"nameFileWithListOfSamples\"\,\"Variable\",min, max, nbins, lumitoNormalize, \"selections\"\)
    
        e.g.: 
-         r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"Mjj\",0,1000,100,40.5,\"Mjj\>100\&\&Deta_RECO_q12\>1\&\&pT_RECO_l1\>20\&\&pT_RECO_q1\>20\&\&pT_RECO_q2\>20\"\)
+         r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"Mjj\",0,1000,100,40.5,\"Mjj\>200\&\&Deta_RECO_q12\>1\&\&pT_RECO_l1\>20\&\&pT_RECO_q1\>20\&\&pT_RECO_q2\>20\"\)
+
+	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"M_qq\",0,3000,100,40.5,\"M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\"\)
+	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"M_ll\",0,200,100,40.5,\"M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\"\)
+	 
+	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"M_ll\",0,200,100,40.5,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"M_{ll}\"\)
+	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"M_ll\",0,200,100,40.5,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\&\&l1_flavour\=\=11\",\"M_{ll}\"\)
+	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"M_ll\",0,200,100,40.5,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\&\&l1_flavour\=\=13\",\"M_{ll}\"\)
+	 
+	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"M_qq\",0,2000,100,40.5,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"M_{qq}\"\)
+	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"DEta_qq\",0,10,100,40.5,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"#Delta#eta_{qq}\"\)
+	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"q1_pT\",0,400,50,40.5,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"p_{T}^{q1}\"\)
+	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"q2_pT\",0,400,50,40.5,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"p_{T}^{q1}\"\)
    
+    ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    5) Train MV discriminants or Selections
+			source test/setupMVA.sh
+			r00t test/Selector_Jets_MVA_Training.cxx\(\"MLP,MLPCat\"\)
+			r00t test/TMVAGui.C\(\"output/Selector_Jets_trained.root\"\)
+    
    
-   
-   
+			r00t test/Selector_Jets_MultiClass_MVA_Training.cxx\(\"MLP\"\)
+			r00t test/TMVAMultiClassGui.C\(\"output/Selector_MultiClass_Jets_trained.root\"\)
    
    
    
