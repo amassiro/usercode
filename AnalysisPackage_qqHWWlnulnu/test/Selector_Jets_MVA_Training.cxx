@@ -375,7 +375,7 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
 
    if (Use["BDT"])  // Adaptive Boost
       factory->BookMethod( TMVA::Types::kBDT, "BDT", 
-			   "!H:!V:NTrees=500:BoostType=AdaBoost:SeparationType=GiniIndex:nCuts=20:PruneMethod=CostComplexity:PruneStrength=2.5" );
+			   "!H:!V:NTrees=800:BoostType=AdaBoost:SeparationType=GiniIndex:nCuts=20:PruneMethod=CostComplexity:PruneStrength=2.5" );
    
    if (Use["BDTB"]) // Bagging
       factory->BookMethod( TMVA::Types::kBDT, "BDTB", 
@@ -397,7 +397,7 @@ void Selector_Jets_MVA_Training( TString myMethodList = "" ) {
    
    //==== Optimize parameters in MVA methods
 //    factory->OptimizeAllMethods()
-   factory->OptimizeAllMethods("ROCIntegral","Scan");
+//    factory->OptimizeAllMethods("ROCIntegral","Scan");
    //==== Train MVAs using the set of training events ====
    factory->TrainAllMethods();
 

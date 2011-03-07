@@ -5,6 +5,127 @@ qqHWWlnulnuUtils
 #include "qqHWWlnulnuUtils.h"
 
 
+///==== Pull Plot: drawing utility ====
+void PullPlot(TCanvas* canvas, TH1* hDATA, TH1* hMC){
+ canvas->Divide(1,2);
+ int nbin = hDATA->GetNbinsX();
+ double max = hDATA->GetXaxis()->GetXmax();
+ double min = hDATA->GetXaxis()->GetXmin();
+ std::string name1 = hDATA->GetName();
+ std::string name2 = hMC->GetName();
+
+ std::string nameNew = name1 + name2;
+
+ TH1F* hPool = new TH1F (nameNew.c_str(),nameNew.c_str(),nbin,min,max);
+ for (int iBin = 0; iBin<nbin; iBin++){
+  double A = hDATA->GetBinContent(iBin);
+  double B = hMC->GetBinContent(iBin);
+  if (A+B != 0) {
+   hPool->SetBinContent(iBin,(A-B)/(A+B)*2.);
+   hPool->SetBinError(iBin,4. * B / (A+B) / (A+B) * sqrt(A));
+  }
+ }
+ 
+ double maxY_DATA = hDATA->GetMaximum();
+ double maxY_MC = hMC->GetMaximum();
+
+ double minY_DATA = hDATA->GetMinimum();
+ double minY_MC = hMC->GetMinimum();
+ 
+ canvas->cd(1); 
+ if (maxY_MC > maxY_DATA) {
+  hMC->Draw();
+  hDATA->Draw("EsameP");
+ }
+ else {
+  hDATA->Draw("EP");
+  hMC->Draw("same");  
+ }
+ hDATA->GetYaxis()->SetRangeUser(std::min(minY_MC,minY_DATA),std::max(maxY_MC,maxY_DATA) * 1.1);
+ hMC  ->GetYaxis()->SetRangeUser(std::min(minY_MC,minY_DATA),std::max(maxY_MC,maxY_DATA) * 1.1);
+ 
+ gPad->SetGrid();
+  
+ canvas->cd(2); 
+ hPool->SetLineColor(kRed);
+ hPool->SetLineWidth(2);
+ hPool->SetMarkerColor(kRed);
+ hPool->SetMarkerStyle(20);
+ hPool->SetMarkerSize(1);
+ hPool->Draw("EP");
+ hPool->GetXaxis()->SetTitle(hMC->GetXaxis()->GetTitle()); 
+ hPool->GetYaxis()->SetTitle("2(DATA-MC)/(DATA+MC)"); 
+ hPool->Draw("EP");
+ gPad->SetGrid();
+}
+
+
+void PullPlot(TCanvas* canvas, TH1* hDATA, THStack* hsMC){
+  canvas->Divide(1,2);
+  int nbin = hDATA->GetNbinsX();
+  double max = hDATA->GetXaxis()->GetXmax();
+  double min = hDATA->GetXaxis()->GetXmin();
+  std::string name1 = hDATA->GetName();
+  std::string name2 = hsMC->GetName();
+  
+  std::string nameNew = name1 + name2;
+  
+  TH1F* hPool = new TH1F (nameNew.c_str(),nameNew.c_str(),nbin,min,max);
+  for (int iBin = 0; iBin<nbin; iBin++){
+    double A = hDATA->GetBinContent(iBin);
+    double B = ((TH1*)(hsMC->GetStack()->Last()))->GetBinContent(iBin);
+    if (A+B != 0) {
+      hPool->SetBinContent(iBin,(A-B)/(A+B)*2.);
+      hPool->SetBinError(iBin,4. * B / (A+B) / (A+B) * sqrt(A));
+    }
+  }
+  
+  double maxY_DATA = hDATA->GetMaximum();
+  double maxY_MC = ((TH1*)(hsMC->GetStack()->Last()))->GetMaximum();
+  
+  double minY_DATA = hDATA->GetMinimum();
+  double minY_MC = ((TH1*)(hsMC->GetStack()->Last()))->GetMinimum();
+  
+  canvas->cd(1); 
+  hDATA->Draw("EP");
+  DrawStack(hsMC);
+  hDATA->Draw("EsameP");
+  gPad->SetGrid();
+  
+  canvas->cd(2); 
+  hPool->SetLineColor(kRed);
+  hPool->SetLineWidth(2);
+  hPool->SetMarkerColor(kRed);
+  hPool->SetMarkerStyle(20);
+  hPool->SetMarkerSize(1);
+  hPool->Draw("EP");
+  hPool->GetXaxis()->SetTitle(hDATA->GetXaxis()->GetTitle()); 
+  hPool->GetYaxis()->SetTitle("2(DATA-MC)/(DATA+MC)"); 
+  hPool->Draw("EP");
+  gPad->SetGrid();
+}
+
+///==== Draw Stack ====
+void DrawStack(THStack* hs){ 
+  TObjArray* histos = hs->GetStack () ;
+  Int_t number = histos->GetEntries();
+  TH1F* last = (TH1F*) histos->At (number-1) ;
+  last->Draw () ;
+  for (int i = number-2 ; i >=0 ; --i) 
+  {
+    TH1F * histo = (TH1F*) histos->At (i) ;
+    Style_t origStyle = histo->GetFillStyle ();
+    Color_t origColor = histo->GetFillColor ();
+    TH1F* dummy = (TH1F*) histo->Clone () ;
+    dummy->SetFillStyle (1001) ; 
+    dummy->SetFillColor (10) ;        
+    dummy->Draw ("same") ;
+    histo->Draw ("same") ;
+  }
+}
+
+
+
 ///==== MC Decay Channel of VV ====
 std::pair<int,int> GetMCDecayChannel(const std::vector<float>& pdgId){
  

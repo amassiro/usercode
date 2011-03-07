@@ -7,6 +7,10 @@ qqHWWlnulnuUtils
 #include <vector>
 #include <cmath>
 
+#include "TCanvas.h"
+#include "TH1.h"
+#include "THStack.h"
+
 #include "treeReader.h"
 
 #if not defined(__CINT__) || defined(__MAKECINT__)
@@ -16,9 +20,13 @@ qqHWWlnulnuUtils
 
 #include "Math/GenVector/VectorUtil.h"
 
+#include <algorithm>
 
-
-
+///==== Pull Plot: drawing utility ====
+void PullPlot(TCanvas* canvas, TH1* hDATA, TH1* hMC);
+void PullPlot(TCanvas* canvas, TH1* hDATA, THStack* hsMC);  
+///==== Draw Stack ====
+void DrawStack(THStack* hs);
 
 
 ///==== MC Decay Channel of V V ====

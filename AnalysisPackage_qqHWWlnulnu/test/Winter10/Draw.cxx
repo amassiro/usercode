@@ -5,8 +5,7 @@
 #include "Read.cc"
 #include "DrawTools.h"
 
-void Draw(TString fileSamples, TString WhatToPlot = "", double MIN = -10, double MAX = 10, int NBIN = 1000, double LUMI = 500, TString Cut = "", TString WhatToPlotHumanReadable = "",  TString nameSignal = "qqH"
-){
+void Draw(TString fileSamples, TString WhatToPlot = "", double MIN = -10, double MAX = 10, int NBIN = 1000, double LUMI = 500, TString Cut = "", TString WhatToPlotHumanReadable = "",  TString nameSignal = "qqH"){
 
  if (WhatToPlotHumanReadable == "") WhatToPlotHumanReadable = WhatToPlot;
   

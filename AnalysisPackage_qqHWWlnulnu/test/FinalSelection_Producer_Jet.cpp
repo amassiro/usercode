@@ -48,21 +48,28 @@ int main(int argc, char** argv)
  double DPhi_qq;
  double M_qq;
  int CJV_30;
+ double q1_bTag_trackCountingHighPurBJetTags;
+ double q2_bTag_trackCountingHighPurBJetTags;
+
+ 
  
  Float_t input_variables_Jet[1000];
  Double_t* MVA_Jet;
  
  TMVA::Reader *TMVAreader_Jet = new TMVA::Reader( "!Color:!Silent" );
- TMVAreader_Jet->AddVariable("q1_pT",&input_variables_Jet[0]);
- TMVAreader_Jet->AddVariable("q2_pT",&input_variables_Jet[1]);
+ TMVAreader_Jet->AddVariable("log(q1_pT)",&input_variables_Jet[0]);
+ TMVAreader_Jet->AddVariable("log(q2_pT)",&input_variables_Jet[1]);
  TMVAreader_Jet->AddVariable("abs(q1_Eta)",&input_variables_Jet[2]);
  TMVAreader_Jet->AddVariable("abs(q2_Eta)",&input_variables_Jet[3]);
  TMVAreader_Jet->AddVariable("q1_Eta*q2_Eta",&input_variables_Jet[4]);
  TMVAreader_Jet->AddVariable("DEta_qq",&input_variables_Jet[5]);
  TMVAreader_Jet->AddVariable("DPhi_qq",&input_variables_Jet[6]);
- TMVAreader_Jet->AddVariable("M_qq",&input_variables_Jet[7]);
- TMVAreader_Jet->AddVariable("CJV_30",&input_variables_Jet[8]);
+ TMVAreader_Jet->AddVariable("log(M_qq)",&input_variables_Jet[7]);
+ TMVAreader_Jet->AddSpectator("q1_bTag_trackCountingHighPurBJetTags",&input_variables_Jet[8]); //==== spectator
+ TMVAreader_Jet->AddSpectator("q2_bTag_trackCountingHighPurBJetTags",&input_variables_Jet[9]); //==== spectator
+ TMVAreader_Jet->AddVariable("CJV_30",&input_variables_Jet[10]);
  
+  
  
  ///==== book MVA Jet ====
  
@@ -83,6 +90,11 @@ int main(int argc, char** argv)
   std::cerr << " exception = " << exceptionString << std::endl;
  }
  
+ if (stdstrMethod_Jet.size() == 0) {
+   std::cerr << " ~~~ Attention: no MVA methods selected" << std::endl; 
+   return 0;
+ }
+ 
  MVA_Jet = new Double_t [stdstrMethod_Jet.size()];
  TBranch *newBranch[1000];
  
@@ -96,6 +108,9 @@ int main(int argc, char** argv)
  tree->SetBranchAddress("DPhi_qq",&DPhi_qq);
  tree->SetBranchAddress("M_qq",&M_qq);
  tree->SetBranchAddress("CJV_30",&CJV_30);
+ tree->SetBranchAddress("q1_bTag_trackCountingHighPurBJetTags",&q1_bTag_trackCountingHighPurBJetTags);
+ tree->SetBranchAddress("q2_bTag_trackCountingHighPurBJetTags",&q2_bTag_trackCountingHighPurBJetTags);
+ 
  
  ///==== add new branches ====
  for (int iMethod=0; iMethod<stdstrMethod_Jet.size(); iMethod++){
@@ -119,15 +134,17 @@ int main(int argc, char** argv)
   
   tree->GetEntry(iEntry);
   
-  input_variables_Jet[0] = static_cast<Float_t>(q1_pT);
-  input_variables_Jet[1] = static_cast<Float_t>(q2_pT);
+  input_variables_Jet[0] = static_cast<Float_t>(log(q1_pT));
+  input_variables_Jet[1] = static_cast<Float_t>(log(q2_pT));
   input_variables_Jet[2] = static_cast<Float_t>(fabs(q1_Eta));
   input_variables_Jet[3] = static_cast<Float_t>(fabs(q2_Eta));
   input_variables_Jet[4] = static_cast<Float_t>(q1_Eta*q2_Eta);
   input_variables_Jet[5] = static_cast<Float_t>(DEta_qq);
   input_variables_Jet[6] = static_cast<Float_t>(DPhi_qq);  
-  input_variables_Jet[7] = static_cast<Float_t>(M_qq);
-  input_variables_Jet[8] = static_cast<Float_t>(CJV_30);
+  input_variables_Jet[7] = static_cast<Float_t>(log(M_qq));
+  input_variables_Jet[8] = static_cast<Float_t>(q1_bTag_trackCountingHighPurBJetTags);
+  input_variables_Jet[9] = static_cast<Float_t>(q2_bTag_trackCountingHighPurBJetTags);
+  input_variables_Jet[10] = static_cast<Float_t>(CJV_30);
   
   for (int iMethod=0; iMethod<stdstrMethod_Jet.size(); iMethod++){
    TString methodName = stdstrMethod_Jet.at(iMethod) + "_method_Jet";
@@ -139,5 +156,8 @@ int main(int argc, char** argv)
  }
  // save only the new version of the tree
  tree->Write("", TObject::kOverwrite);
+ 
+ 
+ std::cout << " *** end *** " << std::endl;
 }
 

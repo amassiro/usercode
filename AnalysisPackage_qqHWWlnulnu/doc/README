@@ -73,7 +73,11 @@ Step:
 	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"DEta_qq\",0,10,100,40.5,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"#Delta#eta_{qq}\"\)
 	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"q1_pT\",0,400,50,40.5,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"p_{T}^{q1}\"\)
 	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"q2_pT\",0,400,50,40.5,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"p_{T}^{q1}\"\)
-   
+	 
+	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"abs\(q1_Eta\)\",0,5,10,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"leading jet #eta\"\)
+	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"l1_pT\",0,200,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"leading lepton p_{T}\"\)
+	 
+	 
     ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     5) Train MV discriminants or Selections
 			source test/setupMVA.sh
@@ -85,14 +89,28 @@ Step:
 			r00t test/TMVAMultiClassGui.C\(\"output/Selector_MultiClass_Jets_trained.root\"\)
    
    
+    ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    6) Add TMVA values in the tree
+        Program :   FinalSelection_Producer_Jet.cpp
+        to launch:  r00t test/Winter10/cfgCreator_SelectorJets.cxx
+   
+   	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"BDT_Jet\",-1,1,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"BDT_{jet}\"\)
+   	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"MLP_Jet\",-1,2,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"MLP_{jet}\"\)
+
    
    
-   
-   
-   
-   
-   
-   
+    ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    7) Plot at each step of the analysis
+         Program :  counterAndPlot.cpp
+         to launch:  ./bin/counterAndPlot.exe test/Winter10/samples_skimmed.txt 36.0
+                        where
+			  test/Winter10/samples_skimmed.txt is the list of samples to be considered
+			  36.0 is the luminosity analysed
+         
+         Plot the number of events from data and from MC expectations
+         at each step of the analysis.
+         Steps of the analysis are hardcoded!
+         Pull plot is drawn.
    
    
    
