@@ -29,14 +29,14 @@
 #include "Winter10/Read.cc"
 #include "Winter10/TDRStyle.cc"
 
-using namespace std ;
+// using namespace std ;
 
 double LUMI = 1000;
 
 
 struct coll 
 {
- coll (string name) : m_name (name) {} ;
+ coll (std::string name) : m_name (name) {} ;
  void add (const double & XS, std::pair<TTree*,TTree*> al) 
  {
   samples[XS] = al ;
@@ -45,7 +45,7 @@ struct coll
  ///=================================================
  double getEqSigma (TCut cut){
   double events = 0. ;
-  for (map<double, std::pair<TTree*,TTree*> >::iterator it = samples.begin () ;  it != samples.end () ;   ++it){
+  for (std::map<double, std::pair<TTree*,TTree*> >::iterator it = samples.begin () ;  it != samples.end () ;   ++it){
    it->second.second->SetBranchAddress ("preselection_efficiency", &preselection_efficiency) ;
    it->second.second->SetBranchAddress ("numEntriesBefore", &numEntriesBefore) ;
    it->second.second->GetEntry (0) ;
@@ -60,7 +60,7 @@ struct coll
  ///=================================================
  double getAll () {
   double events = 0. ;
-  for (map<double, std::pair<TTree*,TTree*> >::iterator it = samples.begin () ;  it != samples.end () ;   ++it){
+  for (std::map<double, std::pair<TTree*,TTree*> >::iterator it = samples.begin () ;  it != samples.end () ;   ++it){
    it->second.second->SetBranchAddress("preselection_efficiency",&preselection_efficiency);
    it->second.second->SetBranchAddress("numEntriesBefore",&numEntriesBefore);
    it->second.second->GetEntry(0);
@@ -72,15 +72,15 @@ struct coll
  ///=================================================
  double getMC (TCut cut){
   double events = 0. ;
-  for (map<double, std::pair<TTree*,TTree*> >::iterator it = samples.begin () ;  it != samples.end () ;   ++it){
+  for (std::map<double, std::pair<TTree*,TTree*> >::iterator it = samples.begin () ;  it != samples.end () ;   ++it){
     events += (it->second.first->GetEntries (cut)) ;
   }
   return events ;
  } ;
  
  ///=================================================
- map<double, std::pair<TTree*,TTree*> > samples ;
- string m_name ; 
+ std::map<double, std::pair<TTree*,TTree*> > samples ;
+ std::string m_name ; 
  
  double XSection;
  double preselection_efficiency;
@@ -116,7 +116,7 @@ int main(int argc, char** argv) {
  if (argc>=3) LUMI = atof(argv[2]);
  else  LUMI = 1000.;
  
- vector<coll> samples ;
+ std::vector<coll> samples ;
  
  TTree *treeEffVect[100];
  TTree *treeJetLepVect[100];
@@ -182,12 +182,12 @@ int main(int argc, char** argv) {
 //   }
  } 
 
-vector<TCut> selections ;
-vector<TString> selections_name ;
+std::vector<TCut> selections ;
+std::vector<TString> selections_name ;
 
 
 ///==== cut based ====
-selections_name.push_back("");     selections.push_back ("1") ;
+selections_name.push_back("2j+2l");     selections.push_back ("M_ll>10 && M_qq>200 && DEta_qq>1 && l1_pT>20 && q1_pT>15 && q2_pT>15") ;
 selections_name.push_back("VBF");  selections.push_back ("q1_pT>20&&q2_pT>20&&abs(q1_Eta)>0.1&&abs(q2_Eta)>0.1&&DEta_qq>2.0&&M_qq>350") ;
 selections_name.push_back("CJV");  selections.push_back ("CJV_30<1") ;
 selections_name.push_back("LEP");  selections.push_back ("l1_pT>30 && l2_pT>10 && abs(l1_Eta)<2.5 && abs(l2_Eta)<2.5 && DEta_ll<3.8 && DPhi_ll<1.5 && l1_charge * l2_charge == -1 && abs(Z_ll)<0.5") ;
@@ -210,21 +210,21 @@ selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingH
 ///*MVA Lep*/ selections.push_back ("BDT_Lep>-0.2");
  
  std::cout.precision (2) ;
- std::cout.unsetf(ios::scientific);
+ std::cout.unsetf(std::ios::scientific);
  
- std::cout << setw (8) << " sample ";
- std::cout << "  |" << setw (8) << "  No sel  ";
- std::cout << "  |  " << setw (8) << "2j+2l";
- std::cout << "  |  " << setw (17) << "  VBF ";
- std::cout << "  |  " << setw (17) << "  CJV ";
- std::cout << "  |  " << setw (17) << "  LEP ";
- std::cout << "  |  " << setw (17) << "Z veto ";
- std::cout << "  |  " << setw (17) << " MET   ";
- std::cout << "  |  " << setw (17) << " BTag ";
- // std::cout << "  |  " << setw (17) << " MVA Jet ";
- // std::cout << "  |  " << setw (17) << " MVA Lep";
+ std::cout << std::setw (8) << " sample ";
+ std::cout << "  |" << std::setw (8) << "  No sel  ";
+ std::cout << "  |  " << std::setw (8) << "2j+2l";
+ std::cout << "  |  " << std::setw (17) << "  VBF ";
+ std::cout << "  |  " << std::setw (17) << "  CJV ";
+ std::cout << "  |  " << std::setw (17) << "  LEP ";
+ std::cout << "  |  " << std::setw (17) << "Z veto ";
+ std::cout << "  |  " << std::setw (17) << " MET   ";
+ std::cout << "  |  " << std::setw (17) << " BTag ";
+ // std::cout << "  |  " << std::setw (17) << " MVA Jet ";
+ // std::cout << "  |  " << std::setw (17) << " MVA Lep";
  std::cout << std::endl;
- cout << "----------+------------+------------+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+\n" ;
+ std::cout << "----------+------------+------------+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+\n" ;
  
  double totalBkg = 0;
  double totalBkgError = 0;
@@ -234,56 +234,22 @@ selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingH
  
  for (int iSample = 0 ; iSample < samples.size () ; ++iSample)
  {
-   std::cout << setw (8) << samples.at (iSample).m_name ;
-   std::cout << " | " << setw (8) << samples.at (iSample).getAll () ;
-   std::cout << " | " << setw (8) << samples.at (iSample).getEqSigma (selections.at (0)) ;
+   std::cout << std::setw (8) << samples.at (iSample).m_name ;
+   std::cout << " | " << std::setw (8) << samples.at (iSample).getAll () ;
+   std::cout << " | " << std::setw (8) << samples.at (iSample).getEqSigma (selections.at (0)) ;
    TCut total_cut = selections.at (0) ;
    for (int iSel = 1 ; iSel < selections.size () ; ++iSel) 
    {
      total_cut = total_cut && selections.at (iSel) ;
-     cout << " | " << setw (8) << samples.at (iSample).getEqSigma (total_cut) ;
-     std::cout << "[" << setw (8) <<samples.at (iSample). getMC(total_cut) << "]" ;
+     std::cout << " | " << std::setw (8) << samples.at (iSample).getEqSigma (total_cut) ;
+     std::cout << "[" << std::setw (8) <<samples.at (iSample). getMC(total_cut) << "]" ;
    }
-   std::cout << " | absolute " << endl ;  
-   
-   
+//    std::cout << " | absolute " << endl ;  
+   std::cout << std::endl ;  
    
    if (reduced_name_samples[iSample]!="qqH" && reduced_name_samples[iSample]!="ggH") totalBkg += samples.at (iSample).getEqSigma (total_cut);
    else totalSig += samples.at (iSample).getEqSigma (total_cut);
-   
-   
-   //PG efficiencies of the full chain wrt previous cut
-   //      std::cout << "        " ;
-   //  std::cout << setw (8) << samples.at (iSample).m_name ;
-   //  std::cout << " | " << setw (8) << samples.at (iSample).getAll () ;
-   //  std::cout << " | " << setw (8) << samples.at (iSample).getEqSigma (selections.at (0)) ;
-   //  total_cut = selections.at (0) ;
-   /* TCut previous_cut = selections.at (0) ;
-    f or (int *iSel = 1 ; iSel < selections.size () ; ++iSel) 
-    {
-      previous_cut = total_cut ;
-      total_cut = total_cut && selections.at (iSel) ;
-      cout << " | " << setw (8) << samples.at (iSample).getEqSigma (total_cut) ;
-      //   cout  << " (" << setw (6) << samples.at (iSample).getEqSigma (total_cut) / 
-      //   samples.at (iSample).getEqSigma (previous_cut) << ")" ;
-    }
-    std::cout << " | relative " << endl ;            
-    
-    //PG efficiencies of single selections wrt no cuts
-    std::cout << setw (8) << samples.at (iSample).m_name ;
-    std::cout << " | " << setw (8) << samples.at (iSample).getAll () ;
-    std::cout << " | " << setw (8) << samples.at (iSample).getEqSigma (selections.at (0)) ;
-    for (int iSel = 1 ; iSel < selections.size () ; ++iSel) 
-    {
-      cout << " | " << setw (8) << samples.at (iSample).getEqSigma (selections.at (iSel)) ;
-      //          cout  << " (" << setw (6) << samples.at (iSample).getEqSigma (selections.at (iSel)) / samples.at (iSample).getEqSigma (selections.at (iSel-1)) << ")" ;
-      //   cout  << " (" << setw (6) << samples.at (iSample).getEqSigma (selections.at (iSel)) / 
-      //   samples.at (iSample).getAll () << ")" ;
-      //                                       samples.at (iSample).getEqSigma (selections.at (0)) << ")" ;
-    }
-    std::cout << " | indip " << endl ;    */        
-   
-   
+      
  } 
  
  std::cerr << " totalBkg = " << totalBkg << std::endl;
@@ -305,8 +271,8 @@ selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingH
  }
  
  for (int iSample = 0 ; iSample < samples.size () ; ++iSample){
-   TCut total_cut = selections.at (0) ;
-   for (int iSel = 1 ; iSel < selections.size () ; ++iSel) {
+   TCut total_cut = "1";
+   for (int iSel = 0 ; iSel < selections.size () ; ++iSel) {
      total_cut = total_cut && selections.at (iSel) ;
      if (reduced_name_samples[iSample]!="DATA"){
        hMC->Fill(iSel,samples.at (iSample).getEqSigma (total_cut));
@@ -330,6 +296,12 @@ selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingH
    }
  }  
  
+ TLegend* leg = new TLegend(0.80,0.45,0.90,0.90);
+ for (int iName=0; iName<reduced_name_samples.size(); iName++){
+   leg->AddEntry(v_hMC[iName],reduced_name_samples.at(iName).c_str(),"pf");    
+ }
+ 
+ 
  hMC->SetFillColor(kBlue);
  hMC->SetLineColor(kBlue);
  hMC->SetMarkerColor(kBlue);
@@ -343,6 +315,7 @@ selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingH
    hMC->SetBinError(iSel+1,0);
    hDATA->GetXaxis()->SetBinLabel(iSel+1,selections_name.at(iSel));
    hMC->GetXaxis()->SetBinLabel(iSel+1,selections_name.at(iSel));
+   ((TH1*)(hsMC->GetStack()->Last()))->GetXaxis()->SetBinLabel(iSel+1,selections_name.at(iSel));
  }
  
  TString titleY = Form ("# events in %.1f pb-1",LUMI);
@@ -352,27 +325,34 @@ selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingH
  TCanvas * cPullCounter = new TCanvas ("cPullCounter","cPullCounter",800,800);
  PullPlot(cPullCounter,hDATA,hMC);
  cPullCounter->SaveAs("cPullCounter.png");
+ cPullCounter->SaveAs("cPullCounter.pdf");
  
  cPullCounter->cd(1);
- hDATA->GetYaxis()->SetRangeUser(hMC->GetMinimum() ? hMC->GetMinimum() : 1e-5 ,std::max(hMC->GetMaximum(),hDATA->GetMaximum()) * 1.1);
- hMC  ->GetYaxis()->SetRangeUser(hMC->GetMinimum() ? hMC->GetMinimum() : 1e-5 ,std::max(hMC->GetMaximum(),hDATA->GetMaximum()) * 1.1); 
+ hDATA->GetYaxis()->SetRangeUser(hMC->GetMinimum() ? hMC->GetMinimum()/10. : 1e-5 ,std::max(hMC->GetMaximum(),hDATA->GetMaximum()) * 1.1);
+ hMC  ->GetYaxis()->SetRangeUser(hMC->GetMinimum() ? hMC->GetMinimum()/10. : 1e-5 ,std::max(hMC->GetMaximum(),hDATA->GetMaximum()) * 1.1); 
  gPad->SetGrid();
  gPad->SetLogy();
  cPullCounter->cd(2);
  cPullCounter->SaveAs("cPullCounter_Log.png");
+ cPullCounter->SaveAs("cPullCounter_Log.pdf");
  
 
  TCanvas * cPullCounterStack = new TCanvas ("cPullCounterStack","cPullCounterStack",800,800);
  PullPlot(cPullCounterStack,hDATA,hsMC);
- cPullCounterStack->SaveAs("cPullCounterStack.png");
- 
  cPullCounterStack->cd(1);
- hDATA->GetYaxis()->SetRangeUser(((TH1*)(hsMC->GetStack()->Last()))->GetMinimum() ? ((TH1*)(hsMC->GetStack()->Last()))->GetMinimum() : 1e-5 ,std::max(hMC->GetMaximum(),hDATA->GetMaximum()) * 1.1);
- hMC  ->GetYaxis()->SetRangeUser(((TH1*)(hsMC->GetStack()->Last()))->GetMinimum() ? ((TH1*)(hsMC->GetStack()->Last()))->GetMinimum() : 1e-5 ,std::max(hMC->GetMaximum(),hDATA->GetMaximum()) * 1.1); 
+ leg->Draw();
+ cPullCounterStack->SaveAs("cPullCounterStack.png");
+ cPullCounterStack->SaveAs("cPullCounterStack.pdf");
+ 
+ double min_plot = 1e-3 * LUMI;
+ cPullCounterStack->cd(1);
+ leg->Draw();
+ hDATA->GetYaxis()->SetRangeUser(min_plot ,std::max(hMC->GetMaximum(),hDATA->GetMaximum()) * 1.1);
+ ((TH1*)(hsMC->GetStack()->Last()))->GetYaxis()->SetRangeUser(min_plot ,std::max(hMC->GetMaximum(),hDATA->GetMaximum()) * 1.1); 
  gPad->SetGrid();
  gPad->SetLogy();
- cPullCounterStack->cd(2);
  cPullCounterStack->SaveAs("cPullCounterStack_Log.png");
+ cPullCounterStack->SaveAs("cPullCounterStack_Log.pdf");
  
  return 0 ;
  
