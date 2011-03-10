@@ -36,7 +36,12 @@ CLHEPLIBS     =  $(shell clhep-config --libs)
 NTUPLEPACKAGEFLAGS = $(shell ntuplepkg-config --include)
 NTUPLEPACKAGELIBS = $(shell ntuplepkg-config --libs)
 
+ARCH = -m32
+ARCH  =  $(shell root-config --arch)
+ifeq ($(ARCH),linuxx8664gcc)
 ARCHL = -m64
+endif
+
 
 CXX  =  c++
 CXXFLAGS  =  -Wall -O -fPIC -I$(HDR) $(ROOTCFLAGS) $(CLHEPCFLAGS) $(NTUPLEPACKAGEFLAGS)
