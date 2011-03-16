@@ -67,7 +67,7 @@ int main(int argc, char** argv)
  TMVAreader_Jet->AddVariable("log(M_qq)",&input_variables_Jet[7]);
  TMVAreader_Jet->AddSpectator("q1_bTag_trackCountingHighPurBJetTags",&input_variables_Jet[8]); //==== spectator
  TMVAreader_Jet->AddSpectator("q2_bTag_trackCountingHighPurBJetTags",&input_variables_Jet[9]); //==== spectator
- TMVAreader_Jet->AddVariable("CJV_30",&input_variables_Jet[10]);
+ TMVAreader_Jet->AddSpectator("CJV_30",&input_variables_Jet[10]);
  
   
  
@@ -81,6 +81,14 @@ int main(int argc, char** argv)
   std::cerr << " exception = " << exceptionString << std::endl;
  }
  
+ std::string OptionalNameSuffix;
+ try {
+  OptionalNameSuffix = gConfigParser -> readStringOption ("Jet::OptionalNameSuffix");
+ }
+ catch (char const* exceptionString){
+  OptionalNameSuffix = "";
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
  
  std::vector<std::string> stdstrAdditionalInputFile_Jet;
  try {
@@ -117,8 +125,8 @@ int main(int argc, char** argv)
   TString methodName = stdstrMethod_Jet.at(iMethod) + "_method_Jet";
   TString weightfile = Form(stdstrAdditionalInputFile_Jet.at(iMethod).c_str());
   TMVAreader_Jet->BookMVA( methodName, weightfile );
-  TString methodName4Tree = stdstrMethod_Jet.at(iMethod) + "_Jet";
-  TString methodName4Tree2 = stdstrMethod_Jet.at(iMethod) + "_Jet/D";
+  TString methodName4Tree = stdstrMethod_Jet.at(iMethod) + "_Jet" + OptionalNameSuffix;
+  TString methodName4Tree2 = stdstrMethod_Jet.at(iMethod) + "_Jet" + OptionalNameSuffix + "/D" ;
   std::cerr << " methodName = " << methodName.Data() << std::endl;
   std::cerr << " methodName4Tree  = " << methodName4Tree.Data() << std::endl;
   std::cerr << " methodName4Tree2 = " << methodName4Tree2.Data() << std::endl;
