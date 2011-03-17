@@ -1,0 +1,112 @@
+# name_sample            xsection        name_human_readable
+#VBF_HToWWToTauNuQQ_M-600_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.00491           qqH600
+#VBF_HToWWToTauNuQQ_M-400_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.01425           qqH400
+#VBF_HToWWToTauNuQQ_M-250_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.04608           qqH250
+#VBF_HToWWToTauNuQQ_M-200_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.07205           qqH200
+#VBF_HToWWToTauNuQQ_M-160_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.12119           qqH160
+#VBF_HToWWToTauNuQQ_M-150_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.10120           qqH150
+#VBF_HToWWToTauNuQQ_M-130_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.05201           qqH130
+#VBF_HToWWToTauNuQQ_M-120_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.02651           qqH120
+VBF_HToWWToLNuTauNu_M-600_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.00155           qqH600
+VBF_HToWWToLNuTauNu_M-400_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.00449           qqH400
+VBF_HToWWToLNuTauNu_M-250_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.01451           qqH250
+VBF_HToWWToLNuTauNu_M-200_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.02269           qqH200
+VBF_HToWWToLNuTauNu_M-160_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.03816           qqH160
+VBF_HToWWToLNuTauNu_M-150_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.03187           qqH150
+VBF_HToWWToLNuTauNu_M-130_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.01638           qqH130
+VBF_HToWWToLNuTauNu_M-120_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.00835           qqH120
+VBF_HToWWTo2Tau2Nu_M-600_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.36464           qqH600
+VBF_HToWWTo2Tau2Nu_M-400_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.30450           qqH400
+VBF_HToWWTo2Tau2Nu_M-250_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.15648           qqH250
+VBF_HToWWTo2Tau2Nu_M-200_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.07977           qqH200
+VBF_HToWWTo2Tau2Nu_M-150_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.01476           qqH150
+VBF_HToWWTo2Tau2Nu_M-130_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.04289           qqH130
+VBF_HToWWTo2Tau2Nu_M-120_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.13866           qqH120
+VBF_HToWWTo2L2Nu_M-600_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.00146           qqH600
+VBF_HToWWTo2L2Nu_M-400_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.00428           qqH400
+VBF_HToWWTo2L2Nu_M-250_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.01371           qqH250
+VBF_HToWWTo2L2Nu_M-200_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.02146           qqH200
+VBF_HToWWTo2L2Nu_M-160_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.03631           qqH160
+VBF_HToWWTo2L2Nu_M-150_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.03056           qqH150
+VBF_HToWWTo2L2Nu_M-140_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.01600           qqH140
+VBF_HToWWTo2L2Nu_M-130_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.00825           qqH130
+VBF_HToWWTo2L2Nu_M-120_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.00825           qqH120
+##VBF_HToGG_M-120_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	           qqHGG
+#GluGluToHToWWToTauNuQQ_M-600_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.02790           ggH600
+#GluGluToHToWWToTauNuQQ_M-400_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.17926           ggH400
+#GluGluToHToWWToTauNuQQ_M-250_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.35461           ggH250
+#GluGluToHToWWToTauNuQQ_M-200_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.59351           ggH200
+#GluGluToHToWWToTauNuQQ_M-160_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	1.25213           ggH160
+#GluGluToHToWWToTauNuQQ_M-150_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	1.10503           ggH150
+#GluGluToHToWWToTauNuQQ_M-130_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.63643           ggH130
+#GluGluToHToWWToTauNuQQ_M-120_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.34730           ggH120
+#GluGluToHToWWToLNuTauNu_M-600_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.00879           ggH600
+#GluGluToHToWWToLNuTauNu_M-400_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.05645           ggH400
+#GluGluToHToWWToLNuTauNu_M-250_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.11167           ggH250
+#GluGluToHToWWToLNuTauNu_M-200_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.18691           ggH200
+#GluGluToHToWWToLNuTauNu_M-160_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.39432           ggH160
+#GluGluToHToWWToLNuTauNu_M-150_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.34800           ggH150
+#GluGluToHToWWToLNuTauNu_M-130_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.20042           ggH130
+#GluGluToHToWWToLNuTauNu_M-120_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.10937           ggH120
+#GluGluToHToWWToLNuQQ_M-600_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.05287           ggH600
+#GluGluToHToWWToLNuQQ_M-400_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.33972           ggH400
+#GluGluToHToWWToLNuQQ_M-250_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.67203           ggH250
+#GluGluToHToWWToLNuQQ_M-200_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	1.12477           ggH200
+#GluGluToHToWWToLNuQQ_M-160_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	2.37293           ggH160
+#GluGluToHToWWToLNuQQ_M-150_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	2.09416           ggH150
+#GluGluToHToWWToLNuQQ_M-130_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	1.20611           ggH130
+#GluGluToHToWWToLNuQQ_M-120_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.65817           ggH120
+#GluGluToHToWWTo2Tau2Nu_M-600_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	3.76752           ggH600
+#GluGluToHToWWTo2Tau2Nu_M-400_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	3.32492           ggH400
+#GluGluToHToWWTo2Tau2Nu_M-250_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	1.91495           ggH250
+#GluGluToHToWWTo2Tau2Nu_M-200_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	1.04498           ggH200
+#GluGluToHToWWTo2Tau2Nu_M-160_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.08394           ggH160
+#GluGluToHToWWTo2Tau2Nu_M-150_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.53938           ggH150
+#GluGluToHToWWTo2Tau2Nu_M-130_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	1.06699           ggH130
+#GluGluToHToWWTo2Tau2Nu_M-120_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	1.78580           ggH120
+#GluGluToHToWWTo2L2Nu_M-600_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.00832           ggH600
+#GluGluToHToWWTo2L2Nu_M-400_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.05349           ggH400
+#GluGluToHToWWTo2L2Nu_M-250_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.10582           ggH250
+#GluGluToHToWWTo2L2Nu_M-200_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.17710           ggH200
+#GluGluToHToWWTo2L2Nu_M-160_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.37364           ggH160
+#GluGluToHToWWTo2L2Nu_M-150_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.32975           ggH150
+#GluGluToHToWWTo2L2Nu_M-130_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.18991           ggH130
+#GluGluToHToWWTo2L2Nu_M-120_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO 	0.10363           ggH120
+#DATA                                   -1.              DATA        
+#TTJets_TuneZ2_7TeV-madgraph-tauola_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO         165      ttbar
+TTTo2L2Nu2B_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO         17.5        ttbar
+TTToLNu2Q2B_7TeV-powheg-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO       72.8       ttbar
+#
+TToBLNu_TuneZ2_s-channel_7TeV-madgraph_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO              1.5      top
+TToBLNu_TuneZ2_t-channel_7TeV-madgraph_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO            21.0      top
+TToBLNu_TuneZ2_tW-channel_7TeV-madgraph_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO        10.6      top
+#
+DYJetsToLL_TuneD6T_M-10To50_7TeV-madgraph-tauola_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1         413     DY   310*1.33 scale to M>50
+DYJetsToLL_TuneD6T_M-50_7TeV-madgraph-tauola_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1                 3048     DY
+#DYToEE_M-20_TuneZ2_7TeV-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO                             1666       DY
+#DYToMuMu_M-20_TuneZ2_7TeV-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO                     1666       DY
+#DYToTauTau_M-20_TuneZ2_7TeV-pythia6-tauola_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO     1666       DY
+#
+#WJetsToLNu_TuneZ2_7TeV-madgraph-tauola_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO                  31314     Wln
+#
+WWTo2L2Nu_TuneZ2_7TeV-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO                     3.308         WW2l2n
+#WWtoAnything_TuneZ2_7TeV-pythia6-tauola_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO         43.0     WW
+#WZTo3LNu_TuneZ2_7TeV-pythia6_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO                             0.867     WZ3ln
+WZtoAnything_TuneZ2_7TeV-pythia6-tauola_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO         18.2           WZ
+ZZtoAnything_TuneZ2_7TeV-pythia6-tauola_Fall10-E7TeV_ProbDist_2010Data_BX156_START38_V12-v1_GEN-SIM-RECO         5.9         ZZ
+#
+#QCD_Pt-20_MuEnrichedPt-15_TuneZ2_7TeV-pythia6_Fall10-START38_V12-v1           8.47e4        QCDmu  
+#QCD_Pt-20to30_BCtoE_TuneZ2_7TeV-pythia6_Fall10-START38_V12-v1                          1.32e5        QCDBC
+#QCD_Pt-20to30_EMEnriched_TuneZ2_7TeV-pythia6_Fall10-START38_V12-v1             2.45e6        QCDEM
+#QCD_Pt-30to80_BCtoE_TuneZ2_7TeV-pythia6_Fall10-START38_V12-v1                          1.37e5        QCDBC
+#QCD_Pt-30to80_EMEnriched_TuneZ2_7TeV-pythia6_Fall10-START38_V12-v1             3.87e6        QCDEM
+#QCD_Pt-80to170_BCtoE_TuneZ2_7TeV-pythia6_Fall10-START38_V12-v1                        9.63e3       QCDBC
+#QCD_Pt-80to170_EMEnriched_TuneZ2_7TeV-pythia6_Fall10-START38_V12-v1           1.40e5       QCDEM
+#
+#
+#
+#
+#
+#
+#
+#
