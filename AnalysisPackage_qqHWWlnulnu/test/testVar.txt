@@ -1,0 +1,27 @@
+### Name       Min   Max   NBin    NameHR
+
+log(q1_pT)      2      8    50    log(p_{T}^{high})
+log(q2_pT)      2      8    50    log(p_{T}^{low}) 
+log(M_qq)       4     10    50    log(M_{qq})
+DEta_qq         0     10    50    #Delta#eta_{qq}
+CJV_30          0      5     5    CJV_{p_{T}>30}
+met             0    500   100    MET(GeV)
+M_ll            0    200   100    M_{l,l}
+DPhi_ll         0   3.15    50    #Delta#phi_{l,l}
+abs(Z_ll)       0      2    40    |Z_{ll}|
+
+
+
+q1_bTag_trackCountingHighPurBJetTags  -5   10   100    jet^{1}_{bTag}
+q2_bTag_trackCountingHighPurBJetTags  -5   10   100    jet^{2}_{bTag}
+q2_bTag_trackCountingHighPurBJetTags+q1_bTag_trackCountingHighPurBJetTags  -20  40  30  jet^{1}_{bTag}+jet^{2}_{bTag}
+
+
+#### MVA ####
+LikelihoodD_JetH160   -0.01 1.01 100   LikelihoodD_{jet}
+BDT_JetH160    -1     1  100    BDT_{jet}
+MLP_JetH160     -0.5   1.5  100    MLP_{jet}
+MLPBNN_JetH160  -0.5   1.5  100    MLPBNN_{jet}
+
+
+
