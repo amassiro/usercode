@@ -173,7 +173,7 @@ int main(int argc, char** argv) {
       samples.push_back (coll (reduced_name_samples.at(iName))) ;
      }
      char nameFile[1000];
-     sprintf(nameFile,"output_Fall10/out_NtupleProducer_%s.root",nameSample[iSample]);  
+     sprintf(nameFile,"output_Fall10_TEMP/out_NtupleProducer_%s.root",nameSample[iSample]);  
      TFile* f = new TFile(nameFile, "READ");
      std::pair<TTree*, TTree*> pair_vbf_temp ((TTree*) f->Get ("outTreeJetLep"), (TTree*) f->Get ("outTreeSelections"));
      samples.back ().add (xsection[iSample], pair_vbf_temp) ;
@@ -187,13 +187,112 @@ std::vector<TString> selections_name ;
 
 
 ///==== cut based ====
+
+
+///==== MH 120 ====
+// selections_name.push_back("2j+2l");     selections.push_back ("M_ll>10 && M_qq>200 && DEta_qq>1 && l1_pT>20 && q1_pT>15 && q2_pT>15") ;
+// selections_name.push_back("VBF");  selections.push_back ("q1_pT>20&&q2_pT>20&&abs(q1_Eta)>0.1&&abs(q2_Eta)>0.1&&DEta_qq>1.5&&M_qq>300") ;
+// selections_name.push_back("CJV");  selections.push_back ("CJV_30<1") ;
+// selections_name.push_back("LEP");  selections.push_back ("l1_pT>30 && l2_pT>10 && abs(l1_Eta)<2.5 && abs(l2_Eta)<2.5 && DEta_ll<3.8 && DPhi_ll<1.0 && l1_charge * l2_charge == -1 && abs(Z_ll)<0.5") ;
+// selections_name.push_back("Z_V");  selections.push_back ("(M_ll<70&&M_ll>10)") ;
+// selections_name.push_back("MET");  selections.push_back ("met>20");
+// selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingHighPurBJetTags<0.5&&q1_bTag_trackCountingHighPurBJetTags<0.5&&(q2_bTag_trackCountingHighPurBJetTags+q1_bTag_trackCountingHighPurBJetTags)<0.7");
+
+///==== MH 130 ====
+// selections_name.push_back("2j+2l");     selections.push_back ("M_ll>10 && M_qq>200 && DEta_qq>1 && l1_pT>20 && q1_pT>15 && q2_pT>15") ;
+// selections_name.push_back("VBF");  selections.push_back ("q1_pT>20&&q2_pT>20&&abs(q1_Eta)>0.1&&abs(q2_Eta)>0.1&&DEta_qq>1.5&&M_qq>300") ;
+// selections_name.push_back("CJV");  selections.push_back ("CJV_30<1") ;
+// selections_name.push_back("LEP");  selections.push_back ("l1_pT>30 && l2_pT>10 && abs(l1_Eta)<2.5 && abs(l2_Eta)<2.5 && DEta_ll<3.8 && DPhi_ll<1.0 && l1_charge * l2_charge == -1 && abs(Z_ll)<0.5") ;
+// selections_name.push_back("Z_V");  selections.push_back ("(M_ll<70&&M_ll>10)") ;
+// selections_name.push_back("MET");  selections.push_back ("met>20");
+// selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingHighPurBJetTags<0.5&&q1_bTag_trackCountingHighPurBJetTags<0.5&&(q2_bTag_trackCountingHighPurBJetTags+q1_bTag_trackCountingHighPurBJetTags)<0.7");
+
+///==== MH 160 ====
+// selections_name.push_back("2j+2l");     selections.push_back ("M_ll>10 && M_qq>200 && DEta_qq>1 && l1_pT>20 && q1_pT>15 && q2_pT>15") ;
+// selections_name.push_back("VBF");  selections.push_back ("q1_pT>20&&q2_pT>20&&abs(q1_Eta)>0.1&&abs(q2_Eta)>0.1&&DEta_qq>2.0&&M_qq>350") ;
+// selections_name.push_back("CJV");  selections.push_back ("CJV_30<1") ;
+// selections_name.push_back("LEP");  selections.push_back ("l1_pT>30 && l2_pT>10 && abs(l1_Eta)<2.5 && abs(l2_Eta)<2.5 && DEta_ll<3.8 && DPhi_ll<1.5 && l1_charge * l2_charge == -1 && abs(Z_ll)<0.5") ;
+// selections_name.push_back("Z_V");  selections.push_back ("((M_ll<70&&M_ll>20&&l1_flavour==l2_flavour)||(l1_flavour!=l2_flavour))") ;
+// selections_name.push_back("MET");  selections.push_back ("met>30");
+// selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingHighPurBJetTags<0.5&&q1_bTag_trackCountingHighPurBJetTags<0.5&&(q2_bTag_trackCountingHighPurBJetTags+q1_bTag_trackCountingHighPurBJetTags)<0.7");
+
+///==== MH 200 ====
+// selections_name.push_back("2j+2l");     selections.push_back ("M_ll>10 && M_qq>200 && DEta_qq>1 && l1_pT>20 && q1_pT>15 && q2_pT>15") ;
+// selections_name.push_back("VBF");  selections.push_back ("q1_pT>25&&q2_pT>25&&abs(q1_Eta)>0.1&&abs(q2_Eta)>0.1&&DEta_qq>2.0&&M_qq>400") ;
+// selections_name.push_back("CJV");  selections.push_back ("CJV_30<1") ;
+// selections_name.push_back("LEP");  selections.push_back ("l1_pT>30 && l2_pT>10 && abs(l1_Eta)<2.5 && abs(l2_Eta)<2.5 && DPhi_ll>1.5 && l1_charge * l2_charge == -1 && abs(Z_ll)<0.5") ;
+// selections_name.push_back("Z_V");  selections.push_back ("((((M_ll<75&&M_ll>20)||(M_ll>95))&&l1_flavour==l2_flavour)||(l1_flavour!=l2_flavour))") ;
+// selections_name.push_back("MET");  selections.push_back ("met>40");
+// selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingHighPurBJetTags<0.5&&q1_bTag_trackCountingHighPurBJetTags<0.5&&(q2_bTag_trackCountingHighPurBJetTags+q1_bTag_trackCountingHighPurBJetTags)<0.7");
+
+
+///==== MH 400 ====
+// selections_name.push_back("2j+2l");     selections.push_back ("M_ll>10 && M_qq>200 && DEta_qq>1 && l1_pT>20 && q1_pT>15 && q2_pT>15") ;
+// selections_name.push_back("VBF");  selections.push_back ("q1_pT>25&&q2_pT>25&&abs(q1_Eta)>0.1&&abs(q2_Eta)>0.1&&DEta_qq>2.5&&M_qq>500") ;
+// selections_name.push_back("CJV");  selections.push_back ("CJV_30<1") ;
+// selections_name.push_back("LEP");  selections.push_back ("l1_pT>40 && l2_pT>20 && abs(l1_Eta)<2.5 && abs(l2_Eta)<2.5 && DEta_ll<3.8 && DPhi_ll>1.5 && l1_charge * l2_charge == -1 && abs(Z_ll)<0.5") ;
+// selections_name.push_back("Z_V");  selections.push_back ("((((M_ll<75&&M_ll>20)||(M_ll>95))&&l1_flavour==l2_flavour)||(l1_flavour!=l2_flavour))") ;
+// selections_name.push_back("MET");  selections.push_back ("met>30");
+// selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingHighPurBJetTags<0.5&&q1_bTag_trackCountingHighPurBJetTags<0.5&&(q2_bTag_trackCountingHighPurBJetTags+q1_bTag_trackCountingHighPurBJetTags)<0.7");
+
+
+
+
+
+
+
+///=============
+///==== MVA ====
+///=============
+
+///==== MH 120 ====
+// selections_name.push_back("2j+2l");     selections.push_back ("M_ll>10 && M_qq>200 && DEta_qq>1 && l1_pT>20 && q1_pT>15 && q2_pT>15") ;
+// selections_name.push_back("VBF");  selections.push_back ("q1_pT>20&&q2_pT>20&&abs(q1_Eta)>0.1&&abs(q2_Eta)>0.1&&DEta_qq>1.5&&M_qq>300") ;
+// selections_name.push_back("CJV");  selections.push_back ("CJV_30<1") ;
+// selections_name.push_back("LEP");  selections.push_back ("l1_pT>30 && l2_pT>10 && abs(l1_Eta)<2.5 && abs(l2_Eta)<2.5 && DEta_ll<3.8 && DPhi_ll<1.0 && l1_charge * l2_charge == -1 && abs(Z_ll)<0.5") ;
+// selections_name.push_back("Z_V");  selections.push_back ("(M_ll<70&&M_ll>10)") ;
+// selections_name.push_back("MET");  selections.push_back ("met>20");
+// selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingHighPurBJetTags<0.5&&q1_bTag_trackCountingHighPurBJetTags<0.5&&(q2_bTag_trackCountingHighPurBJetTags+q1_bTag_trackCountingHighPurBJetTags)<0.7");
+
+///==== MH 130 ====
+// selections_name.push_back("2j+2l");     selections.push_back ("M_ll>10 && M_qq>200 && DEta_qq>1 && l1_pT>20 && q1_pT>15 && q2_pT>15") ;
+// selections_name.push_back("VBF");  selections.push_back ("q1_pT>20&&q2_pT>20&&abs(q1_Eta)>0.1&&abs(q2_Eta)>0.1&&DEta_qq>1.5&&M_qq>300") ;
+// selections_name.push_back("CJV");  selections.push_back ("CJV_30<1") ;
+// selections_name.push_back("LEP");  selections.push_back ("l1_pT>30 && l2_pT>10 && abs(l1_Eta)<2.5 && abs(l2_Eta)<2.5 && DEta_ll<3.8 && DPhi_ll<1.0 && l1_charge * l2_charge == -1 && abs(Z_ll)<0.5") ;
+// selections_name.push_back("Z_V");  selections.push_back ("(M_ll<70&&M_ll>10)") ;
+// selections_name.push_back("MET");  selections.push_back ("met>20");
+// selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingHighPurBJetTags<0.5&&q1_bTag_trackCountingHighPurBJetTags<0.5&&(q2_bTag_trackCountingHighPurBJetTags+q1_bTag_trackCountingHighPurBJetTags)<0.7");
+
+///==== MH 160 ====
 selections_name.push_back("2j+2l");     selections.push_back ("M_ll>10 && M_qq>200 && DEta_qq>1 && l1_pT>20 && q1_pT>15 && q2_pT>15") ;
-selections_name.push_back("VBF");  selections.push_back ("q1_pT>20&&q2_pT>20&&abs(q1_Eta)>0.1&&abs(q2_Eta)>0.1&&DEta_qq>2.0&&M_qq>350") ;
+selections_name.push_back("VBF");  selections.push_back ("q1_pT>20&&q2_pT>20") ;
 selections_name.push_back("CJV");  selections.push_back ("CJV_30<1") ;
-selections_name.push_back("LEP");  selections.push_back ("l1_pT>30 && l2_pT>10 && abs(l1_Eta)<2.5 && abs(l2_Eta)<2.5 && DEta_ll<3.8 && DPhi_ll<1.5 && l1_charge * l2_charge == -1 && abs(Z_ll)<0.5") ;
+selections_name.push_back("LEP");  selections.push_back ("l1_charge * l2_charge == -1") ;
 selections_name.push_back("Z_V");  selections.push_back ("((M_ll<70&&M_ll>20&&l1_flavour==l2_flavour)||(l1_flavour!=l2_flavour))") ;
 selections_name.push_back("MET");  selections.push_back ("met>30");
-selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingHighPurBJetTags<1.0&&q1_bTag_trackCountingHighPurBJetTags<1.0");
+selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingHighPurBJetTags<0.5&&q1_bTag_trackCountingHighPurBJetTags<0.5&&(q2_bTag_trackCountingHighPurBJetTags+q1_bTag_trackCountingHighPurBJetTags)<0.7");
+selections_name.push_back("MVAJet");  selections.push_back ("LikelihoodD_JetH160>0");
+// selections_name.push_back("MVALep");  selections.push_back ("LikelihoodD_LepH160>0");
+selections_name.push_back("MVALep");  selections.push_back ("MLPBNN_LepH160>0");
+
+///==== MH 200 ====
+// selections_name.push_back("2j+2l");     selections.push_back ("M_ll>10 && M_qq>200 && DEta_qq>1 && l1_pT>20 && q1_pT>15 && q2_pT>15") ;
+// selections_name.push_back("VBF");  selections.push_back ("q1_pT>25&&q2_pT>25&&abs(q1_Eta)>0.1&&abs(q2_Eta)>0.1&&DEta_qq>2.0&&M_qq>400") ;
+// selections_name.push_back("CJV");  selections.push_back ("CJV_30<1") ;
+// selections_name.push_back("LEP");  selections.push_back ("l1_pT>30 && l2_pT>10 && abs(l1_Eta)<2.5 && abs(l2_Eta)<2.5 && DPhi_ll>1.5 && l1_charge * l2_charge == -1 && abs(Z_ll)<0.5") ;
+// selections_name.push_back("Z_V");  selections.push_back ("((((M_ll<75&&M_ll>20)||(M_ll>95))&&l1_flavour==l2_flavour)||(l1_flavour!=l2_flavour))") ;
+// selections_name.push_back("MET");  selections.push_back ("met>40");
+// selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingHighPurBJetTags<0.5&&q1_bTag_trackCountingHighPurBJetTags<0.5&&(q2_bTag_trackCountingHighPurBJetTags+q1_bTag_trackCountingHighPurBJetTags)<0.7");
+
+
+///==== MH 400 ====
+// selections_name.push_back("2j+2l");     selections.push_back ("M_ll>10 && M_qq>200 && DEta_qq>1 && l1_pT>20 && q1_pT>15 && q2_pT>15") ;
+// selections_name.push_back("VBF");  selections.push_back ("q1_pT>25&&q2_pT>25&&abs(q1_Eta)>0.1&&abs(q2_Eta)>0.1&&DEta_qq>2.5&&M_qq>500") ;
+// selections_name.push_back("CJV");  selections.push_back ("CJV_30<1") ;
+// selections_name.push_back("LEP");  selections.push_back ("l1_pT>40 && l2_pT>20 && abs(l1_Eta)<2.5 && abs(l2_Eta)<2.5 && DEta_ll<3.8 && DPhi_ll>1.5 && l1_charge * l2_charge == -1 && abs(Z_ll)<0.5") ;
+// selections_name.push_back("Z_V");  selections.push_back ("((((M_ll<75&&M_ll>20)||(M_ll>95))&&l1_flavour==l2_flavour)||(l1_flavour!=l2_flavour))") ;
+// selections_name.push_back("MET");  selections.push_back ("met>30");
+// selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingHighPurBJetTags<0.5&&q1_bTag_trackCountingHighPurBJetTags<0.5&&(q2_bTag_trackCountingHighPurBJetTags+q1_bTag_trackCountingHighPurBJetTags)<0.7");
 
 
 
@@ -307,8 +406,8 @@ selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingH
  hMC->SetMarkerColor(kBlue);
  hMC->SetFillStyle(3005);
 
- hDATA->SetLineColor(kRed);
- hDATA->SetMarkerColor(kRed);
+ hDATA->SetLineColor(kBlack);
+ hDATA->SetMarkerColor(kBlack);
  hDATA->SetMarkerStyle(20);
  
  for (int iSel = 0 ; iSel < selections_name.size () ; ++iSel) {
