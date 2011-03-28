@@ -98,8 +98,12 @@ int main(int argc, char** argv)
  TTree *treeEffVect[100];
  TTree *treeJetLepVect[100];
  
-//  [iName][iCut][iVar]
+
+  //  [iCut][iVar]
+ TCanvas* ccCanvas[10][30];
+ TCanvas* ccCanvasPull[10][30];
  TH1F* histoSumMC[10][30];
+ //  [iName][iCut][iVar]
  TH1F* histo[100][10][30];
  TH1F* histo_temp[100][10][30];
  
@@ -307,9 +311,14 @@ int main(int argc, char** argv)
  }
  
  
- 
- 
- 
+ for (int iCut = 0; iCut<vCut.size(); iCut++){
+  for (int iVar = 0; iVar<vVarName.size(); iVar++){
+   TString nameCanvas = Form("%d_%d_Canvas",iCut,iVar);
+   ccCanvas[iCut][iVar] = new TCanvas(nameCanvas,nameCanvas,400,400);
+   TString nameCanvasPull = Form("%d_%d_CanvasPull",iCut,iVar);
+   ccCanvasPull[iCut][iVar] = new TCanvas(nameCanvasPull,nameCanvasPull,400,400);
+  }
+ } 
  
  THStack* hs[100][100];
  TH1F* hPull[100][100];
@@ -399,6 +408,20 @@ int main(int argc, char** argv)
    gPad->SetRightMargin(0.07);
    
    
+   ccCanvas[iCut][iVar]-> cd();
+   DrawStack(hs[iCut][iVar]);
+   gPad->SetLogy();
+   gPad->SetGrid();
+   leg->Draw();
+   latex->Draw();
+   
+   ccCanvasPull[iCut][iVar]-> cd();
+   hPull[iCut][iVar]->Draw("EP");
+   gPad->SetGrid();
+   gPad->SetLeftMargin(0.17);
+   gPad->SetRightMargin(0.07);
+   
+   
    
    for (int iName=0; iName<reduced_name_samples.size(); iName++){
     if (reduced_name_samples.at(iName) == "DATA") {
@@ -413,6 +436,10 @@ int main(int argc, char** argv)
      histo[iName][iCut][iVar]->Draw("EsameB");
      leg->Draw();
      cCompareVarPull[iVar] -> cd(iCut*2+1);
+     histo[iName][iCut][iVar]->Draw("EsameB");
+     leg->Draw();
+     
+     ccCanvas[iCut][iVar]-> cd();
      histo[iName][iCut][iVar]->Draw("EsameB");
      leg->Draw();
     }
@@ -440,6 +467,25 @@ int main(int argc, char** argv)
  for (int iVar = 0; iVar<vVarName.size(); iVar++){
   cCompareVar[iVar] -> Write();
   cCompareVarPull[iVar] -> Write();
+ }
+ 
+ outFile.cd();
+ TDirectory* cdAll = (TDirectory*) outFile.mkdir("All");
+ cdAll->mkdir("Var");
+ cdAll->mkdir("Pull");
+ outFile.cd("All/Var");
+ for (int iCut = 0; iCut<vCut.size(); iCut++){
+  for (int iVar = 0; iVar<vVarName.size(); iVar++){
+   ccCanvas[iCut][iVar]-> Write();
+  }
+ }
+ 
+ outFile.cd();
+ outFile.cd("All/Pull");
+ for (int iCut = 0; iCut<vCut.size(); iCut++){
+  for (int iVar = 0; iVar<vVarName.size(); iVar++){
+   ccCanvasPull[iCut][iVar]-> Write();
+  }
  }
  
  outFile.cd();

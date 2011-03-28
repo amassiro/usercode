@@ -24,10 +24,12 @@
 #include <fstream>
 #include <sstream>
 
+#include "ConfigParser.h"
+#include "ntpleUtils.h"
 #include "qqHWWlnulnuUtils.h"
 
-#include "Winter10/Read.cc"
-#include "Winter10/TDRStyle.cc"
+#include "../test/Read.cc"
+#include "../test/TDRStyle.cc"
 
 // using namespace std ;
 
@@ -91,6 +93,16 @@ struct coll
 // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
 
+///
+///
+///   ___|                       |                     _ )         _ \   |         |   
+///  |       _ \   |   |  __ \   __|   _ \   __|       _ \ \      |   |  |   _ \   __| 
+///  |      (   |  |   |  |   |  |     __/  |         ( `  <      ___/   |  (   |  |   
+/// \____| \___/  \__,_| _|  _| \__| \___| _|        \___/\/     _|     _| \___/  \__| 
+///
+///
+
+
 int main(int argc, char** argv) {
   
   EColor vColor[1000] = {
@@ -106,16 +118,69 @@ int main(int argc, char** argv) {
     kYellow,
     kGray,(EColor) (kGray+1),(EColor) (kViolet),(EColor) (kYellow),(EColor) (kGray)
   };
-  
+   
+ //Check if all nedeed arguments to parse are there                                                                                                                               
+ if(argc != 2)
+ {
+  std::cerr << ">>>>> analysis.cpp::usage: " << argv[0] << " configFileName" << std::endl ;
+  return 1;
+ }
+ 
+ 
+ // Parse the config file                                                                                                                                                          
+ parseConfigFile (argv[1]) ;
+ 
+ std::string treeName  = gConfigParser -> readStringOption("Input::treeName");
+ std::string treeNameSelections = gConfigParser -> readStringOption("Input::treeNameSelections");
+ std::string fileSamples = gConfigParser -> readStringOption("Input::fileSamples");
+ std::string inputDirectory = gConfigParser -> readStringOption("Input::inputDirectory");
+ 
+ double LUMI = gConfigParser -> readDoubleOption("Input::Lumi");
+ 
+ 
+ std::vector<std::string> SignalName = gConfigParser -> readStringListOption("Plot::SignalName");
+ 
+ ///==== list of selections to perform (NOT sequential selections) ====
+ std::string CutFile   = gConfigParser -> readStringOption("Selections::CutFile");
+ std::string CutHRFile = gConfigParser -> readStringOption("Selections::CutHRFile");
+ std::vector<std::string> vCut;
+ std::vector<std::string> vCutHR;
+ 
+ std::cout << " nCuts   = " << ReadFileCut(CutFile,     vCut  ) << std::endl;
+ std::cout << " nCutsHR = " << ReadFileCutHR(CutHRFile, vCutHR) << std::endl;
+ 
+ 
+ 
+ ///==== output file ====
+ std::string OutFileName    = gConfigParser -> readStringOption("Output::outFileName");
+ std::cout << ">>>>> Output::outFileName  " << OutFileName  << std::endl;  
+ 
+ TFile outFile(OutFileName.c_str(),"RECREATE");
+ outFile.cd();
+ 
+ 
+ ///==== debug flag ====
+ 
+ bool  debug = false; 
+ try {
+  debug = gConfigParser -> readBoolOption("Input::debug");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ std::cout << ">>>>> input::debug  " << debug  << std::endl;  
+ 
+ char *nameSample[1000];
+ char *nameHumanReadable[1000];
+ char* xsectionName[1000];
+ 
+ double xsection[1000];
  char nameFileIn[1000];
+ sprintf(nameFileIn,"%s",fileSamples.c_str());
  
- TString fileSamples;
- if (argc>=2) sprintf(nameFileIn,"%s",argv[1]);
- else  sprintf(nameFileIn,"test/Winter10/samples_skimmed.txt");
+ int numberOfSamples = ReadFile(nameFileIn, nameSample, nameHumanReadable, xsectionName);
+ 
   
- if (argc>=3) LUMI = atof(argv[2]);
- else  LUMI = 1000.;
- 
  std::vector<coll> samples ;
  
  TTree *treeEffVect[100];
@@ -123,13 +188,6 @@ int main(int argc, char** argv) {
  
  TH1F* histo[100];
  TH1F* histo_temp[100];
- 
- char *nameSample[1000];
- char *nameHumanReadable[1000];
- char* xsectionName[1000];
- double xsection[1000];
- 
- int numberOfSamples =  ReadFile(nameFileIn,nameSample,nameHumanReadable, xsectionName);
  
  for (int iSample=0; iSample<numberOfSamples; iSample++){
   xsection[iSample] = atof(xsectionName[iSample]);
@@ -173,9 +231,9 @@ int main(int argc, char** argv) {
       samples.push_back (coll (reduced_name_samples.at(iName))) ;
      }
      char nameFile[1000];
-     sprintf(nameFile,"output_Fall10_TEMP/out_NtupleProducer_%s.root",nameSample[iSample]);  
-     TFile* f = new TFile(nameFile, "READ");
-     std::pair<TTree*, TTree*> pair_vbf_temp ((TTree*) f->Get ("outTreeJetLep"), (TTree*) f->Get ("outTreeSelections"));
+     sprintf(nameFile,"%s/out_NtupleProducer_%s.root",inputDirectory.c_str(),nameSample[iSample]);  
+     TFile* f = new TFile(nameFile, "READ");     
+     std::pair<TTree*, TTree*> pair_vbf_temp ((TTree*) f->Get(treeName.c_str()), (TTree*) f->Get(treeNameSelections.c_str()));
      samples.back ().add (xsection[iSample], pair_vbf_temp) ;
     }
    }
@@ -264,16 +322,21 @@ std::vector<TString> selections_name ;
 // selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingHighPurBJetTags<0.5&&q1_bTag_trackCountingHighPurBJetTags<0.5&&(q2_bTag_trackCountingHighPurBJetTags+q1_bTag_trackCountingHighPurBJetTags)<0.7");
 
 ///==== MH 160 ====
-selections_name.push_back("2j+2l");     selections.push_back ("M_ll>10 && M_qq>200 && DEta_qq>1 && l1_pT>20 && q1_pT>15 && q2_pT>15") ;
-selections_name.push_back("VBF");  selections.push_back ("q1_pT>20&&q2_pT>20") ;
-selections_name.push_back("CJV");  selections.push_back ("CJV_30<1") ;
-selections_name.push_back("LEP");  selections.push_back ("l1_charge * l2_charge == -1") ;
-selections_name.push_back("Z_V");  selections.push_back ("((M_ll<70&&M_ll>20&&l1_flavour==l2_flavour)||(l1_flavour!=l2_flavour))") ;
-selections_name.push_back("MET");  selections.push_back ("met>30");
-selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingHighPurBJetTags<0.5&&q1_bTag_trackCountingHighPurBJetTags<0.5&&(q2_bTag_trackCountingHighPurBJetTags+q1_bTag_trackCountingHighPurBJetTags)<0.7");
-selections_name.push_back("MVAJet");  selections.push_back ("LikelihoodD_JetH160>0");
+for (int iCut = 0; iCut<vCut.size(); iCut++){
+ TString Cut = Form ("%s",vCut.at(iCut).c_str());
+ if (debug) std::cout << " Cut[" << iCut << ":" << vCut.size() << "] = " << Cut.Data() << " ~~ " << std::endl;
+ selections_name.push_back(vCutHR.at(iCut).c_str());     selections.push_back (vCut.at(iCut).c_str()) ;
+}
+// selections_name.push_back("2j+2l");     selections.push_back ("M_ll>10 && M_qq>200 && DEta_qq>1 && l1_pT>20 && q1_pT>15 && q2_pT>15") ;
+// selections_name.push_back("VBF");  selections.push_back ("q1_pT>20&&q2_pT>20") ;
+// selections_name.push_back("CJV");  selections.push_back ("CJV_30<1") ;
+// selections_name.push_back("LEP");  selections.push_back ("l1_charge * l2_charge == -1") ;
+// selections_name.push_back("Z_V");  selections.push_back ("((M_ll<70&&M_ll>20&&l1_flavour==l2_flavour)||(l1_flavour!=l2_flavour))") ;
+// selections_name.push_back("MET");  selections.push_back ("met>30");
+// selections_name.push_back("Btag"); selections.push_back ("q2_bTag_trackCountingHighPurBJetTags<0.5&&q1_bTag_trackCountingHighPurBJetTags<0.5&&(q2_bTag_trackCountingHighPurBJetTags+q1_bTag_trackCountingHighPurBJetTags)<0.7");
+// selections_name.push_back("MVAJet");  selections.push_back ("LikelihoodD_JetH160>0");
 // selections_name.push_back("MVALep");  selections.push_back ("LikelihoodD_LepH160>0");
-selections_name.push_back("MVALep");  selections.push_back ("MLPBNN_LepH160>0");
+// selections_name.push_back("MVALep");  selections.push_back ("MLPBNN_LepH160>0");
 
 ///==== MH 200 ====
 // selections_name.push_back("2j+2l");     selections.push_back ("M_ll>10 && M_qq>200 && DEta_qq>1 && l1_pT>20 && q1_pT>15 && q2_pT>15") ;
@@ -313,17 +376,29 @@ selections_name.push_back("MVALep");  selections.push_back ("MLPBNN_LepH160>0");
  
  std::cout << std::setw (8) << " sample ";
  std::cout << "  |" << std::setw (8) << "  No sel  ";
- std::cout << "  |  " << std::setw (8) << "2j+2l";
- std::cout << "  |  " << std::setw (17) << "  VBF ";
- std::cout << "  |  " << std::setw (17) << "  CJV ";
- std::cout << "  |  " << std::setw (17) << "  LEP ";
- std::cout << "  |  " << std::setw (17) << "Z veto ";
- std::cout << "  |  " << std::setw (17) << " MET   ";
- std::cout << "  |  " << std::setw (17) << " BTag ";
+ for (int iSel = 1 ; iSel < selections.size () ; ++iSel) {
+  std::cout << "  |  " << std::setw (8) << vCutHR.at(iSel);
+ }
+ 
+ //  std::cout << "  |  " << std::setw (8) << "2j+2l";
+ //  std::cout << "  |  " << std::setw (17) << "  VBF ";
+ //  std::cout << "  |  " << std::setw (17) << "  CJV ";
+ //  std::cout << "  |  " << std::setw (17) << "  LEP ";
+ //  std::cout << "  |  " << std::setw (17) << "Z veto ";
+ //  std::cout << "  |  " << std::setw (17) << " MET   ";
+ //  std::cout << "  |  " << std::setw (17) << " BTag ";
  // std::cout << "  |  " << std::setw (17) << " MVA Jet ";
  // std::cout << "  |  " << std::setw (17) << " MVA Lep";
+ 
+ 
+ 
  std::cout << std::endl;
- std::cout << "----------+------------+------------+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+\n" ;
+ 
+ for (int iSel = 1 ; iSel < selections.size () ; ++iSel) {
+  std::cout << "+------------";
+ }
+ std::cout << std::endl;
+ std::cout << std::endl;
  
  double totalBkg = 0;
  double totalBkgError = 0;
@@ -346,7 +421,13 @@ selections_name.push_back("MVALep");  selections.push_back ("MLPBNN_LepH160>0");
 //    std::cout << " | absolute " << endl ;  
    std::cout << std::endl ;  
    
-   if (reduced_name_samples[iSample]!="qqH" && reduced_name_samples[iSample]!="ggH") totalBkg += samples.at (iSample).getEqSigma (total_cut);
+   
+   bool isSig = false;
+   for (int iSig = 0; iSig < SignalName.size(); iSig++){
+    if (reduced_name_samples[iSample] == SignalName.at(iSig)) { isSig = true;}
+   }
+   
+   if (!isSig && reduced_name_samples[iSample]!="ggH") totalBkg += samples.at (iSample).getEqSigma (total_cut);
    else totalSig += samples.at (iSample).getEqSigma (total_cut);
       
  } 
