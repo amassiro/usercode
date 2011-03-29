@@ -371,6 +371,9 @@ for (int iCut = 0; iCut<vCut.size(); iCut++){
 ///*MVA Jet*/ selections.push_back ("BDT_Jet>0.1");
 ///*MVA Lep*/ selections.push_back ("BDT_Lep>-0.2");
  
+ std::cout << std::endl;
+ std::cout << std::endl;
+ 
  std::cout.precision (2) ;
  std::cout.unsetf(std::ios::scientific);
  
@@ -403,6 +406,7 @@ for (int iCut = 0; iCut<vCut.size(); iCut++){
  }
  
  
+ 
  for (int iSel = 1 ; iSel < selections.size () ; ++iSel) {
   std::cout << "+------------";
  }
@@ -418,8 +422,8 @@ for (int iCut = 0; iCut<vCut.size(); iCut++){
  for (int iSample = 0 ; iSample < samples.size () ; ++iSample)
  {
    std::cout << std::setw (8) << samples.at (iSample).m_name ;
-   std::cout << " | " << std::setw (8) << samples.at (iSample).getAll () ;
-   std::cout << " | " << std::setw (8) << samples.at (iSample).getEqSigma (selections.at (0)) ;
+//    std::cout << " | " << std::setw (8) << samples.at (iSample).getAll () ;
+//    std::cout << " | " << std::setw (8) << samples.at (iSample).getEqSigma (selections.at (0)) ;
    TCut total_cut = selections.at (0) ;
    
    
@@ -429,7 +433,7 @@ for (int iCut = 0; iCut<vCut.size(); iCut++){
    }
    
    
-   for (int iSel = 1 ; iSel < selections.size () ; ++iSel) 
+   for (int iSel = 0 ; iSel < selections.size () ; ++iSel) 
    {
      total_cut = total_cut && selections.at (iSel) ;
      std::cout << " | " << std::setw (8) << samples.at (iSample).getEqSigma (total_cut) ;
@@ -451,21 +455,31 @@ for (int iCut = 0; iCut<vCut.size(); iCut++){
  for (int iSel = 1 ; iSel < selections.size () ; ++iSel) {
   std::cout << "+------------";
  }
- for (int iSel = 1 ; iSel < selections.size () ; ++iSel) {
-  std::cout << std::setw (8) << "total bkg";
+ std::cout << std::endl ;  
+ std::cout << std::setw (8) << "tot bkg";
+ for (int iSel = 0 ; iSel < selections.size () ; ++iSel) {
   std::cout << " | " << std::setw (8) << numBackground.at(iSel) ;
   std::cout << "[" << std::setw (8) << 0 << "]" ;
  }
  std::cout << std::endl ;  
- for (int iSel = 1 ; iSel < selections.size () ; ++iSel) {
-  std::cout << std::setw (8) << "total sig";
+ std::cout << std::setw (8) << "tot sig";
+ for (int iSel = 0 ; iSel < selections.size () ; ++iSel) {
   std::cout << " | " << std::setw (8) << numSignal.at(iSel) ;
   std::cout << "[" << std::setw (8) << 0 << "]" ;
  }
  std::cout << std::endl ;  
+ std::cout << std::setw (8) << "S/sq(B)";
+ for (int iSel = 0 ; iSel < selections.size () ; ++iSel) {
+  std::cout << " | " << std::setw (8) << (sqrt(numBackground.at(iSel)) ? numSignal.at(iSel) / sqrt(numBackground.at(iSel)) : 0) ;
+  std::cout << "[" << std::setw (8) << 0 << "]" ;
+ }
+ std::cout << std::endl ;  
+ std::cout << std::endl;
  
  std::cerr << " totalBkg = " << totalBkg << std::endl;
  std::cerr << " totalSig = " << totalSig << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
  
  ///==== draw ====
  TDRStyle();
