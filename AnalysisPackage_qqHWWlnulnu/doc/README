@@ -37,11 +37,14 @@ Step:
 	  
 			cd scripts/submit/
 			perl launchJobs_hercules.pl params_hercules.CFG
+			
 		then add results together
 			ls -d */  | awk '{print "hadd "$1"/Jets2Lepton2_MiBiCommonNTOneLeptonTwoJetsPFlow_TOT.root "$1"/*PFlow.root"}' | /bin/sh
+			
 		And add DATA samples:
 			mkdir DATA
 			hadd DATA/Jets2Lepton2_MiBiCommonNTOneLeptonTwoJetsPFlow_TOT.root  EG_Run2010A-Nov4ReReco_v1/Jets2Lepton2_MiBiCommonNTOneLeptonTwoJetsPFlow_TOT.root  Electron_Run2010B-Nov4ReReco_v1/Jets2Lepton2_MiBiCommonNTOneLeptonTwoJetsPFlow_TOT.root Mu_Run2010A-Nov4ReReco_v1/Jets2Lepton2_MiBiCommonNTOneLeptonTwoJetsPFlow_TOT.root Mu_Run2010B-Nov4ReReco_v1/Jets2Lepton2_MiBiCommonNTOneLeptonTwoJetsPFlow_TOT.root
+			hadd DATA/Jets2Lepton2_MiBiCommonNTOneLeptonTwoJetsPFlow_TOT.root  EG_Run2010A-Dec22ReReco_v1/Jets2Lepton2_MiBiCommonNTOneLeptonTwoJetsPFlow_TOT.root  Electron_Run2010B-Dec22ReReco_v1_2/Jets2Lepton2_MiBiCommonNTOneLeptonTwoJetsPFlow_TOT.root Mu_Run2010A-Dec22ReReco_v1/Jets2Lepton2_MiBiCommonNTOneLeptonTwoJetsPFlow_TOT.root Mu_Run2010B-Dec22ReReco_v1/Jets2Lepton2_MiBiCommonNTOneLeptonTwoJetsPFlow_TOT.root
 			
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 3) ntuple producer
@@ -74,31 +77,96 @@ Step:
 	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"q1_pT\",0,400,50,40.5,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"p_{T}^{q1}\"\)
 	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"q2_pT\",0,400,50,40.5,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"p_{T}^{q1}\"\)
 	 
-	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"abs\(q1_Eta\)\",0,5,10,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"leading jet #eta\"\)
-	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"l1_pT\",0,200,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"leading lepton p_{T}\"\)
+	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"abs\(q1_Eta\)\",0,5,10,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"leading\ jet\ #eta\"\)
+	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"l1_pT\",0,200,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"leading\ lepton p_{T}\"\)
 	 
+	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed_ttbarComparison.txt\"\,\"l1_pT\",0,200,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"leading\ lepton\ p_{T}\",\"ttbarMadgraph\"\)
 	 
     ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    5) Train MV discriminants or Selections
+    5) Train MV discriminants or Selections for JETS
 			source test/setupMVA.sh
-			r00t test/Selector_Jets_MVA_Training.cxx\(\"MLP,MLPCat\"\)
-			r00t test/TMVAGui.C\(\"output/Selector_Jets_trained.root\"\)
+			r00t test/Selector_Jets_MVA_Training.cxx\(\"MLP,MLPCat\"\)    **************** not supported
+			r00t test/TMVAGui.C\(\"output/Selector_Jets_trained.root\"\)  **************** not supported
     
+			r00t test/Selector_Jets_MultiClass_MVA_Training.cxx\(\"MLP\"\) **************** not supported
+			r00t test/TMVAMultiClassGui.C\(\"output/Selector_MultiClass_Jets_trained.root\"\) **************** not supported
    
-			r00t test/Selector_Jets_MultiClass_MVA_Training.cxx\(\"MLP\"\)
-			r00t test/TMVAMultiClassGui.C\(\"output/Selector_MultiClass_Jets_trained.root\"\)
+     5.1) Train a Mass dependent analysis (cuts or something else)
+			r00t test/Selector_Jets_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH160\"\)
+			r00t test/Selector_Jets_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH170\"\)
+			r00t test/TMVAGui.C\(\"output/Selector_Jets_trained_qqH160.root\"\)
+			
+r00t test/Selector_Jets_MVA_Training_MassDependent.cxx\(\"Cuts,MLPBNN,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH120\"\)
+.q
+r00t test/Selector_Jets_MVA_Training_MassDependent.cxx\(\"Cuts,MLPBNN,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH130\"\)
+.q
+r00t test/Selector_Jets_MVA_Training_MassDependent.cxx\(\"Cuts,MLPBNN,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH150\"\)
+.q
+r00t test/Selector_Jets_MVA_Training_MassDependent.cxx\(\"Cuts,MLPBNN,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH160\"\)
+.q
+r00t test/Selector_Jets_MVA_Training_MassDependent.cxx\(\"Cuts,MLPBNN,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH200\"\)
+.q
+r00t test/Selector_Jets_MVA_Training_MassDependent.cxx\(\"Cuts,MLPBNN,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH250\"\)
+.q
+r00t test/Selector_Jets_MVA_Training_MassDependent.cxx\(\"Cuts,MLPBNN,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH400\"\)
+.q
+r00t test/Selector_Jets_MVA_Training_MassDependent.cxx\(\"Cuts,MLPBNN,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH600\"\)
+.q
+
    
-   
+     5.2) Train a Mass dependent analysis (cuts or something else) with "MultiClass"
+			r00t test/Selector_Jets_MultiClass_MVA_Training_MassDependent.cxx\(\"MLP\",\"qqH160\"\)
+			r00t test/Selector_Jets_MultiClass_MVA_Training_MassDependent.cxx\(\"MLP\",\"qqH170\"\)
+			r00t test/TMVAGui.C\(\"output/Selector_Jets_trained_qqH160.root\"\)
+
+r00t test/Selector_Jets_MultiClass_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH120\"\)
+.q
+r00t test/Selector_Jets_MultiClass_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH130\"\)
+.q
+r00t test/Selector_Jets_MultiClass_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH150\"\)
+.q
+r00t test/Selector_Jets_MultiClass_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH160\"\)
+.q
+r00t test/Selector_Jets_MultiClass_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH200\"\)
+.q
+r00t test/Selector_Jets_MultiClass_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH250\"\)
+.q
+r00t test/Selector_Jets_MultiClass_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH400\"\)
+.q
+r00t test/Selector_Jets_MultiClass_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH600\"\)
+.q
+
+
+			
+			
+			
     ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     6) Add TMVA values in the tree
         Program :   FinalSelection_Producer_Jet.cpp
         to launch:  r00t test/Winter10/cfgCreator_SelectorJets.cxx
    
-   	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"BDT_Jet\",-1,1,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"BDT_{jet}\"\)
-   	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"MLP_Jet\",-1,2,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"MLP_{jet}\"\)
+   	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"BDT_JetH160\",-1,1,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"BDT_{jet}\"\)
+   	 r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"MLP_JetH160\",-1,2,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\",\"MLP_{jet}\"\)
 
    
-   
+ 
+r00t test/Winter10/cfgCreator_SelectorJets.cxx\(120\)
+.q
+r00t test/Winter10/cfgCreator_SelectorJets.cxx\(130\)
+.q
+r00t test/Winter10/cfgCreator_SelectorJets.cxx\(150\)
+.q
+r00t test/Winter10/cfgCreator_SelectorJets.cxx\(160\)
+.q
+r00t test/Winter10/cfgCreator_SelectorJets.cxx\(200\)
+.q
+r00t test/Winter10/cfgCreator_SelectorJets.cxx\(250\)
+.q
+r00t test/Winter10/cfgCreator_SelectorJets.cxx\(400\)
+.q
+r00t test/Winter10/cfgCreator_SelectorJets.cxx\(600\)
+.q
+
     ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     7) Plot at each step of the analysis
          Program :  counterAndPlot.cpp
@@ -112,11 +180,116 @@ Step:
          Steps of the analysis are hardcoded!
          Pull plot is drawn.
    
+    ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    8) Train MV discriminants or Selections for LEPTONS
+			source test/setupMVA.sh
+			r00t test/Selector_Leptons_MVA_Training.cxx\(\"MLP,MLPCat\"\) **************** not supported
+			r00t test/TMVAGui.C\(\"output/Selector_Leptons_trained.root\"\) ************** not supported
+    
+   
+			r00t test/Selector_Leptons_MultiClass_MVA_Training_MassDependent.cxx\(\"MLP\"\)
+			r00t test/TMVAMultiClassGui.C\(\"output/Selector_Leptons_trained_multiclass_qqH160.root\"\)
+   
+     8.1) Train a Mass dependent analysis (cuts or something else)
+			r00t test/Selector_Leptons_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH160\"\)
+			r00t test/Selector_Leptons_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD\",\"qqH170\"\)
+
+
+			
+r00t test/Selector_Leptons_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD,MLPBNN\",\"qqH120\"\)
+.q
+r00t test/Selector_Leptons_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD,MLPBNN\",\"qqH130\"\)
+.q
+r00t test/Selector_Leptons_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD,MLPBNN\",\"qqH150\"\)
+.q
+r00t test/Selector_Leptons_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD,MLPBNN\",\"qqH160\"\)
+.q
+r00t test/Selector_Leptons_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD,MLPBNN\",\"qqH200\"\)
+.q
+r00t test/Selector_Leptons_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD,MLPBNN\",\"qqH250\"\)
+.q
+r00t test/Selector_Leptons_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD,MLPBNN\",\"qqH400\"\)
+.q
+r00t test/Selector_Leptons_MVA_Training_MassDependent.cxx\(\"Cuts,MLP,BDT,MLPCat,CutsGA,Likelihood,LikelihoodD,MLPBNN\",\"qqH600\"\)
+.q
+
+		
+			
+			r00t test/TMVAGui.C\(\"output/Selector_Leptons_trained_qqH160.root\"\)
+			
+			
+    ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    8) Add TMVA values in the tree
+        Program :   FinalSelection_Producer_Lepton.cpp
+        to launch:  r00t test/Winter10/cfgCreator_SelectorLeptons.cxx
+   
+			r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"BDT_LepH160\",-1,1,100,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\&\&l1_charge*l2_charge\<0\",\"BDT_{lep}\"\)
+			r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"MLP_LepH160\",-1,2,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\&\&l1_charge*l2_charge\<0\",\"MLP_{lep}\"\)
+			r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"LikelihoodD_LepH160\",-1,2,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\&\&l1_charge*l2_charge\<0\",\"LikelohoodD_{lep}\"\)
+			r00t test/Winter10/Draw.cxx\(\"test/Winter10/samples_skimmed.txt\"\,\"MLPCat_LepH160\",-1,2,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\&\&l1_charge*l2_charge\<0\",\"MLPCat_{lep}\"\)
+			
    
    
+r00t test/Winter10/cfgCreator_SelectorLeptons.cxx\(120\)
+.q
+r00t test/Winter10/cfgCreator_SelectorLeptons.cxx\(130\)
+.q
+r00t test/Winter10/cfgCreator_SelectorLeptons.cxx\(150\)
+.q
+r00t test/Winter10/cfgCreator_SelectorLeptons.cxx\(160\)
+.q
+r00t test/Winter10/cfgCreator_SelectorLeptons.cxx\(200\)
+.q
+r00t test/Winter10/cfgCreator_SelectorLeptons.cxx\(250\)
+.q
+r00t test/Winter10/cfgCreator_SelectorLeptons.cxx\(400\)
+.q
+r00t test/Winter10/cfgCreator_SelectorLeptons.cxx\(600\)
+
+
    
+r00t test/Winter10/Draw.cxx\(\"test/samples_skimmed_WithPU.txt\"\,\"MLPCat_LepH160\",-1,2,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\&\&l1_charge*l2_charge\<0\",\"MLPCat_{lep}\",\"qqH160\"\)
+
+
+
+
+r00t test/Winter10/Draw.cxx\(\"test/samples_skimmed_WithPU.txt\"\,\"acos\(\(l2_pX*met_X+l2_pY*met_Y\)/\(sqrt\(l2_pX*l2_pX+l2_pY*l2_pY\)*sqrt\(met_X*met_X+met_Y*met_Y\)\)\)\",0,3.14159266,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\&\&l1_charge*l2_charge\<0\",\"#phi_{lep2-met}\",\"qqH160\"\)
+
+r00t test/Winter10/Draw.cxx\(\"test/samples_skimmed_WithPU.txt\"\,\"acos\(\(l1_pX*met_X+l1_pY*met_Y\)/\(sqrt\(l1_pX*l2_pX+l1_pY*l1_pY\)*sqrt\(met_X*met_X+met_Y*met_Y\)\)\)\",0,3.14159266,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\&\&l1_charge*l2_charge\<0\",\"#phi_{lep1-met}\",\"qqH160\"\)
+
+
+r00t test/Winter10/Draw.cxx\(\"test/samples_skimmed_WithPU.txt\"\,\"acos\(\(l1_pX*met_X+l1_pY*met_Y\)/\(sqrt\(l1_pX*l1_pX+l1_pY*l1_pY\)*sqrt\(met_X*met_X+met_Y*met_Y\)\)\)\",0,3.14159266,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\&\&l1_charge*l2_charge\<0\&\&met\>10\",\"#phi_{lep1-met}\",\"qqH160\"\)
+r00t test/Winter10/Draw.cxx\(\"test/samples_skimmed_WithPU.txt\"\,\"acos\(\(l1_pX*met_X+l1_pY*met_Y\)/\(sqrt\(l1_pX*l1_pX+l1_pY*l1_pY\)*sqrt\(met_X*met_X+met_Y*met_Y\)\)\)\",0,3.14159266,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\&\&l1_charge*l2_charge\<0\&\&l1_flavour\=\=13\",\"#phi_{lep1-met}\",\"qqH160\"\)
+r00t test/Winter10/Draw.cxx\(\"test/samples_skimmed_WithPU.txt\"\,\"acos\(\(l1_pX*met_X+l1_pY*met_Y\)/\(sqrt\(l1_pX*l1_pX+l1_pY*l1_pY\)*sqrt\(met_X*met_X+met_Y*met_Y\)\)\)\",0,3.14159266,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\&\&l1_charge*l2_charge\<0\&\&l1_flavour\=\=11\",\"#phi_{lep1-met}\",\"qqH160\"\)
+
+r00t test/Winter10/Draw.cxx\(\"test/samples_skimmed_WithPU.txt\"\,\"\(l1_pX*met_X+l1_pY*met_Y\)/\(sqrt\(l1_pX*l1_pX+l1_pY*l1_pY\)*sqrt\(met_X*met_X+met_Y*met_Y\)\)\",-2,2,200,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\&\&l1_charge*l2_charge\<0\&\&l1_flavour\=\=13\",\"#phi_{lep1-met}\",\"qqH160\"\)
+r00t test/Winter10/Draw.cxx\(\"test/samples_skimmed_WithPU.txt\"\,\"\(l1_pX*met_X+l1_pY*met_Y\)/\(sqrt\(l1_pX*l1_pX+l1_pY*l1_pY\)*sqrt\(met_X*met_X+met_Y*met_Y\)\)\",-2,2,200,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\&\&l1_charge*l2_charge\<0\&\&l1_flavour\=\=11\",\"#phi_{lep1-met}\",\"qqH160\"\)
+
+
+//==== P_T Lep
+r00t test/Winter10/Draw.cxx\(\"test/samples_skimmed_WithPU.txt\"\,\"acos\(\(\(l1_pX+l2_pX\)*met_X+\(l1_pY+l2_pY\)*met_Y\)/\(sqrt\(\(l1_pX+l2_pX\)*\(l1_pX+l2_pX\)+\(l1_pY+l2_pY\)*\(l1_pY+l2_pY\)\)*sqrt\(met_X*met_X+met_Y*met_Y\)\)\)\",0,3.14159266,20,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\&\&l1_charge*l2_charge\<0\",\"#phi_{leplep-met}\",\"qqH160\"\)
+
+
+//==== P_T Balance
+r00t test/Winter10/Draw.cxx\(\"test/samples_skimmed_WithPU.txt\"\,\"sqrt\(\(l1_pX+l2_pX+met_X+q1_pX+q2_pX\)^2+\(l1_pY+l2_pY+q1_pY+q2_pY+met_Y\)^2\)\",0,500,100,36.0,\"M_ll\>10\&\&M_qq\>200\&\&DEta_qq\>1\&\&l1_pT\>20\&\&q1_pT\>15\&\&q2_pT\>15\&\&l1_charge*l2_charge\<0\&\&met\>10\",\"p_{T}^{BALANCE}\",\"qqH160\"\)
+
+
+
+    ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    9) New tools for plot and counting experiment
+       Counting tool for Data/MC comparison after a each step of the analysis (defined in a list of cuts!)
+        Program :   counterAndPlot.cpp
+        to launch:  ./bin/counterAndPlot.exe test/testCounterAndPlot.cfg
    
-   
-   
-   
-   
+
+        Data/MC comparison of a set of distributions (defined in a list of variables) after a each step of the analysis (defined in a list of cuts!)
+        Program :   MCDATAComparisonPLOTTool.cpp
+        to launch:  ./bin/MCDATAComparisonPLOTTool.exe test/testMCDATAComparisonPLOTTool.cfg
+        
+        
+
+
+
+
+
+
