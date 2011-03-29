@@ -390,9 +390,18 @@ for (int iCut = 0; iCut<vCut.size(); iCut++){
  // std::cout << "  |  " << std::setw (17) << " MVA Jet ";
  // std::cout << "  |  " << std::setw (17) << " MVA Lep";
  
- 
- 
  std::cout << std::endl;
+ 
+ 
+ std::vector<double> numBackground;
+ std::vector<double> numSignal;
+ 
+ 
+ for (int iSel = 0 ; iSel < selections.size () ; ++iSel) {
+  numBackground.push_back(0);
+  numSignal.push_back(0);
+ }
+ 
  
  for (int iSel = 1 ; iSel < selections.size () ; ++iSel) {
   std::cout << "+------------";
@@ -412,14 +421,6 @@ for (int iCut = 0; iCut<vCut.size(); iCut++){
    std::cout << " | " << std::setw (8) << samples.at (iSample).getAll () ;
    std::cout << " | " << std::setw (8) << samples.at (iSample).getEqSigma (selections.at (0)) ;
    TCut total_cut = selections.at (0) ;
-   for (int iSel = 1 ; iSel < selections.size () ; ++iSel) 
-   {
-     total_cut = total_cut && selections.at (iSel) ;
-     std::cout << " | " << std::setw (8) << samples.at (iSample).getEqSigma (total_cut) ;
-     std::cout << "[" << std::setw (8) <<samples.at (iSample). getMC(total_cut) << "]" ;
-   }
-//    std::cout << " | absolute " << endl ;  
-   std::cout << std::endl ;  
    
    
    bool isSig = false;
@@ -427,10 +428,41 @@ for (int iCut = 0; iCut<vCut.size(); iCut++){
     if (reduced_name_samples[iSample] == SignalName.at(iSig)) { isSig = true;}
    }
    
+   
+   for (int iSel = 1 ; iSel < selections.size () ; ++iSel) 
+   {
+     total_cut = total_cut && selections.at (iSel) ;
+     std::cout << " | " << std::setw (8) << samples.at (iSample).getEqSigma (total_cut) ;
+     std::cout << "[" << std::setw (8) <<samples.at (iSample). getMC(total_cut) << "]" ;
+     
+     if (!isSig && reduced_name_samples[iSample]!="ggH" && reduced_name_samples[iSample]!="DATA") numBackground.at(iSel) = (numBackground.at(iSel) + samples.at (iSample).getEqSigma (total_cut));
+     else if (reduced_name_samples[iSample]!="DATA") numSignal.at(iSel)         = (numSignal.at(iSel) + samples.at (iSample).getEqSigma (total_cut));
+     
+   }
+//    std::cout << " | absolute " << endl ;  
+   std::cout << std::endl ;  
+   
+    
    if (!isSig && reduced_name_samples[iSample]!="ggH") totalBkg += samples.at (iSample).getEqSigma (total_cut);
    else totalSig += samples.at (iSample).getEqSigma (total_cut);
       
  } 
+ 
+ for (int iSel = 1 ; iSel < selections.size () ; ++iSel) {
+  std::cout << "+------------";
+ }
+ for (int iSel = 1 ; iSel < selections.size () ; ++iSel) {
+  std::cout << std::setw (8) << "total bkg";
+  std::cout << " | " << std::setw (8) << numBackground.at(iSel) ;
+  std::cout << "[" << std::setw (8) << 0 << "]" ;
+ }
+ std::cout << std::endl ;  
+ for (int iSel = 1 ; iSel < selections.size () ; ++iSel) {
+  std::cout << std::setw (8) << "total sig";
+  std::cout << " | " << std::setw (8) << numSignal.at(iSel) ;
+  std::cout << "[" << std::setw (8) << 0 << "]" ;
+ }
+ std::cout << std::endl ;  
  
  std::cerr << " totalBkg = " << totalBkg << std::endl;
  std::cerr << " totalSig = " << totalSig << std::endl;
