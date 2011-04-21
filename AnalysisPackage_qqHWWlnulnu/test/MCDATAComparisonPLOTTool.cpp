@@ -92,14 +92,20 @@ int main(int argc, char** argv)
  
  double LUMI = gConfigParser -> readDoubleOption("Input::Lumi");
  
+ double LumiSyst = gConfigParser -> readDoubleOption("Input::LumiSyst");
  
- std::vector<std::string> SignalName = gConfigParser -> readStringListOption("Plot::SignalName");
+ double Discovery = gConfigParser -> readDoubleOption("Input::Discovery");
+ 
+ std::vector<std::string> SignalName;
+ if (Discovery == 1) SignalName = gConfigParser -> readStringListOption("Input::SignalName");
  
  TTree *treeEffVect[100];
  TTree *treeJetLepVect[100];
  
 
   //  [iCut][iVar]
+ TString* infoString[10][30];
+ TLatex *infoLatex[10][30]; 
  TCanvas* ccCanvas[10][30];
  TCanvas* ccCanvasPull[10][30];
  TH1F* histoSumMC[10][30];
@@ -194,7 +200,7 @@ int main(int argc, char** argv)
  std::vector<int>         reduced_name_samples_flag;
  for (int iSample = (numberOfSamples-1); iSample>= 0; iSample--){
   bool flag_name = false;
-  for (int iName=0; iName<reduced_name_samples.size(); iName++){
+  for (uint iName=0; iName<reduced_name_samples.size(); iName++){
    if (reduced_name_samples.at(iName) == name_samples.at(iSample)) flag_name = true;
   }
   if (flag_name == false) {
@@ -227,19 +233,20 @@ int main(int argc, char** argv)
  
  
  
- TLegend* leg = new TLegend(0.8,0.1,0.98,0.88);
+ TLegend* leg = new TLegend(0.8,0.25,0.98,0.78);
  bool LegendBuilt = false;
 
- TString lumiName = Form("L = %.1f pb^{-1}", LUMI);
+ TString lumiName = Form("#splitline{L = %.1f pb^{-1}}{#splitline{#sqrt{s} = 7}{CMS preliminary}}", LUMI);
 //  TString lumiName = Form("#sqrt{s}=7 TeV   L=%.1f pb^{-1}", LUMI);
  TLatex *latex = new TLatex(0.80, 0.90, lumiName); 
+ latex->SetTextAlign(12);
  latex->SetNDC();
  latex->SetTextFont(42);
  latex->SetTextSize(0.03);
   
  ///==== get number in sample list that correspond to DATA ====
  int numDATA = -1;
- for (int iName=0; iName<reduced_name_samples.size(); iName++){
+ for (uint iName=0; iName<reduced_name_samples.size(); iName++){
   if (reduced_name_samples.at(iName) == "DATA") {
    numDATA = iName;
   }
@@ -249,14 +256,14 @@ int main(int argc, char** argv)
  if (debug) std::cout << " Cut size = " << vCut.size() << " ~~ " << std::endl;
  
  ///==== cicle on selections ====
- for (int iCut = 0; iCut<vCut.size(); iCut++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
   TString Cut = Form ("%s",vCut.at(iCut).c_str());
   if (debug) std::cout << " Cut[" << iCut << ":" << vCut.size() << "] = " << Cut.Data() << " ~~ " << std::endl;
   ///==== cicle on variables to plot ====
-  for (int iVar = 0; iVar<vVarName.size(); iVar++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    if (debug) std::cout << " Var[" << iVar << ":" << vVarName.size() << "] = " << vVarName.at(iVar) << " ~~ " << std::endl;
    ///==== initialize ====
-   for (int iName=0; iName<reduced_name_samples.size(); iName++){
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
     reduced_name_samples_flag.at(iName) = -1;
    }
    
@@ -268,8 +275,11 @@ int main(int argc, char** argv)
     char toDraw[1000];
     sprintf(toDraw,"%s >> %s",vVarName.at(iVar).c_str(),name_histo_temp.Data());      
     treeJetLepVect[iSample]->Draw(toDraw,Cut,"");
-    if (Normalization[iSample]>0) { histo_temp[iSample][iCut][iVar] -> Scale(Normalization[iSample]); }
-    for (int iName=0; iName<reduced_name_samples.size(); iName++){
+    if (Normalization[iSample]>0) { 
+     histo_temp[iSample][iCut][iVar] ->Sumw2();
+     histo_temp[iSample][iCut][iVar] -> Scale(Normalization[iSample]); 
+    }
+    for (uint iName=0; iName<reduced_name_samples.size(); iName++){
      if (name_samples.at(iSample) == reduced_name_samples.at(iName)){
       if (reduced_name_samples_flag.at(iName) == -1){
        TString name_histoTot_temp = Form("%s_%d_%d_Tot_temp",reduced_name_samples.at(iName).c_str(),iCut, iVar);
@@ -286,68 +296,49 @@ int main(int argc, char** argv)
  } ///==== end cicle on selections ====
  
  
- TCanvas* cCompareCutPull[100];
- TCanvas* cCompareVarPull[100];
- 
- TCanvas* cCompareCut[100];
- TCanvas* cCompareVar[100];
- 
- for (int iCut = 0; iCut<vCut.size(); iCut++){
-  TString nameCanvas = Form("%d_Cut_Canvas",iCut);
-  cCompareCut[iCut] = new TCanvas(nameCanvas,nameCanvas,400 * vVarName.size(),400);
-  cCompareCut[iCut] -> Divide (vVarName.size(),1);
-  TString nameCanvasPull = Form("%d_Cut_Canvas_Pull",iCut);
-  cCompareCutPull[iCut] = new TCanvas(nameCanvasPull,nameCanvasPull,400 * vVarName.size(),400*2);
-  cCompareCutPull[iCut] -> Divide (vVarName.size(),2);
- }
- 
- for (int iVar = 0; iVar<vVarName.size(); iVar++){ ///==== cicle on variables to plot ====
-   TString nameCanvas = Form("%d_Var_Canvas",iVar);
-   cCompareVar[iVar] = new TCanvas(nameCanvas,nameCanvas,400,400 * vCut.size());
-   cCompareVar[iVar] -> Divide (1,vCut.size());
-   TString nameCanvasPull = Form("%d_Var_Canvas_Pull",iVar);
-   cCompareVarPull[iVar] = new TCanvas(nameCanvasPull,nameCanvasPull,400*2,400 * vCut.size());
-   cCompareVarPull[iVar] -> Divide (2,vCut.size());
- }
- 
- 
- for (int iCut = 0; iCut<vCut.size(); iCut++){
-  for (int iVar = 0; iVar<vVarName.size(); iVar++){
-   TString nameCanvas = Form("%d_%d_Canvas",iCut,iVar);
-   ccCanvas[iCut][iVar] = new TCanvas(nameCanvas,nameCanvas,400,400);
-   TString nameCanvasPull = Form("%d_%d_CanvasPull",iCut,iVar);
-   ccCanvasPull[iCut][iVar] = new TCanvas(nameCanvasPull,nameCanvasPull,400,400);
-  }
- } 
  
  THStack* hs[100][100];
  TH1F* hPull[100][100];
  
  ///==== cicle on selections ====
- for (int iCut = 0; iCut<vCut.size(); iCut++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
   ///==== cicle on variables to plot ====
-  for (int iVar = 0; iVar<vVarName.size(); iVar++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    TString nameStack = Form("%d_%d_stack",iCut,iVar);
    hs[iCut][iVar] = new THStack(nameStack,nameStack);
    
-   for (int iName=0; iName<reduced_name_samples.size(); iName++){
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
     histo[iName][iCut][iVar]->GetXaxis()->SetTitle(vVarNameHR.at(iVar).c_str());
     histo[iName][iCut][iVar]->SetMarkerColor(vColor[iName]);
     histo[iName][iCut][iVar]->SetLineColor(vColor[iName]);
     histo[iName][iCut][iVar]->SetFillColor(vColor[iName]);
     histo[iName][iCut][iVar]->SetLineWidth(2);
-    histo[iName][iCut][iVar]->SetFillStyle(3001);  
-    if (reduced_name_samples.at(iName) != "DATA") {
+    histo[iName][iCut][iVar]->SetFillStyle(3001);
+    
+    bool isSig = false;
+    for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+     if (reduced_name_samples.at(iName) == *itSig) isSig = true;
+    }
+    
+    if (!isSig && reduced_name_samples.at(iName) != "DATA") {
      hs[iCut][iVar]->Add(histo[iName][iCut][iVar]);
     }
     else {
-     histo[iName][iCut][iVar]->SetMarkerStyle(20);
-     histo[iName][iCut][iVar]->SetMarkerSize(1);
-     histo[iName][iCut][iVar]->SetMarkerColor(kBlack);
-     histo[iName][iCut][iVar]->SetLineColor(kBlack);
-     histo[iName][iCut][iVar]->SetFillColor(kBlack);
-     histo[iName][iCut][iVar]->SetLineWidth(2);
-     histo[iName][iCut][iVar]->SetFillStyle(3001);  
+     if (!isSig) {
+      histo[iName][iCut][iVar]->SetMarkerStyle(20);
+      histo[iName][iCut][iVar]->SetMarkerSize(1);
+      histo[iName][iCut][iVar]->SetMarkerColor(kBlack);
+      histo[iName][iCut][iVar]->SetLineColor(kBlack);
+      histo[iName][iCut][iVar]->SetFillColor(kBlack);
+      histo[iName][iCut][iVar]->SetLineWidth(2);
+      histo[iName][iCut][iVar]->SetFillStyle(3001);  
+     }
+     else {
+      histo[iName][iCut][iVar]->SetMarkerStyle(21);
+      histo[iName][iCut][iVar]->SetMarkerSize(1);
+      histo[iName][iCut][iVar]->SetLineWidth(2);
+      histo[iName][iCut][iVar]->SetFillStyle(3001);  
+     }
     }
    }
    ///==== histo sum MC ====    
@@ -357,41 +348,114 @@ int main(int argc, char** argv)
    
    ///==== legend ====
    if (!LegendBuilt){
-    for (int iName=0; iName<reduced_name_samples.size(); iName++){
+    for (uint iName=0; iName<reduced_name_samples.size(); iName++){
      leg->AddEntry(histo[iName][iCut][iVar],reduced_name_samples.at(iName).c_str(),"pf");    
      LegendBuilt = true;
     }
    }
-   
+  }
+ }
+ 
+ ///==== calculate agreement data-MC: Kolmogorov-Smirnov test ==== 
+ ///==== cicle on selections ====
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  ///==== cicle on variables to plot ====
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
+   double KS = -1;
+   double Chi2 = -1;
+   if (histo[numDATA][iCut][iVar]->GetEntries() != 0 && histoSumMC[iCut][iVar]->GetEntries() != 0) {
+    KS = histo[numDATA][iCut][iVar]->KolmogorovTest(histoSumMC[iCut][iVar],"NX");
+    Chi2 = histo[numDATA][iCut][iVar]->Chi2Test(histoSumMC[iCut][iVar],"UW");
+   }
+   infoString[iCut][iVar] = new TString(Form("#splitline{KS prob = %.4f}{#chi^{2} prob = %.4f}",KS,Chi2));
+   infoLatex[iCut][iVar] = new TLatex(0.80, 0.10, *(infoString[iCut][iVar])); 
+   infoLatex[iCut][iVar]->SetTextAlign(12);
+   infoLatex[iCut][iVar]->SetNDC();
+   infoLatex[iCut][iVar]->SetTextFont(42);
+   infoLatex[iCut][iVar]->SetTextSize(0.03);
+  }
+ }
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ TCanvas* cCompareCutPull[100];
+ TCanvas* cCompareVarPull[100];
+ 
+ TCanvas* cCompareCut[100];
+ TCanvas* cCompareVar[100];
+ 
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  TString nameCanvas = Form("%d_Cut_Canvas",iCut);
+  cCompareCut[iCut] = new TCanvas(nameCanvas,nameCanvas,400 * vVarName.size(),400);
+  cCompareCut[iCut] -> Divide (vVarName.size(),1);
+  TString nameCanvasPull = Form("%d_Cut_Canvas_Pull",iCut);
+  cCompareCutPull[iCut] = new TCanvas(nameCanvasPull,nameCanvasPull,400 * vVarName.size(),400*2);
+  cCompareCutPull[iCut] -> Divide (vVarName.size(),2);
+ }
+ 
+ for (uint iVar = 0; iVar<vVarName.size(); iVar++){ ///==== cicle on variables to plot ====
+   TString nameCanvas = Form("%d_Var_Canvas",iVar);
+   cCompareVar[iVar] = new TCanvas(nameCanvas,nameCanvas,400,400 * vCut.size());
+   cCompareVar[iVar] -> Divide (1,vCut.size());
+   TString nameCanvasPull = Form("%d_Var_Canvas_Pull",iVar);
+   cCompareVarPull[iVar] = new TCanvas(nameCanvasPull,nameCanvasPull,400*2,400 * vCut.size());
+   cCompareVarPull[iVar] -> Divide (2,vCut.size());
+ }
+ 
+ 
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
+   TString nameCanvas = Form("%d_%d_Canvas",iCut,iVar);
+   ccCanvas[iCut][iVar] = new TCanvas(nameCanvas,nameCanvas,400,400);
+   TString nameCanvasPull = Form("%d_%d_CanvasPull",iCut,iVar);
+   ccCanvasPull[iCut][iVar] = new TCanvas(nameCanvasPull,nameCanvasPull,400,400);
+  }
+ } 
+ 
+ ///==== cicle on selections ====
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  ///==== cicle on variables to plot ====
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    ///==== draw in canvas ====
    cCompareCut[iCut] -> cd(iVar+1);
-   DrawStack(hs[iCut][iVar]);
+   DrawStack(hs[iCut][iVar],1,LumiSyst);
    gPad->SetLogy();
    gPad->SetGrid();
    leg->Draw();
    latex->Draw();
+   infoLatex[iCut][iVar]->Draw();
    
    cCompareVar[iVar] -> cd(iCut+1);
-   DrawStack(hs[iCut][iVar]);
+   DrawStack(hs[iCut][iVar],1,LumiSyst);
    gPad->SetLogy();
    gPad->SetGrid();
    leg->Draw();
    latex->Draw();
+   infoLatex[iCut][iVar]->Draw();
    
    
    cCompareCutPull[iCut] -> cd(iVar+1);
-   DrawStack(hs[iCut][iVar]);
+   DrawStack(hs[iCut][iVar],1,LumiSyst);
    gPad->SetLogy();
    gPad->SetGrid();
    leg->Draw();
    latex->Draw();
+   infoLatex[iCut][iVar]->Draw();
    
    cCompareVarPull[iVar] -> cd(iCut*2+1);
-   DrawStack(hs[iCut][iVar]);
+   DrawStack(hs[iCut][iVar],1,LumiSyst);
    gPad->SetLogy();
    gPad->SetGrid();
    leg->Draw();
    latex->Draw();
+   infoLatex[iCut][iVar]->Draw();
    
    
    
@@ -409,11 +473,12 @@ int main(int argc, char** argv)
    
    
    ccCanvas[iCut][iVar]-> cd();
-   DrawStack(hs[iCut][iVar]);
+   DrawStack(hs[iCut][iVar],1,LumiSyst);
    gPad->SetLogy();
    gPad->SetGrid();
    leg->Draw();
    latex->Draw();
+   infoLatex[iCut][iVar]->Draw();
    
    ccCanvasPull[iCut][iVar]-> cd();
    hPull[iCut][iVar]->Draw("EP");
@@ -423,27 +488,41 @@ int main(int argc, char** argv)
    
    
    
-   for (int iName=0; iName<reduced_name_samples.size(); iName++){
-    if (reduced_name_samples.at(iName) == "DATA") {
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+    
+    bool isSig = false;
+    for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+     if (reduced_name_samples.at(iName) == *itSig) isSig = true;
+    }
+    
+    if (isSig || reduced_name_samples.at(iName) == "DATA") {
      cCompareCut[iCut] -> cd(iVar+1);
      histo[iName][iCut][iVar]->Draw("EsameB");
-     leg->Draw();
+     
      cCompareVar[iVar] -> cd(iCut+1);
      histo[iName][iCut][iVar]->Draw("EsameB");
-     leg->Draw();
-
+     
      cCompareCutPull[iCut] -> cd(iVar+1);
      histo[iName][iCut][iVar]->Draw("EsameB");
-     leg->Draw();
+
      cCompareVarPull[iVar] -> cd(iCut*2+1);
      histo[iName][iCut][iVar]->Draw("EsameB");
-     leg->Draw();
      
      ccCanvas[iCut][iVar]-> cd();
      histo[iName][iCut][iVar]->Draw("EsameB");
-     leg->Draw();
     }
    }
+   
+   cCompareCut[iCut] -> cd(iVar+1);
+   leg->Draw();
+   cCompareVar[iVar] -> cd(iCut+1);
+   leg->Draw();
+   cCompareCutPull[iCut] -> cd(iVar+1);
+   leg->Draw();
+   cCompareVarPull[iVar] -> cd(iCut*2+1);
+   leg->Draw();
+   ccCanvas[iCut][iVar]-> cd();
+   leg->Draw();
    
   } ///==== end cicle on variables to plot ====
  } ///==== end cicle on selections ====
@@ -456,7 +535,7 @@ int main(int argc, char** argv)
  outFile.cd();
  outFile.mkdir("Cut");
  outFile.cd("Cut");
- for (int iCut = 0; iCut<vCut.size(); iCut++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
   cCompareCut[iCut] -> Write();
   cCompareCutPull[iCut] -> Write();
  }
@@ -464,7 +543,7 @@ int main(int argc, char** argv)
  outFile.cd();
  outFile.mkdir("Var");
  outFile.cd("Var");
- for (int iVar = 0; iVar<vVarName.size(); iVar++){
+ for (uint iVar = 0; iVar<vVarName.size(); iVar++){
   cCompareVar[iVar] -> Write();
   cCompareVarPull[iVar] -> Write();
  }
@@ -474,16 +553,16 @@ int main(int argc, char** argv)
  cdAll->mkdir("Var");
  cdAll->mkdir("Pull");
  outFile.cd("All/Var");
- for (int iCut = 0; iCut<vCut.size(); iCut++){
-  for (int iVar = 0; iVar<vVarName.size(); iVar++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    ccCanvas[iCut][iVar]-> Write();
   }
  }
  
  outFile.cd();
  outFile.cd("All/Pull");
- for (int iCut = 0; iCut<vCut.size(); iCut++){
-  for (int iVar = 0; iVar<vVarName.size(); iVar++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    ccCanvasPull[iCut][iVar]-> Write();
   }
  }
@@ -491,10 +570,10 @@ int main(int argc, char** argv)
  outFile.cd();
  outFile.mkdir("Data");
  outFile.cd("Data");
- for (int iCut = 0; iCut<vCut.size(); iCut++){
-  for (int iVar = 0; iVar<vVarName.size(); iVar++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    hs[iCut][iVar] -> Write() ;
-   for (int iName=0; iName<reduced_name_samples.size(); iName++){
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
     if (reduced_name_samples.at(iName) == "DATA") {
      histo[iName][iCut][iVar] -> Write();
     }
