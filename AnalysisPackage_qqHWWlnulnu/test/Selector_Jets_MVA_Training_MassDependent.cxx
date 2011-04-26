@@ -12,7 +12,7 @@
 #include "TROOT.h"
 #include "TPluginManager.h"
 
-#include "TMVAGui.C"qqH160
+#include "TMVAGui.C"
 
 #if not defined(__CINT__) || defined(__MAKECINT__)
 // needs to be included when makecint runs (ACLIC)
@@ -64,8 +64,10 @@ void Selector_Jets_MVA_Training_MassDependent( TString myMethodList = "" , std::
  Use["FDA_GAMT"]        = 1;
  Use["FDA_MCMT"]        = 1;
  // ---
- Use["MLPCat"]             = 1; // this is the recommended ANN ---- done by me!
+ Use["MLPBNNCat"]       = 1; // this is the recommended ANN ---- done by me!
+ Use["MLPCat"]          = 1; // this is the recommended ANN ---- done by me!
  Use["MLP"]             = 1; // this is the recommended ANN
+ Use["MLPBNN"]          = 1; // Recommended ANN with BFGS training method and bayesian regulator
  Use["MLPBFGS"]         = 1; // recommended ANN with optional training method
  Use["CFMlpANN"]        = 1; // *** missing
  Use["TMlpANN"]         = 1; 
@@ -359,10 +361,28 @@ void Selector_Jets_MVA_Training_MassDependent( TString myMethodList = "" , std::
 			"Category_MLP_0b","H:!V:NeuronType=tanh:VarTransform=N,D,G:NCycles=300:HiddenLayers=N+2:TestRate=5" );
       }
       
+      if (Use["MLPBNNCat"]) {
+       // ---------------------------
+       // ---- define categories ----
+       TMVA::MethodCategory* mcat = 0;
+       TMVA::MethodBase* liCat = factory->BookMethod( TMVA::Types::kCategory, "MLPCat","" );
+       mcat = dynamic_cast<TMVA::MethodCategory*>(liCat);
+       
+       TString theCat1Vars = "log(q1_pT):log(q2_pT):abs(q1_Eta):abs(q2_Eta):q1_Eta*q2_Eta:DEta_qq:DPhi_qq:log(M_qq)";      
+       mcat->AddMethod( "q1_bTag_trackCountingHighPurBJetTags>-90&&q2_bTag_trackCountingHighPurBJetTags>-90",theCat1Vars, TMVA::Types::kMLP,
+			"Category_MLP_2b","H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:TrainingMethod=BFGS:UseRegulator" );
+       mcat->AddMethod( "(q1_bTag_trackCountingHighPurBJetTags>-90&&q2_bTag_trackCountingHighPurBJetTags<-90)||(q1_bTag_trackCountingHighPurBJetTags<-90&&q2_bTag_trackCountingHighPurBJetTags>-90)",theCat1Vars, TMVA::Types::kMLP,
+			"Category_MLP_1b","H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:TrainingMethod=BFGS:UseRegulator" );
+       mcat->AddMethod( "q1_bTag_trackCountingHighPurBJetTags<-90&&q2_bTag_trackCountingHighPurBJetTags<-90",theCat1Vars, TMVA::Types::kMLP,
+			"Category_MLP_0b","H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:TrainingMethod=BFGS:UseRegulator" );
+}
+
    if (Use["MLPBFGS"])
       factory->BookMethod( TMVA::Types::kMLP, "MLPBFGS", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:TrainingMethod=BFGS" );
 
-
+   if (Use["MLPBNN"])
+    factory->BookMethod( TMVA::Types::kMLP, "MLPBNN", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:TrainingMethod=BFGS:UseRegulator" ); // BFGS training with bayesian regulators
+    
    // CF(Clermont-Ferrand)ANN
    if (Use["CFMlpANN"])
       factory->BookMethod( TMVA::Types::kCFMlpANN, "CFMlpANN", "!H:!V:NCycles=2000:HiddenLayers=N+1,N"  ); // n_cycles:#nodes:#nodes:...  

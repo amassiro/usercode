@@ -31,6 +31,7 @@ void Selector_Leptons_MVA_Training_MassDependent( TString myMethodList = "" , st
  
  std::map<std::string,int> Use;
  
+ Use["CutsCat"]         = 1;
  Use["Cuts"]            = 1;
  Use["CutsD"]           = 1;
  Use["CutsPCA"]         = 1;
@@ -64,8 +65,10 @@ void Selector_Leptons_MVA_Training_MassDependent( TString myMethodList = "" , st
  Use["FDA_GAMT"]        = 1;
  Use["FDA_MCMT"]        = 1;
  // ---
- Use["MLPCat"]             = 1; // this is the recommended ANN ---- done by me!
+ Use["MLPBNNCat"]       = 1; // this is the recommended ANN ---- done by me!
+ Use["MLPCat"]          = 1; // this is the recommended ANN ---- done by me!
  Use["MLP"]             = 1; // this is the recommended ANN
+ Use["MLPBNN"]          = 1; // Recommended ANN with BFGS training method and bayesian regulator
  Use["MLPBFGS"]         = 1; // recommended ANN with optional training method
  Use["CFMlpANN"]        = 1; // *** missing
  Use["TMlpANN"]         = 1; 
@@ -197,8 +200,14 @@ void Selector_Leptons_MVA_Training_MassDependent( TString myMethodList = "" , st
  
  std::cerr << "==== exec ==== " << std::endl;
  
- TString mycuts_s = Form("l1_charge*l2_charge<0");
- TString mycuts_b = Form("l1_charge*l2_charge<0");
+//  TString mycuts_s = Form("l1_charge*l2_charge<0");
+//  TString mycuts_b = Form("l1_charge*l2_charge<0");
+
+ TString mycuts_s = Form("l1_pT>20&&l1_charge*l2_charge<0"); //---- l1_pT>20&& for reasonable trigger reasons
+ TString mycuts_b = Form("l1_pT>20&&l1_charge*l2_charge<0");
+ 
+ 
+ 
 //  TString mycuts_s = Form("M_qq>200&&DEta_qq>1&&l1_pT>20&&q1_pT>15&&q2_pT>15&&l1_charge*l2_charge<0");
 //  TString mycuts_b = Form("M_qq>200&&DEta_qq>1&&l1_pT>20&&q1_pT>15&&q2_pT>15&&l1_charge*l2_charge<0");
  
@@ -347,7 +356,7 @@ void Selector_Leptons_MVA_Training_MassDependent( TString myMethodList = "" , st
       factory->BookMethod( TMVA::Types::kMLP, "MLP", "H:!V:NeuronType=tanh:VarTransform=N,D,G:NCycles=300:HiddenLayers=N+2:TestRate=5" );
       
       
-      if (Use["MLPCat"]) {
+   if (Use["MLPCat"]) {
        // ---------------------------
        // ---- define categories ----
        TMVA::MethodCategory* mcat = 0;
@@ -364,10 +373,45 @@ void Selector_Leptons_MVA_Training_MassDependent( TString myMethodList = "" , st
        mcat->AddMethod( "l1_flavour==13&&l2_flavour==13",theCat1Vars, TMVA::Types::kMLP,
 			"Category_MLP_mumu","H:!V:NeuronType=tanh:VarTransform=N,D,G:NCycles=400:HiddenLayers=N+4:TestRate=5" );
       }
-      
+    
+    if (Use["MLPBNNCat"]){
+     TMVA::MethodCategory* mcat = 0;
+     TMVA::MethodBase* liCat = factory->BookMethod( TMVA::Types::kCategory, "MLPBNNCat","" );
+     mcat = dynamic_cast<TMVA::MethodCategory*>(liCat);
+     
+     TString theCat1Vars = "log(l1_pT):log(l2_pT):abs(l1_Eta):abs(l2_Eta):l1_Eta*l2_Eta:DEta_ll:DPhi_ll:M_ll:abs(Z_ll)";      
+     mcat->AddMethod( "l1_flavour==11&&l2_flavour==11",theCat1Vars, TMVA::Types::kMLP,
+		      "Category_MLPBNN_ee","H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:TrainingMethod=BFGS:UseRegulator" );
+     mcat->AddMethod( "l1_flavour==11&&l2_flavour==13",theCat1Vars, TMVA::Types::kMLP,
+		      "Category_MLPBNN_emu","H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:TrainingMethod=BFGS:UseRegulator" );
+     mcat->AddMethod( "l1_flavour==13&&l2_flavour==11",theCat1Vars, TMVA::Types::kMLP,
+		      "Category_MLPBNN_mue","H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:TrainingMethod=BFGS:UseRegulator" );
+     mcat->AddMethod( "l1_flavour==13&&l2_flavour==13",theCat1Vars, TMVA::Types::kMLP,
+		      "Category_MLPBNN_mumu","H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:TrainingMethod=BFGS:UseRegulator" );
+    }
+    
+   if (Use["CutsCat"]) {
+    TMVA::MethodCategory* mcat = 0;
+    TMVA::MethodBase* liCat = factory->BookMethod( TMVA::Types::kCategory, "CutsCat","" );
+    mcat = dynamic_cast<TMVA::MethodCategory*>(liCat);
+    
+    TString theCat1Vars = "log(l1_pT):log(l2_pT):abs(l1_Eta):abs(l2_Eta):l1_Eta*l2_Eta:DEta_ll:DPhi_ll:M_ll:abs(Z_ll)";      
+    mcat->AddMethod( "l1_flavour==11&&l2_flavour==11",theCat1Vars, TMVA::Types::kCuts,
+		     "Category_Cuts_ee","!H:!V:FitMethod=MC:EffSel:SampleSize=200000:VarProp=FSmart" );
+    mcat->AddMethod( "l1_flavour==11&&l2_flavour==13",theCat1Vars, TMVA::Types::kCuts,
+		     "Category_Cuts_emu","!H:!V:FitMethod=MC:EffSel:SampleSize=200000:VarProp=FSmart" );
+    mcat->AddMethod( "l1_flavour==13&&l2_flavour==11",theCat1Vars, TMVA::Types::kCuts,
+		     "Category_Cuts_mue","!H:!V:FitMethod=MC:EffSel:SampleSize=200000:VarProp=FSmart" );
+    mcat->AddMethod( "l1_flavour==13&&l2_flavour==13",theCat1Vars, TMVA::Types::kCuts,
+		     "Category_Cuts_mumu","!H:!V:FitMethod=MC:EffSel:SampleSize=200000:VarProp=FSmart" );
+   }
+     
    if (Use["MLPBFGS"])
       factory->BookMethod( TMVA::Types::kMLP, "MLPBFGS", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:TrainingMethod=BFGS" );
 
+   if (Use["MLPBNN"])
+    factory->BookMethod( TMVA::Types::kMLP, "MLPBNN", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:TrainingMethod=BFGS:UseRegulator" ); // BFGS training with bayesian regulators
+    
 
    // CF(Clermont-Ferrand)ANN
    if (Use["CFMlpANN"])

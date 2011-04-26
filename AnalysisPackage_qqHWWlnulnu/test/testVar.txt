@@ -16,13 +16,13 @@ abs(Z_ll)       0      2    40    |Z_{ll}|
 ## btag ##
 ###q1_bTag_trackCountingHighPurBJetTags  -5   10   100    jet^{1}_{bTag}
 ###q2_bTag_trackCountingHighPurBJetTags  -5   10   100    jet^{2}_{bTag}
-q2_bTag_trackCountingHighPurBJetTags+q1_bTag_trackCountingHighPurBJetTags  -20  40  30  jet^{1}_{bTag}+jet^{2}_{bTag}
+#q2_bTag_trackCountingHighPurBJetTags+q1_bTag_trackCountingHighPurBJetTags  -20  40  30  jet^{1}_{bTag}+jet^{2}_{bTag}
 
 
-acos((l2_pX*met_X+l2_pY*met_Y)/(sqrt(l2_pX*l2_pX+l2_pY*l2_pY)*sqrt(met_X*met_X+met_Y*met_Y)))  0   3.15    20  #phi_{lep2-met}
-acos((l1_pX*met_X+l1_pY*met_Y)/(sqrt(l1_pX*l1_pX+l1_pY*l1_pY)*sqrt(met_X*met_X+met_Y*met_Y)))  0   3.15    20  #phi_{lep1-met}
-acos(((l1_pX+l2_pX)*met_X+(l1_pY+l2_pY)*met_Y)/(sqrt((l1_pX+l2_pX)*(l1_pX+l2_pX)+(l1_pY+l2_pY)*(l1_pY+l2_pY))*sqrt(met_X*met_X+met_Y*met_Y)))  0    3.15  20    #phi_{leplep-met}
-sqrt((l1_pX+l2_pX+met_X+q1_pX+q2_pX)^2+(l1_pY+l2_pY+q1_pY+q2_pY+met_Y)^2)   0    500  100     p_{T}^{BALANCE}
+#acos((l2_pX*met_X+l2_pY*met_Y)/(sqrt(l2_pX*l2_pX+l2_pY*l2_pY)*sqrt(met_X*met_X+met_Y*met_Y)))  0   3.15    20  #phi_{lep2-met}
+#acos((l1_pX*met_X+l1_pY*met_Y)/(sqrt(l1_pX*l1_pX+l1_pY*l1_pY)*sqrt(met_X*met_X+met_Y*met_Y)))  0   3.15    20  #phi_{lep1-met}
+#acos(((l1_pX+l2_pX)*met_X+(l1_pY+l2_pY)*met_Y)/(sqrt((l1_pX+l2_pX)*(l1_pX+l2_pX)+(l1_pY+l2_pY)*(l1_pY+l2_pY))*sqrt(met_X*met_X+met_Y*met_Y)))  0    3.15  20    #phi_{leplep-met}
+#sqrt((l1_pX+l2_pX+met_X+q1_pX+q2_pX)^2+(l1_pY+l2_pY+q1_pY+q2_pY+met_Y)^2)   0    500  100     p_{T}^{BALANCE}
 
 
 
@@ -33,6 +33,11 @@ BDT_JetH160    -1     1  50    BDT_{jet}
 MLP_JetH160     -0.5   1.5  50    MLP_{jet}
 MLPBNN_JetH160  -0.5   1.5  50    MLPBNN_{jet}
 MLPCat_JetH160     -0.5   1.5  50    MLPCat_{jet}
+
+MLPCat_LepH160     -0.5   1.5  50    MLPCat_{lep}
+MLP_LepH160        -0.5   1.5  50    MLP_{lep}
+MLPBNN_LepH160     -0.5   1.5  50    MLPBNN_{lep}
+MLPBNNCat_LepH160  -0.5   1.5  50    MLPBNNCat_{lep}
 
 
 #DPhi_qq         0     3.15    20    #Delta#phi_{qq}
