@@ -138,6 +138,47 @@ struct Variables
  
  int NBjets_trackCountingHighPurBJetTags;
  int NBjets_trackCountingHighEffBJetTags;
+
+ int NBjets_trackCountingHighPurBJetTags_m20;
+ int NBjets_trackCountingHighPurBJetTags_m15;
+ int NBjets_trackCountingHighPurBJetTags_m10;
+ int NBjets_trackCountingHighPurBJetTags_m05;
+ int NBjets_trackCountingHighPurBJetTags_m04;
+ int NBjets_trackCountingHighPurBJetTags_m03;
+ int NBjets_trackCountingHighPurBJetTags_m02;
+ int NBjets_trackCountingHighPurBJetTags_m01;
+ int NBjets_trackCountingHighPurBJetTags_00;
+ int NBjets_trackCountingHighPurBJetTags_01;
+ int NBjets_trackCountingHighPurBJetTags_02;
+ int NBjets_trackCountingHighPurBJetTags_03;
+ int NBjets_trackCountingHighPurBJetTags_04;
+ int NBjets_trackCountingHighPurBJetTags_05;
+ int NBjets_trackCountingHighPurBJetTags_10;
+ int NBjets_trackCountingHighPurBJetTags_15;
+ int NBjets_trackCountingHighPurBJetTags_20;
+ int NBjets_trackCountingHighPurBJetTags_30;
+
+ int NBjets_trackCountingHighEffBJetTags_m20;
+ int NBjets_trackCountingHighEffBJetTags_m15;
+ int NBjets_trackCountingHighEffBJetTags_m10;
+ int NBjets_trackCountingHighEffBJetTags_m05;
+ int NBjets_trackCountingHighEffBJetTags_m04;
+ int NBjets_trackCountingHighEffBJetTags_m03;
+ int NBjets_trackCountingHighEffBJetTags_m02;
+ int NBjets_trackCountingHighEffBJetTags_m01;
+ int NBjets_trackCountingHighEffBJetTags_00;
+ int NBjets_trackCountingHighEffBJetTags_01;
+ int NBjets_trackCountingHighEffBJetTags_02;
+ int NBjets_trackCountingHighEffBJetTags_03;
+ int NBjets_trackCountingHighEffBJetTags_04;
+ int NBjets_trackCountingHighEffBJetTags_05;
+ int NBjets_trackCountingHighEffBJetTags_10;
+ int NBjets_trackCountingHighEffBJetTags_15;
+ int NBjets_trackCountingHighEffBJetTags_20;
+ int NBjets_trackCountingHighEffBJetTags_30;
+ 
+ 
+ 
  int JV_20;
  int JV_30;
  int JV_40;

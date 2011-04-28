@@ -166,6 +166,46 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
  vars.m_reducedTree -> Branch("q_Z_12_40", &vars.q_Z_12_40, "q_Z_12_40/I"); 
  vars.m_reducedTree -> Branch("q_Z_14_40", &vars.q_Z_14_40, "q_Z_14_40/I"); 
  
+ 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_m20", &vars.NBjets_trackCountingHighPurBJetTags_m20, "NBjets_trackCountingHighPurBJetTags_m20/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_m15", &vars.NBjets_trackCountingHighPurBJetTags_m15, "NBjets_trackCountingHighPurBJetTags_m15/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_m10", &vars.NBjets_trackCountingHighPurBJetTags_m10, "NBjets_trackCountingHighPurBJetTags_m10/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_m05", &vars.NBjets_trackCountingHighPurBJetTags_m05, "NBjets_trackCountingHighPurBJetTags_m05/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_m04", &vars.NBjets_trackCountingHighPurBJetTags_m04, "NBjets_trackCountingHighPurBJetTags_m04/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_m03", &vars.NBjets_trackCountingHighPurBJetTags_m03, "NBjets_trackCountingHighPurBJetTags_m03/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_m02", &vars.NBjets_trackCountingHighPurBJetTags_m02, "NBjets_trackCountingHighPurBJetTags_m02/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_m01", &vars.NBjets_trackCountingHighPurBJetTags_m01, "NBjets_trackCountingHighPurBJetTags_m01/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_00", &vars.NBjets_trackCountingHighPurBJetTags_00, "NBjets_trackCountingHighPurBJetTags_00/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_01", &vars.NBjets_trackCountingHighPurBJetTags_01, "NBjets_trackCountingHighPurBJetTags_01/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_02", &vars.NBjets_trackCountingHighPurBJetTags_02, "NBjets_trackCountingHighPurBJetTags_02/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_03", &vars.NBjets_trackCountingHighPurBJetTags_03, "NBjets_trackCountingHighPurBJetTags_03/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_04", &vars.NBjets_trackCountingHighPurBJetTags_04, "NBjets_trackCountingHighPurBJetTags_04/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_05", &vars.NBjets_trackCountingHighPurBJetTags_05, "NBjets_trackCountingHighPurBJetTags_05/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_10", &vars.NBjets_trackCountingHighPurBJetTags_10, "NBjets_trackCountingHighPurBJetTags_10/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_15", &vars.NBjets_trackCountingHighPurBJetTags_15, "NBjets_trackCountingHighPurBJetTags_15/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_20", &vars.NBjets_trackCountingHighPurBJetTags_20, "NBjets_trackCountingHighPurBJetTags_20/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_30", &vars.NBjets_trackCountingHighPurBJetTags_30, "NBjets_trackCountingHighPurBJetTags_30/I"); 
+ 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_m20", &vars.NBjets_trackCountingHighEffBJetTags_m20, "NBjets_trackCountingHighEffBJetTags_m20/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_m15", &vars.NBjets_trackCountingHighEffBJetTags_m15, "NBjets_trackCountingHighEffBJetTags_m15/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_m10", &vars.NBjets_trackCountingHighEffBJetTags_m10, "NBjets_trackCountingHighEffBJetTags_m10/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_m05", &vars.NBjets_trackCountingHighEffBJetTags_m05, "NBjets_trackCountingHighEffBJetTags_m05/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_m04", &vars.NBjets_trackCountingHighEffBJetTags_m04, "NBjets_trackCountingHighEffBJetTags_m04/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_m03", &vars.NBjets_trackCountingHighEffBJetTags_m03, "NBjets_trackCountingHighEffBJetTags_m03/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_m02", &vars.NBjets_trackCountingHighEffBJetTags_m02, "NBjets_trackCountingHighEffBJetTags_m02/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_m01", &vars.NBjets_trackCountingHighEffBJetTags_m01, "NBjets_trackCountingHighEffBJetTags_m01/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_00", &vars.NBjets_trackCountingHighEffBJetTags_00, "NBjets_trackCountingHighEffBJetTags_00/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_01", &vars.NBjets_trackCountingHighEffBJetTags_01, "NBjets_trackCountingHighEffBJetTags_01/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_02", &vars.NBjets_trackCountingHighEffBJetTags_02, "NBjets_trackCountingHighEffBJetTags_02/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_03", &vars.NBjets_trackCountingHighEffBJetTags_03, "NBjets_trackCountingHighEffBJetTags_03/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_04", &vars.NBjets_trackCountingHighEffBJetTags_04, "NBjets_trackCountingHighEffBJetTags_04/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_05", &vars.NBjets_trackCountingHighEffBJetTags_05, "NBjets_trackCountingHighEffBJetTags_05/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_10", &vars.NBjets_trackCountingHighEffBJetTags_10, "NBjets_trackCountingHighEffBJetTags_10/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_15", &vars.NBjets_trackCountingHighEffBJetTags_15, "NBjets_trackCountingHighEffBJetTags_15/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_20", &vars.NBjets_trackCountingHighEffBJetTags_20, "NBjets_trackCountingHighEffBJetTags_20/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_30", &vars.NBjets_trackCountingHighEffBJetTags_30, "NBjets_trackCountingHighEffBJetTags_30/I"); 
+ 
+ 
 }
 
 void FillTree(Variables& vars)
@@ -445,6 +485,45 @@ void SetQJetVariables(Variables& vars, treeReader& reader, const int& q1, const 
       if (skipJet) continue;
       if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) > -50.0) vars.NBjets_trackCountingHighPurBJetTags++;
       if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) > -50.0) vars.NBjets_trackCountingHighEffBJetTags++;
+
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) > -2.0) vars.NBjets_trackCountingHighPurBJetTags_m20++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) > -1.5) vars.NBjets_trackCountingHighPurBJetTags_m15++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) > -1.0) vars.NBjets_trackCountingHighPurBJetTags_m10++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) > -0.5) vars.NBjets_trackCountingHighPurBJetTags_m05++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) > -0.4) vars.NBjets_trackCountingHighPurBJetTags_m04++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) > -0.3) vars.NBjets_trackCountingHighPurBJetTags_m03++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) > -0.2) vars.NBjets_trackCountingHighPurBJetTags_m02++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) > -0.1) vars.NBjets_trackCountingHighPurBJetTags_m01++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >  0.0) vars.NBjets_trackCountingHighPurBJetTags_00++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >  0.1) vars.NBjets_trackCountingHighPurBJetTags_01++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >  0.2) vars.NBjets_trackCountingHighPurBJetTags_02++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >  0.3) vars.NBjets_trackCountingHighPurBJetTags_03++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >  0.4) vars.NBjets_trackCountingHighPurBJetTags_04++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >  0.5) vars.NBjets_trackCountingHighPurBJetTags_05++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >  1.0) vars.NBjets_trackCountingHighPurBJetTags_10++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >  1.5) vars.NBjets_trackCountingHighPurBJetTags_15++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >  2.0) vars.NBjets_trackCountingHighPurBJetTags_20++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >  3.0) vars.NBjets_trackCountingHighPurBJetTags_30++;      
+ 
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) > -2.0) vars.NBjets_trackCountingHighEffBJetTags_m20++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) > -1.5) vars.NBjets_trackCountingHighEffBJetTags_m15++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) > -1.0) vars.NBjets_trackCountingHighEffBJetTags_m10++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) > -0.5) vars.NBjets_trackCountingHighEffBJetTags_m05++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) > -0.4) vars.NBjets_trackCountingHighEffBJetTags_m04++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) > -0.3) vars.NBjets_trackCountingHighEffBJetTags_m03++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) > -0.2) vars.NBjets_trackCountingHighEffBJetTags_m02++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) > -0.1) vars.NBjets_trackCountingHighEffBJetTags_m01++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >  0.0) vars.NBjets_trackCountingHighEffBJetTags_00++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >  0.1) vars.NBjets_trackCountingHighEffBJetTags_01++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >  0.2) vars.NBjets_trackCountingHighEffBJetTags_02++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >  0.3) vars.NBjets_trackCountingHighEffBJetTags_03++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >  0.4) vars.NBjets_trackCountingHighEffBJetTags_04++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >  0.5) vars.NBjets_trackCountingHighEffBJetTags_05++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >  1.0) vars.NBjets_trackCountingHighEffBJetTags_10++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >  1.5) vars.NBjets_trackCountingHighEffBJetTags_15++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >  2.0) vars.NBjets_trackCountingHighEffBJetTags_20++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >  3.0) vars.NBjets_trackCountingHighEffBJetTags_30++;      
+      
  }
  
 }
