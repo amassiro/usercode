@@ -191,22 +191,22 @@ int main(int argc, char** argv)
  
     ///**** 80% ****
    BarrelSelections.push_back(0.09); ///==== iso Tk
-    BarrelSelections.push_back(0.09); ///==== iso em
-    BarrelSelections.push_back(0.10); ///==== iso had
-    BarrelSelections.push_back(0.07); ///==== iso combined
-    BarrelSelections.push_back(0.040); ///==== hOe
-    BarrelSelections.push_back(0.01); ///==== sigmaIetaIeta
-    BarrelSelections.push_back(0.06); ///==== dPhi
-    BarrelSelections.push_back(0.004); ///==== dEta
+   BarrelSelections.push_back(0.09); ///==== iso em
+   BarrelSelections.push_back(0.10); ///==== iso had
+   BarrelSelections.push_back(0.07); ///==== iso combined
+   BarrelSelections.push_back(0.040); ///==== hOe
+   BarrelSelections.push_back(0.01); ///==== sigmaIetaIeta
+   BarrelSelections.push_back(0.06); ///==== dPhi
+   BarrelSelections.push_back(0.004); ///==== dEta
     
-    EndCapSelections.push_back(0.04); ///==== iso Tk
-    EndCapSelections.push_back(0.05); ///==== iso em
-    EndCapSelections.push_back(0.025); ///==== iso had
-    EndCapSelections.push_back(0.06); ///==== iso combined
-    EndCapSelections.push_back(0.025); ///==== hOe
-    EndCapSelections.push_back(0.03); ///==== sigmaIetaIeta
-    EndCapSelections.push_back(0.03); ///==== dPhi
-    EndCapSelections.push_back(0.007); ///==== dEta
+   EndCapSelections.push_back(0.04); ///==== iso Tk
+   EndCapSelections.push_back(0.05); ///==== iso em
+   EndCapSelections.push_back(0.025); ///==== iso had
+   EndCapSelections.push_back(0.06); ///==== iso combined
+   EndCapSelections.push_back(0.025); ///==== hOe
+   EndCapSelections.push_back(0.03); ///==== sigmaIetaIeta
+   EndCapSelections.push_back(0.03); ///==== dPhi
+   EndCapSelections.push_back(0.007); ///==== dEta
  
   
   
@@ -558,11 +558,13 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
   }  
   if (debug) std::cout << ">>> STEP 5 <<<" << std::endl;
   
-  
+  ///----  hardcoded fixed preselections ---- VBF (begin) ----
   if (vars.q1_pT < 20.) continue;
   if (vars.q2_pT < 15.) continue;
-  if (vars.M_qq < 200.) continue;
+  if (vars.M_qq < 100.) continue;
   if (vars.DEta_qq < 1.) continue;
+  ///----  hardcoded fixed preselections ---- VBF (end) ----
+  
   
   ///************************************
   ///**** STEP 6 - Final Production *****
