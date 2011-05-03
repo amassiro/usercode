@@ -15,6 +15,12 @@
 #include "../test/Read.cc"
 // #include "../test/DrawTools.h"
 
+#include "PUclass.h"
+
+
+
+
+
 #if not defined(__CINT__) || defined(__MAKECINT__)
 #include "TMVA/Tools.h"
 #include "TMVA/Reader.h"
@@ -29,6 +35,8 @@
 ///                          _|                                                                                                    
 ///
 ///
+
+// std::vector<double> PUWeight;
 
 int GetNumList(std::vector<int> &list){
  int result = 0;
@@ -99,6 +107,17 @@ int main(int argc, char** argv)
  std::vector<std::string> SignalName;
  if (Discovery == 1) SignalName = gConfigParser -> readStringListOption("Input::SignalName");
  
+ std::vector<double> PUMC   = gConfigParser -> readDoubleListOption("PU::PUMC");
+ std::vector<double> PUDATA = gConfigParser -> readDoubleListOption("PU::PUDATA");
+ PUclass PU;
+ 
+ for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
+  PU.PUWeight.push_back(PUDATA.at(itVPU) / PUMC.at(itVPU));
+ }
+
+ PU.Write("autoWeight.cxx");
+ gROOT->ProcessLine(".L autoWeight.cxx");
+ 
  TTree *treeEffVect[100];
  TTree *treeJetLepVect[100];
  
@@ -138,7 +157,7 @@ int main(int argc, char** argv)
  
  double XSection  = gConfigParser -> readDoubleOption("Plot::XSection");
  
- ///==== list of selections to perform (NOT sequential selections) ====
+ ///==== list of selections to perform (NOT sequential additive selections) ====
  std::string CutFile = gConfigParser -> readStringOption("Selections::CutFile");
  std::vector<std::string> vCut;
  
@@ -274,9 +293,26 @@ int main(int argc, char** argv)
     histo_temp[iSample][iCut][iVar] = new TH1F(name_histo_temp,name_histo_temp,vNBin.at(iVar),vMin.at(iVar), vMax.at(iVar));
     char toDraw[1000];
     sprintf(toDraw,"%s >> %s",vVarName.at(iVar).c_str(),name_histo_temp.Data());      
-    treeJetLepVect[iSample]->Draw(toDraw,Cut,"");
+
+    
+//     TString CutExtended = Form ("Weight(q1_pT)");
+    
+//     std::cout << " PUclass = " << PU.getPUWeight(1) << std::endl;
+    
+//     TString CutExtended = Form ("PU.getPUWeight(1)");
+//     TString CutExtended = Form ("abs(q1_pT)");
+
+    TString CutExtended = Form ("(%s) * autoWeight(1)",Cut.Data());    
+//     TString CutExtended = Form ("autoWeight(1)");    
+    
+//     TString CutExtended = Form ("q1_pT");
+    
+//     TString CutExtended = Form ("(%s) * myweight(q1_pT)",Cut.Data());    
+//     treeJetLepVect[iSample]->Draw(toDraw,Cut,"");
+    treeJetLepVect[iSample]->Draw(toDraw,CutExtended,"");
+    
     if (Normalization[iSample]>0) { 
-     histo_temp[iSample][iCut][iVar] ->Sumw2();
+     histo_temp[iSample][iCut][iVar] -> Sumw2();
      histo_temp[iSample][iCut][iVar] -> Scale(Normalization[iSample]); 
     }
     for (uint iName=0; iName<reduced_name_samples.size(); iName++){
@@ -342,6 +378,8 @@ int main(int argc, char** argv)
     }
    }
    ///==== histo sum MC ====    
+   ///==== Add systrematic error ====
+   AddError(hs[iCut][iVar],LumiSyst);
    histoSumMC[iCut][iVar] = ((TH1F*)(hs[iCut][iVar]->GetStack()->Last()));
    ///==== histo with pull plot ====
    hPull[iCut][iVar] = PullPlot(histo[numDATA][iCut][iVar], histoSumMC[iCut][iVar]);
@@ -356,6 +394,8 @@ int main(int argc, char** argv)
   }
  }
  
+ 
+ 
  ///==== calculate agreement data-MC: Kolmogorov-Smirnov test ==== 
  ///==== cicle on selections ====
  for (uint iCut = 0; iCut<vCut.size(); iCut++){
@@ -364,9 +404,10 @@ int main(int argc, char** argv)
    double KS = -1;
    double Chi2 = -1;
    if (histo[numDATA][iCut][iVar]->GetEntries() != 0 && histoSumMC[iCut][iVar]->GetEntries() != 0) {
-    KS = histo[numDATA][iCut][iVar]->KolmogorovTest(histoSumMC[iCut][iVar],"NX");
+    KS = histo[numDATA][iCut][iVar]->KolmogorovTest(histoSumMC[iCut][iVar],"M");
     Chi2 = histo[numDATA][iCut][iVar]->Chi2Test(histoSumMC[iCut][iVar],"UW");
    }
+   std::cout << " KS[" << iCut << "][" << iVar << "] = " << KS << std::endl;
    infoString[iCut][iVar] = new TString(Form("#splitline{KS prob = %.4f}{#chi^{2} prob = %.4f}",KS,Chi2));
    infoLatex[iCut][iVar] = new TLatex(0.80, 0.10, *(infoString[iCut][iVar])); 
    infoLatex[iCut][iVar]->SetTextAlign(12);
@@ -377,7 +418,7 @@ int main(int argc, char** argv)
  }
  
  
- 
+ LumiSyst = 0; ///---- bug fix
  
  
  
