@@ -107,6 +107,7 @@ int main(int argc, char** argv)
  std::vector<std::string> SignalName;
  if (Discovery == 1) SignalName = gConfigParser -> readStringListOption("Input::SignalName");
  
+ ///==== PU reweight (begin) ====
  std::vector<double> PUMC   = gConfigParser -> readDoubleListOption("PU::PUMC");
  std::vector<double> PUDATA = gConfigParser -> readDoubleListOption("PU::PUDATA");
  PUclass PU;
@@ -117,6 +118,9 @@ int main(int argc, char** argv)
 
  PU.Write("autoWeight.cxx");
  gROOT->ProcessLine(".L autoWeight.cxx");
+ ///==== PU reweight (end) ====
+ 
+ 
  
  TTree *treeEffVect[100];
  TTree *treeJetLepVect[100];
@@ -294,21 +298,7 @@ int main(int argc, char** argv)
     char toDraw[1000];
     sprintf(toDraw,"%s >> %s",vVarName.at(iVar).c_str(),name_histo_temp.Data());      
 
-    
-//     TString CutExtended = Form ("Weight(q1_pT)");
-    
-//     std::cout << " PUclass = " << PU.getPUWeight(1) << std::endl;
-    
-//     TString CutExtended = Form ("PU.getPUWeight(1)");
-//     TString CutExtended = Form ("abs(q1_pT)");
-
-    TString CutExtended = Form ("(%s) * autoWeight(1)",Cut.Data());    
-//     TString CutExtended = Form ("autoWeight(1)");    
-    
-//     TString CutExtended = Form ("q1_pT");
-    
-//     TString CutExtended = Form ("(%s) * myweight(q1_pT)",Cut.Data());    
-//     treeJetLepVect[iSample]->Draw(toDraw,Cut,"");
+    TString CutExtended = Form ("(%s) * autoWeight(q1_pT)",Cut.Data());    
     treeJetLepVect[iSample]->Draw(toDraw,CutExtended,"");
     
     if (Normalization[iSample]>0) { 
