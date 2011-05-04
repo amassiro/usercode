@@ -548,6 +548,8 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
   
   SetLeptonsVariables(vars, reader, leptonILep.at(l1), leptonILep.at(l2),leptonFlavours.at(l1), leptonFlavours.at(l2));
   
+  if (debug) std::cerr << ">> Lepton variables set" << std::endl;
+  
   //---- lepton veto
   std::vector<int> blacklistLepton;
   blacklistLepton.push_back(l1);
@@ -559,6 +561,9 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
   vars.Nleptons_pT20 = getNumberPTThreshold(leptons, 20, &blacklistLepton);
   vars.Nleptons_pT25 = getNumberPTThreshold(leptons, 25, &blacklistLepton);
   vars.Nleptons_pT30 = getNumberPTThreshold(leptons, 30, &blacklistLepton);
+
+  if (debug) std::cerr << ">> Lepton multiplicity set" << std::endl;
+  
   
   ///*********************************
   ///**** STEP 5 - Jet Selections ****

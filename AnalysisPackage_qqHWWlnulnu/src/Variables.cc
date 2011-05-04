@@ -245,8 +245,8 @@ void SetLeptonsVariables(Variables& vars, treeReader& reader,const int& iLep1, c
   
   vars.l1_charge = reader.GetFloat("muons_charge")->at(iLep1);
   vars.l1_flavour = 13;
-  vars.l1_dxy = reader.GetFloat("muons_dxy")->at(iLep1) ;
-  vars.l1_dz =reader.GetFloat("muons_dz")->at(iLep1);
+  vars.l1_dxy = reader.GetFloat("muons_dxy_PV")->at(iLep1) ;
+  vars.l1_dz =reader.GetFloat("muons_dz_PV")->at(iLep1);
   vars.l1_3DipSig = 0; // reader.GetFloat("muons_3DipSignificance")->at(iLep1);
   vars.l1_tkIso = reader.GetFloat("muons_tkIsoR03")->at(iLep1);
   vars.l1_emIso =  reader.GetFloat("muons_emIsoR03")->at(iLep1);
@@ -276,8 +276,8 @@ void SetLeptonsVariables(Variables& vars, treeReader& reader,const int& iLep1, c
   
   vars.l2_charge = reader.GetFloat("muons_charge")->at(iLep2);
   vars.l2_flavour = 13;
-  vars.l2_dxy = reader.GetFloat("muons_dxy")->at(iLep2) ;
-  vars.l2_dz =reader.GetFloat("muons_dz")->at(iLep2);
+  vars.l2_dxy = reader.GetFloat("muons_dxy_PV")->at(iLep2) ;
+  vars.l2_dz =reader.GetFloat("muons_dz_PV")->at(iLep2);
   vars.l2_3DipSig = 0; //reader.GetFloat("muons_3DipSignificance")->at(iLep2);
   vars.l2_tkIso = reader.GetFloat("muons_tkIsoR03")->at(iLep2);
   vars.l2_emIso =  reader.GetFloat("muons_emIsoR03")->at(iLep2);
@@ -308,8 +308,8 @@ void SetLeptonsVariables(Variables& vars, treeReader& reader,const int& iLep1, c
   
   vars.l1_charge = reader.GetFloat("electrons_charge")->at(iLep1);
   vars.l1_flavour = 11;
-  vars.l1_dxy = reader.GetFloat("electrons_dxy")->at(iLep1) ;
-  vars.l1_dz =reader.GetFloat("electrons_dz")->at(iLep1);
+  vars.l1_dxy = reader.GetFloat("electrons_dxy_PV")->at(iLep1) ;
+  vars.l1_dz =reader.GetFloat("electrons_dz_PV")->at(iLep1);
   vars.l1_3DipSig = 0; //reader.GetFloat("electrons_3DipSignificance")->at(iLep1);
   vars.l1_tkIso = reader.GetFloat("electrons_tkIsoR03")->at(iLep1);
   vars.l1_emIso =  reader.GetFloat("electrons_emIsoR03")->at(iLep1);
@@ -339,8 +339,8 @@ void SetLeptonsVariables(Variables& vars, treeReader& reader,const int& iLep1, c
   
   vars.l2_charge = reader.GetFloat("electrons_charge")->at(iLep2);
   vars.l2_flavour = 11;
-  vars.l2_dxy = reader.GetFloat("electrons_dxy")->at(iLep2) ;
-  vars.l2_dz =reader.GetFloat("electrons_dz")->at(iLep2);
+  vars.l2_dxy = reader.GetFloat("electrons_dxy_PV")->at(iLep2) ;
+  vars.l2_dz =reader.GetFloat("electrons_dz_PV")->at(iLep2);
   vars.l2_3DipSig = 0; // reader.GetFloat("electrons_3DipSignificance")->at(iLep2);
   vars.l2_tkIso = reader.GetFloat("electrons_tkIsoR03")->at(iLep2);
   vars.l2_emIso =  reader.GetFloat("electrons_emIsoR03")->at(iLep2);
