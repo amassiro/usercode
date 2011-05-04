@@ -7,22 +7,22 @@
  char *nameHumanReadable[1000];
  char* xsection[1000];
  
- char nameFileIn[1000] = {"test/Winter10/samples_skimmed.txt"};
+ char nameFileIn[1000] = {"test/Spring11/samples_skimmed.txt"};
  
  int numberOfSamples =  ReadFile(nameFileIn,nameSample,nameHumanReadable, xsection);
 
-  system("mkdir test/Winter10/dir_cfg_SelectorJet");
+  system("mkdir test/Spring11/dir_cfg_SelectorJet");
 
  for (int iSample = 0; iSample < numberOfSamples; iSample++){
   std::ofstream myfile;
   char nameFile[1000];
-  sprintf(nameFile,"test/Winter10/dir_cfg_SelectorJet/SelectorJets_%s.cfg",nameSample[iSample]);
+  sprintf(nameFile,"test/Spring11/dir_cfg_SelectorJet/SelectorJets_%s.cfg",nameSample[iSample]);
   myfile.open (nameFile);
   
   myfile << "#### Selector Jets #### " << std::endl;
   myfile << "[Input]" << std::endl;
   myfile << "treeName = SimpleNtuple " << std::endl;
-  myfile << "inputFile = output_Fall10/out_NtupleProducer_" << nameSample[iSample] << ".root" << std::endl;
+  myfile << "inputFile = output_Spring11/out_NtupleProducer_" << nameSample[iSample] << ".root" << std::endl;
   
   myfile << std::endl;
   myfile << "entryMOD = 1000 " << std::endl;
@@ -50,7 +50,7 @@
   myfile.close(); 
   
   
-  TString Command2Line = Form("./bin/FinalSelection_Producer_Jet.exe test/Winter10/dir_cfg_SelectorJet/SelectorJets_%s.cfg",nameSample[iSample]);
+  TString Command2Line = Form("./bin/FinalSelection_Producer_Jet.exe test/Spring11/dir_cfg_SelectorJet/SelectorJets_%s.cfg",nameSample[iSample]);
   gSystem->Exec(Command2Line);  
   
  }
