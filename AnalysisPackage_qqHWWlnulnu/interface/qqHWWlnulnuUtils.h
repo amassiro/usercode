@@ -25,8 +25,14 @@ qqHWWlnulnuUtils
 ///==== Pull Plot: drawing utility ====
 void PullPlot(TCanvas* canvas, TH1* hDATA, TH1* hMC);
 void PullPlot(TCanvas* canvas, TH1* hDATA, THStack* hsMC);  
+TH1F* PullPlot(TH1F* hDATA, TH1F* hMC);
+
 ///==== Draw Stack ====
-void DrawStack(THStack* hs);
+void DrawStack(THStack* hs, int error = 0, double syst = 0);
+void DrawStackError(THStack* hs, double syst = 0);
+
+///==== Add systrematic error ====
+void AddError(THStack* hs, double syst = 0);
 
 
 ///==== MC Decay Channel of V V ====

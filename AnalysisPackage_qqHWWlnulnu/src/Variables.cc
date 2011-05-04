@@ -398,7 +398,6 @@ void SetLeptonsVariables(Variables& vars, treeReader& reader,const int& iLep1, c
   vars.l2_Z = (reader.Get4V("muons")->at(iLep2).Eta() - etaMean)/dEta;
   vars.Z_ll = ((reader.Get4V("muons")->at(iLep1) + reader.Get4V("muons")->at(iLep2)).Eta() - etaMean)/dEta;
  }
-  
 }
 
 

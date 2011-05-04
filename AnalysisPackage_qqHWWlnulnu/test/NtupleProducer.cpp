@@ -548,6 +548,18 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
   
   SetLeptonsVariables(vars, reader, leptonILep.at(l1), leptonILep.at(l2),leptonFlavours.at(l1), leptonFlavours.at(l2));
   
+  //---- lepton veto
+  std::vector<int> blacklistLepton;
+  blacklistLepton.push_back(l1);
+  blacklistLepton.push_back(l2);
+  
+  vars.Nleptons_pT5  = getNumberPTThreshold(leptons,  5, &blacklistLepton);
+  vars.Nleptons_pT10 = getNumberPTThreshold(leptons, 10, &blacklistLepton);
+  vars.Nleptons_pT15 = getNumberPTThreshold(leptons, 15, &blacklistLepton);
+  vars.Nleptons_pT20 = getNumberPTThreshold(leptons, 20, &blacklistLepton);
+  vars.Nleptons_pT25 = getNumberPTThreshold(leptons, 25, &blacklistLepton);
+  vars.Nleptons_pT30 = getNumberPTThreshold(leptons, 30, &blacklistLepton);
+  
   ///*********************************
   ///**** STEP 5 - Jet Selections ****
   ///************* Loose selections of tag jets

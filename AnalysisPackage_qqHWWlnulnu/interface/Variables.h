@@ -102,6 +102,12 @@ struct Variables
  double l2_Z;
  double Z_ll;
  
+ int Nleptons_pT5;
+ int Nleptons_pT10;
+ int Nleptons_pT15;
+ int Nleptons_pT20;
+ int Nleptons_pT25;
+ int Nleptons_pT30;
  
  
  //---- met variables
