@@ -578,7 +578,7 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
   ///----  hardcoded fixed preselections ---- VBF (begin) ----
   if (vars.q1_pT < 20.) continue;
   if (vars.q2_pT < 15.) continue;
-  if (vars.M_qq < 100.) continue;
+  if (vars.M_qq < 200.) continue;
   if (vars.DEta_qq < 1.) continue;
   ///----  hardcoded fixed preselections ---- VBF (end) ----
   
