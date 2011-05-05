@@ -19,7 +19,6 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
  
  
  
- 
  //-------------------------
  //---- Reduced tree ----
  //-------------------------
@@ -102,10 +101,17 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
  vars.m_reducedTree -> Branch("Z_ll", &vars.Z_ll, "Z_ll/D");
  
  
+ vars.m_reducedTree -> Branch("Nleptons_pT5", &vars.Nleptons_pT5, "Nleptons_pT5/I");
+ vars.m_reducedTree -> Branch("Nleptons_pT10", &vars.Nleptons_pT10, "Nleptons_pT10/I");
+ vars.m_reducedTree -> Branch("Nleptons_pT15", &vars.Nleptons_pT15, "Nleptons_pT15/I");
+ vars.m_reducedTree -> Branch("Nleptons_pT20", &vars.Nleptons_pT20, "Nleptons_pT20/I");
+ vars.m_reducedTree -> Branch("Nleptons_pT25", &vars.Nleptons_pT25, "Nleptons_pT25/I");
+ vars.m_reducedTree -> Branch("Nleptons_pT30", &vars.Nleptons_pT30, "Nleptons_pT30/I");
+ 
  //~~~~ met variables
  vars.m_reducedTree-> Branch("met_X",    &vars.met_X,       "met_X/D");
  vars.m_reducedTree-> Branch("met_Y",    &vars.met_Y,       "met_Y/D");
- vars.m_reducedTree-> Branch("met",    &vars.met,       "met/D");
+ vars.m_reducedTree-> Branch("met",        &vars.met,       "met/D");
  
  
  //~~~~ jet variables
@@ -205,6 +211,9 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
  vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_20", &vars.NBjets_trackCountingHighEffBJetTags_20, "NBjets_trackCountingHighEffBJetTags_20/I"); 
  vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_30", &vars.NBjets_trackCountingHighEffBJetTags_30, "NBjets_trackCountingHighEffBJetTags_30/I"); 
  
+ 
+ //~~~~ MC variables
+ vars.m_reducedTree -> Branch("numPUMC", &vars.numPUMC, "numPUMC/I"); 
  
 }
 
@@ -408,6 +417,15 @@ void SetMetVariables(Variables& vars, treeReader& reader, const std::string& met
  vars.met = reader.Get4V(metType)->at(0).P();
 }
 
+void SetMCVariables(Variables& vars, treeReader& reader)
+{
+ if (reader.GetInt("mc_PUit_NumInteractions")->size() != 0) {
+  vars.numPUMC = reader.GetInt("mc_PUit_NumInteractions")->at(0);
+ }
+ else {
+  vars.numPUMC = -1;
+ }
+}
 
 
 void SetQJetVariables(Variables& vars, treeReader& reader, const int& q1, const int& q2, const std::vector<int>& blacklistJet_forCJV, const std::vector<int>& blacklistJet_forBtag)
