@@ -164,6 +164,10 @@ int main(int argc, char** argv)
  
  ///*************************************
  ///**** definition of electron ID ****
+ ///**** https://twiki.cern.ch/twiki/bin/viewauth/CMS/SimpleCutBasedEleID
+ ///**** https://twiki.cern.ch/twiki/bin/viewauth/CMS/SimpleCutBasedEleID2011
+ 
+ 
  std::vector<double> BarrelSelections;
  std::vector<double> EndCapSelections;
  
