@@ -168,7 +168,8 @@ int main(int argc, char** argv)
  std::vector<double> EndCapSelections;
  
  ///**** 95% ****
- /*
+ 
+  /*
    BarrelSelections.push_back(0.15); ///==== iso Tk
    BarrelSelections.push_back(2.00); ///==== iso em
    BarrelSelections.push_back(0.12); ///==== iso had
@@ -186,12 +187,34 @@ int main(int argc, char** argv)
    EndCapSelections.push_back(0.03); ///==== sigmaIetaIeta
    EndCapSelections.push_back(0.7); ///==== dPhi
    EndCapSelections.push_back(0.01); ///==== dEta
-  */
+   */
+  
  
- 
-    ///**** 80% ****
-   BarrelSelections.push_back(0.09); ///==== iso Tk
+    ///**** 90% ****
+   
+   BarrelSelections.push_back(0.12); ///==== iso Tk
    BarrelSelections.push_back(0.09); ///==== iso em
+   BarrelSelections.push_back(0.10); ///==== iso had
+   BarrelSelections.push_back(0.10); ///==== iso combined
+   BarrelSelections.push_back(0.12); ///==== hOe
+   BarrelSelections.push_back(0.01); ///==== sigmaIetaIeta
+   BarrelSelections.push_back(0.8); ///==== dPhi
+   BarrelSelections.push_back(0.007); ///==== dEta
+    
+   EndCapSelections.push_back(0.05); ///==== iso Tk
+   EndCapSelections.push_back(0.06); ///==== iso em
+   EndCapSelections.push_back(0.03); ///==== iso had
+   EndCapSelections.push_back(0.07); ///==== iso combined
+   EndCapSelections.push_back(0.05); ///==== hOe
+   EndCapSelections.push_back(0.03); ///==== sigmaIetaIeta
+   EndCapSelections.push_back(0.7); ///==== dPhi
+   EndCapSelections.push_back(0.007); ///==== dEta
+  
+   
+    ///**** 80% ****
+    /*
+   BarrelSelections.push_back(0.09); ///==== iso Tk
+   BarrelSelections.push_back(0.07); ///==== iso em
    BarrelSelections.push_back(0.10); ///==== iso had
    BarrelSelections.push_back(0.07); ///==== iso combined
    BarrelSelections.push_back(0.040); ///==== hOe
@@ -207,7 +230,7 @@ int main(int argc, char** argv)
    EndCapSelections.push_back(0.03); ///==== sigmaIetaIeta
    EndCapSelections.push_back(0.03); ///==== dPhi
    EndCapSelections.push_back(0.007); ///==== dEta
- 
+ */
   
   
   ///**** 70% ****
@@ -330,7 +353,9 @@ int main(int argc, char** argv)
   for(unsigned int iEle = 0; iEle < (reader.Get4V("electrons")->size()); ++iEle)
   {
    if( reader.Get4V("electrons")->at(iEle).pt() < 5. ) continue;
-   bool flag =  IsEleIsolatedID(reader,BarrelSelections,EndCapSelections,iEle);
+//    bool flag =  IsEleIsolatedID(reader,BarrelSelections,EndCapSelections,iEle);
+   bool flag =  IsEleIsolatedIDPUCorrected(reader,BarrelSelections,EndCapSelections,iEle);
+   
    if (!flag) continue;
    
    leptons_jetCleaning.push_back( reader.Get4V("electrons")->at(iEle) );
@@ -415,7 +440,8 @@ int main(int argc, char** argv)
    bool skipEle = false;
    if (reader.Get4V("electrons")->at(iEle).pt() < 10.0) skipEle = true;
    if (fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 2.5) skipEle = true;
-   bool flag =  IsEleIsolatedID(reader,BarrelSelections,EndCapSelections,iEle);
+//    bool flag =  IsEleIsolatedID(reader,BarrelSelections,EndCapSelections,iEle);
+   bool flag =  IsEleIsolatedIDPUCorrected(reader,BarrelSelections,EndCapSelections,iEle);
    if (!flag) skipEle = true;
    
    if (skipEle) {
