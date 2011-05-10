@@ -1,6 +1,7 @@
 #include "ConfigParser.h"
 #include "ntpleUtils.h"
 
+#include "TPie.h"
 #include "TH1F.h"
 #include "TH2F.h"
 #include "TFile.h"
@@ -112,8 +113,25 @@ int main(int argc, char** argv)
  std::vector<double> PUDATA = gConfigParser -> readDoubleListOption("PU::PUDATA");
  PUclass PU;
  
+ std::cout << " PUMC.size()   = " << PUMC.size()   << std::endl;
+ std::cout << " PUDATA.size() = " << PUDATA.size() << std::endl;
+ 
+ if (PUMC.size() != PUDATA.size()) {
+  std::cerr << " ERROR " << std::endl;
+  return 1;
+ }
+ 
+ double sumPUMC = 0;
  for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
-  PU.PUWeight.push_back(PUDATA.at(itVPU) / PUMC.at(itVPU));
+  sumPUMC += PUMC.at(itVPU);  
+ }
+ double sumPUDATA = 0;
+ for (int itVPU = 0; itVPU < PUDATA.size(); itVPU++ ){
+  sumPUDATA += PUDATA.at(itVPU);  
+ } 
+ 
+ for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
+  PU.PUWeight.push_back(PUDATA.at(itVPU) / PUMC.at(itVPU) * sumPUMC / sumPUDATA);
  }
 
  PU.Write("autoWeight.cxx");
@@ -126,7 +144,8 @@ int main(int argc, char** argv)
  TTree *treeJetLepVect[100];
  
 
-  //  [iCut][iVar]
+ 
+  //  [iCut][iVar] 
  TString* infoString[10][30];
  TLatex *infoLatex[10][30]; 
  TCanvas* ccCanvas[10][30];
@@ -135,6 +154,9 @@ int main(int argc, char** argv)
  //  [iName][iCut][iVar]
  TH1F* histo[100][10][30];
  TH1F* histo_temp[100][10][30];
+
+ //  [iName][iCut]
+ double numEvents[100][10];
  
  char *nameSample[1000];
  char *nameHumanReadable[1000];
@@ -298,11 +320,19 @@ int main(int argc, char** argv)
     char toDraw[1000];
     sprintf(toDraw,"%s >> %s",vVarName.at(iVar).c_str(),name_histo_temp.Data());      
 
-    TString CutExtended = Form ("(%s) * autoWeight(q1_pT)",Cut.Data());    
+    histo_temp[iSample][iCut][iVar] -> Sumw2(); //---- così mette l'errore giusto!
+    
+    TString CutExtended;
+    if (iSample != numDATA) {
+     CutExtended = Form ("(%s) * autoWeight(numPUMC)",Cut.Data());    
+    }
+    else {
+     CutExtended = Form ("(%s)",Cut.Data());    
+    }
     treeJetLepVect[iSample]->Draw(toDraw,CutExtended,"");
     
     if (Normalization[iSample]>0) { 
-     histo_temp[iSample][iCut][iVar] -> Sumw2();
+//      histo_temp[iSample][iCut][iVar] -> Sumw2();
      histo_temp[iSample][iCut][iVar] -> Scale(Normalization[iSample]); 
     }
     for (uint iName=0; iName<reduced_name_samples.size(); iName++){
@@ -322,7 +352,15 @@ int main(int argc, char** argv)
  } ///==== end cicle on selections ====
  
  
+
+//  [iName]
+ TH1F* hTrend[100];
+ THStack* hsTrend;
+ //  [iCut]
+ TPie* hTrendPie[100];
  
+ 
+ //  [iCut][iVar]
  THStack* hs[100][100];
  TH1F* hPull[100][100];
  
@@ -384,6 +422,65 @@ int main(int argc, char** argv)
   }
  }
  
+ ///==== calculate number of events after each step of the analysis ====
+ //  [iName][iCut]
+ hsTrend = new THStack("Trend","Trend");
+ 
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  TString nameTHTrendPie = Form("%d_Trend_Pie",iCut);
+  hTrendPie[iCut] = new TPie (nameTHTrendPie,nameTHTrendPie,reduced_name_samples.size());
+ }
+ 
+ for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+  TString nameTHTrend = Form("%d_Trend",iName);
+  hTrend[iName] = new TH1F (nameTHTrend,nameTHTrend,vCut.size(),0,vCut.size());
+  hTrend[iName]->GetXaxis()->SetTitle("Selections");
+
+  if (iName == numDATA) {
+   hTrend[iName]->SetMarkerStyle(20);
+   hTrend[iName]->SetMarkerSize(1);
+   hTrend[iName]->SetMarkerColor(kBlack);
+   hTrend[iName]->SetLineColor(kBlack);
+   hTrend[iName]->SetFillColor(kBlack);
+   hTrend[iName]->SetLineWidth(2);
+   hTrend[iName]->SetFillStyle(3001);  
+  }
+  else {
+   hTrend[iName]->SetMarkerColor(vColor[iName]);
+   hTrend[iName]->SetLineColor(vColor[iName]);
+   hTrend[iName]->SetFillColor(vColor[iName]);
+   hTrend[iName]->SetLineWidth(2);
+   hTrend[iName]->SetFillStyle(3001);
+  }
+  for (uint iCut = 0; iCut<vCut.size(); iCut++){
+   numEvents[iName][iCut] = histo[iName][iCut][0]->Integral(); //--- iVar = 0, it should be the same whatever var you use
+   hTrend[iName]->SetBinContent(iCut+1,numEvents[iName][iCut]);
+//     IntegralAndError
+//     Double_t IntegralAndError(Int_t binx1, Int_t binx2, Double_t& err, Option_t* option = "") const
+   std::cout << ">>>  numEvents[" << iName << "," << reduced_name_samples.at(iName) << "][" << iCut << "] = " << numEvents[iName][iCut] << " , " << histo[iName][iCut][0]->GetEntries() << " , " << histo[iName][iCut][0]->GetEffectiveEntries() << std::endl;
+   
+   if (iName != numDATA) {
+    hTrendPie[iCut]->SetTextSize(0.04);
+    hTrendPie[iCut]->SetTextFont(12);
+    hTrendPie[iCut]->SetEntryFillColor(iName,vColor[iName]);
+    hTrendPie[iCut]->SetEntryFillStyle(iName,3001);
+    hTrendPie[iCut]->SetEntryLabel(iName, reduced_name_samples.at(iName).c_str());
+    hTrendPie[iCut]->SetEntryLineColor(iName, vColor[iName]);
+    hTrendPie[iCut]->SetEntryLineStyle(iName, 2);
+    hTrendPie[iCut]->SetEntryLineWidth(iName, 2);
+    //     hTrendPie[iCut]->SetEntryRadiusOffset(Int_t, Double_t);
+    hTrendPie[iCut]->SetEntryVal(iName,numEvents[iName][iCut]);
+   }
+   else {
+    hTrendPie[iCut]->SetEntryLabel(iName, "");
+//     hTrendPie[iCut]->SetEntryVal(iName,10e-1);
+   }
+  }
+  if (iName != numDATA) {
+   hsTrend->Add(hTrend[iName]);
+  }
+ }
+ AddError(hsTrend,LumiSyst);
  
  
  ///==== calculate agreement data-MC: Kolmogorov-Smirnov test ==== 
@@ -413,8 +510,10 @@ int main(int argc, char** argv)
  
  
  
- 
- 
+ TCanvas* cTrendPie[100];
+ TCanvas* cTrendPieAll = new TCanvas("cTrendPieAll","cTrendPieAll",400 * vCut.size(),400);
+ cTrendPieAll -> Divide (vCut.size());
+ TCanvas* cTrend = new TCanvas("cTrend","cTrend",400,400);
  
  TCanvas* cCompareCutPull[100];
  TCanvas* cCompareVarPull[100];
@@ -449,6 +548,37 @@ int main(int argc, char** argv)
    ccCanvasPull[iCut][iVar] = new TCanvas(nameCanvasPull,nameCanvasPull,400,400);
   }
  } 
+ 
+ 
+ ///==== draw trend vs cut (begin)
+ cTrend->cd();
+ DrawStack(hsTrend,1,LumiSyst);
+ hTrend[numDATA] -> Draw("EsameP");
+ gPad->SetLogy();
+ gPad->SetGrid();
+ leg->Draw();
+ latex->Draw();
+ 
+ 
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  TString nameCanvas = Form("%d_Canvas_Trend",iCut);
+  cTrendPie[iCut] = new TCanvas(nameCanvas,nameCanvas,400,400);
+  cTrendPie[iCut]->cd();
+  hTrendPie[iCut] -> Draw("3d t nol");
+  hTrendPie[iCut]->SetX(.45);
+  hTrendPie[iCut]->SetRadius(.22);
+  leg->Draw();
+  latex->Draw();
+  
+  cTrendPieAll->cd(iCut+1);
+  hTrendPie[iCut] -> Draw("3d t nol");
+  hTrendPie[iCut]->SetX(.45);
+  hTrendPie[iCut]->SetRadius(.22);
+  leg->Draw();
+  latex->Draw();
+ }
+ ///==== draw trend vs cut (end)
+ 
  
  ///==== cicle on selections ====
  for (uint iCut = 0; iCut<vCut.size(); iCut++){
@@ -563,6 +693,16 @@ int main(int argc, char** argv)
  
  
  ///==== save output ====
+ outFile.cd();
+ cTrend -> Write();
+ 
+ outFile.mkdir("Trend");
+ outFile.cd("Trend");
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  cTrendPie[iCut] -> Write();
+ }
+ cTrendPieAll -> Write();
+ 
  outFile.cd();
  outFile.mkdir("Cut");
  outFile.cd("Cut");
