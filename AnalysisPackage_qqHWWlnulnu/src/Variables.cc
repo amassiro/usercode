@@ -417,6 +417,18 @@ void SetMetVariables(Variables& vars, treeReader& reader, const std::string& met
  vars.met = reader.Get4V(metType)->at(0).P();
 }
 
+
+void SetEventVariables(Variables& vars, treeReader& reader)
+{
+ if (reader.GetInt("lumiId")->size() != 0) vars.lumiId = reader.GetInt("lumiId")->at(0);
+ else vars.lumiId = -1;
+ if (reader.GetInt("eventId")->size() != 0) vars.eventId = reader.GetInt("eventId")->at(0);
+ else vars.eventId = -1;
+ if (reader.GetInt("runId")->size() != 0) vars.runId = reader.GetInt("runId")->at(0);
+ else vars.runId = -1;
+}
+
+
 void SetMCVariables(Variables& vars, treeReader& reader)
 {
  if (reader.GetInt("mc_PUit_NumInteractions")->size() != 0) {

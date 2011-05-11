@@ -362,6 +362,9 @@ int main(int argc, char** argv)
   ///==== fill MC information ====
   SetMCVariables(vars, reader);
   
+  ///================================
+  ///==== fill Event information ====
+  SetEventVariables(vars, reader);
   
   ///***************************************************
   ///**** STEP -1 - Check no copies in DATA ****

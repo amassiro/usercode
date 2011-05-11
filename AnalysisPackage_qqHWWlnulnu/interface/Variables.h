@@ -232,6 +232,8 @@ void InitializeTree(Variables&, const std::string&);
 void FillTree(Variables& vars);
 void FillEfficiencyTree(Variables& vars);
 
+void SetEventVariables(Variables& vars, treeReader& reader);
+
 void SetLeptonsVariables(Variables& vars, treeReader& reader,const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2);
 
 void SetMetVariables(Variables& vars, treeReader& reader, const std::string& metType);
