@@ -504,6 +504,42 @@ void SetQJetVariables(Variables& vars, treeReader& reader, const int& q1, const 
  
  vars.NBjets_trackCountingHighPurBJetTags = 0;
  vars.NBjets_trackCountingHighEffBJetTags = 0;
+
+ vars.NBjets_trackCountingHighPurBJetTags_m20 = 0;
+ vars.NBjets_trackCountingHighPurBJetTags_m15 = 0;
+ vars.NBjets_trackCountingHighPurBJetTags_m10 = 0;
+ vars.NBjets_trackCountingHighPurBJetTags_m05 = 0;
+ vars.NBjets_trackCountingHighPurBJetTags_m04 = 0;
+ vars.NBjets_trackCountingHighPurBJetTags_m03 = 0;
+ vars.NBjets_trackCountingHighPurBJetTags_m02 = 0;
+ vars.NBjets_trackCountingHighPurBJetTags_m01 = 0;
+ vars.NBjets_trackCountingHighPurBJetTags_00 = 0;
+ vars.NBjets_trackCountingHighPurBJetTags_01 = 0;
+ vars.NBjets_trackCountingHighPurBJetTags_02 = 0;
+ vars.NBjets_trackCountingHighPurBJetTags_03 = 0;
+ vars.NBjets_trackCountingHighPurBJetTags_04 = 0;
+ vars.NBjets_trackCountingHighPurBJetTags_05 = 0;
+ vars.NBjets_trackCountingHighPurBJetTags_10 = 0;
+ vars.NBjets_trackCountingHighPurBJetTags_20 = 0;
+ vars.NBjets_trackCountingHighPurBJetTags_30 = 0;
+ 
+ vars.NBjets_trackCountingHighEffBJetTags_m20 = 0;
+ vars.NBjets_trackCountingHighEffBJetTags_m15 = 0;
+ vars.NBjets_trackCountingHighEffBJetTags_m10 = 0;
+ vars.NBjets_trackCountingHighEffBJetTags_m05 = 0;
+ vars.NBjets_trackCountingHighEffBJetTags_m04 = 0;
+ vars.NBjets_trackCountingHighEffBJetTags_m03 = 0;
+ vars.NBjets_trackCountingHighEffBJetTags_m02 = 0;
+ vars.NBjets_trackCountingHighEffBJetTags_m01 = 0;
+ vars.NBjets_trackCountingHighEffBJetTags_00 = 0;
+ vars.NBjets_trackCountingHighEffBJetTags_01 = 0;
+ vars.NBjets_trackCountingHighEffBJetTags_02 = 0;
+ vars.NBjets_trackCountingHighEffBJetTags_03 = 0;
+ vars.NBjets_trackCountingHighEffBJetTags_04 = 0;
+ vars.NBjets_trackCountingHighEffBJetTags_05 = 0;
+ vars.NBjets_trackCountingHighEffBJetTags_10 = 0;
+ vars.NBjets_trackCountingHighEffBJetTags_20 = 0;
+ vars.NBjets_trackCountingHighEffBJetTags_30 = 0;
  
  for (int iJet = 0; iJet < reader.Get4V("jets")->size(); iJet++){
   bool skipJet = false;
