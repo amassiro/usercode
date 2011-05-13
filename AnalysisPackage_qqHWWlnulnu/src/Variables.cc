@@ -510,7 +510,7 @@ void SetQJetVariables(Variables& vars, treeReader& reader, const int& q1, const 
   for(unsigned int kk = 0; kk < blacklistJet_forBtag.size(); ++kk) {
    if(blacklistJet_forBtag.at(kk) == static_cast<int>(iJet)) skipJet = true;
   }
-  if (reader.Get4V("jets")->at(iJet).pt() < 10.0) skipJet = true;
+  if (reader.Get4V("jets")->at(iJet).pt() < 20.0) skipJet = true;
       if (skipJet) continue;
       if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) > -50.0) vars.NBjets_trackCountingHighPurBJetTags++;
       if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) > -50.0) vars.NBjets_trackCountingHighEffBJetTags++;
