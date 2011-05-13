@@ -593,7 +593,8 @@ TH1F* PullPlot(TH1F* hDATA, TH1F* hMC){
   double B = hMC->GetBinContent(iBin);
   if (A+B != 0) {
    hPool->SetBinContent(iBin,(A-B)/(A+B)*2.);
-   hPool->SetBinError(iBin,4. * A / (A+B) / (A+B) * sqrt(A+B));
+//    hPool->SetBinError(iBin,4. * A / (A+B) / (A+B) * sqrt(A+B));
+   hPool->SetBinError(iBin,4. * B / (A+B) / (A+B) * sqrt(A));
   }
  }
  hPool->SetLineColor(kRed);
@@ -709,6 +710,7 @@ void PullPlot(TCanvas* canvas, TH1* hDATA, THStack* hsMC){
 }
 
 ///==== Draw Stack ====
+///---- if error == 1 than consider systematic error
 void DrawStack(THStack* hs, int error, double syst){ 
  if (error == 1) {
    DrawStackError(hs, syst);
