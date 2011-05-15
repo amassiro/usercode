@@ -15,20 +15,20 @@ DYJetsToLL_TuneD6T_M-50_7TeV-madgraph-tauola_Spring11-PU_S1_START311_V1G1-v1    
 #DYToTauTau_M-20_TuneZ2_7TeV-pythia6-tauola_Spring11-PU_S1_START311_V1G1-v1     1666       DY
 ##
 ##TTJets_TuneZ2_7TeV-madgraph-tauola_Spring11-PU_S1_START311_V1G1-v1         165      ttbar
-#TTTo2L2Nu2B_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1         17.5        ttbar
-#TTToLNu2Q2B_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1       72.8      ttbar
+TTTo2L2Nu2B_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1         17.5        ttbar
+TTToLNu2Q2B_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1       72.8      ttbar
 ##
-#TToBLNu_TuneZ2_s-channel_7TeV-madgraph_Spring11-PU_S1_START311_V1G1-v1          1.5      top
-#TToBLNu_TuneZ2_t-channel_7TeV-madgraph_Spring11-PU_S1_START311_V1G1-v1         21.0      top
-#TToBLNu_TuneZ2_tW-channel_7TeV-madgraph_Spring11-PU_S1_START311_V1G1-v1        10.6      top
+TToBLNu_TuneZ2_s-channel_7TeV-madgraph_Spring11-PU_S1_START311_V1G1-v1          1.5      top
+TToBLNu_TuneZ2_t-channel_7TeV-madgraph_Spring11-PU_S1_START311_V1G1-v1         21.0      top
+TToBLNu_TuneZ2_tW-channel_7TeV-madgraph_Spring11-PU_S1_START311_V1G1-v1        10.6      top
 ##
-#WJetsToLNu_TuneZ2_7TeV-madgraph-tauola_Spring11-PU_S1_START311_V1G1-v1                  31314     Wln
+WJetsToLNu_TuneZ2_7TeV-madgraph-tauola_Spring11-PU_S1_START311_V1G1-v1                  31314     Wln
 ##
 #WWTo2L2Nu_TuneZ2_7TeV-pythia6_Spring11-PU_S1_START311_V1G1-v1                     3.308    VV        WW2l2n
-##WWtoAnything_TuneZ2_7TeV-pythia6-tauola_Spring11-PU_S1_START311_V1G1-v1         43.0     WW
+WWtoAnything_TuneZ2_7TeV-pythia6-tauola_Spring11-PU_S1_START311_V1G1-v1         43.0     VV
 ##WZTo3LNu_TuneZ2_7TeV-pythia6_Spring11-PU_S1_START311_V1G1-v1                             0.867     WZ3ln
-#WZtoAnything_TuneZ2_7TeV-pythia6-tauola_Spring11-PU_S1_START311_V1G1-v1         18.2       VV        WZ
-#ZZtoAnything_TuneZ2_7TeV-pythia6-tauola_Spring11-PU_S1_START311_V1G1-v1         5.9        VV        ZZ
+WZtoAnything_TuneZ2_7TeV-pythia6-tauola_Spring11-PU_S1_START311_V1G1-v1         18.2       VV        WZ
+ZZtoAnything_TuneZ2_7TeV-pythia6-tauola_Spring11-PU_S1_START311_V1G1-v1         5.9        VV        ZZ
 ##
 #QCD_Pt-20_MuEnrichedPt-15_TuneZ2_7TeV-pythia6_Fall10-START38_V12-v1           8.47e4   QCD     QCDmu  
 #QCD_Pt-20to30_BCtoE_TuneZ2_7TeV-pythia6_Fall10-START38_V12-v1                 1.32e5   QCD     QCDBC
@@ -131,12 +131,12 @@ DYJetsToLL_TuneD6T_M-50_7TeV-madgraph-tauola_Spring11-PU_S1_START311_V1G1-v1    
 ##              TauNu - LNu     (0.1075+0.1057)*(0.1125)*2
 ##              TauNu - TauNu   (0.1125)*(0.1125)
 ##              LNu - LNu       (0.1075+0.1057)*(0.1075+0.1057)
-GluGluToHToWWToLNuTauNu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1  1.141e-01           ggH120
-GluGluToHToWWTo2Tau2Nu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1   3.010e-02           ggH120
-GluGluToHToWWTo2L2Nu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   1.081e-01           ggH120
-VBF_HToWWToLNuTauNu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   8.705e-03           qqH120
-VBF_HToWWTo2Tau2Nu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   2.297e-03           qqH120
-VBF_HToWWTo2L2Nu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   8.2485e-03          qqH120
+#GluGluToHToWWToLNuTauNu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1  1.141e-01           ggH120
+#GluGluToHToWWTo2Tau2Nu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1   3.010e-02           ggH120
+#GluGluToHToWWTo2L2Nu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   1.081e-01           ggH120
+#VBF_HToWWToLNuTauNu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   8.705e-03           qqH120
+#VBF_HToWWTo2Tau2Nu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   2.297e-03           qqH120
+#VBF_HToWWTo2L2Nu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   8.2485e-03          qqH120
 
 
 
@@ -150,12 +150,12 @@ VBF_HToWWTo2L2Nu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   8
 ##              TauNu - TauNu   (0.1125)*(0.1125)
 ##              LNu - LNu       (0.1075+0.1057)*(0.1075+0.1057)
 
-GluGluToHToWWToLNuTauNu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1  0.206588          ggH130
-GluGluToHToWWTo2Tau2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1   0.0545054         ggH130
-GluGluToHToWWTo2L2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.195753          ggH130
-VBF_HToWWToLNuTauNu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.016884          qqH130
-VBF_HToWWTo2Tau2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00445462        qqH130
-VBF_HToWWTo2L2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.0159985         qqH130
+#GluGluToHToWWToLNuTauNu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1  0.206588          ggH130
+#GluGluToHToWWTo2Tau2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1   0.0545054         ggH130
+#GluGluToHToWWTo2L2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.195753          ggH130
+#VBF_HToWWToLNuTauNu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.016884          qqH130
+#VBF_HToWWTo2Tau2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00445462        qqH130
+#VBF_HToWWTo2L2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.0159985         qqH130
 
 
 
@@ -178,12 +178,12 @@ VBF_HToWWTo2L2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0
 ## ggH 10.50        6.99e-01
 ## qqH 0.9617       6.99e-01
 #
-GluGluToHToWWToLNuTauNu_M-150_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	0.352076           ggH150
-GluGluToHToWWTo2Tau2Nu_M-150_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	0.0928905          ggH150
-GluGluToHToWWTo2L2Nu_M-150_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.333611           ggH150
-VBF_HToWWToLNuTauNu_M-150_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0322468          qqH150
-VBF_HToWWTo2Tau2Nu_M-150_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.00850789         qqH150
-VBF_HToWWTo2L2Nu_M-150_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0305556          qqH150
+#GluGluToHToWWToLNuTauNu_M-150_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	0.352076           ggH150
+#GluGluToHToWWTo2Tau2Nu_M-150_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	0.0928905          ggH150
+#GluGluToHToWWTo2L2Nu_M-150_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.333611           ggH150
+#VBF_HToWWToLNuTauNu_M-150_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0322468          qqH150
+#VBF_HToWWTo2Tau2Nu_M-150_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.00850789         qqH150
+#VBF_HToWWTo2L2Nu_M-150_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0305556          qqH150
 
 
 
@@ -206,12 +206,12 @@ VBF_HToWWTo2L2Nu_M-160_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	  0.
 ## qqH 0.8173      9.65e-01
 #
 
-GluGluToHToWWToLNuTauNu_M-170_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 0.357784            ggH170
-GluGluToHToWWTo2Tau2Nu_M-170_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1  0.0943965           ggH170
-GluGluToHToWWTo2L2Nu_M-170_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	  0.33902             ggH170
-VBF_HToWWToLNuTauNu_M-170_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	  0.0378337           qqH170
-VBF_HToWWTo2Tau2Nu_M-170_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	  0.00998191          qqH170
-VBF_HToWWTo2L2Nu_M-170_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	  0.0358495           qqH170
+#GluGluToHToWWToLNuTauNu_M-170_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 0.357784            ggH170
+#GluGluToHToWWTo2Tau2Nu_M-170_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1  0.0943965           ggH170
+#GluGluToHToWWTo2L2Nu_M-170_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	  0.33902             ggH170
+#VBF_HToWWToLNuTauNu_M-170_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	  0.0378337           qqH170
+#VBF_HToWWTo2Tau2Nu_M-170_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	  0.00998191          qqH170
+#VBF_HToWWTo2L2Nu_M-170_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	  0.0358495           qqH170
 
 
 ### Mass 180 ###
@@ -219,12 +219,12 @@ VBF_HToWWTo2L2Nu_M-170_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	  0.
 ## ggH 6.739        9.32e-01
 ## qqH 0.7480       9.32e-01
 #
-GluGluToHToWWToLNuTauNu_M-180_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1  0.301287           ggH180
-GluGluToHToWWTo2Tau2Nu_M-180_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1   0.0794907          ggH180
-GluGluToHToWWTo2L2Nu_M-180_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.285487           ggH180
-VBF_HToWWToLNuTauNu_M-180_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.0334416          qqH180
-VBF_HToWWTo2Tau2Nu_M-180_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00882313         qqH180
-VBF_HToWWTo2L2Nu_M-180_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.0316878          qqH180
+#GluGluToHToWWToLNuTauNu_M-180_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1  0.301287           ggH180
+#GluGluToHToWWTo2Tau2Nu_M-180_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1   0.0794907          ggH180
+#GluGluToHToWWTo2L2Nu_M-180_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.285487           ggH180
+#VBF_HToWWToLNuTauNu_M-180_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.0334416          qqH180
+#VBF_HToWWTo2Tau2Nu_M-180_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00882313         qqH180
+#VBF_HToWWTo2L2Nu_M-180_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.0316878          qqH180
 
 
 
@@ -233,12 +233,12 @@ VBF_HToWWTo2L2Nu_M-180_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0
 ## ggH 5.896        7.86e-01
 ## qqH 0.6925       7.86e-01
 #
-GluGluToHToWWToLNuTauNu_M-190_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1  0.222305           ggH190
-GluGluToHToWWTo2Tau2Nu_M-190_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1   0.0586523          ggH190
-GluGluToHToWWTo2L2Nu_M-190_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.210647           ggH190
-VBF_HToWWToLNuTauNu_M-190_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.0261103          qqH190
-VBF_HToWWTo2Tau2Nu_M-190_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00688886         qqH190
-VBF_HToWWTo2L2Nu_M-190_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.024741           qqH190
+#GluGluToHToWWToLNuTauNu_M-190_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1  0.222305           ggH190
+#GluGluToHToWWTo2Tau2Nu_M-190_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1   0.0586523          ggH190
+#GluGluToHToWWTo2L2Nu_M-190_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.210647           ggH190
+#VBF_HToWWToLNuTauNu_M-190_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.0261103          qqH190
+#VBF_HToWWTo2Tau2Nu_M-190_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00688886         qqH190
+#VBF_HToWWTo2L2Nu_M-190_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.024741           qqH190
 
 
 
@@ -247,12 +247,12 @@ VBF_HToWWTo2L2Nu_M-190_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0
 ## ggH 5.249        7.41e-01
 ## qqH 0.6371       7.41e-01
 #
-GluGluToHToWWToLNuTauNu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	0.18658           ggH200
-GluGluToHToWWTo2Tau2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0492266         ggH200
-GluGluToHToWWTo2L2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.176795          ggH200
-VBF_HToWWToLNuTauNu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0226462         qqH200
-VBF_HToWWTo2Tau2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0059749         qqH200
-VBF_HToWWTo2L2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0214585         qqH200
+#GluGluToHToWWToLNuTauNu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	0.18658           ggH200
+#GluGluToHToWWTo2Tau2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0492266         ggH200
+#GluGluToHToWWTo2L2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.176795          ggH200
+#VBF_HToWWToLNuTauNu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0226462         qqH200
+#VBF_HToWWTo2Tau2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0059749         qqH200
+#VBF_HToWWTo2L2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0214585         qqH200
 
 
 
@@ -262,12 +262,12 @@ VBF_HToWWTo2L2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	    
 ## ggH 3.312        7.01e-01
 ## qqH 0.4304       7.01e-01
 #
-GluGluToHToWWToLNuTauNu_M-250_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	0.111373           ggH250
-GluGluToHToWWTo2Tau2Nu_M-250_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0293842          ggH250
-GluGluToHToWWTo2L2Nu_M-250_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.105532           ggH250
-VBF_HToWWToLNuTauNu_M-250_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0145941          qqH250
-VBF_HToWWTo2Tau2Nu_M-250_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.00385046         qqH250
-VBF_HToWWTo2L2Nu_M-250_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0138287          qqH250
+#GluGluToHToWWToLNuTauNu_M-250_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	0.111373           ggH250
+#GluGluToHToWWTo2Tau2Nu_M-250_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0293842          ggH250
+#GluGluToHToWWTo2L2Nu_M-250_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.105532           ggH250
+#VBF_HToWWToLNuTauNu_M-250_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0145941          qqH250
+#VBF_HToWWTo2Tau2Nu_M-250_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.00385046         qqH250
+#VBF_HToWWTo2L2Nu_M-250_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0138287          qqH250
 
 
 
@@ -281,12 +281,12 @@ VBF_HToWWTo2L2Nu_M-250_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	    
 ## ggH 2.035        5.82e-01 
 ## qqH 0.1619 	    5.82e-01 
 #
-GluGluToHToWWToLNuTauNu_M-400_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0568142           ggH400
-GluGluToHToWWTo2Tau2Nu_M-400_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0149897           ggH400
-GluGluToHToWWTo2L2Nu_M-400_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0538346           ggH400
-VBF_HToWWToLNuTauNu_M-400_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.00452001          qqH400
-VBF_HToWWTo2Tau2Nu_M-400_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.00119255          qqH400
-VBF_HToWWTo2L2Nu_M-400_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.00428296          qqH400
+#GluGluToHToWWToLNuTauNu_M-400_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0568142           ggH400
+#GluGluToHToWWTo2Tau2Nu_M-400_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0149897           ggH400
+#GluGluToHToWWTo2L2Nu_M-400_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0538346           ggH400
+#VBF_HToWWToLNuTauNu_M-400_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.00452001          qqH400
+#VBF_HToWWTo2Tau2Nu_M-400_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.00119255          qqH400
+#VBF_HToWWTo2L2Nu_M-400_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.00428296          qqH400
 
 
 
@@ -296,12 +296,12 @@ VBF_HToWWTo2L2Nu_M-400_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	    
 ## ggH 0.3275        5.58e-01
 ## qqH 0.05763       5.58e-01
 #
-GluGluToHToWWToLNuTauNu_M-600_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00876628           ggH600
-GluGluToHToWWTo2Tau2Nu_M-600_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00231287           ggH600
-GluGluToHToWWTo2L2Nu_M-600_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00830654           ggH600
-VBF_HToWWToLNuTauNu_M-600_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.0015426            qqH600
-VBF_HToWWTo2Tau2Nu_M-600_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1          0.000406994          qqH600
-VBF_HToWWTo2L2Nu_M-600_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1            0.0014617            qqH600
+#GluGluToHToWWToLNuTauNu_M-600_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00876628           ggH600
+#GluGluToHToWWTo2Tau2Nu_M-600_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00231287           ggH600
+#GluGluToHToWWTo2L2Nu_M-600_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00830654           ggH600
+#VBF_HToWWToLNuTauNu_M-600_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.0015426            qqH600
+#VBF_HToWWTo2Tau2Nu_M-600_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1          0.000406994          qqH600
+#VBF_HToWWTo2L2Nu_M-600_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1            0.0014617            qqH600
 ##
 
 
