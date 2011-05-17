@@ -62,6 +62,19 @@ int main(int argc, char** argv)
  std::cout << " " << std::endl; 
  std::cout << " " << std::endl;
  
+ char normal[] = { 0x1b, '[', '0', ';', '3', '9', 'm', 0 };
+ char black[] = { 0x1b, '[', '0', ';', '3', '0', 'm', 0 };
+ char red[] = { 0x1b, '[', '0', ';', '3', '1', 'm', 0 };
+ char green[] = { 0x1b, '[', '0', ';', '3', '2', 'm', 0 };
+ char yellow[] = { 0x1b, '[', '0', ';', '3', '3', 'm', 0 };
+ char blue[] = { 0x1b, '[', '0', ';', '3', '4', 'm', 0 };
+ char purple[] = { 0x1b, '[', '0', ';', '3', '5', 'm', 0 };
+ char cyan[] = { 0x1b, '[', '0', ';', '3', '6', 'm', 0 };
+ char Lgray[] = { 0x1b, '[', '0', ';', '3', '7', 'm', 0 };
+ char Dgray[] = { 0x1b, '[', '0', ';', '3', '8', 'm', 0 };
+ char Bred[] = { 0x1b, '[', '1', ';', '3', '1', 'm', 0 };
+ //for bold colors, just change the 0 after the [ to a 1
+ 
 
  EColor vColor[1000] = {
   kGreen,
@@ -155,6 +168,12 @@ int main(int argc, char** argv)
  TH1F* histoRegions[100][20];
  TH1F* histoRegions_temp[100][20];
  TH1F* histoRegionsSumMC[20];
+ 
+ //  [iCut][iRegion]
+ TH1F* histoRegionsRatioAbsolute[20][30];
+ TH1F* histoRegionsRatio[20][30];
+ TH1F* histoRegionsRatio_wrt_DATA[20][30];
+ TH1F* histoRegionsRatio_Purity[20][30];
  
  
  //  [iName][iCut][iRegion]
@@ -306,6 +325,7 @@ int main(int argc, char** argv)
  }
  
  if (debug) std::cout << " Cut size = " << vCut.size() << " ~~ " << std::endl;
+ std::cout.precision (2) ;
  
  ///==== cicle on selections ====
  for (uint iCut = 0; iCut<vCut.size(); iCut++){
@@ -350,7 +370,7 @@ int main(int argc, char** argv)
 //     std::cout << " treeJetLepVect[iSample] -> GetEntries(CutExtended) = " << treeJetLepVect[iSample] -> GetEntries(CutExtended) << std::endl;
     
     double error = 0;
-    int num = histoDebug->IntegralAndError(0,histoDebug->GetNbinsX()+1,error);
+    double num = histoDebug->IntegralAndError(0,histoDebug->GetNbinsX()+1,error);
      
     histoDebug -> Reset();
     
@@ -386,6 +406,7 @@ int main(int argc, char** argv)
       if (debug) std::cout << " histoRegions_temp[" << iSample << "][" << iCut << "] = " << histoRegions_temp[iSample][iCut] -> GetEntries() << std::endl;
      }
     }
+    std::cout << "Processing: " << blue << (((double) iCut)/vCut.size())*100. << "% "  << normal <<  " -- " <<  blue << (((double) numberOfSamples - iSample)/(numberOfSamples+1))*100. << "% \r"  << normal << std::flush;   
    } ///==== end cicle on samples ====
   } ///==== calculate Data Driven A/B ratio (end) ====
  } ///==== end cicle on selections ====
@@ -617,7 +638,140 @@ int main(int argc, char** argv)
  
  LumiSyst = 0; ///---- bug fix
  
+ std::cout << std::endl;
  
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+   TString nameTHRegionsRatio = Form("%d_%d_Ratio",iCut,iRegion);    
+   histoRegionsRatio[iCut][iRegion] = new TH1F(nameTHRegionsRatio,nameTHRegionsRatio,reduced_name_samples.size()+1,0, reduced_name_samples.size()+1);
+   
+   nameTHRegionsRatio = Form("%d_%d_Absolute",iCut,iRegion);    
+   histoRegionsRatioAbsolute[iCut][iRegion] = new TH1F(nameTHRegionsRatio,nameTHRegionsRatio,reduced_name_samples.size()+1,0, reduced_name_samples.size()+1);
+   
+   
+   double ratio_0;
+   double ratio;
+   double error;
+   double num;
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){ 
+    ratio_0 = histo[iName][iCut][0]->Integral();
+    ratio_0 = (ratio_0 ? ratio_0 : 1);
+    
+    error = 0;
+    num = histo[iName][iCut][iRegion]->IntegralAndError(0,histo[iName][iCut][iRegion]->GetNbinsX()+1,error);
+
+    histoRegionsRatioAbsolute[iCut][iRegion] -> SetBinContent(iName+1,num); 
+    histoRegionsRatioAbsolute[iCut][iRegion] -> SetBinError(iName+1,error); 
+    histoRegionsRatioAbsolute[iCut][iRegion] -> GetXaxis() -> SetBinLabel(iName+1,reduced_name_samples.at(iName).c_str());
+    
+    ratio = num / ratio_0;
+    error /= ratio_0;
+    histoRegionsRatio[iCut][iRegion] -> SetBinContent(iName+1,ratio); 
+    histoRegionsRatio[iCut][iRegion] -> SetBinError(iName+1,error); 
+    histoRegionsRatio[iCut][iRegion] -> GetXaxis() -> SetBinLabel(iName+1,reduced_name_samples.at(iName).c_str());
+    
+   }
+   ///---- all sample together ----
+   ratio_0 = histoSumMC[iCut][0] ->Integral();
+   ratio_0 = (ratio_0 ? ratio_0 : 1);
+   error = 0;
+   num = histoSumMC[iCut][iRegion]->IntegralAndError(0,histoSumMC[iCut][iRegion]->GetNbinsX()+1,error);   
+   
+   if (debug) { std::cout << " [" << iRegion << "] num / R0 = " << num << " / " << ratio_0 << std::endl; }
+   
+   histoRegionsRatioAbsolute[iCut][iRegion] -> SetBinContent(reduced_name_samples.size()+1,num); 
+   histoRegionsRatioAbsolute[iCut][iRegion] -> SetBinError(reduced_name_samples.size()+1,error); 
+   histoRegionsRatioAbsolute[iCut][iRegion] -> GetXaxis() -> SetBinLabel(reduced_name_samples.size()+1,"all");
+   histoRegionsRatioAbsolute[iCut][iRegion] -> GetYaxis() -> SetTitle("numEvents");
+   
+   ratio = num / ratio_0;
+   error /= ratio_0;
+   histoRegionsRatio[iCut][iRegion]->SetBinContent(reduced_name_samples.size()+1,ratio); 
+   histoRegionsRatio[iCut][iRegion]->SetBinError(reduced_name_samples.size()+1,error); 
+   histoRegionsRatio[iCut][iRegion] -> GetXaxis() -> SetBinLabel(reduced_name_samples.size()+1,"all");
+   histoRegionsRatio[iCut][iRegion] -> GetYaxis() -> SetTitle("MC / MC_{Region 0}");
+  }
+ }
+ 
+ ///==== ratio with respect to DATA ====
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+   TString nameTHRegionsRatio = Form("%d_%d_Ratio_wrt_DATA",iCut,iRegion);    
+   histoRegionsRatio_wrt_DATA[iCut][iRegion] = new TH1F(nameTHRegionsRatio,nameTHRegionsRatio,reduced_name_samples.size()+1,0, reduced_name_samples.size()+1);
+   
+   double ratio_0;
+   double ratio;
+   double error;
+   double num;
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){ 
+    ratio_0 = histo[numDATA][iCut][iRegion]->Integral();
+    ratio_0 = (ratio_0 ? ratio_0 : 1);
+    
+    error = 0;
+    num = histo[iName][iCut][iRegion]->IntegralAndError(0,histo[iName][iCut][iRegion]->GetNbinsX()+1,error);
+    
+    ratio = num / ratio_0;
+    error /= ratio_0;
+    histoRegionsRatio_wrt_DATA[iCut][iRegion] -> SetBinContent(iName+1,ratio); 
+    histoRegionsRatio_wrt_DATA[iCut][iRegion] -> SetBinError(iName+1,error); 
+    histoRegionsRatio_wrt_DATA[iCut][iRegion] -> GetXaxis() -> SetBinLabel(iName+1,reduced_name_samples.at(iName).c_str());
+   }
+   ///---- all sample together ----
+   double error_0;
+   ratio_0 = histo[numDATA][iCut][iRegion]->IntegralAndError(0,histo[numDATA][iCut][iRegion]->GetNbinsX()+1,error_0);   
+   ratio_0 = (ratio_0 ? ratio_0 : 1);
+   error = 0;
+   num = histoSumMC[iCut][iRegion]->IntegralAndError(0,histoSumMC[iCut][iRegion]->GetNbinsX()+1,error);   
+   
+   if (debug) { std::cout << " [" << iRegion << "] num / R0 = " << num << " / " << ratio_0 << std::endl; }
+   ratio = num / ratio_0;
+   error = sqrt(error_0*error_0/ratio_0/ratio_0 + error*error/num/num) * ratio * ratio;
+//    error /= ratio_0;
+   histoRegionsRatio_wrt_DATA[iCut][iRegion]->SetBinContent(reduced_name_samples.size()+1,ratio); 
+   histoRegionsRatio_wrt_DATA[iCut][iRegion]->SetBinError(reduced_name_samples.size()+1,error); 
+   histoRegionsRatio_wrt_DATA[iCut][iRegion] -> GetXaxis() -> SetBinLabel(reduced_name_samples.size()+1,"all");
+   histoRegionsRatio_wrt_DATA[iCut][iRegion] -> GetYaxis() -> SetTitle("MC / DATA");
+  }
+ }
+ 
+ ///==== purity ====
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+   TString nameTHRegionsRatio = Form("%d_%d_Ratio_Purity",iCut,iRegion);    
+   histoRegionsRatio_Purity[iCut][iRegion] = new TH1F(nameTHRegionsRatio,nameTHRegionsRatio,reduced_name_samples.size()+1,0, reduced_name_samples.size()+1);
+   
+   double ratio_0;
+   double ratio;
+   double error;
+   double num;
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){ 
+    ratio_0 = histoSumMC[iCut][iRegion]->Integral();
+    ratio_0 = (ratio_0 ? ratio_0 : 1);
+    
+    error = 0;
+    num = histo[iName][iCut][iRegion]->IntegralAndError(0,histo[iName][iCut][iRegion]->GetNbinsX()+1,error);
+    
+    ratio = num / ratio_0;
+    error /= ratio_0;
+    histoRegionsRatio_Purity[iCut][iRegion] -> SetBinContent(iName+1,ratio); 
+    histoRegionsRatio_Purity[iCut][iRegion] -> SetBinError(iName+1,error); 
+    histoRegionsRatio_Purity[iCut][iRegion] -> GetXaxis() -> SetBinLabel(iName+1,reduced_name_samples.at(iName).c_str());
+   }
+   ///---- all sample together ----
+   ratio_0 = histoSumMC[iCut][iRegion] ->Integral();
+   ratio_0 = (ratio_0 ? ratio_0 : 1);
+   error = 0;
+   num = histoSumMC[iCut][iRegion]->IntegralAndError(0,histoSumMC[iCut][iRegion]->GetNbinsX()+1,error);   
+   
+   if (debug) { std::cout << " [" << iRegion << "] num / R0 = " << num << " / " << ratio_0 << std::endl; }
+   ratio = num / ratio_0;
+   error /= ratio_0;
+   histoRegionsRatio_Purity[iCut][iRegion]->SetBinContent(reduced_name_samples.size()+1,ratio); 
+   histoRegionsRatio_Purity[iCut][iRegion]->SetBinError(reduced_name_samples.size()+1,error); 
+   histoRegionsRatio_Purity[iCut][iRegion] -> GetXaxis() -> SetBinLabel(reduced_name_samples.size()+1,"all");
+   histoRegionsRatio_Purity[iCut][iRegion] -> GetYaxis() -> SetTitle("MC / MC_{all}");
+  }
+ }
  
   
  //      [iCut][iRegion] 
@@ -635,6 +789,88 @@ int main(int argc, char** argv)
  
  TCanvas* cCompareCut[100];
  TCanvas* cCompareRegion[100];
+ 
+ 
+ ///==== results ratio between regions ====
+ //      [iCut][iRegion] 
+ TCanvas* cCompareRegionRatio[100][10]; 
+ TCanvas* cCompareRegionRatioAbsolute[100][10]; 
+ TCanvas* cCompareRegionRatio_wrt_DATA[100][10]; 
+ TCanvas* cCompareRegionRatio_Purity[100][10]; 
+ 
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+   TString nameCanvas = Form("%d_%d_Ratio_Canvas",iRegion,iCut);
+   cCompareRegionRatio[iCut][iRegion] = new TCanvas (nameCanvas,nameCanvas,500,500);
+   
+   histoRegionsRatio[iCut][iRegion]->SetMarkerStyle(20);
+   histoRegionsRatio[iCut][iRegion]->SetMarkerSize(1);
+   histoRegionsRatio[iCut][iRegion]->SetMarkerColor(kRed);
+   histoRegionsRatio[iCut][iRegion]->SetLineColor(kRed);
+   histoRegionsRatio[iCut][iRegion]->SetFillColor(kRed);
+   histoRegionsRatio[iCut][iRegion]->SetLineWidth(2);
+   histoRegionsRatio[iCut][iRegion]->SetFillStyle(3001);  
+   
+   histoRegionsRatio[iCut][iRegion] -> Draw("EP");
+   gPad->SetLeftMargin(0.17);
+   gPad->SetGrid();
+   
+   
+   
+   nameCanvas = Form("%d_%d_Absolute_Canvas",iRegion,iCut);
+   cCompareRegionRatioAbsolute[iCut][iRegion] = new TCanvas (nameCanvas,nameCanvas,500,500);
+   
+   histoRegionsRatioAbsolute[iCut][iRegion]->SetMarkerStyle(20);
+   histoRegionsRatioAbsolute[iCut][iRegion]->SetMarkerSize(1);
+   histoRegionsRatioAbsolute[iCut][iRegion]->SetMarkerColor(kRed);
+   histoRegionsRatioAbsolute[iCut][iRegion]->SetLineColor(kRed);
+   histoRegionsRatioAbsolute[iCut][iRegion]->SetFillColor(kRed);
+   histoRegionsRatioAbsolute[iCut][iRegion]->SetLineWidth(2);
+   histoRegionsRatioAbsolute[iCut][iRegion]->SetFillStyle(3001);  
+   
+   histoRegionsRatioAbsolute[iCut][iRegion] -> Draw("EP");
+   gPad->SetLeftMargin(0.17);
+   gPad->SetGrid();
+   gPad->SetLogy();
+   
+   
+   
+   nameCanvas = Form("%d_%d_Ratio_wrt_DATA_Canvas",iRegion,iCut);
+   cCompareRegionRatio_wrt_DATA[iCut][iRegion] = new TCanvas (nameCanvas,nameCanvas,500,500);
+   
+   histoRegionsRatio_wrt_DATA[iCut][iRegion]->SetMarkerStyle(20);
+   histoRegionsRatio_wrt_DATA[iCut][iRegion]->SetMarkerSize(1);
+   histoRegionsRatio_wrt_DATA[iCut][iRegion]->SetMarkerColor(kBlue);
+   histoRegionsRatio_wrt_DATA[iCut][iRegion]->SetLineColor(kBlue);
+   histoRegionsRatio_wrt_DATA[iCut][iRegion]->SetFillColor(kBlue);
+   histoRegionsRatio_wrt_DATA[iCut][iRegion]->SetLineWidth(2);
+   histoRegionsRatio_wrt_DATA[iCut][iRegion]->SetFillStyle(3001);  
+   
+   histoRegionsRatio_wrt_DATA[iCut][iRegion] -> Draw("EP");
+   gPad->SetLeftMargin(0.17);
+   gPad->SetGrid();
+   
+   
+   nameCanvas = Form("%d_%d_Ratio_Purity_Canvas",iRegion,iCut);
+   cCompareRegionRatio_Purity[iCut][iRegion] = new TCanvas (nameCanvas,nameCanvas,500,500);
+   
+   histoRegionsRatio_Purity[iCut][iRegion]->SetMarkerStyle(20);
+   histoRegionsRatio_Purity[iCut][iRegion]->SetMarkerSize(1);
+   histoRegionsRatio_Purity[iCut][iRegion]->SetMarkerColor(kBlue);
+   histoRegionsRatio_Purity[iCut][iRegion]->SetLineColor(kBlue);
+   histoRegionsRatio_Purity[iCut][iRegion]->SetFillColor(kBlue);
+   histoRegionsRatio_Purity[iCut][iRegion]->SetLineWidth(2);
+   histoRegionsRatio_Purity[iCut][iRegion]->SetFillStyle(3001);  
+   
+   histoRegionsRatio_Purity[iCut][iRegion] -> Draw("EP");
+   gPad->SetLeftMargin(0.17);
+   gPad->SetGrid();
+   
+  }
+ }
+   
+   
+ 
  
  for (uint iCut = 0; iCut<vCut.size(); iCut++){
   TString nameCanvas = Form("%d_Cut_Canvas",iCut);
@@ -735,6 +971,7 @@ int main(int argc, char** argv)
   
   cCompareRegionsCutPull[iCut] -> cd(2);
   hPullRegions[iCut]->Draw("EP");
+  gPad->SetLeftMargin(0.17);
   gPad->SetGrid();
    
   cCompareRegionsCut[iCut] -> cd();
@@ -859,6 +1096,49 @@ int main(int argc, char** argv)
  cTrend -> Write();
  cTrendPull -> Write();
  
+ 
+ outFile.cd();
+ outFile.mkdir("Ratio");
+ outFile.cd("Ratio");
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+   cCompareRegionRatio[iCut][iRegion] -> Write();
+  }
+ }
+ 
+ 
+ outFile.cd();
+ outFile.mkdir("Absolute");
+ outFile.cd("Absolute");
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+   cCompareRegionRatioAbsolute[iCut][iRegion] -> Write();
+  }
+ }
+ 
+ 
+ 
+ outFile.cd();
+ outFile.mkdir("RatioWrtDATA");
+ outFile.cd("RatioWrtDATA");
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+   cCompareRegionRatio_wrt_DATA[iCut][iRegion] -> Write();
+  }
+ }
+ 
+ outFile.cd();
+ outFile.mkdir("RatioPurity");
+ outFile.cd("RatioPurity");
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+   cCompareRegionRatio_Purity[iCut][iRegion] -> Write();
+  }
+ }
+ 
+ 
+
+ outFile.cd();
  outFile.mkdir("Trend");
  outFile.cd("Trend");
  for (uint iCut = 0; iCut<vCut.size(); iCut++){
@@ -929,6 +1209,164 @@ int main(int argc, char** argv)
  }
  
  leg->Write();
+ 
+ 
+ 
+ 
+ 
+ ///==== draw on screen ====
+ 
+ 
+ 
+ 
+ 
+ std::cout.precision (2) ;
+ std::cout.unsetf(std::ios::scientific);
+ std::cout << std::endl;
+ std::cout << " *********************************** " << std::endl;
+ 
+ for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+  std::cout << " *********************************** " << std::endl;
+  std::cout << "Region = " << iRegion << std::endl;
+  
+  
+  for (uint iCut = 0; iCut<vCut.size(); iCut++){
+   
+   std::cout << " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ " << std::endl;
+   std::cout << " iCut = " << iCut << std::endl;
+   std::cout << std::setw (12) << "sample";
+   std::cout << " | " << std::setw (8) <<  "ratio";
+   std::cout << " [" << std::setw (8) <<  "XXX";
+   std::cout << " ]";
+   std::cout << " | " << std::setw (8) <<  "R DATA";
+   std::cout << " [" << std::setw (8) <<  "XXX";
+   std::cout << " ]";
+   std::cout << " | " << std::setw (8) <<  "Purity";
+   std::cout << " [" << std::setw (8) <<  "XXX";
+   std::cout << " ]";
+   std::cout << std::endl;
+   
+   for (int iBin = 1; iBin <= histoRegionsRatio[iCut][iRegion]->GetNbinsX(); iBin++) {
+//     std::cout << std::setw (12) << (reduced_name_samples.size()>(iBin-1) ? reduced_name_samples.at(iBin-1) : "   ") ;
+    std::cout << std::setw (12) << histoRegionsRatio[iCut][iRegion] -> GetXaxis() -> GetBinLabel(iBin) ;
+    std::cout << " | " << red << std::setw (8) <<  histoRegionsRatio[iCut][iRegion]->GetBinContent(iBin);
+    std::cout << normal << " [" << std::setw (8) <<   histoRegionsRatio[iCut][iRegion]->GetBinError(iBin);
+    std::cout << " ]";
+    
+    std::cout << " | " << red << std::setw (8) <<  histoRegionsRatio_wrt_DATA[iCut][iRegion]->GetBinContent(iBin);
+    std::cout << normal << " [" << std::setw (8) <<   histoRegionsRatio_wrt_DATA[iCut][iRegion]->GetBinError(iBin);
+    std::cout << " ]";
+    
+    std::cout << " | " << red << std::setw (8) <<  histoRegionsRatio_Purity[iCut][iRegion]->GetBinContent(iBin);
+    std::cout << normal << " [" << std::setw (8) <<   histoRegionsRatio_Purity[iCut][iRegion]->GetBinError(iBin);
+    std::cout << " ]";
+    
+    std::cout << std::endl;
+   }
+  }
+ }
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ std::cout.precision (2) ;
+ std::cout.unsetf(std::ios::scientific);
+ std::cout << std::endl;
+ std::cout << " *********************************** " << std::endl;
+ 
+ for (int iBin = 1; iBin <= histoRegionsRatio[0][0]->GetNbinsX(); iBin++) {
+  std::cout << " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ " << std::endl;
+  std::cout << std::setw (12) << histoRegionsRatio[0][0] -> GetXaxis() -> GetBinLabel(iBin)  << std::endl;
+  
+ for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+  std::cout << " *********************************** " << std::endl;
+  std::cout << "Region = " << iRegion << std::endl;
+  std::cout << std::setw (12) << "iCut";
+  std::cout << " | " << std::setw (8) <<  "ratio";
+  std::cout << " [" << std::setw (8) <<  "XXX";
+  std::cout << " ]";
+  std::cout << " | " << std::setw (8) <<  "R DATA";
+  std::cout << " [" << std::setw (8) <<  "XXX";
+  std::cout << " ]";
+  std::cout << " | " << std::setw (8) <<  "Purity";
+  std::cout << " [" << std::setw (8) <<  "XXX";
+  std::cout << " ]";
+  std::cout << " | " << std::setw (8) <<  "numEvnt";
+  std::cout << " [" << std::setw (8) <<  "XXX";
+  std::cout << " ]";
+  std::cout << " | " << std::setw (8) <<  "InferA";
+  std::cout << " [" << std::setw (8) <<  "XXX";
+  std::cout << " ]";
+  std::cout << " = " << std::setw (8) <<  "AMC";
+  std::cout << " [" << std::setw (8) <<  "XXX";
+  std::cout << " ]";
+  std::cout << " / " << std::setw (8) <<  "BMC";
+  std::cout << " [" << std::setw (8) <<  "XXX";
+  std::cout << " ]";
+  std::cout << " * " << std::setw (8) <<  "BDATA";
+  std::cout << " [" << std::setw (8) <<  "XXX";
+  std::cout << " ]";
+  std::cout << " = " << std::setw (8) <<  "InferA";
+  std::cout << " [" << std::setw (8) <<  "XXX";
+  std::cout << " ]";
+  std::cout << " ~ " << std::setw (8) <<  "InferA"; //---- backgroudn subtraction
+  std::cout << " [" << std::setw (8) <<  "XXX";
+  std::cout << " ]";
+  std::cout << std::endl;
+  
+  
+  for (uint iCut = 0; iCut<vCut.size(); iCut++){
+
+    //     std::cout << std::setw (12) << (reduced_name_samples.size()>(iBin-1) ? reduced_name_samples.at(iBin-1) : "   ") ;
+    std::cout << std::setw (12) << iCut ;
+    std::cout << " | " << blue << std::setw (8) <<  histoRegionsRatio[iCut][iRegion]->GetBinContent(iBin);
+    std::cout << normal << " [" << std::setw (8) <<   histoRegionsRatio[iCut][iRegion]->GetBinError(iBin);
+    std::cout << " ]";
+    
+    std::cout << " | " << blue << std::setw (8) <<  histoRegionsRatio_wrt_DATA[iCut][iRegion]->GetBinContent(iBin);
+    std::cout << normal << " [" << std::setw (8) <<   histoRegionsRatio_wrt_DATA[iCut][iRegion]->GetBinError(iBin);
+    std::cout << " ]";
+    
+    std::cout << " | " << blue << std::setw (8) <<  histoRegionsRatio_Purity[iCut][iRegion]->GetBinContent(iBin);
+    std::cout << normal << " [" << std::setw (8) <<   histoRegionsRatio_Purity[iCut][iRegion]->GetBinError(iBin);
+    std::cout << " ]";
+    
+    std::cout << " | " << blue << std::setw (8) <<  histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(iBin);
+    std::cout << normal << " [" << std::setw (8) <<   histoRegionsRatioAbsolute[iCut][iRegion]->GetBinError(iBin);
+    std::cout << " ]";
+    
+    std::cout << " | " << green << std::setw (8) <<  histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(iBin) / histoRegionsRatio_wrt_DATA[iCut][iRegion]->GetBinContent(iBin) / histoRegionsRatio[iCut][iRegion]->GetBinContent(iBin);
+    std::cout << normal << " [" << std::setw (8) <<  "XXX";
+    std::cout << " ]";
+    
+    
+    std::cout << " = " << red << std::setw (8) <<  histoRegionsRatioAbsolute[iCut][0]->GetBinContent(iBin);
+    std::cout << normal << " [" << std::setw (8) <<  histoRegionsRatioAbsolute[iCut][0]->GetBinError(iBin);
+    std::cout << " ]";
+    std::cout << " / " << red << std::setw (8) <<  histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(iBin);
+    std::cout << normal << " [" << std::setw (8) <<  histoRegionsRatioAbsolute[iCut][iRegion]->GetBinError(iBin);
+    std::cout << " ]";
+    std::cout << " * " << red << std::setw (8) <<  histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(numDATA+1);
+    std::cout << normal << " [" << std::setw (8) <<  histoRegionsRatioAbsolute[iCut][iRegion]->GetBinError(numDATA+1);
+    std::cout << " ]";
+    
+    std::cout << " = " << green << std::setw (8) <<  histoRegionsRatioAbsolute[iCut][0]->GetBinContent(iBin) / histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(iBin) * histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(numDATA+1);
+    std::cout << normal << " [" << std::setw (8) <<  sqrt( (histoRegionsRatioAbsolute[iCut][0]->GetBinError(iBin) * histoRegionsRatioAbsolute[iCut][0]->GetBinError(iBin) / histoRegionsRatioAbsolute[iCut][0]->GetBinContent(iBin) / histoRegionsRatioAbsolute[iCut][0]->GetBinContent(iBin)) + (histoRegionsRatioAbsolute[iCut][iRegion]->GetBinError(iBin) * histoRegionsRatioAbsolute[iCut][iRegion]->GetBinError(iBin) / histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(iBin) / histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(iBin)) + (histoRegionsRatioAbsolute[iCut][iRegion]->GetBinError(numDATA+1) * histoRegionsRatioAbsolute[iCut][iRegion]->GetBinError(numDATA+1) / histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(numDATA+1) / histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(numDATA+1))) * histoRegionsRatioAbsolute[iCut][0]->GetBinContent(iBin) / histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(iBin) * histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(numDATA+1);
+    std::cout << " ]";
+   
+    std::cout << " ~ " << purple << std::setw (8) <<  histoRegionsRatioAbsolute[iCut][0]->GetBinContent(iBin) / histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(iBin) * (histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(numDATA+1) - (histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(reduced_name_samples.size() - histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(iBin))));
+    std::cout << normal << " [" << std::setw (8) <<  sqrt( (histoRegionsRatioAbsolute[iCut][0]->GetBinError(iBin) * histoRegionsRatioAbsolute[iCut][0]->GetBinError(iBin) / histoRegionsRatioAbsolute[iCut][0]->GetBinContent(iBin) / histoRegionsRatioAbsolute[iCut][0]->GetBinContent(iBin)) + (histoRegionsRatioAbsolute[iCut][iRegion]->GetBinError(iBin) * histoRegionsRatioAbsolute[iCut][iRegion]->GetBinError(iBin) / histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(iBin) / histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(iBin)) + (histoRegionsRatioAbsolute[iCut][iRegion]->GetBinError(numDATA+1) * histoRegionsRatioAbsolute[iCut][iRegion]->GetBinError(numDATA+1) / histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(numDATA+1) / histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(numDATA+1))) * histoRegionsRatioAbsolute[iCut][0]->GetBinContent(iBin) / histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(iBin) * histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(numDATA+1);
+    std::cout << " ]";
+    
+    std::cout << std::endl;
+   }
+  }
+ }
  
 }
 
