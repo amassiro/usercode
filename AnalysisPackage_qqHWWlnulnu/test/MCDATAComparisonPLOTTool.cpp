@@ -65,7 +65,19 @@ int main(int argc, char** argv)
  std::cout << "                          _|                                                                                                     " << std::endl;
  std::cout << " " << std::endl;
  
-
+ char normal[] = { 0x1b, '[', '0', ';', '3', '9', 'm', 0 };
+ char black[] = { 0x1b, '[', '0', ';', '3', '0', 'm', 0 };
+ char red[] = { 0x1b, '[', '0', ';', '3', '1', 'm', 0 };
+ char green[] = { 0x1b, '[', '0', ';', '3', '2', 'm', 0 };
+ char yellow[] = { 0x1b, '[', '0', ';', '3', '3', 'm', 0 };
+ char blue[] = { 0x1b, '[', '0', ';', '3', '4', 'm', 0 };
+ char purple[] = { 0x1b, '[', '0', ';', '3', '5', 'm', 0 };
+ char cyan[] = { 0x1b, '[', '0', ';', '3', '6', 'm', 0 };
+ char Lgray[] = { 0x1b, '[', '0', ';', '3', '7', 'm', 0 };
+ char Dgray[] = { 0x1b, '[', '0', ';', '3', '8', 'm', 0 };
+ char Bred[] = { 0x1b, '[', '1', ';', '3', '1', 'm', 0 };
+ //for bold colors, just change the 0 after the [ to a 1
+ 
  EColor vColor[1000] = {
   kGreen,
   //kMagenta,(EColor) (kMagenta+1),(EColor) (kMagenta+2),
@@ -138,6 +150,17 @@ int main(int argc, char** argv)
  gROOT->ProcessLine(".L autoWeight.cxx");
  ///==== PU reweight (end) ====
  
+ ///==== save PU distribution in TH1F ====
+ TH1F* hPUMC   = new TH1F("hPUMC","hPUMC",PUMC.size(),0,PUMC.size());
+ TH1F* hPUDATA = new TH1F("hPUDATA","hPUDATA",PUDATA.size(),0,PUDATA.size());
+ TH1F* hPUWeight = new TH1F("hPUWeight","hPUWeight",PUDATA.size(),0,PUDATA.size());
+ 
+ for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
+  hPUMC     -> SetBinContent(itVPU+1,PUMC.at(itVPU) / sumPUMC);
+  hPUDATA   -> SetBinContent(itVPU+1,PUDATA.at(itVPU) / sumPUDATA);
+  hPUWeight -> SetBinContent(itVPU+1,PUDATA.at(itVPU) / PUMC.at(itVPU) * sumPUMC / sumPUDATA);
+ }
+ 
  
  
  TTree *treeEffVect[100];
@@ -146,17 +169,17 @@ int main(int argc, char** argv)
 
  
   //  [iCut][iVar] 
- TString* infoString[10][30];
- TLatex *infoLatex[10][30]; 
- TCanvas* ccCanvas[10][30];
- TCanvas* ccCanvasPull[10][30];
- TH1F* histoSumMC[10][30];
+ TString* infoString[20][30];
+ TLatex *infoLatex[20][30]; 
+ TCanvas* ccCanvas[20][30];
+ TCanvas* ccCanvasPull[20][30];
+ TH1F* histoSumMC[20][30];
  //  [iName][iCut][iVar]
- TH1F* histo[100][10][30];
- TH1F* histo_temp[100][10][30];
+ TH1F* histo[100][20][30];
+ TH1F* histo_temp[100][20][30];
 
  //  [iName][iCut]
- double numEvents[100][10];
+ double numEvents[100][30];
  
  char *nameSample[1000];
  char *nameHumanReadable[1000];
@@ -167,8 +190,7 @@ int main(int argc, char** argv)
  char nameFileIn[1000];
  sprintf(nameFileIn,"%s",fileSamples.c_str());
 
- int numberOfSamples = ReadFile(nameFileIn, nameSample, nameHumanReadable, xsectionName);
-
+ int numberOfSamples = ReadFile(nameFileIn, nameSample, nameHumanReadable, xsectionName); 
  
  ///==== list of variables to plot ====
  std::vector<double> vMin;
@@ -185,9 +207,23 @@ int main(int argc, char** argv)
  
  ///==== list of selections to perform (NOT sequential additive selections) ====
  std::string CutFile = gConfigParser -> readStringOption("Selections::CutFile");
- std::vector<std::string> vCut;
+
+ std::string CutHRFile = "";
+ try {
+  CutHRFile = gConfigParser -> readStringOption("Selections::CutHRFile");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
  
- std::cout << " nCuts = " << ReadFileCut(CutFile, vCut) << std::endl;
+ std::vector<std::string> vCut;
+ std::vector<std::string> vCutHR;
+ 
+ std::cout << " nCuts   = " << ReadFileCut(CutFile, vCut) << std::endl;
+ if (CutHRFile != "") {
+  std::cout << " nCutsHR = " << ReadFileCutHR(CutHRFile, vCutHR) << std::endl;
+ }
+ 
  
  ///==== output file ====
  std::string OutFileName    = gConfigParser -> readStringOption("Output::outFileName");
@@ -209,6 +245,11 @@ int main(int argc, char** argv)
  std::cout << ">>>>> input::debug  " << debug  << std::endl;  
  
  ///==== program ====
+ 
+ 
+ double start, end;
+ start = clock();
+ 
  
  for (int iSample=0; iSample<numberOfSamples; iSample++){
   xsection[iSample] = atof(xsectionName[iSample]);
@@ -299,6 +340,7 @@ int main(int argc, char** argv)
  
  
  if (debug) std::cout << " Cut size = " << vCut.size() << " ~~ " << std::endl;
+ std::cout.precision (2) ;
  
  ///==== cicle on selections ====
  for (uint iCut = 0; iCut<vCut.size(); iCut++){
@@ -342,14 +384,20 @@ int main(int argc, char** argv)
        TString name_HR_histoTot_temp = Form("%s %d",vVarNameHR.at(iVar).c_str(), iCut);
 //        TString name_HR_histoTot_temp = Form("%s %d %s",vVarNameHR.at(iVar).c_str(), iCut, reduced_name_samples.at(iName).c_str());
        histo[iName][iCut][iVar] = new TH1F(name_histoTot_temp,name_HR_histoTot_temp,vNBin.at(iVar),vMin.at(iVar), vMax.at(iVar));
+       histo[iName][iCut][iVar] -> Sumw2(); //---- così mette l'errore giusto!
        reduced_name_samples_flag.at(iName) = 1;
       }
       histo[iName][iCut][iVar] -> Add(histo_temp[iSample][iCut][iVar]);
      }
     }
+//     std::cout << "Processing: " << blue << (((double) numberOfSamples - iSample)/numberOfSamples) << "% \r"  << normal << std::flush;
    } ///==== end cicle on samples ====
+//    std::cout << "###";
+  std::cout << "Processing: " << blue << (((double) iCut)/vCut.size())*100. << "% "  << normal <<  " -- " <<  blue << (((double) iVar)/vVarName.size())*100. << "% \r"  << normal << std::flush;   
   } ///==== end cicle on variables to plot ====
+  //   std::cout << "***";
  } ///==== end cicle on selections ====
+ std::cout << std::endl; 
  
  
 
@@ -363,6 +411,8 @@ int main(int argc, char** argv)
  //  [iCut][iVar]
  THStack* hs[100][100];
  TH1F* hPull[100][100];
+ 
+ std::cout << std::endl;
  
  ///==== cicle on selections ====
  for (uint iCut = 0; iCut<vCut.size(); iCut++){
@@ -412,6 +462,8 @@ int main(int argc, char** argv)
    ///==== histo with pull plot ====
    hPull[iCut][iVar] = PullPlot(histo[numDATA][iCut][iVar], histoSumMC[iCut][iVar]);
    
+   std::cout << " MC / DATA[" << iCut << "][" << iVar << "] = "<< histoSumMC[iCut][iVar]->Integral() << " / " << histo[numDATA][iCut][iVar]->Integral() << " = " << (histo[numDATA][iCut][iVar]->Integral() ? histoSumMC[iCut][iVar]->Integral()/ histo[numDATA][iCut][iVar]->Integral() : 0) << std::endl;
+   
    ///==== legend ====
    if (!LegendBuilt){
     for (uint iName=0; iName<reduced_name_samples.size(); iName++){
@@ -421,6 +473,7 @@ int main(int argc, char** argv)
    }
   }
  }
+ std::cout << std::endl << std::endl;
  
  ///==== calculate number of events after each step of the analysis ====
  //  [iName][iCut]
@@ -433,7 +486,7 @@ int main(int argc, char** argv)
  
  for (uint iName=0; iName<reduced_name_samples.size(); iName++){
   TString nameTHTrend = Form("%d_Trend",iName);
-  hTrend[iName] = new TH1F (nameTHTrend,nameTHTrend,vCut.size(),0,vCut.size());
+  hTrend[iName] = new TH1F (nameTHTrend,nameTHTrend,vCut.size()+1,0,vCut.size()+1);
   hTrend[iName]->GetXaxis()->SetTitle("Selections");
 
   if (iName == numDATA) {
@@ -453,8 +506,22 @@ int main(int argc, char** argv)
    hTrend[iName]->SetFillStyle(3001);
   }
   for (uint iCut = 0; iCut<vCut.size(); iCut++){
-   numEvents[iName][iCut] = histo[iName][iCut][0]->Integral(); //--- iVar = 0, it should be the same whatever var you use
+   double error = 0;
+   numEvents[iName][iCut] = histo[iName][iCut][0]->IntegralAndError(0,histo[iName][iCut][0]->GetNbinsX()+1,error); //--- iVar = 0, it should be the same whatever var you use
+//    numEvents[iName][iCut] = histo[iName][iCut][0]->Integral(); //--- iVar = 0, it should be the same whatever var you use
    hTrend[iName]->SetBinContent(iCut+1,numEvents[iName][iCut]);
+   hTrend[iName]->SetBinError(iCut+1,error);
+   TString nameBin = Form("%d",iCut);
+   
+   if (vCutHR.size() == 0) {
+    hTrend[iName]->GetXaxis()->SetBinLabel(iCut+1,nameBin);
+   }
+   else {
+    hTrend[iName]->GetXaxis()->SetBinLabel(iCut+1,vCutHR.at(iCut).c_str());
+   }
+   
+   
+   
 //     IntegralAndError
 //     Double_t IntegralAndError(Int_t binx1, Int_t binx2, Double_t& err, Option_t* option = "") const
    std::cout << ">>>  numEvents[" << iName << "," << reduced_name_samples.at(iName) << "][" << iCut << "] = " << numEvents[iName][iCut] << " , " << histo[iName][iCut][0]->GetEntries() << " , " << histo[iName][iCut][0]->GetEffectiveEntries() << std::endl;
@@ -468,7 +535,7 @@ int main(int argc, char** argv)
     hTrendPie[iCut]->SetEntryLineColor(iName, vColor[iName]);
     hTrendPie[iCut]->SetEntryLineStyle(iName, 2);
     hTrendPie[iCut]->SetEntryLineWidth(iName, 2);
-    //     hTrendPie[iCut]->SetEntryRadiusOffset(Int_t, Double_t);
+    hTrendPie[iCut]->SetEntryRadiusOffset(iName, 0.01);
     hTrendPie[iCut]->SetEntryVal(iName,numEvents[iName][iCut]);
    }
    else {
@@ -482,6 +549,10 @@ int main(int argc, char** argv)
  }
  AddError(hsTrend,LumiSyst);
  
+ TH1F* hTrendSumMC = ((TH1F*)(hsTrend->GetStack()->Last()));
+ ///==== hTrend with pull plot ====
+ TH1F* hPullTrendSumMC = PullPlot(hTrend[numDATA], hTrendSumMC);
+  
  
  ///==== calculate agreement data-MC: Kolmogorov-Smirnov test ==== 
  ///==== cicle on selections ====
@@ -514,6 +585,7 @@ int main(int argc, char** argv)
  TCanvas* cTrendPieAll = new TCanvas("cTrendPieAll","cTrendPieAll",400 * vCut.size(),400);
  cTrendPieAll -> Divide (vCut.size());
  TCanvas* cTrend = new TCanvas("cTrend","cTrend",400,400);
+ TCanvas* cTrendPull = new TCanvas("cTrendPull","cTrendPull",400,800);
  
  TCanvas* cCompareCutPull[100];
  TCanvas* cCompareVarPull[100];
@@ -558,6 +630,19 @@ int main(int argc, char** argv)
  gPad->SetGrid();
  leg->Draw();
  latex->Draw();
+ 
+ 
+ cTrendPull->Divide(1,2);
+ cTrendPull->cd(1);
+ DrawStack(hsTrend,1,LumiSyst);
+ hTrend[numDATA] -> Draw("EsameP");
+ gPad->SetLogy();
+ gPad->SetGrid();
+ leg->Draw();
+ latex->Draw();
+ cTrendPull->cd(2);
+ hPullTrendSumMC->Draw("EP");
+ gPad->SetGrid();
  
  
  for (uint iCut = 0; iCut<vCut.size(); iCut++){
@@ -689,12 +774,15 @@ int main(int argc, char** argv)
  } ///==== end cicle on selections ====
  
  std::cerr << " ******************************************* end *******************************************" << std::endl;
+ end = clock();
+ std::cout <<"Time = " <<  ((double) (end - start)) << " (a.u.)" << std::endl;  
  
  
  
  ///==== save output ====
  outFile.cd();
  cTrend -> Write();
+ cTrendPull -> Write();
  
  outFile.mkdir("Trend");
  outFile.cd("Trend");
@@ -703,12 +791,25 @@ int main(int argc, char** argv)
  }
  cTrendPieAll -> Write();
  
+ 
+ outFile.cd();
+ outFile.mkdir("PU");
+ outFile.cd("PU");
+ 
+ hPUMC     -> Write();
+ hPUDATA   -> Write();
+ hPUWeight -> Write();
+ 
  outFile.cd();
  outFile.mkdir("Cut");
  outFile.cd("Cut");
  for (uint iCut = 0; iCut<vCut.size(); iCut++){
   cCompareCut[iCut] -> Write();
   cCompareCutPull[iCut] -> Write();
+  TString nameCut = Form ("Cut_%d",iCut);
+  TString Cut = Form ("%s",vCut.at(iCut).c_str());
+  TNamed nameCutNamed (nameCut,Cut);
+  nameCutNamed.Write();
  }
  
  outFile.cd();

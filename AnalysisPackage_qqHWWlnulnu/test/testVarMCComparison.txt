@@ -94,7 +94,3 @@ abs(q2_Eta)           0   5   10    #eta^{jet-low}
 #
 #
 #
-nPV        0   20    20    nPV
-#
-#
-#
