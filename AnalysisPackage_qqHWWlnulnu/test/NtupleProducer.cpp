@@ -286,7 +286,7 @@ int main(int argc, char** argv)
   */
   
   ///**** 90% ****
-   
+   /*
    BarrelSelections.push_back(10000.); ///==== iso Tk
    BarrelSelections.push_back(10000.); ///==== iso em
    BarrelSelections.push_back(10000.); ///==== iso had
@@ -304,7 +304,7 @@ int main(int argc, char** argv)
    EndCapSelections.push_back(0.031); ///==== sigmaIetaIeta
    EndCapSelections.push_back(0.047); ///==== dPhi
    EndCapSelections.push_back(0.011); ///==== dEta
-
+   */
    
    ///**** 85% ****
    /*
@@ -327,6 +327,29 @@ int main(int argc, char** argv)
    EndCapSelections.push_back(0.007); ///==== dEta
    */
 
+
+ ///**** 80% ****
+   
+   BarrelSelections.push_back(10000.); ///==== iso Tk
+   BarrelSelections.push_back(10000.); ///==== iso em
+   BarrelSelections.push_back(10000.); ///==== iso had
+   BarrelSelections.push_back(0.040); ///==== iso combined
+   BarrelSelections.push_back(10000.); ///==== hOe
+   BarrelSelections.push_back(0.01); ///==== sigmaIetaIeta
+   BarrelSelections.push_back(0.027); ///==== dPhi
+   BarrelSelections.push_back(0.005); ///==== dEta
+   
+   EndCapSelections.push_back(10000.); ///==== iso Tk
+   EndCapSelections.push_back(10000.); ///==== iso em
+   EndCapSelections.push_back(10000.); ///==== iso had
+   EndCapSelections.push_back(0.033); ///==== iso combined
+   EndCapSelections.push_back(10000.); ///==== hOe
+   EndCapSelections.push_back(0.031); ///==== sigmaIetaIeta
+   EndCapSelections.push_back(0.021); ///==== dPhi
+   EndCapSelections.push_back(0.006); ///==== dEta
+   
+   
+   
   ///***********************************
   ///**** definition of muon ID ****
   std::vector<double> Selections;
