@@ -212,6 +212,10 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
  vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_30", &vars.NBjets_trackCountingHighEffBJetTags_30, "NBjets_trackCountingHighEffBJetTags_30/I"); 
  
  
+ 
+ //~~~~ PV variables 
+ vars.m_reducedTree -> Branch("nPV", &vars.nPV, "nPV/I"); 
+ 
  //~~~~ MC variables
  vars.m_reducedTree -> Branch("numPUMC", &vars.numPUMC, "numPUMC/I"); 
  
