@@ -220,6 +220,9 @@ struct Variables
  int q_Z_14_40;
  
 
+ //---- PV info ----
+ int nPV;
+ 
  //---- MC info ----
  int numPUMC;
  
@@ -239,6 +242,8 @@ void SetLeptonsVariables(Variables& vars, treeReader& reader,const int& iLep1, c
 void SetMetVariables(Variables& vars, treeReader& reader, const std::string& metType);
 
 void SetQJetVariables(Variables& vars, treeReader& reader, const int& q1, const int& q2, const std::vector<int>& blacklistJet_forCJV, const std::vector<int>& blacklistJet_forBtag);
+
+void SetPVVariables(Variables& vars, treeReader& reader);
 
 void SetMCVariables(Variables& vars, treeReader& reader);
 

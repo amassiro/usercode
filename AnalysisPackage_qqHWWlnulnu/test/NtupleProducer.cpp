@@ -362,6 +362,10 @@ int main(int argc, char** argv)
   ///==== fill MC information ====
   SetMCVariables(vars, reader);
   
+  ///=============================
+  ///==== fill Primary Vertex ====
+  SetPVVariables(vars, reader);
+  
   ///================================
   ///==== fill Event information ====
   SetEventVariables(vars, reader);

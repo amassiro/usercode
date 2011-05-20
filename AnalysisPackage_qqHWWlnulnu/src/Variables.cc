@@ -440,6 +440,12 @@ void SetMCVariables(Variables& vars, treeReader& reader)
 }
 
 
+void SetPVVariables(Variables& vars, treeReader& reader)
+{
+ vars.nPV = reader.GetInt("PV_ndof")->size();
+}
+
+
 void SetQJetVariables(Variables& vars, treeReader& reader, const int& q1, const int& q2, const std::vector<int>& blacklistJet_forCJV, const std::vector<int>& blacklistJet_forBtag)
 {
  vars.q1_pX = reader.Get4V("jets")->at(q1).X();
