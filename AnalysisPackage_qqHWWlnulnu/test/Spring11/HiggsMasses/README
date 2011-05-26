@@ -1,0 +1,21 @@
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~ Higgs masses ~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+
+./bin/MCDATACounter.exe test/Spring11/HiggsMasses/H150.cfg
+./bin/MCDATACounter.exe test/Spring11/HiggsMasses/H160.cfg
+./bin/MCDATACounter.exe test/Spring11/HiggsMasses/H180.cfg
+./bin/MCDATACounter.exe test/Spring11/HiggsMasses/H190.cfg
+./bin/MCDATACounter.exe test/Spring11/HiggsMasses/H200.cfg
+./bin/MCDATACounter.exe test/Spring11/HiggsMasses/H250.cfg
+./bin/MCDATACounter.exe test/Spring11/HiggsMasses/H600.cfg
+
+
+
+
+
+
+
+
+
+

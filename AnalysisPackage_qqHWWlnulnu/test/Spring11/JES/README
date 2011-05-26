@@ -1,0 +1,21 @@
+Uncertanty due to Jet Energy Scale
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    New ntuple produced -> do not use these
+./bin/MCDATACounter_Systematic.exe test/Spring11/JES/testMCDATACounter_Systematic_Minus.cfg
+./bin/MCDATACounter_Systematic.exe test/Spring11/JES/testMCDATACounter_Systematic_Plus.cfg
+
+    but these:
+
+./bin/MCDATACounter.exe test/Spring11/JES/testMCDATACounter_Systematic_Minus.cfg
+./bin/MCDATACounter.exe test/Spring11/JES/testMCDATACounter_Systematic_Plus.cfg
+
+
+
+diff dataCard_H160_JES_Minus.txt dataCard_H160_JES_Plus.txt
+
+then take half difference.
+Result
+5      lnN    1.002    -    -    -     -     1.007    -            JES
+
+

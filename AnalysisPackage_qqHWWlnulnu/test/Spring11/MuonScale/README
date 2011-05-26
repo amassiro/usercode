@@ -1,0 +1,16 @@
+Uncertanty due to Moun momentum Scale
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+./bin/MCDATACounter_Systematic.exe test/Spring11/MuonScale/testMCDATACounter_Systematic_Minus.cfg
+./bin/MCDATACounter_Systematic.exe test/Spring11/MuonScale/testMCDATACounter_Systematic_Plus.cfg
+
+
+
+
+diff dataCard_H160_MuonScale_Minus.txt dataCard_H160_MuonScale_Plus.txt
+
+then take half difference.
+Result
+4      lnN    1.002    -    -    -     -     1.007    -            Muon momentum
+
+

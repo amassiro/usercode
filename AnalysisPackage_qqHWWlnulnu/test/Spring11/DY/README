@@ -1,0 +1,7 @@
+Sideband method for DY estimation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+./bin/Sideband1D.exe test/Spring11/DY/testSideband1D.cfg
+
+
+

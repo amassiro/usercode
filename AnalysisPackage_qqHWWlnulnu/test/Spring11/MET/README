@@ -1,0 +1,20 @@
+Uncertanty due to MET mismodelling
+-> scale MET up and down (related to JES, but considered independent for systematics calculations)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+./bin/MCDATACounter_Systematic.exe test/Spring11/MET/testMCDATACounter_Systematic_Minus.cfg
+./bin/MCDATACounter_Systematic.exe test/Spring11/MET/testMCDATACounter_Systematic_Plus.cfg
+
+
+
+diff dataCard_H160_MET_Minus.txt dataCard_H160_MET_Plus.txt
+
+then take half difference.
+Result
+6      lnN    1.03    -    1.35    -     -     1.04    2.00            MET +/- 10%
+
+
+
+
+
+
