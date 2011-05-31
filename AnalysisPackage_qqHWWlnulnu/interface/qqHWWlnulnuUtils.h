@@ -22,6 +22,11 @@ qqHWWlnulnuUtils
 
 #include <algorithm>
 
+
+///==== GetTrendInfo ====
+///==== Transform TH1 with "trace" information to TH1 ====
+TH1F* GetTrendInfo(TH1F* hTrend, double min = -1.5, double max = 1.5);
+ 
 ///==== Pull Plot: drawing utility ====
 void PullPlot(TCanvas* canvas, TH1* hDATA, TH1* hMC);
 void PullPlot(TCanvas* canvas, TH1* hDATA, THStack* hsMC);  
@@ -112,6 +117,31 @@ double getJEC(const ROOT::Math::XYZTVector& Jet);
 ///==== get best Combination Jet ID with MVA ====
 std::pair<double,int> GetCombination_Jets_ID_MVA(std::vector<ROOT::Math::XYZTVector> &jets, std::vector<std::vector<int> >& combinations,TMVA::Reader* TMVAreader, TString& methodName, Float_t* input_variables, std::vector<int>* whitelistJet);
 // std::pair<double,int> GetCombination_Jets_ID_MVA(treeReader& reader, std::vector<std::vector<int> >& combinations,TMVA::Reader* TMVAreader, TString& methodName, Float_t* input_variables, std::vector<int>* whitelistJet);
+ 
+
+
+///==== read list of systematics file ====
+void ReadFileSystematics(std::string CutSystematicFile, std::vector< std::pair< int, std::pair<std::string, double> > >& listSystematics);
+void ReadFileSystematicsWithRegion(std::string CutSystematicFile, std::vector< std::pair< std::string, std::string> >& listSystematics);
+
+
+///==== std::string replace ====
+// std::string::size_type repl(std::string& s, const std::string& from, const std::string& to);
+void repl(std::string& s, const std::string& from, const std::string& to);
+
+///==== modify list of cuts to include systematics ====
+void ModifyCut(std::vector <std::string> & vCut, const std::vector< std::pair< int, std::pair<std::string, double> > >& listSystematics);
+void ModifyCutWithRegion(std::vector <std::string> & vCut, const std::vector< std::pair< std::string, std::string> >& listSystematics);
+ 
+
+
+///==== CJV with JES estimation ====
+int getCJVJES(std::vector<ROOT::Math::XYZTVector>& jets,
+	   int q1,
+	   int q2,
+	   const double& EtMin,
+	   const std::vector<int>* blacklist = 0,
+	   int kind = 1);   //---- kind = +1 or -1
  
 #endif
 

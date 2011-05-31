@@ -221,13 +221,44 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
  
 }
 
-void FillTree(Variables& vars)
-{
+
+void InitializeTreeTrigger(Variables& vars, const std::vector<std::string> & HLTVector){
+ vars.HLTVector_names_ = HLTVector;
+ for (int iHLT = 0; iHLT < vars.HLTVector_names_.size(); iHLT++){
+  vars.HLTVector_.push_back(-1);
+ }
+ vars.m_reducedTree -> Branch("HLTVectorNames","std::vector<std::string>",&vars.HLTVector_names_);
+ vars.m_reducedTree -> Branch("HLTVector","std::vector<int>",&vars.HLTVector_);
+}
+
+
+void SetTriggerVariables(Variables& vars, treeReader& reader){
+ for (int iHLT = 0; iHLT < vars.HLTVector_names_.size(); iHLT++){
+  vars.HLTVector_.at(iHLT) = -1;
+ }
+ 
+ for (std::vector<std::string>::const_iterator iHLTA = vars.HLTVector_names_.begin(); iHLTA<vars.HLTVector_names_.end(); iHLTA++){
+  for (int iHLT = 0; iHLT < reader.GetString("HLT_Names")->size(); iHLT++){
+   if (reader.GetString("HLT_Names")->at(iHLT) == *iHLTA && reader.GetFloat("HLT_Accept")->at(iHLT) == 1) {
+    vars.HLTVector_.at(iHLTA - vars.HLTVector_names_.begin()) = 1;
+   }
+   else if (reader.GetString("HLT_Names")->at(iHLT) == *iHLTA && reader.GetFloat("HLT_Accept")->at(iHLT) != 1){
+    vars.HLTVector_.at(iHLTA - vars.HLTVector_names_.begin()) = 0;
+   }
+  }
+ }
+ 
+}
+
+
+
+
+
+void FillTree(Variables& vars){
  vars.m_reducedTree -> Fill();
 }
 
-void FillEfficiencyTree(Variables& vars)
-{
+void FillEfficiencyTree(Variables& vars){
  vars.m_efficiencyTree -> Fill();
 }
 

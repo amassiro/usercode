@@ -226,12 +226,17 @@ struct Variables
  //---- MC info ----
  int numPUMC;
  
+ //---- Trigger info ----
+ std::vector<std::string> HLTVector_names_;
+ std::vector<int> HLTVector_;
  
 };
 
 
 
 void InitializeTree(Variables&, const std::string&);
+void InitializeTreeTrigger(Variables&, const std::vector<std::string> &);
+
 void FillTree(Variables& vars);
 void FillEfficiencyTree(Variables& vars);
 
@@ -246,5 +251,8 @@ void SetQJetVariables(Variables& vars, treeReader& reader, const int& q1, const 
 void SetPVVariables(Variables& vars, treeReader& reader);
 
 void SetMCVariables(Variables& vars, treeReader& reader);
+
+void SetTriggerVariables(Variables&, treeReader& reader);
+
 
 void SaveTree(Variables& vars);

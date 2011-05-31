@@ -580,6 +580,44 @@ std::pair<double,int> GetCombination_Jets_ID_MVA(std::vector<ROOT::Math::XYZTVec
 
 
 
+///==== GetTrendInfo ====
+///==== Transform TH1 with "trace" information to TH1 ====
+
+TH1F* GetTrendInfo(TH1F* hTrend, double min, double max){
+ int nbin = hTrend->GetNbinsX();
+//  double maxX = hTrend->GetYaxis()->GetXmax();
+//  double minX = hTrend->GetYaxis()->GetXmin();
+//  std::cout << "minX = " << minX << " ::: " << maxX << std::endl;
+//  std::cout << "min  = " << min  << " ::: " << max  << std::endl;
+//  maxX = std::min(max,maxX);
+//  minX = std::max(min,minX);
+//  std::cout << "minX = " << minX << " ::: " << maxX << std::endl;
+ double maxX = max;
+ double minX = min;
+ 
+ std::string name = hTrend->GetName(); 
+ std::string nameNew;
+ nameNew = name + "_Info";
+ 
+ TH1F* hTrendInfo = new TH1F (nameNew.c_str(),nameNew.c_str(),nbin,minX,maxX);
+ for (int iBin = 0; iBin<nbin; iBin++){
+  hTrendInfo->Fill(hTrend->GetBinContent(iBin+1));
+ }
+ 
+ hTrendInfo->SetLineColor(hTrend->GetLineColor());
+ hTrendInfo->SetLineWidth(2);
+ hTrendInfo->SetMarkerColor(hTrend->GetMarkerColor());
+ hTrendInfo->SetMarkerStyle(20);
+ hTrendInfo->SetMarkerSize(1);
+ hTrendInfo->SetFillStyle(1001);
+ hTrendInfo->GetXaxis()->SetTitle(hTrend->GetYaxis()->GetTitle()); 
+ return hTrendInfo;
+}
+
+
+
+///==== Pull Plot ====
+
 TH1F* PullPlot(TH1F* hDATA, TH1F* hMC){
  int nbin = hDATA->GetNbinsX();
  double max = hDATA->GetXaxis()->GetXmax();
@@ -783,3 +821,183 @@ void AddError(THStack* hs, double syst){
    last->SetBinError(iBin+1,sqrt(additionalError*additionalError + last->GetBinError(iBin+1) * last->GetBinError(iBin+1)) );
  }
 }
+
+
+
+
+
+
+
+
+
+
+
+///==== read list of systematics file ====
+void ReadFileSystematics(std::string CutSystematicFile, std::vector< std::pair< int, std::pair<std::string, double> > >& listSystematics){
+ std::ifstream inFile(CutSystematicFile.c_str());
+ std::string buffer; 
+ std::string tempVar;
+ double tempSyst;
+ int tempKind;
+ while(!inFile.eof()){
+  getline(inFile,buffer);
+  if (buffer != ""){ ///---> save from empty line at the end!
+   if (buffer.at(0) != '#'){     
+    std::stringstream line( buffer );      
+    line >> tempVar; 
+    line >> tempSyst;
+    line >> tempKind;
+    std::cout << " Syst = " << tempVar << " ~ " << tempSyst << " ~ " << tempKind << std::endl;
+    std::pair<std::string, double> tempPair(tempVar,tempSyst);
+    std::pair< int, std::pair<std::string, double> > tempPairPair(tempKind, tempPair);
+    listSystematics.push_back (tempPairPair);
+   } 
+  }
+ }
+}
+
+void ReadFileSystematicsWithRegion(std::string CutSystematicFile, std::vector< std::pair< std::string, std::string> >& listSystematics){
+ std::ifstream inFile(CutSystematicFile.c_str());
+ std::string buffer; 
+ std::string tempVarOld;
+ std::string tempVarNew;
+ while(!inFile.eof()){
+  getline(inFile,buffer);
+  if (buffer != ""){ ///---> save from empty line at the end!
+   if (buffer.at(0) != '#'){     
+    std::stringstream line( buffer );      
+    line >> tempVarOld; 
+    
+    getline(inFile,buffer);
+    std::stringstream lineNew( buffer );      
+    tempVarNew = buffer; 
+    std::cout << " Syst = " << tempVarOld << " ~> " << tempVarNew << std::endl;
+    std::pair< std::string, std::string> tempPair(tempVarOld, tempVarNew);
+    listSystematics.push_back (tempPair);
+   } 
+  }
+ }
+}
+
+
+///==== std::string replace ====
+void repl(std::string& s, const std::string& from, const std::string& to){
+ std::string::size_type cnt(std::string::npos);
+ if(from != to && !from.empty())
+ {
+  std::string::size_type pos1(0);
+  std::string::size_type pos2(0);
+  const std::string::size_type from_len(from.size());
+  const std::string::size_type to_len(to.size());
+  cnt = 0;
+  
+  while((pos1 = s.find(from, pos2)) != std::string::npos)
+  {
+   s.replace(pos1, from_len, to);
+   pos2 = pos1 + to_len;
+   ++cnt;
+  }
+ }
+}
+
+///==== modify list of cuts to include systematics ====
+void ModifyCut(std::vector <std::string> & vCut, const std::vector< std::pair< int, std::pair<std::string, double> > >& listSystematics){
+ std::cout << std::endl;
+ for (int iSyst = 0; iSyst < listSystematics.size(); iSyst++) {
+  std::string var = listSystematics.at(iSyst).second.first;
+  double syst = listSystematics.at(iSyst).second.second;
+  int kind = listSystematics.at(iSyst).first;
+  char systChar[128];
+  sprintf(systChar,"%0.2f",syst); 
+  std::string newvar = "(";
+  if (kind == 1){ //---- dilation
+   newvar += var;
+   newvar += "*(1+(";
+   newvar += systChar;
+   newvar += ")))";
+  }
+  else { //---- shift
+   newvar += var;
+   newvar += "+(";
+   newvar += syst;
+   newvar += "))";
+  }
+  std::cout << " newvar = " << newvar << std::endl;
+  std::cout << "    var = " <<    var << std::endl;
+  std::cout << "   syst = " <<   syst << std::endl;
+  for (int iCut = 0; iCut < vCut.size(); iCut++) {
+   repl(vCut.at(iCut),var,newvar);
+  }
+ } 
+ for (int iCut = 0; iCut < vCut.size(); iCut++) {
+  std::cout << " newCut = " << vCut.at(iCut) << std::endl;
+ }
+ std::cout << std::endl;
+}
+
+
+
+///==== modify list of cuts to include systematics ====
+void ModifyCutWithRegion(std::vector <std::string> & vCut, const std::vector< std::pair< std::string, std::string> >& listSystematics){
+ std::cout << std::endl;
+ for (int iSyst = 0; iSyst < listSystematics.size(); iSyst++) {
+  std::string variable = listSystematics.at(iSyst).first;
+  std::string newvariable = listSystematics.at(iSyst).second;
+  std::cout << "    variable = " <<    variable << std::endl;
+  std::cout << " newvariable = " << newvariable << std::endl;
+  for (int iCut = 0; iCut < vCut.size(); iCut++) {
+   repl(vCut.at(iCut),variable,newvariable);
+  }
+ } 
+ for (int iCut = 0; iCut < vCut.size(); iCut++) {
+  std::cout << " newCut = " << vCut.at(iCut) << std::endl;
+ }
+ std::cout << std::endl;
+}
+
+
+
+
+
+
+///==== CJV with JES estimation ====
+#include "../JESUnc.cxx"
+
+int getCJVJES(std::vector<ROOT::Math::XYZTVector>& jets,
+	   int q1,
+	   int q2,
+	   const double& EtMin,
+	   const std::vector<int>* blacklist,
+	   int kind){
+ 
+ int CJV = 0;
+ double etaMin = jets.at(q1).Eta();
+ double etaMax = jets.at(q2).Eta();
+ 
+ if (etaMax < etaMin) std::swap(etaMin,etaMax);
+ 
+ for(unsigned int i = 0; i < jets.size(); ++i)
+ {
+  if (i==q1 || i==q2) continue;
+  
+  double unc = JESUnc(jets.at(i).eta(),jets.at(i).Pt());
+  
+  if ((jets.at(i).Et() * (1.+ (kind) * unc)) < EtMin) continue;
+  
+  bool skipJet = false;
+  if(blacklist){
+   for(unsigned int kk = 0; kk < blacklist -> size(); ++kk) {
+    if(blacklist -> at(kk) == static_cast<int>(i)) skipJet = true;
+   }
+  }
+  
+  if (skipJet) continue;
+  
+  if(jets.at(i).Eta() > etaMax || jets.at(i).Eta() < etaMin) continue;
+  
+  CJV++;
+ } 
+ 
+ return CJV;
+ 
+	   }
