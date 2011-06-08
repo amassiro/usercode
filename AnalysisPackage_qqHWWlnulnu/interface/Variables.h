@@ -37,7 +37,7 @@ struct Variables
  double l1_E;
  double l1_Eta;
  double l1_Phi;
-  
+ 
  double l1_charge;
  int          l1_flavour;
  double l1_dxy;
@@ -97,7 +97,7 @@ struct Variables
  double M_ll;
  double DEta_ll;
  double DPhi_ll;
-  
+ 
  double l1_Z;
  double l2_Z;
  double Z_ll;
@@ -114,7 +114,7 @@ struct Variables
  double met_X;
  double met_Y;
  double met;
- 
+ double pmet; 
  
  //---- jet variables
  
@@ -144,7 +144,7 @@ struct Variables
  
  int NBjets_trackCountingHighPurBJetTags;
  int NBjets_trackCountingHighEffBJetTags;
-
+ 
  int NBjets_trackCountingHighPurBJetTags_m20;
  int NBjets_trackCountingHighPurBJetTags_m15;
  int NBjets_trackCountingHighPurBJetTags_m10;
@@ -163,7 +163,7 @@ struct Variables
  int NBjets_trackCountingHighPurBJetTags_15;
  int NBjets_trackCountingHighPurBJetTags_20;
  int NBjets_trackCountingHighPurBJetTags_30;
-
+ 
  int NBjets_trackCountingHighEffBJetTags_m20;
  int NBjets_trackCountingHighEffBJetTags_m15;
  int NBjets_trackCountingHighEffBJetTags_m10;
@@ -191,7 +191,7 @@ struct Variables
  int CJV_20;
  int CJV_30;
  int CJV_40;
-
+ 
  int q_Z_01_20;
  int q_Z_03_20;
  int q_Z_05_20;
@@ -219,7 +219,7 @@ struct Variables
  int q_Z_12_40;
  int q_Z_14_40;
  
-
+ 
  //---- PV info ----
  int nPV;
  
@@ -244,7 +244,8 @@ void SetEventVariables(Variables& vars, treeReader& reader);
 
 void SetLeptonsVariables(Variables& vars, treeReader& reader,const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2);
 
-void SetMetVariables(Variables& vars, treeReader& reader, const std::string& metType);
+//void SetMetVariables(Variables& vars, treeReader& reader, const std::string& metType);
+void SetMetVariables(Variables& vars, treeReader& reader, const std::string& metType, const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2);
 
 void SetQJetVariables(Variables& vars, treeReader& reader, const int& q1, const int& q2, const std::vector<int>& blacklistJet_forCJV, const std::vector<int>& blacklistJet_forBtag);
 

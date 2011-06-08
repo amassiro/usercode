@@ -89,6 +89,25 @@ int main(int argc, char** argv)
  
  
  
+ 
+ 
+ ///******************
+ ///**** Triggers ****
+ 
+ std::vector<std::string> HLTVector;
+ try {
+  HLTVector = gConfigParser -> readStringListOption("Options::HLTVector");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ std::cout << ">>>>> Options::HLTVector size = " << HLTVector.size() << std::endl;  
+ std::cout << ">>>>> >>>>>  "; 
+ for (int iHLT = 0; iHLT < HLTVector.size(); iHLT++){
+  std::cout << " " << HLTVector.at(iHLT) << ", ";
+ }
+ std::cout << std::endl; 
+  
  ///****************************
  ///**** DATA JSON file ****
  
@@ -146,6 +165,9 @@ int main(int argc, char** argv)
  // define variable container
  Variables vars;
  InitializeTree(vars, outFileName);
+ InitializeTreeTrigger(vars, HLTVector);
+ 
+ 
  vars.XSection = inputXSection;
  vars.dataFlag = dataFlag;  ///~~~~ 0 = MC       1 = DATA
  
@@ -169,7 +191,47 @@ int main(int argc, char** argv)
  
  
  std::vector<double> BarrelSelections;
- std::vector<double> EndCapSelections;
+ std::vector<double> EndcapSelections;
+ 
+ 
+ 
+ double eleCombinedIsoBarrel      = gConfigParser -> readDoubleOption("Selection::eleCombinedIsoBarrel");
+ double elesigmaIetaIetaBarrel    = gConfigParser -> readDoubleOption("Selection::elesigmaIetaIetaBarrel");
+ double eledPhiBarrel             = gConfigParser -> readDoubleOption("Selection::eledPhiBarrel");
+ double eledEtaBarrel             = gConfigParser -> readDoubleOption("Selection::eledEtaBarrel");
+ 
+ double eleCombinedIsoEndcap    = gConfigParser -> readDoubleOption("Selection::eleCombinedIsoEndcap");
+ double elesigmaIetaIetaEndcap  = gConfigParser -> readDoubleOption("Selection::elesigmaIetaIetaEndcap");
+ double eledPhiEndcap           = gConfigParser -> readDoubleOption("Selection::eledPhiEndcap");
+ double eledEtaEndcap           = gConfigParser -> readDoubleOption("Selection::eledEtaEndcap");
+ 
+ double elemishits    = gConfigParser -> readDoubleOption("Selection::elemishits");
+ double eledist       = gConfigParser -> readDoubleOption("Selection::eledist");
+ double eledcot       = gConfigParser -> readDoubleOption("Selection::eledcot");
+ 
+ double eledzPV     = gConfigParser -> readDoubleOption("Selection::eledzPV");
+ double eledxyPV    = gConfigParser -> readDoubleOption("Selection::eledxyPV");
+ 
+ 
+ BarrelSelections.push_back(eleCombinedIsoBarrel);
+ BarrelSelections.push_back(elesigmaIetaIetaBarrel);
+ BarrelSelections.push_back(eledPhiBarrel);
+ BarrelSelections.push_back(eledEtaBarrel);
+ BarrelSelections.push_back(elemishits);
+ BarrelSelections.push_back(eledist);
+ BarrelSelections.push_back(eledcot);
+ BarrelSelections.push_back(eledzPV);
+ BarrelSelections.push_back(eledxyPV);
+ 
+ EndcapSelections.push_back(eleCombinedIsoEndcap);
+ EndcapSelections.push_back(elesigmaIetaIetaEndcap);
+ EndcapSelections.push_back(eledPhiEndcap);
+ EndcapSelections.push_back(eledEtaEndcap);
+ EndcapSelections.push_back(elemishits);
+ EndcapSelections.push_back(eledist);
+ EndcapSelections.push_back(eledcot);
+ EndcapSelections.push_back(eledzPV);
+ EndcapSelections.push_back(eledxyPV);
  
  
  ///**** https://twiki.cern.ch/twiki/bin/viewauth/CMS/SimpleCutBasedEleID   --> 2010 Data
@@ -286,7 +348,7 @@ int main(int argc, char** argv)
   */
   
   ///**** 90% ****
-   /*
+  /* 
    BarrelSelections.push_back(10000.); ///==== iso Tk
    BarrelSelections.push_back(10000.); ///==== iso em
    BarrelSelections.push_back(10000.); ///==== iso had
@@ -305,8 +367,8 @@ int main(int argc, char** argv)
    EndCapSelections.push_back(0.047); ///==== dPhi
    EndCapSelections.push_back(0.011); ///==== dEta
    */
-   
-   ///**** 85% ****
+
+  ///**** 85% ****
    /*
    BarrelSelections.push_back(10000.); ///==== iso Tk
    BarrelSelections.push_back(10000.); ///==== iso em
@@ -329,7 +391,7 @@ int main(int argc, char** argv)
 
 
  ///**** 80% ****
-   
+   /*
    BarrelSelections.push_back(10000.); ///==== iso Tk
    BarrelSelections.push_back(10000.); ///==== iso em
    BarrelSelections.push_back(10000.); ///==== iso had
@@ -347,12 +409,39 @@ int main(int argc, char** argv)
    EndCapSelections.push_back(0.031); ///==== sigmaIetaIeta
    EndCapSelections.push_back(0.021); ///==== dPhi
    EndCapSelections.push_back(0.006); ///==== dEta
-   
-   
+   */
    
   ///***********************************
   ///**** definition of muon ID ****
   std::vector<double> Selections;
+  
+  double muCombinedIso   = gConfigParser -> readDoubleOption("Selection::muCombinedIso");
+  double muChi2Ndof      = gConfigParser -> readDoubleOption("Selection::muChi2Ndof");
+  
+  
+  double muValidTrackerHits = gConfigParser -> readDoubleOption("Selection::muValidTrackerHits");
+  double muValidMuonHits    = gConfigParser -> readDoubleOption("Selection::muValidMuonHits");
+  
+  double mutracker    = gConfigParser -> readDoubleOption("Selection::mutracker");
+  double mustandalone = gConfigParser -> readDoubleOption("Selection::mustandalone");
+  double muglobal     = gConfigParser -> readDoubleOption("Selection::muglobal");
+  
+  double mudzPV     = gConfigParser -> readDoubleOption("Selection::mudzPV");
+  double mudxyPV    = gConfigParser -> readDoubleOption("Selection::mudxyPV");
+  
+  
+  Selections.push_back(muCombinedIso);
+  Selections.push_back(muChi2Ndof);
+  Selections.push_back(muValidTrackerHits);
+  Selections.push_back(muValidMuonHits);
+  Selections.push_back(mutracker);
+  Selections.push_back(mustandalone);
+  Selections.push_back(muglobal);
+  Selections.push_back(mudzPV);
+  Selections.push_back(mudxyPV);
+  
+    
+/*  
   Selections.push_back(0.15); ///==== iso Combined
   Selections.push_back(10); ///==== Chi2/ndof
   Selections.push_back(10); ///==== n ValidTrackerHits
@@ -361,7 +450,7 @@ int main(int argc, char** argv)
   Selections.push_back(1); ///==== standalone
   Selections.push_back(1); ///==== global
   //Selections.push_back(1); ///==== goodMuon
-  
+  */
   
   
   double start, end;
@@ -454,8 +543,8 @@ int main(int argc, char** argv)
   for(unsigned int iEle = 0; iEle < (reader.Get4V("electrons")->size()); ++iEle)
   {
    if( reader.Get4V("electrons")->at(iEle).pt() < 5. ) continue;
-   bool flag =  IsEleIsolatedID(reader,BarrelSelections,EndCapSelections,iEle);
-//    bool flag =  IsEleIsolatedIDPUCorrected(reader,BarrelSelections,EndCapSelections,iEle);
+//    bool flag =  IsEleIsolatedID_VBF(reader,BarrelSelections,EndcapSelections,iEle);
+   bool flag =  IsEleIsolatedIDPUCorrected_VBF(reader,BarrelSelections,EndcapSelections,iEle);
    
    if (!flag) continue;
    
@@ -466,13 +555,15 @@ int main(int argc, char** argv)
   for (int iMu = 0; iMu < reader.Get4V("muons")->size(); iMu++){    
    if (reader.Get4V("muons")->at(iMu).pt() < 5.0) continue;
    if (fabs(reader.Get4V("muons")->at(iMu).Eta()) > 2.5) continue;
-   bool flag =  IsMuIsolatedID(reader,Selections,iMu);
+//    bool flag =  IsMuIsolatedID_VBF(reader,Selections,iMu);
+   bool flag =  IsMuIsolatedIDPUCorrected_VBF(reader,Selections,iMu);
+   
    if (!flag) continue;
 
    leptons_jetCleaning.push_back( reader.Get4V("muons")->at(iMu) );
   }
   
-
+  
   ///==== now clean jet collection ====
   
   int nJets = reader.Get4V("jets")->size();
@@ -541,8 +632,8 @@ int main(int argc, char** argv)
    bool skipEle = false;
    if (reader.Get4V("electrons")->at(iEle).pt() < 10.0) skipEle = true;
    if (fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 2.5) skipEle = true;
-   bool flag =  IsEleIsolatedID(reader,BarrelSelections,EndCapSelections,iEle);
-//    bool flag =  IsEleIsolatedIDPUCorrected(reader,BarrelSelections,EndCapSelections,iEle);
+//    bool flag =  IsEleIsolatedID_VBF(reader,BarrelSelections,EndcapSelections,iEle);
+   bool flag =  IsEleIsolatedIDPUCorrected_VBF(reader,BarrelSelections,EndcapSelections,iEle);
    if (!flag) skipEle = true;
    
    if (skipEle) {
@@ -564,7 +655,9 @@ int main(int argc, char** argv)
     bool skipMu = false;
     if (reader.Get4V("muons")->at(iMu).pt() < 10.0) skipMu = true;
     if (fabs(reader.Get4V("muons")->at(iMu).Eta()) > 2.5) skipMu = true;    
-    bool flag =  IsMuIsolatedID(reader,Selections,iMu);
+//     bool flag =  IsMuIsolatedID_VBF(reader,Selections,iMu);
+    bool flag =  IsMuIsolatedIDPUCorrected_VBF(reader,Selections,iMu);
+    
     if (!flag) skipMu = true;
 
     if (skipMu) {
@@ -629,7 +722,6 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
    }
   }
 
- SetMetVariables(vars, reader, "PFMet");
  SetQJetVariables(vars, reader, q1, q2, blacklistJet_forCJV, blacklistJet_forBtag);
 
   ///********************************
@@ -681,6 +773,11 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
   
   if (debug) std::cerr << ">> Lepton variables set" << std::endl;
   
+  
+  SetMetVariables(vars, reader, "PFMet", leptonILep.at(l1), leptonILep.at(l2),leptonFlavours.at(l1), leptonFlavours.at(l2));
+  if (debug) std::cerr << ">> MET variables set" << std::endl;
+   
+   
   //---- lepton veto
   std::vector<int> blacklistLepton;
   blacklistLepton.push_back(l1);
@@ -712,19 +809,21 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
   if (vars.M_qq <   0.) continue;
   if (vars.DEta_qq < 0.) continue;
   ///----  hardcoded fixed preselections ---- VBF (end) ----
-  
+
+  ///==== save trigger variables ====
+  SetTriggerVariables(vars, reader);
   
   ///************************************
   ///**** STEP 6 - Final Production *****
   ///************************************
   ///**** No more selections applied ****
 
-  step = 5;
+  step = 6;
   if (step > nStepToDo) {
    FillTree(vars);
    continue;
   }  
-  if (debug) std::cout << ">>> STEP 5 <<<" << std::endl;
+  if (debug) std::cout << ">>> STEP 6 <<<" << std::endl;
 
   ///==== if not already filled ... ====
   FillTree(vars);  

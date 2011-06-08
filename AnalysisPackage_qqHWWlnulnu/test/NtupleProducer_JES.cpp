@@ -647,7 +647,6 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
    }
   }
   
-  SetMetVariables(vars, reader, "PFMet");
   SetQJetVariables(vars, reader, q1, q2, blacklistJet_forCJV, blacklistJet_forBtag);
   
   ///==== correct for JES uncertainty ====
@@ -687,7 +686,8 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
   vars.CJV_40 = getCJVJES(*(reader.Get4V("jets")),q1,q2,40.,&blacklistJet_forCJV, kind);
   
   
-  std::cout << " unc1 = " << unc1 << " ~~~ unc2 = " << unc2 << std::endl;
+ if (debug)  std::cout << " unc1 = " << unc1 << "  = F(" << vars.q1_Eta << " , " << vars.q1_pT << ")" << std::endl;
+ if (debug)  std::cout << " unc2 = " << unc2 << "  = F(" << vars.q2_Eta << " , " << vars.q2_pT << ")" << std::endl;
   
   ///********************************
   ///**** STEP 4 - Lepton ID ****
@@ -737,6 +737,10 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
   SetLeptonsVariables(vars, reader, leptonILep.at(l1), leptonILep.at(l2),leptonFlavours.at(l1), leptonFlavours.at(l2));
   
   if (debug) std::cerr << ">> Lepton variables set" << std::endl;
+  
+  
+  SetMetVariables(vars, reader, "PFMet", leptonILep.at(l1), leptonILep.at(l2),leptonFlavours.at(l1), leptonFlavours.at(l2));
+  if (debug) std::cerr << ">> MET variables set" << std::endl;
   
   //---- lepton veto
   std::vector<int> blacklistLepton;

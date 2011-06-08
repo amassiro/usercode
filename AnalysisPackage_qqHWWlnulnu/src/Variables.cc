@@ -112,7 +112,7 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
  vars.m_reducedTree-> Branch("met_X",    &vars.met_X,       "met_X/D");
  vars.m_reducedTree-> Branch("met_Y",    &vars.met_Y,       "met_Y/D");
  vars.m_reducedTree-> Branch("met",        &vars.met,       "met/D");
- 
+ vars.m_reducedTree-> Branch("pmet",    &vars.pmet,       "pmet/D");
  
  //~~~~ jet variables
  
@@ -445,8 +445,23 @@ void SetLeptonsVariables(Variables& vars, treeReader& reader,const int& iLep1, c
 }
 
 
-void SetMetVariables(Variables& vars, treeReader& reader, const std::string& metType)
+
+void SetMetVariables(Variables& vars, treeReader& reader, const std::string& metType, const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2)
+//void SetMetVariables(Variables& vars, treeReader& reader, const std::string& metType)
 {
+ double Lep1_phi = 100. ;
+ if (FlavourLep1 == 11 ) Lep1_phi = reader.Get4V ("electrons")->at (iLep1).Phi () ;
+ else Lep1_phi = reader.Get4V ("muons")->at (iLep1).Phi () ;
+ double Lep2_phi = 100. ;
+ if (FlavourLep2 == 11 ) Lep2_phi = reader.Get4V ("electrons")->at (iLep2).Phi () ;
+ else Lep2_phi = reader.Get4V ("muons")->at (iLep2).Phi () ;
+
+ double MET_phi = reader.Get4V (metType)->at (0).Phi () ;
+ double deltaPhiMin = std::min (deltaPhi (MET_phi, Lep1_phi), deltaPhi (MET_phi, Lep2_phi)) ;
+
+ if (deltaPhiMin < 1.57079632679) vars.pmet = reader.Get4V(metType)->at(0).P() * sin (deltaPhiMin) ;
+ else vars.pmet = reader.Get4V(metType)->at(0).P() ;
+
  vars.met_X = reader.Get4V(metType)->at(0).X();
  vars.met_Y = reader.Get4V(metType)->at(0).Y();
  vars.met = reader.Get4V(metType)->at(0).P();

@@ -999,5 +999,109 @@ int getCJVJES(std::vector<ROOT::Math::XYZTVector>& jets,
  } 
  
  return CJV;
+}
+
+
+
+/** Electron isolation / ID */
+
+bool IsEleIsolatedID_VBF( treeReader& reader,const std::vector<double>& BarrelSelections, const std::vector<double>& EndcapSelections, int iEle){
  
-	   }
+ bool skipEle = false;
+ 
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && (reader.GetFloat("electrons_tkIsoR03")->at(iEle) + reader.GetFloat("electrons_emIsoR03")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle))/reader.Get4V("electrons")->at(iEle).pt() > BarrelSelections.at(0)) skipEle = true;
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) &&  fabs(reader.GetFloat("electrons_sigmaIetaIeta")->at(iEle)) > BarrelSelections.at(1)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) &&  fabs(reader.GetFloat("electrons_deltaPhiIn")->at(iEle)) > BarrelSelections.at(2)) skipEle = true;
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) &&  fabs(reader.GetFloat("electrons_deltaEtaIn")->at(iEle)) > BarrelSelections.at(3)) skipEle = true;
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetInt("electrons_mishits")->at(iEle) > BarrelSelections.at(4)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_dist")->at(iEle) > BarrelSelections.at(5)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_dcot")->at(iEle) > BarrelSelections.at(6)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_dz_PV")->at(iEle) > BarrelSelections.at(7)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_dxy_PV")->at(iEle) > BarrelSelections.at(8)) skipEle = true;    
+
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && (reader.GetFloat("electrons_tkIsoR03")->at(iEle) + reader.GetFloat("electrons_emIsoR03")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle))/reader.Get4V("electrons")->at(iEle).pt() > EndcapSelections.at(0)) skipEle = true;
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) &&  fabs(reader.GetFloat("electrons_sigmaIetaIeta")->at(iEle)) > EndcapSelections.at(1)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) &&  fabs(reader.GetFloat("electrons_deltaPhiIn")->at(iEle)) > EndcapSelections.at(2)) skipEle = true;
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) &&  fabs(reader.GetFloat("electrons_deltaEtaIn")->at(iEle)) > EndcapSelections.at(3)) skipEle = true;
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetInt("electrons_mishits")->at(iEle) > EndcapSelections.at(4)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_dist")->at(iEle) > EndcapSelections.at(5)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_dcot")->at(iEle) > EndcapSelections.at(6)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_dz_PV")->at(iEle) > EndcapSelections.at(7)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_dxy_PV")->at(iEle) > EndcapSelections.at(8)) skipEle = true;    
+ 
+ return (!skipEle);
+ 
+}
+
+/** Electron isolation / ID 
+ * with PU correction 
+ */
+
+bool IsEleIsolatedIDPUCorrected_VBF( treeReader& reader,const std::vector<double>& BarrelSelections, const std::vector<double>& EndcapSelections, int iEle){
+ 
+ bool skipEle = false;
+ 
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && (reader.GetFloat("electrons_tkIsoR03")->at(iEle) + std::max((float) 0., reader.GetFloat("electrons_emIsoR03")->at(iEle)-1) + reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle) - reader.GetFloat("rho_isolation")->at(0) * 0.3 * 0.3 * reader.GetFloat("PV_normalizedChi2")->size())/reader.Get4V("electrons")->at(iEle).pt() > BarrelSelections.at(0)) skipEle = true;
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) &&  fabs(reader.GetFloat("electrons_sigmaIetaIeta")->at(iEle)) > BarrelSelections.at(1)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) &&  fabs(reader.GetFloat("electrons_deltaPhiIn")->at(iEle)) > BarrelSelections.at(2)) skipEle = true;
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) &&  fabs(reader.GetFloat("electrons_deltaEtaIn")->at(iEle)) > BarrelSelections.at(3)) skipEle = true;
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetInt("electrons_mishits")->at(iEle) > BarrelSelections.at(4)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_dist")->at(iEle) > BarrelSelections.at(5)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_dcot")->at(iEle) > BarrelSelections.at(6)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_dz_PV")->at(iEle) > BarrelSelections.at(7)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) < 1.5) && reader.GetFloat("electrons_dxy_PV")->at(iEle) > BarrelSelections.at(8)) skipEle = true;    
+
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && (reader.GetFloat("electrons_tkIsoR03")->at(iEle) + reader.GetFloat("electrons_emIsoR03")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth1")->at(iEle) + reader.GetFloat("electrons_hadIsoR03_depth2")->at(iEle) - reader.GetFloat("rho_isolation")->at(0) * 0.3 * 0.3 * reader.GetFloat("PV_normalizedChi2")->size())/reader.Get4V("electrons")->at(iEle).pt() > EndcapSelections.at(0)) skipEle = true;
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) &&  fabs(reader.GetFloat("electrons_sigmaIetaIeta")->at(iEle)) > EndcapSelections.at(1)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) &&  fabs(reader.GetFloat("electrons_deltaPhiIn")->at(iEle)) > EndcapSelections.at(2)) skipEle = true;
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) &&  fabs(reader.GetFloat("electrons_deltaEtaIn")->at(iEle)) > EndcapSelections.at(3)) skipEle = true;
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetInt("electrons_mishits")->at(iEle) > EndcapSelections.at(4)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_dist")->at(iEle) > EndcapSelections.at(5)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_dcot")->at(iEle) > EndcapSelections.at(6)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_dz_PV")->at(iEle) > EndcapSelections.at(7)) skipEle = true;    
+ if ((fabs(reader.Get4V("electrons")->at(iEle).Eta()) > 1.5) && reader.GetFloat("electrons_dxy_PV")->at(iEle) > EndcapSelections.at(8)) skipEle = true;    
+
+ return (!skipEle);
+ 
+}
+
+
+//  ------------------------------------------------------------
+
+/** Muon isolation / ID */
+
+bool IsMuIsolatedID_VBF( treeReader& reader,const std::vector<double>& Selections, int iMu){
+ 
+ bool skipMu = false;
+ 
+ if ( (reader.GetFloat("muons_tkIsoR03")->at(iMu) + reader.GetFloat("muons_emIsoR03")->at(iMu) + reader.GetFloat("muons_hadIsoR03")->at(iMu)) / reader.Get4V("muons")->at(iMu).pt() > Selections.at(0) ) skipMu = true;
+ if (reader.GetFloat("muons_normalizedChi2")->at(iMu) >= Selections.at(1) )           skipMu = true;
+ if (reader.GetInt("muons_numberOfValidTrackerHits")->at(iMu) <=  Selections.at(2)  )     skipMu = true;
+ if (reader.GetInt("muons_numberOfValidMuonHits")->at(iMu) <=  Selections.at(3)  )     skipMu = true;
+ if (reader.GetInt("muons_tracker")->at(iMu) != Selections.at(4)  )     skipMu = true;
+ if (reader.GetInt("muons_standalone")->at(iMu) != Selections.at(5)  )     skipMu = true;
+ if (reader.GetInt("muons_global")->at(iMu) != Selections.at(6)  )     skipMu = true;
+ if (reader.GetFloat("muons_dz_PV")->at(iMu)  > Selections.at(7)) skipMu = true;    
+ if (reader.GetFloat("muons_dxy_PV")->at(iMu) > Selections.at(8)) skipMu = true;    
+ 
+ return (!skipMu);
+}
+
+
+
+bool IsMuIsolatedIDPUCorrected_VBF( treeReader& reader,const std::vector<double>& Selections, int iMu){
+ 
+ bool skipMu = false;
+ 
+ if ( (reader.GetFloat("muons_tkIsoR03")->at(iMu) + reader.GetFloat("muons_emIsoR03")->at(iMu) + reader.GetFloat("muons_hadIsoR03")->at(iMu)  - reader.GetFloat("rho_isolation")->at(0) * 0.3 * 0.3 * reader.GetFloat("PV_normalizedChi2")->size()) / reader.Get4V("muons")->at(iMu).pt() > Selections.at(0) ) skipMu = true;
+ if (reader.GetFloat("muons_normalizedChi2")->at(iMu) >= Selections.at(1) )           skipMu = true;
+ if (reader.GetInt("muons_numberOfValidTrackerHits")->at(iMu) <=  Selections.at(2)  )     skipMu = true;
+ if (reader.GetInt("muons_numberOfValidMuonHits")->at(iMu) <=  Selections.at(3)  )     skipMu = true;
+ if (reader.GetInt("muons_tracker")->at(iMu) != Selections.at(4)  )     skipMu = true;
+ if (reader.GetInt("muons_standalone")->at(iMu) != Selections.at(5)  )     skipMu = true;
+ if (reader.GetInt("muons_global")->at(iMu) != Selections.at(6)  )     skipMu = true;
+ if (reader.GetFloat("muons_dz_PV")->at(iMu)  > Selections.at(7)) skipMu = true;    
+ if (reader.GetFloat("muons_dxy_PV")->at(iMu) > Selections.at(8)) skipMu = true;    
+ 
+ return (!skipMu);
+}
