@@ -208,12 +208,12 @@ QCD_Pt-80to170_EMEnriched_TuneZ2_7TeV-pythia6_Spring11-PU_S1_START311_V1G1-v1   
 ##              TauNu - TauNu   (0.1125)*(0.1125)
 ##              LNu - LNu       (0.1075+0.1057)*(0.1075+0.1057)
 
-#GluGluToHToWWToLNuTauNu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1  0.206588          ggH130
-#GluGluToHToWWTo2Tau2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1   0.0545054         ggH130
-#GluGluToHToWWTo2L2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.195753          ggH130
-#VBF_HToWWToLNuTauNu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.016884          qqH130
-#VBF_HToWWTo2Tau2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00445462        qqH130
-#VBF_HToWWTo2L2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.0159985         qqH130
+GluGluToHToWWToLNuTauNu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1  0.206588          ggH130
+GluGluToHToWWTo2Tau2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1   0.0545054         ggH130
+GluGluToHToWWTo2L2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.195753          ggH130
+VBF_HToWWToLNuTauNu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.016884          qqH130
+VBF_HToWWTo2Tau2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00445462        qqH130
+VBF_HToWWTo2L2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.0159985         qqH130
 
 
 
@@ -305,12 +305,12 @@ QCD_Pt-80to170_EMEnriched_TuneZ2_7TeV-pythia6_Spring11-PU_S1_START311_V1G1-v1   
 ## ggH 5.249        7.41e-01
 ## qqH 0.6371       7.41e-01
 #
-GluGluToHToWWToLNuTauNu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	0.18658           ggH200
-GluGluToHToWWTo2Tau2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0492266         ggH200
-GluGluToHToWWTo2L2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.176795          ggH200
-VBF_HToWWToLNuTauNu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0226462         qqH200
-VBF_HToWWTo2Tau2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0059749         qqH200
-VBF_HToWWTo2L2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0214585         qqH200
+#GluGluToHToWWToLNuTauNu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	0.18658           ggH200
+#GluGluToHToWWTo2Tau2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0492266         ggH200
+#GluGluToHToWWTo2L2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.176795          ggH200
+#VBF_HToWWToLNuTauNu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0226462         qqH200
+#VBF_HToWWTo2Tau2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0059749         qqH200
+#VBF_HToWWTo2L2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0214585         qqH200
 
 
 
