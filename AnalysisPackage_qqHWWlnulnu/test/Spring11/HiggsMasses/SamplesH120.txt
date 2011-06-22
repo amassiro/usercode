@@ -191,7 +191,7 @@ QCD_Pt-80to170_EMEnriched_TuneZ2_7TeV-pythia6_Spring11-PU_S1_START311_V1G1-v1   
 ##              LNu - LNu       (0.1075+0.1057)*(0.1075+0.1057)
 GluGluToHToWWToLNuTauNu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1  1.141e-01           ggH120
 GluGluToHToWWTo2Tau2Nu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1   3.010e-02           ggH120
-GluGluToHToWWTo2L2Nu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   1.081e-01           ggH120
+GluGluToHToWWTo2L2Nu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v2 	   1.081e-01           ggH120
 VBF_HToWWToLNuTauNu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   8.705e-03           qqH120
 VBF_HToWWTo2Tau2Nu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   2.297e-03           qqH120
 VBF_HToWWTo2L2Nu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   8.2485e-03          qqH120
