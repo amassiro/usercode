@@ -19,6 +19,7 @@
   myfile << "cd /gwpool/users/amassiro/VBF/Analysis/Spring11/AnalysisPackage_qqHWWlnulnu/" << std::endl;
   myfile << "source scripts/setup.sh" << std::endl;
   myfile << "./bin/NtupleProducer.exe test/Spring11/dir_cfg_skimmed/NtupleProducer_" << nameSample[iSample] << ".cfg" << std::endl;
+ // myfile << "./bin/NtupleProducer_JES.exe test/Spring11/dir_cfg_skimmed/NtupleProducer_" << nameSample[iSample] << ".cfg" << std::endl;
   myfile << std::endl;
 
   myfile.close(); 
@@ -27,7 +28,7 @@
   TString Command2Line = Form("chmod +x %s",nameFile);
   gSystem->Exec(Command2Line);
 
-  Command2Line = Form("qsub -V -d ./ -q longcms %s",nameFile);
+// Command2Line = Form("qsub -V -d ./ -q longcms %s",nameFile);
   gSystem->Exec(Command2Line);
   
  }
