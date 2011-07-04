@@ -148,10 +148,13 @@ int getCJVJES(std::vector<ROOT::Math::XYZTVector>& jets,
 /** Electron isolation / ID */
 bool IsEleIsolatedID_VBF( treeReader& reader,const std::vector<double>& BarrelSelections, const std::vector<double>& EndCapSelections, int iEle);
 bool IsEleIsolatedIDPUCorrected_VBF( treeReader& reader,const std::vector<double>& BarrelSelections, const std::vector<double>& EndCapSelections, int iEle);
+bool IsEle_VBFMerged( treeReader& reader, int iEle);
 
 /** Muon isolation  / ID */
 bool IsMuIsolatedID_VBF( treeReader& reader,const std::vector<double>& Selections, int iMu);
 bool IsMuIsolatedIDPUCorrected_VBF( treeReader& reader,const std::vector<double>& Selections, int iMu);
+bool IsMu_VBFMerged( treeReader& reader, int iMu);
+
 
 #endif
 

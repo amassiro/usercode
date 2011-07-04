@@ -1070,6 +1070,172 @@ bool IsEleIsolatedIDPUCorrected_VBF( treeReader& reader,const std::vector<double
 }
 
 
+/** Electron definition in merged analysis */
+bool IsEle_VBFMerged( treeReader& reader, int iEle){
+ bool skipEle = false;
+ 
+  if ( ! (  reader.GetInt("electrons_numberOfLostHits")-> at(iEle)  == 0  &&   reader.GetFloat("electrons_passVtxConvert")  -> at(iEle)  != 0   )   )  skipEle = true;
+  
+//    ELE_MERGE_CONV =  " ( gsfTrack.trackerExpectedHitsInner.numberOfLostHits == 0 && userFloat('convValueMapProd:passVtxConvert') != 0 ) "
+
+  if ( ! (
+         ( reader.GetInt("electrons_isEB")-> at(iEle)  == 1   
+           && reader.Get4V("electrons")->at(iEle).pt() < 20 
+           && fabs(reader.GetFloat("electrons_sigmaIetaIeta")->at(iEle)) < 0.01
+           && reader.GetFloat("electrons_deltaPhiIn")->at(iEle) > -0.03   && reader.GetFloat("electrons_deltaPhiIn")->at(iEle) < 0.03
+           && reader.GetFloat("electrons_deltaEtaIn")->at(iEle) > -0.004 && reader.GetFloat("electrons_deltaEtaIn")->at(iEle) < 0.004
+           && reader.GetFloat("electrons_hOverE")->at(iEle) < 0.025       && (reader.GetFloat("electrons_fbrem")->at(iEle) > 0.15  ||   ( fabs(reader.GetFloat("electrons_etaSC")->at(iEle)) < 1. &&    reader.GetFloat("electrons_eSCOverP")->at(iEle) > 0.95))
+          )   ||
+          ( reader.GetInt("electrons_isEB")-> at(iEle)  == 0   
+           && reader.Get4V("electrons")->at(iEle).pt() < 20 
+           && fabs(reader.GetFloat("electrons_sigmaIetaIeta")->at(iEle)) < 0.03
+           && reader.GetFloat("electrons_deltaPhiIn")->at(iEle) > -0.02   && reader.GetFloat("electrons_deltaPhiIn")->at(iEle) < 0.02
+           && reader.GetFloat("electrons_deltaEtaIn")->at(iEle) > -0.005 && reader.GetFloat("electrons_deltaEtaIn")->at(iEle) < 0.005
+           && reader.GetFloat("electrons_hOverE")->at(iEle) < 0.1 && reader.GetFloat("electrons_fbrem")->at(iEle) > 0.15 
+          )  ||
+          ( reader.GetInt("electrons_isEB")-> at(iEle)  == 1 
+           && reader.Get4V("electrons")->at(iEle).pt() > 20 
+           && fabs(reader.GetFloat("electrons_sigmaIetaIeta")->at(iEle)) < 0.01
+           && reader.GetFloat("electrons_deltaPhiIn")->at(iEle) > -0.06   && reader.GetFloat("electrons_deltaPhiIn")->at(iEle) < 0.06
+           && reader.GetFloat("electrons_deltaEtaIn")->at(iEle) > -0.004 && reader.GetFloat("electrons_deltaEtaIn")->at(iEle) < 0.004
+           && reader.GetFloat("electrons_hOverE")->at(iEle) < 0.04
+          )  ||
+          ( reader.GetInt("electrons_isEB")-> at(iEle)  == 0 
+           && reader.Get4V("electrons")->at(iEle).pt() > 20 
+           && fabs(reader.GetFloat("electrons_sigmaIetaIeta")->at(iEle)) < 0.03
+           && reader.GetFloat("electrons_deltaPhiIn")->at(iEle) > -0.03   && reader.GetFloat("electrons_deltaPhiIn")->at(iEle) < 0.03
+           && reader.GetFloat("electrons_deltaEtaIn")->at(iEle) > -0.007 && reader.GetFloat("electrons_deltaEtaIn")->at(iEle) < 0.007
+           && reader.GetFloat("electrons_hOverE")->at(iEle) < 0.1
+          )
+       )
+      )    skipEle = true;
+      
+//          ELE_MERGE_ID   =  ("(( isEB && pt < 20 && sigmaIetaIeta < 0.01 &&" +           
+//                   " deltaPhiSuperClusterTrackAtVtx > -0.03 && deltaPhiSuperClusterTrackAtVtx < 0.03 &&" +
+//                   " deltaEtaSuperClusterTrackAtVtx > -0.004 && deltaEtaSuperClusterTrackAtVtx < 0.004 &&" +
+//                   " hadronicOverEm < 0.025 && (fbrem > 0.15 || ( abs(superCluster.eta) < 1. && eSuperClusterOverP > 0.95 )) ) ||" +
+//                   " ( (!isEB) && pt < 20 && sigmaIetaIeta < 0.03 &&" +           
+//                   " deltaPhiSuperClusterTrackAtVtx > -0.02 && deltaPhiSuperClusterTrackAtVtx < 0.02 &&" +
+//                   " deltaEtaSuperClusterTrackAtVtx > -0.005 && deltaEtaSuperClusterTrackAtVtx < 0.005 &&" +
+//                   " hadronicOverEm < 0.1 && fbrem > 0.15) ||" +
+//                   " ( isEB && pt > 20 && sigmaIetaIeta < 0.01 &&" +           
+//                   " deltaPhiSuperClusterTrackAtVtx > -0.06 && deltaPhiSuperClusterTrackAtVtx < 0.06 &&" +
+//                   " deltaEtaSuperClusterTrackAtVtx > -0.004 && deltaEtaSuperClusterTrackAtVtx < 0.004 &&" +
+//                   " hadronicOverEm < 0.04) ||" +
+//                   " ( (!isEB) && pt > 20 && sigmaIetaIeta < 0.03  &&  " +
+//                   " deltaPhiSuperClusterTrackAtVtx > -0.03 && deltaPhiSuperClusterTrackAtVtx < 0.03 &&" +
+//                   " deltaEtaSuperClusterTrackAtVtx > -0.007 && deltaEtaSuperClusterTrackAtVtx < 0.007 && " + 
+//                   " hadronicOverEm < 0.1 ) ) ")
+//
+          
+  if ( !    (  fabs(reader.GetFloat("electrons_tip")-> at(iEle)) < 0.02    &&    fabs(reader.GetFloat("electrons_dzPV")-> at(iEle)) < 0.1   )  )  skipEle = true;
+
+//     ELE_MERGE_IP   =   "( abs(userFloat('tip')) < 0.02 && abs(userFloat('dzPV')) < 0.1 )"
+        
+        
+  if ( !    (  
+                 ( reader.GetInt("electrons_isEB")-> at(iEle)  == 1    &&   reader.GetFloat("electrons_PFIso")-> at(iEle) /  reader.Get4V("electrons")->at(iEle).pt()  < 0.13  )    ||
+                 ( reader.GetInt("electrons_isEB")-> at(iEle)  == 0    &&   reader.GetFloat("electrons_PFIso")-> at(iEle) /  reader.Get4V("electrons")->at(iEle).pt()  < 0.09  )
+              )
+      )  skipEle = true;
+        
+//    ELE_MERGE_ISO  =   "( (isEB && " + SMURF_ISO + " < 0.13) || ( !isEB && " + SMURF_ISO + " < 0.09 ) )"
+//    SMURF_ISO = ("( ( userFloat('eleSmurfPF') ) / pt )")
+        
+  double lik =  reader.GetFloat("egammaIDLikelihood")-> at(iEle) ;
+  bool ELE_ID_LH_80_2011 = (  
+         (reader.GetInt("electrons_isEB")-> at(iEle)  == 1  &&  reader.GetInt("electrons_numberOfBrems")-> at(iEle)  == 0 && lik > 0.193 ) ||
+         (reader.GetInt("electrons_isEB")-> at(iEle)  == 1  &&  reader.GetInt("electrons_numberOfBrems")-> at(iEle)   >  0 && lik > 1.345 ) ||
+         (reader.GetInt("electrons_isEB")-> at(iEle)  == 0  &&  reader.GetInt("electrons_numberOfBrems")-> at(iEle)  == 0 && lik > 0.810 ) ||
+         (reader.GetInt("electrons_isEB")-> at(iEle)  == 0  &&  reader.GetInt("electrons_numberOfBrems")-> at(iEle)   >  0 && lik > 3.021 )
+         );
+         
+  bool ELE_ID_LH_90_2011 = (  
+         (reader.GetInt("electrons_isEB")-> at(iEle)  == 1  &&  reader.GetInt("electrons_numberOfBrems")-> at(iEle)  == 0 && lik > -1.497 ) ||
+         (reader.GetInt("electrons_isEB")-> at(iEle)  == 1  &&  reader.GetInt("electrons_numberOfBrems")-> at(iEle)   >  0 && lik > -1.521 ) ||
+         (reader.GetInt("electrons_isEB")-> at(iEle)  == 0  &&  reader.GetInt("electrons_numberOfBrems")-> at(iEle)  == 0 && lik > -2.571 ) ||
+         (reader.GetInt("electrons_isEB")-> at(iEle)  == 0  &&  reader.GetInt("electrons_numberOfBrems")-> at(iEle)   >  0 && lik > -0.657 )
+         );
+        
+  if ( !    (  
+                 ( reader.Get4V("electrons")->at(iEle).pt()   < 20 &&   ELE_ID_LH_80_2011  )    ||
+                 ( reader.Get4V("electrons")->at(iEle).pt() >= 20 &&   ELE_ID_LH_90_2011  ) 
+              )
+      )  skipEle = true;
+           
+///ELE_MERGE_ID2   =  ("( (pt < 20 && " + ELE_ID_LH_80_2011 +") || (pt >= 20 && "+ ELE_ID_LH_90_2011 + ") )")
+//           
+//           ELE_ID_LH_80_2011=("( (  isEB  && numberOfBrems == 0 && electronID('egammaIDLikelihood') >  0.193 ) ||" +           
+//                   "  (  isEB  && numberOfBrems  > 0 && electronID('egammaIDLikelihood') >  1.345 ) ||" + 
+//                   "  ((!isEB) && numberOfBrems == 0 && electronID('egammaIDLikelihood') >  0.810 ) ||" + 
+//                   "  ((!isEB) && numberOfBrems  > 0 && electronID('egammaIDLikelihood') >  3.021 ) )" )
+//
+//           ELE_ID_LH_90_2011=("( (  isEB  && numberOfBrems == 0 && electronID('egammaIDLikelihood') > -1.497 ) ||" +           
+//                   "  (  isEB  && numberOfBrems  > 0 && electronID('egammaIDLikelihood') > -1.521 ) ||" + 
+//                   "  ((!isEB) && numberOfBrems == 0 && electronID('egammaIDLikelihood') > -2.571 ) ||" + 
+//                   "  ((!isEB) && numberOfBrems  > 0 && electronID('egammaIDLikelihood') > -0.657 ) )" )
+//
+           
+ return (!skipEle);
+}
+
+
+
+
+/** Muon definition in merged analysis */
+
+bool IsMu_VBFMerged( treeReader& reader, int iMu){
+ bool skipMu = false;
+ 
+  if (!(
+       (   (reader.GetInt("muons_global")->at(iMu)   && reader.GetFloat("muons_normalizedChi2")->at(iMu)<10  &&    reader.GetInt("muons_numberOfValidMuonHits")->at(iMu)>0 && reader.GetInt("muons_numberOfMatches")->at(iMu)>1) ||
+           (reader.GetInt("muons_tracker")->at(iMu) && reader.GetFloat("muons_TMLastStationTight")->at(iMu) > 0.5  ) )
+       && reader.GetInt("muons_innerTrack_found")->at(iMu)>10 
+       && fabs(reader.GetFloat("muons_trackPtErrorOverPt")->at(iMu)) < 0.10)   
+     ) skipMu=true;
+
+//    MUON_ID_CUT=("(( (isGlobalMuon() && "
+//                 "    globalTrack.normalizedChi2 <10 &&" +
+//                 "    globalTrack.hitPattern.numberOfValidMuonHits > 0 && " + 
+//                 "    numberOfMatches > 1 ) || " + 
+//                 "   (isTrackerMuon() && muonID('TMLastStationTight')) ) && " + 
+//                 " innerTrack.found >10 &&" +
+//                 " innerTrack.hitPattern().numberOfValidPixelHits > 0 && " + 
+//                 " abs(track.ptError / pt) < 0.10 )")
+//    
+
+
+ float SMURF_ISO = reader.GetFloat("muons_PFIso")->at(iMu) / (reader.Get4V("muons")->at(iMu).pt());
+ 
+ if(!(
+    (fabs(reader.Get4V("muons")->at(iMu).eta())<1.479     && reader.Get4V("muons")->at(iMu).pt()>20 && SMURF_ISO<0.13) ||
+    (fabs(reader.Get4V("muons")->at(iMu).eta())>=1.479   &&  reader.Get4V("muons")->at(iMu).pt()>20 && SMURF_ISO<0.09) ||
+    (fabs(reader.Get4V("muons")->at(iMu).eta())<1.479     &&  reader.Get4V("muons")->at(iMu).pt()<=20 && SMURF_ISO<0.06) ||
+    (fabs(reader.Get4V("muons")->at(iMu).eta())>=1.479   &&  reader.Get4V("muons")->at(iMu).pt()<=20 && SMURF_ISO<0.05)
+    )
+   )  skipMu=true;
+
+//    SMURF_ISO = ("( userFloat('muSmurfPF') )/ pt")
+//    MUON_MERGE_ISO  =   ("( (abs(eta) < 1.479 && pt >  20 && " + SMURF_ISO + " < 0.13) || ( abs(eta) >= 1.479 && pt >  20 && " + SMURF_ISO + " < 0.09 ) || " + 
+//                         "  (abs(eta) < 1.479 && pt <= 20 && " + SMURF_ISO + " < 0.06) || ( abs(eta) >= 1.479 && pt <= 20 && " + SMURF_ISO + " < 0.05 ) )  ")
+//    
+
+   if(!(
+       (
+        (reader.Get4V("muons")->at(iMu).pt()>=20 && fabs(reader.GetFloat("muons_tip")->at(iMu))<0.02)||
+        (reader.Get4V("muons")->at(iMu).pt()<20 && fabs(reader.GetFloat("muons_tip")->at(iMu))<0.01)
+       ) &&
+      fabs(reader.GetFloat("muons_dzPV")->at(iMu))<0.1)
+   ) skipMu=true;
+
+//    MUON_MERGE_IP  = ("( ( (pt >= 20 && abs(userFloat('tip')) < 0.02) || (pt < 20 && abs(userFloat('tip')) < 0.01) ) && " +
+//                      "  abs(userFloat('dzPV'))  < 0.1 )" )
+//    
+
+ return (!skipMu); 
+}
+
+
 //  ------------------------------------------------------------
 
 /** Muon isolation / ID */

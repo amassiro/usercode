@@ -111,8 +111,9 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
  //~~~~ met variables
  vars.m_reducedTree-> Branch("met_X",    &vars.met_X,       "met_X/D");
  vars.m_reducedTree-> Branch("met_Y",    &vars.met_Y,       "met_Y/D");
- vars.m_reducedTree-> Branch("met",        &vars.met,       "met/D");
- vars.m_reducedTree-> Branch("pmet",    &vars.pmet,       "pmet/D");
+ vars.m_reducedTree-> Branch("met",        &vars.met,           "met/D");
+ vars.m_reducedTree-> Branch("pmet",      &vars.pmet,         "pmet/D");
+ vars.m_reducedTree-> Branch("chmet",    &vars.chmet,       "chmet/D");
  
  //~~~~ jet variables
  
@@ -465,8 +466,41 @@ void SetMetVariables(Variables& vars, treeReader& reader, const std::string& met
  vars.met_X = reader.Get4V(metType)->at(0).X();
  vars.met_Y = reader.Get4V(metType)->at(0).Y();
  vars.met = reader.Get4V(metType)->at(0).P();
-}
+ 
 
+
+ double Lep1_eta = 100. ;
+ if (FlavourLep1 == 11 ) Lep1_eta = reader.Get4V ("electrons")->at (iLep1).eta () ;
+ else Lep1_eta = reader.Get4V ("muons")->at (iLep1).eta () ;
+ double Lep2_eta = 100. ;
+ if (FlavourLep2 == 11 ) Lep2_eta = reader.Get4V ("electrons")->at (iLep2).eta () ;
+ else Lep2_eta = reader.Get4V ("muons")->at (iLep2).eta () ;
+
+ ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >  totalP4; 
+ for(int iCand = 0; iCand <  reader.Get4V ("PFCandidate")->size(); iCand ++){
+        double DPhi1 = deltaPhi (reader.Get4V ("PFCandidate")->at(iCand).Eta(), Lep1_phi);
+        double DEta1 = Lep1_eta - reader.Get4V ("PFCandidate")->at(iCand).Eta();        
+        double DR1 = sqrt(DPhi1 * DPhi1 + DEta1 * DEta1);
+        
+        double DPhi2 = deltaPhi (reader.Get4V ("PFCandidate")->at(iCand).Eta(), Lep2_phi);
+        double DEta2 = Lep2_eta - reader.Get4V ("PFCandidate")->at(iCand).Eta();        
+        double DR2 = sqrt(DPhi2 * DPhi2 + DEta2 * DEta2);
+        
+        if(DR1 <=0.1) continue;
+        if(DR2 <=0.1) continue;
+        totalP4 += reader.Get4V ("PFCandidate")->at(iCand);
+ }
+ 
+  if (FlavourLep1 == 11 ) totalP4 +=  reader.Get4V ("electrons")->at (iLep1);
+  else totalP4 +=  reader.Get4V ("muons")->at (iLep1);
+
+  if (FlavourLep2 == 11 ) totalP4 +=  reader.Get4V ("electrons")->at (iLep2);
+  else totalP4 +=  reader.Get4V ("muons")->at (iLep2);
+
+
+  vars.chmet = - totalP4.Et();
+  
+}
 
 void SetEventVariables(Variables& vars, treeReader& reader)
 {

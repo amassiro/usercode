@@ -115,7 +115,8 @@ struct Variables
  double met_Y;
  double met;
  double pmet; 
- 
+ double chmet; 
+  
  //---- jet variables
  
  double q1_pX;
