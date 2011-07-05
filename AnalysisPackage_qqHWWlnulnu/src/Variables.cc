@@ -498,7 +498,7 @@ void SetMetVariables(Variables& vars, treeReader& reader, const std::string& met
   else totalP4 +=  reader.Get4V ("muons")->at (iLep2);
 
 
-  vars.chmet = - totalP4.Et();
+  vars.chmet = totalP4.Et();
   
 }
 
