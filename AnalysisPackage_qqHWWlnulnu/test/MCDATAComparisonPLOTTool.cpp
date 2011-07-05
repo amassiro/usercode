@@ -244,9 +244,17 @@ int main(int argc, char** argv)
  TFile outFile(OutFileName.c_str(),"RECREATE");
  outFile.cd();
  
+ ///==== Latinos flag ==== 
+ bool  Latinos = false; 
+ try {
+  Latinos = gConfigParser -> readBoolOption("Input::Latinos");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ std::cout << ">>>>> input::Latinos  " << Latinos  << std::endl;  
  
- ///==== debug flag ====
- 
+ ///==== debug flag ==== 
  bool  debug = false; 
  try {
   debug = gConfigParser -> readBoolOption("Input::debug");
@@ -255,7 +263,6 @@ int main(int argc, char** argv)
   std::cerr << " exception = " << exceptionString << std::endl;
  }
  std::cout << ">>>>> input::debug  " << debug  << std::endl;  
- 
  ///==== program ====
  
  
@@ -326,7 +333,9 @@ int main(int argc, char** argv)
   }
   else {
    Normalization[iSample] = 0; 
-  }    
+  }  
+  
+  if (Latinos) Normalization[iSample] = XSection * LUMI / 1000.;
  }
  
  
@@ -757,6 +766,7 @@ int main(int argc, char** argv)
  latex->Draw();
  cTrendPull->cd(2);
  hPullTrendSumMC->Draw("EP");
+ gPad->SetGrid();
  cTrendPull->cd(3);
  gPad->SetGrid();
  hPullTrendTraceSumMC->Draw();
