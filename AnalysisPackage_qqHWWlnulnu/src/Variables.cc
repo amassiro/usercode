@@ -114,7 +114,8 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
  vars.m_reducedTree-> Branch("met",        &vars.met,           "met/D");
  vars.m_reducedTree-> Branch("pmet",      &vars.pmet,         "pmet/D");
  vars.m_reducedTree-> Branch("chmet",    &vars.chmet,       "chmet/D");
- 
+  vars.m_reducedTree-> Branch("pchmet", &vars.pchmet,    "pchmet/D");
+  
  //~~~~ jet variables
  
  vars.m_reducedTree -> Branch("q1_pX", &vars.q1_pX, "q1_pX/D"); 
@@ -499,6 +500,15 @@ void SetMetVariables(Variables& vars, treeReader& reader, const std::string& met
 
 
   vars.chmet = totalP4.Et();
+  
+  
+  ///==== proj-chmet ====
+  
+ double chMET_phi = totalP4.Phi () ;
+ deltaPhiMin = std::min (deltaPhi (chMET_phi, Lep1_phi), deltaPhi (chMET_phi, Lep2_phi)) ;
+
+ if (deltaPhiMin < 1.57079632679) vars.pchmet = totalP4.Et() * sin (deltaPhiMin) ;
+ else vars.pchmet = totalP4.Et() ;
   
 }
 
