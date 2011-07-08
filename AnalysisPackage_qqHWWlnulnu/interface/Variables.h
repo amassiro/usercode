@@ -227,6 +227,7 @@ struct Variables
  
  //---- MC info ----
  int numPUMC;
+ double ptH;
  
  //---- Trigger info ----
  std::vector<std::string> HLTVector_names_;

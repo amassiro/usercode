@@ -220,6 +220,8 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
  
  //~~~~ MC variables
  vars.m_reducedTree -> Branch("numPUMC", &vars.numPUMC, "numPUMC/I"); 
+ vars.m_reducedTree -> Branch("ptH", &vars.ptH, "ptH/D"); 
+ 
  
 }
 
@@ -498,9 +500,9 @@ void SetMetVariables(Variables& vars, treeReader& reader, const std::string& met
   if (FlavourLep2 == 11 ) totalP4 +=  reader.Get4V ("electrons")->at (iLep2);
   else totalP4 +=  reader.Get4V ("muons")->at (iLep2);
 
-
   vars.chmet = totalP4.Et();
   
+  totalP4 *= -1;  
   
   ///==== proj-chmet ====
   
@@ -531,6 +533,14 @@ void SetMCVariables(Variables& vars, treeReader& reader)
  else {
   vars.numPUMC = -1;
  }
+ 
+ if (reader.Get4V("mc_H")->size() != 0) {
+  vars.ptH = reader.Get4V("mc_H")->at(0).Pt();
+ }
+ else {
+  vars.ptH = -1;
+ }
+ 
 }
 
 
