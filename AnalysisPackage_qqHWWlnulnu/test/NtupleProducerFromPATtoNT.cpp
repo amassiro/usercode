@@ -165,7 +165,7 @@ int main(int argc, char** argv)
  // define variable container
  Variables vars;
  InitializeTree(vars, outFileName);
- InitializeTreeTrigger(vars, HLTVector);
+ InitializeTreeTrigger(vars, HLTVector, reader);
  
  
  vars.XSection = inputXSection;

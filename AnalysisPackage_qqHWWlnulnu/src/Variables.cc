@@ -248,13 +248,68 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
 }
 
 
-void InitializeTreeTrigger(Variables& vars, const std::vector<std::string> & HLTVector){
+void InitializeTreeTrigger(Variables& vars, const std::vector<std::string> & HLTVector, treeReader& reader){
+
+// std::vector < std::pair < std::string, std::vector<std::string> > > expandedHLTVector;
+//  std::vector < std::pair < std::string, std::vector<int> > > expandedHLTVector;
+//  std::vector < std::vector<int> > expandedHLTVector;
+    
+ //==== (1)     create list of trigger pieces: A_B*C_D* --> A_B, C_D
+ //==== (2)     and create list of triggers: A* ---> A_1, A_43, ...
+ std::string strStar ("*");
+ for (int iHLT = 0; iHLT < HLTVector.size(); iHLT++){ 
+ //==== (1)  
+  size_t found;
+  size_t pos0 = 0;
+  std::vector <std::string> listExpandedHLTVector;
+  while(1) { 
+     found = HLTVector.at(iHLT).find(strStar, pos0);
+     if (found != std::string::npos) {
+        std::string tempName = HLTVector.at(iHLT).substr (pos0,found-1); // "generalities"          
+        listExpandedHLTVector.push_back(tempName);
+        pos0 = found+1;
+     }
+     else {
+        break;
+     }
+   }
+
+ //==== (2)  
+  std::vector <int> numbersExpandedHLTVector;
+  
+  int entryMAXt = reader.GetEntries();
+  for(int iEvent = 0 ; iEvent < entryMAXt ; ++iEvent) {
+   reader.GetEntry(iEvent);
+   for (int iReaderHLT = 0; iReaderHLT < reader.GetString("HLT_Names")->size(); iReaderHLT++){
+    pos0 = 0;
+    bool is_a_usable_trigger = true;
+    for (int subPath = 0; subPath < listExpandedHLTVector.size(); subPath++){
+      found = reader.GetString("HLT_Names")->at(iReaderHLT).find(listExpandedHLTVector.at(subPath), pos0);
+      if (found == std::string::npos)  is_a_usable_trigger = false;
+      else pos0 = found+1;
+    }
+    if  (is_a_usable_trigger) {
+      numbersExpandedHLTVector.push_back(iReaderHLT);
+    }
+  }
+  
+    for (int iReaderHLT = 0; iReaderHLT < reader.GetString("HLT_Names")->size(); iReaderHLT++){
+      if (reader.GetString("HLT_Names")->at(iReaderHLT) == HLTVector.at(iHLT)) numbersExpandedHLTVector.push_back(iReaderHLT);
+    }
+  
+//  std::pair < std::string, std::vector<int> > pair_listExpandedHLTVector (HLTVector.at(iHLT), numbersExpandedHLTVector);
+//  vars.expandedHLTVector.push_back(pair_listExpandedHLTVector);
+  vars.expandedHLTVector.push_back(numbersExpandedHLTVector);
+  }
+ }
+
+ //==== set branches ====
  vars.HLTVector_names_ = HLTVector;
  for (int iHLT = 0; iHLT < vars.HLTVector_names_.size(); iHLT++){
   vars.HLTVector_.push_back(-1);
  }
  vars.m_reducedTree -> Branch("HLTVectorNames","std::vector<std::string>",&vars.HLTVector_names_);
- vars.m_reducedTree -> Branch("HLTVector","std::vector<int>",&vars.HLTVector_);
+ vars.m_reducedTree -> Branch("HLTVector","std::vector<int>",&vars.HLTVector_);  
 }
 
 
@@ -262,19 +317,35 @@ void SetTriggerVariables(Variables& vars, treeReader& reader){
  for (int iHLT = 0; iHLT < vars.HLTVector_names_.size(); iHLT++){
   vars.HLTVector_.at(iHLT) = -1;
  }
+
+// 
+// for (std::vector<std::string>::const_iterator iHLTA = vars.HLTVector_names_.begin(); iHLTA<vars.HLTVector_names_.end(); iHLTA++){
+//  for (int iHLT = 0; iHLT < reader.GetString("HLT_Names")->size(); iHLT++){
+//   if (reader.GetString("HLT_Names")->at(iHLT) == *iHLTA && reader.GetFloat("HLT_Accept")->at(iHLT) == 1) {
+//    vars.HLTVector_.at(iHLTA - vars.HLTVector_names_.begin()) = 1;
+//   }
+//   else if (reader.GetString("HLT_Names")->at(iHLT) == *iHLTA && reader.GetFloat("HLT_Accept")->at(iHLT) != 1){
+//    vars.HLTVector_.at(iHLTA - vars.HLTVector_names_.begin()) = 0;
+//   }
+//  }
+// }
+//
+
+
+ for (int iHLTExp = 0; iHLTExp < vars.expandedHLTVector.size(); iHLTExp++) {
+    for (int iHLTList = 0; iHLTList < vars.expandedHLTVector.at(iHLTExp).size(); iHLTList++) {
+     for (int iHLT = 0; iHLT < reader.GetString("HLT_Names")->size(); iHLT++){
+       if (iHLT == vars.expandedHLTVector.at(iHLTExp).at(iHLTList) && reader.GetFloat("HLT_Accept")->at(iHLT) == 1) {
+          vars.HLTVector_.at(iHLTExp) = 1;
+        }
+       else if (iHLT == vars.expandedHLTVector.at(iHLTExp).at(iHLTList) && reader.GetFloat("HLT_Accept")->at(iHLT) != 1){
+        if (vars.HLTVector_.at(iHLTExp) != 1) vars.HLTVector_.at(iHLTExp) = 0;
+       } 
+     }
+   }
+ }    
  
- for (std::vector<std::string>::const_iterator iHLTA = vars.HLTVector_names_.begin(); iHLTA<vars.HLTVector_names_.end(); iHLTA++){
-  for (int iHLT = 0; iHLT < reader.GetString("HLT_Names")->size(); iHLT++){
-   if (reader.GetString("HLT_Names")->at(iHLT) == *iHLTA && reader.GetFloat("HLT_Accept")->at(iHLT) == 1) {
-    vars.HLTVector_.at(iHLTA - vars.HLTVector_names_.begin()) = 1;
-   }
-   else if (reader.GetString("HLT_Names")->at(iHLT) == *iHLTA && reader.GetFloat("HLT_Accept")->at(iHLT) != 1){
-    vars.HLTVector_.at(iHLTA - vars.HLTVector_names_.begin()) = 0;
-   }
-  }
  }
- 
-}
 
 
 

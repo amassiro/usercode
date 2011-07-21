@@ -156,6 +156,8 @@ bool IsMuIsolatedIDPUCorrected_VBF( treeReader& reader,const std::vector<double>
 bool IsMu_VBFMerged( treeReader& reader, int iMu);
 bool IsMu_Soft( treeReader& reader, int iMu);
 
+/** Jet ID */
+bool IsJetID( treeReader& reader, int iJet);
 
 #endif
 

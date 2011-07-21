@@ -255,12 +255,15 @@ struct Variables
  std::vector<std::string> HLTVector_names_;
  std::vector<int> HLTVector_;
  
+ //std::vector < std::pair < std::string, std::vector<int> > > expandedHLTVector;
+ std::vector < std::vector<int> > expandedHLTVector;
+  
 };
 
 
 
 void InitializeTree(Variables&, const std::string&);
-void InitializeTreeTrigger(Variables&, const std::vector<std::string> &);
+void InitializeTreeTrigger(Variables&, const std::vector<std::string> &, treeReader&);
 
 void FillTree(Variables& vars);
 void FillEfficiencyTree(Variables& vars);
