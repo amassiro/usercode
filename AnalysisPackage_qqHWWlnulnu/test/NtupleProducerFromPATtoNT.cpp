@@ -309,6 +309,7 @@ int main(int argc, char** argv)
   std::vector<int> whitelistJet; ///~~~~ all jets, 0 if rejected, 1 if accepted
   std::vector<int> blacklistJet; ///~~~~ list of numbers of jets that are "rejected"
   std::vector<int> blacklistJet_forCJV;
+  std::vector<int> blacklistJet_forTotalCJV;
   std::vector<int> blacklistJet_forBtag;
   for (int iJet = 0; iJet < nJets; iJet++){
    bool skipJet = false;
@@ -321,6 +322,7 @@ int main(int argc, char** argv)
     whitelistJet.push_back(0); ///---- reject
     blacklistJet.push_back(iJet); ///---- reject ///== black list is in a different format
     blacklistJet_forCJV.push_back(iJet); ///---- reject ///== black list is in a different format
+    blacklistJet_forTotalCJV.push_back(iJet); ///---- reject ///== black list is in a different format
     blacklistJet_forBtag.push_back(iJet); ///---- reject ///== black list is in a different format
    }
    else {
@@ -419,6 +421,7 @@ int main(int argc, char** argv)
    int numJets_Accepted = GetNumList(whitelistJet);
    if (numJets_Accepted < 2) continue; ///==== at least 2 jets "isolated"
    
+
   ///*************************
   ///**** STEP 3 - Jet ID ****
   ///************* Identification of two tag jets
@@ -458,7 +461,7 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
    }
   }
 
- SetQJetVariables(vars, reader, q1, q2, blacklistJet_forCJV, blacklistJet_forBtag);
+ SetQJetVariables(vars, reader, q1, q2, blacklistJet_forCJV, blacklistJet_forBtag, blacklistJet_forTotalCJV);
 
   ///********************************
   ///**** STEP 4 - Lepton ID ****
@@ -513,6 +516,20 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
   SetMetVariables(vars, reader, "PFMet", leptonILep.at(l1), leptonILep.at(l2),leptonFlavours.at(l1), leptonFlavours.at(l2));
   if (debug) std::cerr << ">> MET variables set" << std::endl;
    
+   
+  ///--- Soft Muon ID
+  SetNSoftMu(vars, reader, leptonILep.at(l1), leptonILep.at(l2),leptonFlavours.at(l1), leptonFlavours.at(l2));
+  if (debug) std::cerr << ">> SoftMu variables set" << std::endl;
+
+  ///--- MT Higgs ----
+  SetMTVariable(vars,reader,"PFMet",leptonILep.at(l1),leptonILep.at(l2),leptonFlavours.at(l1), leptonFlavours.at(l2));
+  if (debug) std::cerr << ">> MT Higgs variables set" << std::endl;
+   
+  ///--- Dphi leptons and jet(s) ----
+  SetDPhiJetll(vars, reader, leptonILep.at(l1),leptonILep.at(l2),leptonFlavours.at(l1), leptonFlavours.at(l2), q1, q2);
+  if (debug) std::cerr << ">> DPhi Jet-leptons variables set" << std::endl;
+   
+      
    
   //---- lepton veto
   std::vector<int> blacklistLepton;

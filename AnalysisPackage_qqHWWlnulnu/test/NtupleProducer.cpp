@@ -722,7 +722,7 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
    }
   }
 
- SetQJetVariables(vars, reader, q1, q2, blacklistJet_forCJV, blacklistJet_forBtag);
+ SetQJetVariables(vars, reader, q1, q2, blacklistJet_forCJV, blacklistJet_forBtag, blacklistJet_forBtag);
 
   ///********************************
   ///**** STEP 4 - Lepton ID ****

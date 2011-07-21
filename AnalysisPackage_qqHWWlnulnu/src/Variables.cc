@@ -114,8 +114,19 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
  vars.m_reducedTree-> Branch("met",        &vars.met,           "met/D");
  vars.m_reducedTree-> Branch("pmet",      &vars.pmet,         "pmet/D");
  vars.m_reducedTree-> Branch("chmet",    &vars.chmet,       "chmet/D");
-  vars.m_reducedTree-> Branch("pchmet", &vars.pchmet,    "pchmet/D");
+ vars.m_reducedTree-> Branch("pchmet", &vars.pchmet,    "pchmet/D");
+ vars.m_reducedTree-> Branch("minMet", &vars.minMet,   "minMet/D");
   
+ //~~ additional variables 
+ vars.m_reducedTree -> Branch("NsoftMu", &vars.NsoftMu, "NsoftMu/I");
+ vars.m_reducedTree -> Branch("mT", &vars.mT, "mT/D");
+ vars.m_reducedTree -> Branch("DPhiJet_ll", &vars.DPhiJet_ll, "DPhiJet_ll/D");
+
+ vars.m_reducedTree -> Branch("DPhiJet_ll", &vars.DPhiJet_ll, "DPhiJet_ll/D");
+ vars.m_reducedTree -> Branch("DPhiSingleJet_ll",    &vars.DPhiSingleJet_ll,    "DPhiSingleJet_ll/D");
+ vars.m_reducedTree -> Branch("DPhiDoubleJet_ll", &vars.DPhiDoubleJet_ll, "DPhiDoubleJet_ll/D");
+
+
  //~~~~ jet variables
  
  vars.m_reducedTree -> Branch("q1_pX", &vars.q1_pX, "q1_pX/D"); 
@@ -143,6 +154,11 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
  
  vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags", &vars.NBjets_trackCountingHighPurBJetTags, "NBjets_trackCountingHighPurBJetTags/I"); 
  vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags", &vars.NBjets_trackCountingHighEffBJetTags, "NBjets_trackCountingHighEffBJetTags/I"); 
+ 
+ vars.m_reducedTree -> Branch("totalJV_20", &vars.totalJV_20, "totalJV_20/I"); 
+ vars.m_reducedTree -> Branch("totalJV_30", &vars.totalJV_30, "totalJV_30/I"); 
+ vars.m_reducedTree -> Branch("totalJV_40", &vars.totalJV_40, "totalJV_40/I"); 
+ 
  vars.m_reducedTree -> Branch("JV_20", &vars.JV_20, "JV_20/I"); 
  vars.m_reducedTree -> Branch("JV_30", &vars.JV_30, "JV_30/I"); 
  vars.m_reducedTree -> Branch("JV_40", &vars.JV_40, "JV_40/I"); 
@@ -192,6 +208,8 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
  vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_10", &vars.NBjets_trackCountingHighPurBJetTags_10, "NBjets_trackCountingHighPurBJetTags_10/I"); 
  vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_15", &vars.NBjets_trackCountingHighPurBJetTags_15, "NBjets_trackCountingHighPurBJetTags_15/I"); 
  vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_20", &vars.NBjets_trackCountingHighPurBJetTags_20, "NBjets_trackCountingHighPurBJetTags_20/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_21", &vars.NBjets_trackCountingHighPurBJetTags_21, "NBjets_trackCountingHighPurBJetTags_21/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_22", &vars.NBjets_trackCountingHighPurBJetTags_22, "NBjets_trackCountingHighPurBJetTags_22/I"); 
  vars.m_reducedTree -> Branch("NBjets_trackCountingHighPurBJetTags_30", &vars.NBjets_trackCountingHighPurBJetTags_30, "NBjets_trackCountingHighPurBJetTags_30/I"); 
  
  vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_m20", &vars.NBjets_trackCountingHighEffBJetTags_m20, "NBjets_trackCountingHighEffBJetTags_m20/I"); 
@@ -211,6 +229,8 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
  vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_10", &vars.NBjets_trackCountingHighEffBJetTags_10, "NBjets_trackCountingHighEffBJetTags_10/I"); 
  vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_15", &vars.NBjets_trackCountingHighEffBJetTags_15, "NBjets_trackCountingHighEffBJetTags_15/I"); 
  vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_20", &vars.NBjets_trackCountingHighEffBJetTags_20, "NBjets_trackCountingHighEffBJetTags_20/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_21", &vars.NBjets_trackCountingHighEffBJetTags_21, "NBjets_trackCountingHighEffBJetTags_21/I"); 
+ vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_22", &vars.NBjets_trackCountingHighEffBJetTags_22, "NBjets_trackCountingHighEffBJetTags_22/I"); 
  vars.m_reducedTree -> Branch("NBjets_trackCountingHighEffBJetTags_30", &vars.NBjets_trackCountingHighEffBJetTags_30, "NBjets_trackCountingHighEffBJetTags_30/I"); 
  
  
@@ -219,7 +239,9 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
  vars.m_reducedTree -> Branch("nPV", &vars.nPV, "nPV/I"); 
  
  //~~~~ MC variables
- vars.m_reducedTree -> Branch("numPUMC", &vars.numPUMC, "numPUMC/I"); 
+ vars.m_reducedTree -> Branch("numPUMC",        &vars.numPUMC,       "numPUMC/I"); 
+ vars.m_reducedTree -> Branch("numPUMCit",     &vars.numPUMCit,     "numPUMCit/I"); 
+ vars.m_reducedTree -> Branch("numPUMCoot", &vars.numPUMCoot, "numPUMCoot/I"); 
  vars.m_reducedTree -> Branch("ptH", &vars.ptH, "ptH/D"); 
  
  
@@ -500,7 +522,7 @@ void SetMetVariables(Variables& vars, treeReader& reader, const std::string& met
   if (FlavourLep2 == 11 ) totalP4 +=  reader.Get4V ("electrons")->at (iLep2);
   else totalP4 +=  reader.Get4V ("muons")->at (iLep2);
 
-  vars.chmet = totalP4.Et();
+  vars.chmet = totalP4.Pt();
   
   totalP4 *= -1;  
   
@@ -509,8 +531,12 @@ void SetMetVariables(Variables& vars, treeReader& reader, const std::string& met
  double chMET_phi = totalP4.Phi () ;
  deltaPhiMin = std::min (deltaPhi (chMET_phi, Lep1_phi), deltaPhi (chMET_phi, Lep2_phi)) ;
 
- if (deltaPhiMin < 1.57079632679) vars.pchmet = totalP4.Et() * sin (deltaPhiMin) ;
- else vars.pchmet = totalP4.Et() ;
+ if (deltaPhiMin < 1.57079632679) vars.pchmet = totalP4.Pt() * sin (deltaPhiMin) ;
+ else vars.pchmet = totalP4.Pt() ;
+  
+  
+ ///==== min Met ====
+  vars.minMet=std::min(fabs(vars.pmet),fabs(vars.pchmet));
   
 }
 
@@ -528,11 +554,30 @@ void SetEventVariables(Variables& vars, treeReader& reader)
 void SetMCVariables(Variables& vars, treeReader& reader)
 {
  if (reader.GetInt("mc_PUit_NumInteractions")->size() != 0) {
-  vars.numPUMC = reader.GetInt("mc_PUit_NumInteractions")->at(0);
+  vars.numPUMCit = reader.GetInt("mc_PUit_NumInteractions")->at(0);
  }
  else {
-  vars.numPUMC = -1;
+  vars.numPUMCit = -1;
  }
+ 
+ if (reader.GetInt("mc_PUoot_NumInteractions")->size() != 0) {
+  vars.numPUMCoot = reader.GetInt("mc_PUoot_NumInteractions")->at(0);
+ }
+ else {
+  vars.numPUMCoot = -1;
+ }
+ 
+ if ( vars.numPUMCit != -1 && vars.numPUMCoot != -1) {
+  vars.numPUMC = (vars.numPUMCit + vars.numPUMCoot) / 3;
+ }
+ else  if ( vars.numPUMCit != -1) {
+   vars.numPUMC = vars.numPUMCit;
+ } else   if ( vars.numPUMCoot != -1) {
+   vars.numPUMC = vars.numPUMCoot / 2;
+ } else {
+    vars.numPUMC = -1;
+ }
+
  
  if (reader.Get4V("mc_H")->size() != 0) {
   vars.ptH = reader.Get4V("mc_H")->at(0).Pt();
@@ -550,7 +595,7 @@ void SetPVVariables(Variables& vars, treeReader& reader)
 }
 
 
-void SetQJetVariables(Variables& vars, treeReader& reader, const int& q1, const int& q2, const std::vector<int>& blacklistJet_forCJV, const std::vector<int>& blacklistJet_forBtag)
+void SetQJetVariables(Variables& vars, treeReader& reader, const int& q1, const int& q2, const std::vector<int>& blacklistJet_forCJV, const std::vector<int>& blacklistJet_forBtag, const std::vector<int>& blacklistJet_forTotalCJV)
 {
  vars.q1_pX = reader.Get4V("jets")->at(q1).X();
  vars.q1_pY = reader.Get4V("jets")->at(q1).Y();
@@ -631,6 +676,8 @@ void SetQJetVariables(Variables& vars, treeReader& reader, const int& q1, const 
  vars.NBjets_trackCountingHighPurBJetTags_05 = 0;
  vars.NBjets_trackCountingHighPurBJetTags_10 = 0;
  vars.NBjets_trackCountingHighPurBJetTags_20 = 0;
+ vars.NBjets_trackCountingHighPurBJetTags_21 = 0;
+ vars.NBjets_trackCountingHighPurBJetTags_22 = 0;
  vars.NBjets_trackCountingHighPurBJetTags_30 = 0;
  
  vars.NBjets_trackCountingHighEffBJetTags_m20 = 0;
@@ -649,6 +696,8 @@ void SetQJetVariables(Variables& vars, treeReader& reader, const int& q1, const 
  vars.NBjets_trackCountingHighEffBJetTags_05 = 0;
  vars.NBjets_trackCountingHighEffBJetTags_10 = 0;
  vars.NBjets_trackCountingHighEffBJetTags_20 = 0;
+ vars.NBjets_trackCountingHighEffBJetTags_21 = 0;
+ vars.NBjets_trackCountingHighEffBJetTags_22 = 0;
  vars.NBjets_trackCountingHighEffBJetTags_30 = 0;
  
  for (int iJet = 0; iJet < reader.Get4V("jets")->size(); iJet++){
@@ -678,6 +727,8 @@ void SetQJetVariables(Variables& vars, treeReader& reader, const int& q1, const 
       if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >  1.0) vars.NBjets_trackCountingHighPurBJetTags_10++;
       if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >  1.5) vars.NBjets_trackCountingHighPurBJetTags_15++;
       if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >  2.0) vars.NBjets_trackCountingHighPurBJetTags_20++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >  2.1) vars.NBjets_trackCountingHighPurBJetTags_21++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >  2.2) vars.NBjets_trackCountingHighPurBJetTags_22++;
       if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >  3.0) vars.NBjets_trackCountingHighPurBJetTags_30++;      
  
       if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) > -2.0) vars.NBjets_trackCountingHighEffBJetTags_m20++;
@@ -697,11 +748,91 @@ void SetQJetVariables(Variables& vars, treeReader& reader, const int& q1, const 
       if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >  1.0) vars.NBjets_trackCountingHighEffBJetTags_10++;
       if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >  1.5) vars.NBjets_trackCountingHighEffBJetTags_15++;
       if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >  2.0) vars.NBjets_trackCountingHighEffBJetTags_20++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >  2.1) vars.NBjets_trackCountingHighEffBJetTags_21++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >  2.2) vars.NBjets_trackCountingHighEffBJetTags_22++;
       if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >  3.0) vars.NBjets_trackCountingHighEffBJetTags_30++;      
       
  }
  
+ 
+ ///==== Jet Counter ====
+ 
+ vars.totalJV_20 = getJV(*(reader.Get4V("jets")),20.,&blacklistJet_forTotalCJV);
+ vars.totalJV_30 = getJV(*(reader.Get4V("jets")),30.,&blacklistJet_forTotalCJV);
+ vars.totalJV_40 = getJV(*(reader.Get4V("jets")),40.,&blacklistJet_forTotalCJV);
+ 
 }
+
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+void SetNSoftMu(Variables& vars,  treeReader& reader,  const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2){
+  int NumSoftMu = 0;
+  for(int iMu=0;iMu<reader.Get4V("muons")->size();iMu++){ 
+     bool skipMu=false;
+     bool flag_soft= IsMu_Soft(reader,iMu);  
+    if (
+      flag_soft && 
+      ( FlavourLep1 != 13  ||  iMu != iLep1) &&
+      ( FlavourLep2 != 13  ||  iMu != iLep2)
+      ) {
+       NumSoftMu++;
+       }
+  }
+  vars.NsoftMu = NumSoftMu;
+}
+
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void SetMTVariable(Variables& vars, treeReader& reader, const std::string& metType, const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2){
+
+ ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >  totalP4; 
+ 
+  if(FlavourLep1==11 && FlavourLep2==11)
+     totalP4=reader.Get4V ("electrons")->at (iLep1)+reader.Get4V ("electrons")->at (iLep2);
+
+  if(FlavourLep1==11 && FlavourLep2==13)
+    totalP4=reader.Get4V ("electrons")->at (iLep1)+reader.Get4V ("muons")->at (iLep2);
+
+  if(FlavourLep1==13 && FlavourLep2==11)
+    totalP4=reader.Get4V ("muons")->at (iLep1)+reader.Get4V ("electrons")->at (iLep2);
+
+   if(FlavourLep1==13 && FlavourLep2==13)
+     totalP4=reader.Get4V ("muons")->at (iLep1)+reader.Get4V ("muons")->at (iLep2);
+
+    double DeltaPhipfMet=fabs(deltaPhi(totalP4.Phi(),reader.Get4V(metType)->at(0).Phi()));
+
+    vars.mT=sqrt(2*totalP4.Pt()*reader.Get4V(metType)->at(0).Pt()*(1-cos(DeltaPhipfMet)));
+    
+}
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+void SetDPhiJetll(Variables& vars, treeReader& reader, const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2, const int& q1, const int& q2){
+ ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >  totalP4; 
+
+  bool skipEvent=false;
+
+  if(FlavourLep1==11 && FlavourLep2==11)
+     totalP4=reader.Get4V ("electrons")->at (iLep1)+reader.Get4V ("electrons")->at (iLep2);
+
+  if(FlavourLep1==11 && FlavourLep2==13)
+    totalP4=reader.Get4V ("electrons")->at (iLep1)+reader.Get4V ("muons")->at (iLep2);
+
+  if(FlavourLep1==13 && FlavourLep2==11)
+    totalP4=reader.Get4V ("muons")->at (iLep1)+reader.Get4V ("electrons")->at (iLep2);
+
+   if(FlavourLep1==13 && FlavourLep2==13)
+     totalP4=reader.Get4V ("muons")->at (iLep1)+reader.Get4V ("muons")->at (iLep2);
+
+  vars.DPhiSingleJet_ll    = fabs(deltaPhi(reader.Get4V("jets")->at(q1).Phi(),totalP4.Phi()));
+  vars.DPhiDoubleJet_ll = fabs(deltaPhi((reader.Get4V("jets")->at(q1) + reader.Get4V("jets")->at(q2)).Phi(),totalP4.Phi()));
+
+}
+
+
+
+
 
 
 

@@ -154,6 +154,7 @@ bool IsEle_VBFMerged( treeReader& reader, int iEle);
 bool IsMuIsolatedID_VBF( treeReader& reader,const std::vector<double>& Selections, int iMu);
 bool IsMuIsolatedIDPUCorrected_VBF( treeReader& reader,const std::vector<double>& Selections, int iMu);
 bool IsMu_VBFMerged( treeReader& reader, int iMu);
+bool IsMu_Soft( treeReader& reader, int iMu);
 
 
 #endif

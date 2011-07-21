@@ -10,6 +10,8 @@
 #include "TObject.h"
 #include "TTree.h"
 
+#include "qqHWWlnulnuUtils.h"
+
 struct Variables
 {
  //---- tree definition
@@ -117,7 +119,17 @@ struct Variables
  double pmet; 
  double chmet; 
  double pchmet; 
-   
+ double minMet;
+
+ //---- transverse mass
+ double mT;
+
+ //---- dphi_Jet_ll
+ double DPhiJet_ll;
+
+ double DPhiSingleJet_ll;
+ double DPhiDoubleJet_ll;
+  
  //---- jet variables
  
  double q1_pX;
@@ -164,6 +176,8 @@ struct Variables
  int NBjets_trackCountingHighPurBJetTags_10;
  int NBjets_trackCountingHighPurBJetTags_15;
  int NBjets_trackCountingHighPurBJetTags_20;
+ int NBjets_trackCountingHighPurBJetTags_21;
+ int NBjets_trackCountingHighPurBJetTags_22;
  int NBjets_trackCountingHighPurBJetTags_30;
  
  int NBjets_trackCountingHighEffBJetTags_m20;
@@ -183,9 +197,15 @@ struct Variables
  int NBjets_trackCountingHighEffBJetTags_10;
  int NBjets_trackCountingHighEffBJetTags_15;
  int NBjets_trackCountingHighEffBJetTags_20;
+ int NBjets_trackCountingHighEffBJetTags_21;
+ int NBjets_trackCountingHighEffBJetTags_22;
  int NBjets_trackCountingHighEffBJetTags_30;
  
+ int NsoftMu;
  
+ int totalJV_20;
+ int totalJV_30;
+ int totalJV_40;
  
  int JV_20;
  int JV_30;
@@ -226,6 +246,8 @@ struct Variables
  int nPV;
  
  //---- MC info ----
+ int numPUMCoot;
+ int numPUMCit;
  int numPUMC;
  double ptH;
  
@@ -250,13 +272,19 @@ void SetLeptonsVariables(Variables& vars, treeReader& reader,const int& iLep1, c
 //void SetMetVariables(Variables& vars, treeReader& reader, const std::string& metType);
 void SetMetVariables(Variables& vars, treeReader& reader, const std::string& metType, const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2);
 
-void SetQJetVariables(Variables& vars, treeReader& reader, const int& q1, const int& q2, const std::vector<int>& blacklistJet_forCJV, const std::vector<int>& blacklistJet_forBtag);
+void SetQJetVariables(Variables& vars, treeReader& reader, const int& q1, const int& q2, const std::vector<int>& blacklistJet_forCJV, const std::vector<int>& blacklistJet_forBtag, const std::vector<int>& blacklistJet_forTotalCJV);
 
 void SetPVVariables(Variables& vars, treeReader& reader);
 
 void SetMCVariables(Variables& vars, treeReader& reader);
 
 void SetTriggerVariables(Variables&, treeReader& reader);
+
+void SetNSoftMu(Variables& vars,  treeReader& reader,  const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2);
+
+void SetMTVariable(Variables& vars, treeReader& reader, const std::string& metType, const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2);
+
+void SetDPhiJetll(Variables& vars, treeReader& reader, const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2, const int& q1, const int& q2);
 
 
 void SaveTree(Variables& vars);
