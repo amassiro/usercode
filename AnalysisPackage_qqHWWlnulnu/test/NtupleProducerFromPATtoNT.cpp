@@ -312,7 +312,8 @@ int main(int argc, char** argv)
   std::vector<int> blacklistJet_forTotalCJV;
   std::vector<int> blacklistJet_forBtag;
   for (int iJet = 0; iJet < nJets; iJet++){
-   bool skipJet = false;
+   bool skipJet = false;   
+   bool JetID = IsJetID(reader,iJet);
    if (reader.Get4V("jets")->at(iJet).Et() < 15.0) skipJet = true;
    for(unsigned int iLep = 0; iLep < leptons_jetCleaning.size(); ++iLep) {
     ROOT::Math::XYZTVector lep = leptons_jetCleaning.at(iLep);
@@ -326,7 +327,11 @@ int main(int argc, char** argv)
     blacklistJet_forBtag.push_back(iJet); ///---- reject ///== black list is in a different format
    }
    else {
-    whitelistJet.push_back(1); ///---- select
+    if (JetID) whitelistJet.push_back(1); ///---- select
+    else {
+    whitelistJet.push_back(0); ///---- reject
+    blacklistJet.push_back(iJet); ///---- reject ///== black list is in a different format
+    }
    }
   }
      
