@@ -1142,6 +1142,8 @@ bool IsEle_VBFMerged( treeReader& reader, int iEle){
 //    ELE_MERGE_ISO  =   "( (isEB && " + SMURF_ISO + " < 0.13) || ( !isEB && " + SMURF_ISO + " < 0.09 ) )"
 //    SMURF_ISO = ("( ( userFloat('eleSmurfPF') ) / pt )")
         
+        
+/*        
   double lik =  reader.GetFloat("egammaIDLikelihood")-> at(iEle) ;
   bool ELE_ID_LH_80_2011 = (  
          (reader.GetInt("electrons_isEB")-> at(iEle)  == 1  &&  reader.GetInt("electrons_numberOfBrems")-> at(iEle)  == 0 && lik > 0.193 ) ||
@@ -1162,6 +1164,8 @@ bool IsEle_VBFMerged( treeReader& reader, int iEle){
                  ( reader.Get4V("electrons")->at(iEle).pt() >= 20 &&   ELE_ID_LH_90_2011  ) 
               )
       )  skipEle = true;
+
+*/
            
 ///ELE_MERGE_ID2   =  ("( (pt < 20 && " + ELE_ID_LH_80_2011 +") || (pt >= 20 && "+ ELE_ID_LH_90_2011 + ") )")
 //           
@@ -1188,10 +1192,20 @@ bool IsMu_VBFMerged( treeReader& reader, int iMu){
  bool skipMu = false;
  
   if (!(
-       (   (reader.GetInt("muons_global")->at(iMu)   && reader.GetFloat("muons_normalizedChi2")->at(iMu)<10  &&    reader.GetInt("muons_numberOfValidMuonHits")->at(iMu)>0 && reader.GetInt("muons_numberOfMatches")->at(iMu)>1) ||
-           (reader.GetInt("muons_tracker")->at(iMu) && reader.GetFloat("muons_TMLastStationTight")->at(iMu) > 0.5  ) )
-       && reader.GetInt("muons_innerTrack_found")->at(iMu)>10 
-       && fabs(reader.GetFloat("muons_trackPtErrorOverPt")->at(iMu)) < 0.10)   
+       (   (
+             reader.GetInt("muons_global")->at(iMu)   && 
+             reader.GetFloat("muons_normalizedChi2")->at(iMu)<10  &&   
+             reader.GetInt("muons_numberOfValidMuonHits")->at(iMu)>0 && 
+             reader.GetInt("muons_numberOfMatches")->at(iMu)>1
+             ) ||
+           (
+           reader.GetInt("muons_tracker")->at(iMu) && reader.GetFloat("muons_TMLastStationTight")->at(iMu) > 0.5  
+           ) 
+        )
+      && reader.GetInt("muons_innerTrack_found")->at(iMu)>10 
+//      && reader.GetInt("muons_numberOfValidPixelHits")->at(iMu)>0       //------------------------> to be added!
+      && fabs(reader.GetFloat("muons_trackPtErrorOverPt")->at(iMu)) < 0.10
+      )   
      ) skipMu=true;
 
 //    MUON_ID_CUT=("(( (isGlobalMuon() && "
@@ -1275,3 +1289,81 @@ bool IsMuIsolatedIDPUCorrected_VBF( treeReader& reader,const std::vector<double>
  
  return (!skipMu);
 }
+
+
+
+//  ------------------------------------------------------------
+
+/** Soft Muon identification */
+
+bool IsMu_Soft( treeReader& reader, int iMu){
+ //==== soft mu veto
+ //==== http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/UserCode/Mangano/WWAnalysis/Filters/src/SoftMuonVeto.cc
+ //====
+  bool softMu=false;
+  float SMURF_ISO = reader.GetFloat("muons_PFIso")->at(iMu) / (reader.Get4V("muons")->at(iMu).pt());
+  if (
+     reader.Get4V("muons")->at(iMu).pt()>3 && 
+     reader.GetInt("muons_tracker")->at(iMu) &&
+
+     reader.GetFloat("muons_TMLastStationTight")->at(iMu) > 0.5 &&  //=========> angTIght to be added!
+     reader.GetFloat("muons_TMLastStationTight")->at(iMu) > 0.5 &&  //=========> angTIght to be added!
+     
+     reader.GetInt("muons_innerTrack_found")->at(iMu)>10 &&
+     fabs(reader.GetFloat("muons_dz_PV")->at(iMu))<0.1&&
+     fabs(reader.GetFloat("muons_tip")->at(iMu))<0.2 
+     ){
+     //if(reader.Get4V("muons")->at(iMu).pt()>20)
+     //{ if(SMURF_ISO>0.1)
+     //     softMu=true;
+    //}
+   //else {
+    softMu=true;
+   //}
+  } 
+ return(softMu);
+}
+
+
+
+
+//  ------------------------------------------------------------
+/** Jet ID */
+
+
+bool IsJetID( treeReader& reader, int iJet){
+ //==== jet ID
+ //==== http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/UserCode/Mangano/WWAnalysis/DataFormats/src/SkimEvent.cc
+ //====
+
+  bool skipJet =false;
+  unsigned int multiplicity = reader.GetInt("jets_neutralMultiplicity")->at(iJet)+reader.GetInt("jets_chargedMultiplicity")->at(iJet);
+  if(
+     reader.GetFloat("jets_neutralEmEnergyFraction")->at(iJet)>=0.99 ||
+     reader.GetFloat("jets_neutralHadronEnergyFraction")->at(iJet)>=0.99 ||
+     multiplicity ==0
+     )   skipJet=true;
+
+  if(reader.Get4V("jets")->at(iJet).Eta() <2.4) { 
+     if( 
+         reader.GetFloat("jets_chargedEmEnergyFraction")->at(iJet)>=0.99 ||
+         reader.GetFloat("jets_chargedHadronEnergyFraction")->at(iJet) ==0 ||
+         reader.GetInt("jets_chargedMultiplicity")->at(iJet)==0
+        ) skipJet=true;
+   }	
+ 
+  return (!skipJet);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

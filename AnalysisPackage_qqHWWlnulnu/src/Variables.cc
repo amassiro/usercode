@@ -121,8 +121,6 @@ void InitializeTree(Variables& vars, const std::string& outputRootFileName)
  vars.m_reducedTree -> Branch("NsoftMu", &vars.NsoftMu, "NsoftMu/I");
  vars.m_reducedTree -> Branch("mT", &vars.mT, "mT/D");
  vars.m_reducedTree -> Branch("DPhiJet_ll", &vars.DPhiJet_ll, "DPhiJet_ll/D");
-
- vars.m_reducedTree -> Branch("DPhiJet_ll", &vars.DPhiJet_ll, "DPhiJet_ll/D");
  vars.m_reducedTree -> Branch("DPhiSingleJet_ll",    &vars.DPhiSingleJet_ll,    "DPhiSingleJet_ll/D");
  vars.m_reducedTree -> Branch("DPhiDoubleJet_ll", &vars.DPhiDoubleJet_ll, "DPhiDoubleJet_ll/D");
 
@@ -899,6 +897,9 @@ void SetDPhiJetll(Variables& vars, treeReader& reader, const int& iLep1, const i
   vars.DPhiSingleJet_ll    = fabs(deltaPhi(reader.Get4V("jets")->at(q1).Phi(),totalP4.Phi()));
   vars.DPhiDoubleJet_ll = fabs(deltaPhi((reader.Get4V("jets")->at(q1) + reader.Get4V("jets")->at(q2)).Phi(),totalP4.Phi()));
 
+
+  vars.DPhiJet_ll = std::max (vars.DPhiSingleJet_ll, vars.DPhiDoubleJet_ll);
+  
 }
 
 
