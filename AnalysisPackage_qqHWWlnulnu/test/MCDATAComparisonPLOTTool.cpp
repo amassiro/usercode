@@ -88,7 +88,14 @@ int main(int argc, char** argv)
   kBlue,//(EColor)(kBlue+1),(EColor) (kBlue+2),
   (EColor) (kPink+2),//(EColor) (kPink+1),(EColor) (kPink+2),
   kViolet,
+  kGreen,
+  kAzure,
+//   kWhite,
+  kTeal,
   kYellow,
+  (EColor) (kTeal+1),
+  (EColor) (kOrange+2),
+  (EColor) (kGreen+2),
   kGray,(EColor) (kGray+1),(EColor) (kViolet),(EColor) (kYellow),(EColor) (kGray)
  };
  
@@ -152,6 +159,37 @@ int main(int argc, char** argv)
  gROOT->ProcessLine(".L autoWeight.cxx");
  ///==== PU reweight (end) ====
  
+ 
+ ///==== pT Higgs reweight (begin) ====
+ std::string nameptHWeight; 
+ try {
+  nameptHWeight = gConfigParser -> readStringOption("Input::nameptHWeight");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ std::cout << ">>>>> input::nameptHWeight  " << nameptHWeight  << std::endl;  
+ if (nameptHWeight != ""){
+  TString toLoad;
+//   toLoad = Form("cp %s ./",nameptHWeight.c_str());
+//   gROOT->ProcessLine(toLoad.Data());
+  toLoad = Form(".L %s",nameptHWeight.c_str());
+  gROOT->ProcessLine(toLoad.Data());
+ }
+ 
+ std::string nameptHWeightSample; 
+ try {
+  nameptHWeight = gConfigParser -> readStringOption("Input::nameptHWeightSample");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ std::cout << ">>>>> input::nameptHWeightSample  " << nameptHWeightSample  << std::endl;  
+ 
+ 
+ ///==== pT Higgs reweight (end) ====
+ 
+ 
  ///==== save PU distribution in TH1F ====
  TH1F* hPUMC   = new TH1F("hPUMC","hPUMC",PUMC.size(),0,PUMC.size());
  TH1F* hPUDATA = new TH1F("hPUDATA","hPUDATA",PUDATA.size(),0,PUDATA.size());
@@ -171,15 +209,16 @@ int main(int argc, char** argv)
 
  
   //  [iCut][iVar] 
- TString* infoString[55][43];
- TLatex *infoLatex[55][43]; 
- TCanvas* ccCanvas[55][43];
- TCanvas* ccCanvasPull[55][43];
- TCanvas* ccCanvasPullTrace[55][43];
- TH1F* histoSumMC[55][43];
+ TString* infoString[88][43];
+ TLatex *infoLatex[88][43]; 
+ TCanvas* ccCanvas[88][43];
+ TCanvas* ccCanvasNormalize[88][43];
+ TCanvas* ccCanvasPull[88][43];
+ TCanvas* ccCanvasPullTrace[88][43];
+ TH1F* histoSumMC[88][43];
  //  [iName][iCut][iVar]
- TH1F* histo[100][43][43];
- TH1F* histo_temp[100][55][43];
+ TH1F* histo[100][88][43];
+ TH1F* histo_temp[100][88][43];
 
  //  [iName][iCut]
  double numEvents[100][43];
@@ -206,7 +245,7 @@ int main(int argc, char** argv)
  int numVar = ReadFileVar(VarFile,vMin,vMax,vNBin,vVarName,vVarNameHR);
   
  
- double XSection  = gConfigParser -> readDoubleOption("Plot::XSection");
+//  double XSection  = gConfigParser -> readDoubleOption("Plot::XSection");
  
  ///==== list of selections to perform (NOT sequential additive selections) ====
  std::string CutFile = gConfigParser -> readStringOption("Selections::CutFile");
@@ -340,6 +379,7 @@ int main(int argc, char** argv)
  
  
  
+ TLegend* legMC = new TLegend(0.8,0.25,0.98,0.78);
  TLegend* leg = new TLegend(0.8,0.25,0.98,0.78);
  bool LegendBuilt = false;
 
@@ -395,7 +435,13 @@ int main(int argc, char** argv)
      }
     }  
     if (!isData) {
-     CutExtended = Form ("(%s) * autoWeight(numPUMC)",Cut.Data());    
+     if (nameptHWeight != "" && name_samples.at(iSample) == nameptHWeightSample){
+      CutExtended = Form ("(%s) * autoWeight(numPUMC) * ptHWeight(ptH)",Cut.Data());    
+     }
+     else {
+      CutExtended = Form ("(%s) * autoWeight(numPUMC)",Cut.Data());    
+     }
+     //      CutExtended = Form ("(%s) * autoWeight(numPUMC) * ptHWeight(ptH)",Cut.Data());    
     }
     else {
      CutExtended = Form ("(%s)",Cut.Data());    
@@ -590,6 +636,9 @@ int main(int argc, char** argv)
    if (!LegendBuilt){
     for (uint iName=0; iName<reduced_name_samples.size(); iName++){
      leg->AddEntry(histo[iName][iCut][iVar],reduced_name_samples.at(iName).c_str(),"pf");    
+     if (reduced_name_samples.at(iName) != "DATA") {
+      legMC->AddEntry(histo[iName][iCut][iVar],reduced_name_samples.at(iName).c_str(),"pf");    
+     }
      LegendBuilt = true;
     }
    }
@@ -665,9 +714,16 @@ int main(int argc, char** argv)
 //     hTrendPie[iCut]->SetEntryVal(iName,10e-1);
    }
   }
-  if (iName != numDATA) {
-   hsTrend->Add(hTrend[iName]);
+  bool isSig = false;
+  for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+   if (reduced_name_samples.at(iName) == *itSig) isSig = true;
   }
+  if (!isSig && reduced_name_samples.at(iName) != "DATA") {
+   hsTrend->Add(hTrend[iName]);
+   }
+//   if (iName != numDATA) {
+//    hsTrend->Add(hTrend[iName]);
+//   }
  }
  AddError(hsTrend,LumiSyst);
  
@@ -716,11 +772,12 @@ int main(int argc, char** argv)
  TCanvas* cCompareVar[100];
  
  for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  TString titleCanvas = Form("%d_Cut_Canvas %s",iCut,vCutHR.at(iCut).c_str());
   TString nameCanvas = Form("%d_Cut_Canvas",iCut);
-  cCompareCut[iCut] = new TCanvas(nameCanvas,nameCanvas,400 * vVarName.size(),400);
+  cCompareCut[iCut] = new TCanvas(nameCanvas,titleCanvas,400 * vVarName.size(),400);
   cCompareCut[iCut] -> Divide (vVarName.size(),1);
   TString nameCanvasPull = Form("%d_Cut_Canvas_Pull",iCut);
-  cCompareCutPull[iCut] = new TCanvas(nameCanvasPull,nameCanvasPull,400 * vVarName.size(),400*3);
+  cCompareCutPull[iCut] = new TCanvas(nameCanvasPull,titleCanvas,400 * vVarName.size(),400*3);
   cCompareCutPull[iCut] -> Divide (vVarName.size(),3);
  }
  
@@ -736,12 +793,15 @@ int main(int argc, char** argv)
  
  for (uint iCut = 0; iCut<vCut.size(); iCut++){
   for (uint iVar = 0; iVar<vVarName.size(); iVar++){
+   TString titleCanvas = Form("%d_%d_Canvas %s %s",iCut,iVar,vCutHR.at(iCut).c_str(),vVarNameHR.at(iVar).c_str());
    TString nameCanvas = Form("%d_%d_Canvas",iCut,iVar);
-   ccCanvas[iCut][iVar] = new TCanvas(nameCanvas,nameCanvas,400,400);
+   ccCanvas[iCut][iVar] = new TCanvas(nameCanvas,titleCanvas,400,400);
    TString nameCanvasPull = Form("%d_%d_CanvasPull",iCut,iVar);
-   ccCanvasPull[iCut][iVar] = new TCanvas(nameCanvasPull,nameCanvasPull,400,400);
+   ccCanvasPull[iCut][iVar] = new TCanvas(nameCanvasPull,titleCanvas,400,400);
    TString nameCanvasPullTrace = Form("%d_%d_CanvasPullTrace",iCut,iVar);
    ccCanvasPullTrace[iCut][iVar] = new TCanvas(nameCanvasPullTrace,nameCanvasPullTrace,400,400);
+   nameCanvas = Form("%d_%d_Norm_Canvas",iCut,iVar);
+   ccCanvasNormalize[iCut][iVar] = new TCanvas(nameCanvas,titleCanvas,400,400);
   }
  } 
  
@@ -750,6 +810,16 @@ int main(int argc, char** argv)
  cTrend->cd();
  DrawStack(hsTrend,1,LumiSyst);
  hTrend[numDATA] -> Draw("EsameP");
+ for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+  bool isSig = false;
+  for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+   if (reduced_name_samples.at(iName) == *itSig) isSig = true;
+  }
+  if (isSig) {
+   hTrend[iName]->Draw("EsameP");
+  }
+ } 
+
  gPad->SetLogy();
  gPad->SetGrid();
  leg->Draw();
@@ -760,6 +830,15 @@ int main(int argc, char** argv)
  cTrendPull->cd(1);
  DrawStack(hsTrend,1,LumiSyst);
  hTrend[numDATA] -> Draw("EsameP");
+ for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+  bool isSig = false;
+  for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+   if (reduced_name_samples.at(iName) == *itSig) isSig = true;
+  }
+  if (isSig) {
+   hTrend[iName]->Draw("EsameP");
+  }
+ }
  gPad->SetLogy();
  gPad->SetGrid();
  leg->Draw();
@@ -864,6 +943,17 @@ int main(int argc, char** argv)
    latex->Draw();
    infoLatex[iCut][iVar]->Draw();
    
+   
+   ccCanvasNormalize[iCut][iVar]-> cd();
+   DrawStackNormalized(hs[iCut][iVar]);
+   gPad->SetLogy();
+   gPad->SetGrid();
+   legMC->Draw();
+   latex->Draw();
+//    infoLatex[iCut][iVar]->Draw();
+   
+   
+   
    ccCanvasPull[iCut][iVar]-> cd();
    hPull[iCut][iVar]->Draw("EP");
    gPad->SetGrid();
@@ -897,6 +987,12 @@ int main(int argc, char** argv)
      
      ccCanvas[iCut][iVar]-> cd();
      histo[iName][iCut][iVar]->Draw("EsameB");
+     
+//      if (isSig){
+      ccCanvasNormalize[iCut][iVar]-> cd();
+      histo[iName][iCut][iVar]->DrawNormalized("same L");
+//      }
+     
     }
    }
    
@@ -910,6 +1006,8 @@ int main(int argc, char** argv)
    leg->Draw();
    ccCanvas[iCut][iVar]-> cd();
    leg->Draw();
+   ccCanvasNormalize[iCut][iVar]-> cd();
+   legMC->Draw();
    
   } ///==== end cicle on variables to plot ====
  } ///==== end cicle on selections ====
@@ -963,6 +1061,7 @@ int main(int argc, char** argv)
  
  outFile.cd();
  TDirectory* cdAll = (TDirectory*) outFile.mkdir("All");
+ cdAll->mkdir("Norm");
  cdAll->mkdir("Var");
  cdAll->mkdir("Pull");
  cdAll->mkdir("PullTrace");
@@ -970,6 +1069,14 @@ int main(int argc, char** argv)
  for (uint iCut = 0; iCut<vCut.size(); iCut++){
   for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    ccCanvas[iCut][iVar]-> Write();
+  }
+ }
+ 
+ outFile.cd();
+ outFile.cd("All/Norm");
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
+   ccCanvasNormalize[iCut][iVar]-> Write();
   }
  }
  
@@ -997,10 +1104,20 @@ int main(int argc, char** argv)
   for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    hs[iCut][iVar] -> Write() ;
    for (uint iName=0; iName<reduced_name_samples.size(); iName++){
-    if (reduced_name_samples.at(iName) == "DATA") {
-     histo[iName][iCut][iVar] -> Write();
-    }
+    histo[iName][iCut][iVar] -> Write();
+//     bool isSig = false;
+//     for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+//      if (reduced_name_samples.at(iName) == *itSig) isSig = true;
+//     }
+//     if (isSig || reduced_name_samples.at(iName) == "DATA") {
+//      histo[iName][iCut][iVar] -> Write();
+//     }
    }
+//    ((TH1F*)(hs[iCut][iVar] ->GetStack()->Last()))->Write() ;
+   TH1F* tempH =  ((TH1F*)(hs[iCut][iVar] ->GetStack()->Last())) ;
+   TString name = Form("All_%d_%d",iCut,iVar);
+   tempH -> SetName(name);
+   tempH -> Write();
   }
  }
  
