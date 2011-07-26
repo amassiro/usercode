@@ -35,6 +35,7 @@ TH1F* PullPlot(TH1F* hDATA, TH1F* hMC);
 ///==== Draw Stack ====
 void DrawStack(THStack* hs, int error = 0, double syst = 0);
 void DrawStackError(THStack* hs, double syst = 0);
+void DrawStackNormalized(THStack* hs);
 
 ///==== Add systrematic error ====
 void AddError(THStack* hs, double syst = 0);
