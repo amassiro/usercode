@@ -4,16 +4,28 @@ DATA                                   -1.              DATA
 #
 #
 #
+#   DYToEE_M-20_TuneZ2_7TeV-pythia6                     0.7363037991  DYpow   DYee20
+#   Summer11_DYToEE_M-20_CT10_TuneZ2_7TeV-powheg-pythia          0.0571980030  DYpow   DYeePow20
+#   Summer11_DYToEE_M-10To20_TuneZ2_7TeV-pythia6                 1.6292217438  DYpow   DYee10-20
+#
+#   DYToMuMu_M-20_TuneZ2_7TeV-pythia6                 0.7939666162  DYpow DYmumu20
+#   Summer11_DYToMuMu_M-20_CT10_TuneZ2_7TeV-powheg-pythia      0.0623355250 DYpow  DYmumuPow20
+#   Summer11_DYToMuMu_M-10To20_TuneZ2_7TeV-pythia6             1.5767956975 DYpow  DYmumu10-20 
+#
+#   Summer11_DYToTauTau_M-20_CT10_TuneZ2_7TeV-powheg-pythia-tauola         0.0854907913  DYpow    DYtautauPow20
+#   Summer11_DYToTauTau_M-10To20_TuneZ2_7TeV-pythia6-tauola                1.5713636364  DYpow    DYtautau10-20
+#
+#
 #   DYToEE_M-20_TuneZ2_7TeV-pythia6                     0.7363037991     DYee20
-DYToEE_M-20_CT10_TuneZ2_7TeV-powheg-pythia          0.0571980030     DYeePow20
-DYToEE_M-10To20_TuneZ2_7TeV-pythia6                 1.6292217438     DYee10-20
+#    DYToEE_M-20_CT10_TuneZ2_7TeV-powheg-pythia          0.0571980030     DYeePow20
+#    DYToEE_M-10To20_TuneZ2_7TeV-pythia6                 1.6292217438     DYee10-20
 #
 #   DYToMuMu_M-20_TuneZ2_7TeV-pythia6                 0.7939666162   DYmumu20
-DYToMuMu_M-20_CT10_TuneZ2_7TeV-powheg-pythia      0.0623355250   DYmumuPow20
-DYToMuMu_M-10To20_TuneZ2_7TeV-pythia6             1.5767956975   DYmumu10-20 
+#    DYToMuMu_M-20_CT10_TuneZ2_7TeV-powheg-pythia      0.0623355250   DYmumuPow20
+#    DYToMuMu_M-10To20_TuneZ2_7TeV-pythia6             1.5767956975   DYmumu10-20 
 #
-DYToTauTau_M-20_CT10_TuneZ2_7TeV-powheg-pythia-tauola         0.0854907913      DYtautauPow20
-DYToTauTau_M-10To20_TuneZ2_7TeV-pythia6-tauola                1.5713636364      DYtautau10-20
+#    DYToTauTau_M-20_CT10_TuneZ2_7TeV-powheg-pythia-tauola         0.0854907913      DYtautauPow20
+#    DYToTauTau_M-10To20_TuneZ2_7TeV-pythia6-tauola                1.5713636364      DYtautau10-20
 #
 #
 ##
@@ -24,8 +36,8 @@ DYToTauTau_M-10To20_TuneZ2_7TeV-pythia6-tauola                1.5713636364      
 #DYToTauTau_M-10To20_CT10_TuneZ2_7TeV-powheg-pythia-tauola  1.7359419833     DYtautau
 #DYToTauTau_M-20_CT10_TuneZ2_7TeV-powheg-pythia-tauola      0.8349332880     DYtautau
 #
-#   DYJetsToLL_TuneD6T_M-10To50_7TeV-madgraph-tauola     4.091         DY-l       riscalato per 412.3 (mia sezione d'urto) / 12321 (da google doc) e moltiplico per 1.13 per avere concordanza con DY-50-inf  x 1.032 x 1.32 da data/mc comparison (?) ...  67.4720304038 / 12321 * 412.3 * 1.33 * 1.032 * 1.32    <--   67.4720304038    DY       DY10toLLMadD6T
-#   DYJetsToLL_TuneD6T_M-50_7TeV-madgraph-tauola         1.354          DY-h       DY50toLLMadD6T     1.1982516847 * 1.13
+DYJetsToLL_TuneD6T_M-10To50_7TeV-madgraph-tauola     4.091         DY-l       riscalato per 412.3 (mia sezione d'urto) / 12321 (da google doc) e moltiplico per 1.13 per avere concordanza con DY-50-inf  x 1.032 x 1.32 da data/mc comparison (?) ...  67.4720304038 / 12321 * 412.3 * 1.33 * 1.032 * 1.32    <--   67.4720304038    DY       DY10toLLMadD6T
+DYJetsToLL_TuneD6T_M-50_7TeV-madgraph-tauola         1.354          DY-h       DY50toLLMadD6T     1.1982516847 * 1.13
 #
 #
 #
