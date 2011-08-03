@@ -146,7 +146,8 @@ void Selector_Leptons_MVA_Training_MassDependent( TString myMethodList = "" , st
  char* xsectionName[1000];
  double xsection[1000];
  
- char nameFileIn[1000] = {"test/Winter10/samples_skimmed_training_AllHiggsMasses.txt"};
+ char nameFileIn[1000] = {"test/Spring11/samples_skimmed_training.txt"};
+//  char nameFileIn[1000] = {"test/Winter10/samples_skimmed_training_AllHiggsMasses.txt"};
  int totalSamples =  ReadFile(nameFileIn,nameSample,nameHumanReadable, xsectionName);
  
  for (int iSample=0; iSample<totalSamples; iSample++){
@@ -156,7 +157,8 @@ void Selector_Leptons_MVA_Training_MassDependent( TString myMethodList = "" , st
  for (int iSample=0; iSample<totalSamples; iSample++){
   std::cout << " Sample[" << iSample << " : " << totalSamples << "] = " << nameSample[iSample] << std::endl;
   char nameFile[1000];
-  sprintf(nameFile,"output_Fall10/out_NtupleProducer_%s.root",nameSample[iSample]);  
+  sprintf(nameFile,"output_Spring11_90_NoPU_Run2011_forTraining_2/out_NtupleProducer_%s.root",nameSample[iSample]);  
+//   sprintf(nameFile,"output_Fall10/out_NtupleProducer_%s.root",nameSample[iSample]);  
   TFile* f = new TFile(nameFile, "READ");
   
   treeEffVect[iSample] = (TTree) f->Get("outTreeSelections");
@@ -175,7 +177,12 @@ void Selector_Leptons_MVA_Training_MassDependent( TString myMethodList = "" , st
   
   ///**********************************************************************
   XSection = xsection[iSample];
-  weights[iSample] = XSection * preselection_efficiency / numEntriesBefore;
+  if (numEntriesBefore != 0) {
+   weights[iSample] = XSection * preselection_efficiency / numEntriesBefore;
+  }
+  else {
+   weights[iSample] = 0;
+  }
   signal_background[iSample] = (TTree) f->Get("outTreeJetLep");
   ///**********************************************************************
   std::cout << std::endl;
@@ -352,8 +359,8 @@ void Selector_Leptons_MVA_Training_MassDependent( TString myMethodList = "" , st
 
    // TMVA ANN: MLP (recommended ANN) -- all ANNs in TMVA are Multilayer Perceptrons
    if (Use["MLP"])
-//       factory->BookMethod( TMVA::Types::kMLP, "MLP", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=300:HiddenLayers=N+1:TestRate=5" );
-      factory->BookMethod( TMVA::Types::kMLP, "MLP", "H:!V:NeuronType=tanh:VarTransform=N,D,G:NCycles=300:HiddenLayers=N+2:TestRate=5" );
+      factory->BookMethod( TMVA::Types::kMLP, "MLP", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=300:HiddenLayers=N+1:TestRate=5" );
+//       factory->BookMethod( TMVA::Types::kMLP, "MLP", "H:!V:NeuronType=tanh:VarTransform=N,D,G:NCycles=300:HiddenLayers=N+2:TestRate=5" );
       
       
    if (Use["MLPCat"]) {
