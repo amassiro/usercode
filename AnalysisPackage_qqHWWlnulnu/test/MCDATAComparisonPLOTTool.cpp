@@ -130,33 +130,65 @@ int main(int argc, char** argv)
  if (Discovery == 1) SignalName = gConfigParser -> readStringListOption("Input::SignalName");
  
  ///==== PU reweight (begin) ====
- std::vector<double> PUMC   = gConfigParser -> readDoubleListOption("PU::PUMC");
- std::vector<double> PUDATA = gConfigParser -> readDoubleListOption("PU::PUDATA");
- PUclass PU;
- 
- std::cout << " PUMC.size()   = " << PUMC.size()   << std::endl;
- std::cout << " PUDATA.size() = " << PUDATA.size() << std::endl;
- 
- if (PUMC.size() != PUDATA.size()) {
-  std::cerr << " ERROR " << std::endl;
-  return 1;
+ bool doWeightFromFile = false; 
+ try {
+  doWeightFromFile = gConfigParser -> readStringOption("PU::doWeightFromFile");
  }
- 
- double sumPUMC = 0;
- for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
-  sumPUMC += PUMC.at(itVPU);  
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
  }
- double sumPUDATA = 0;
- for (int itVPU = 0; itVPU < PUDATA.size(); itVPU++ ){
-  sumPUDATA += PUDATA.at(itVPU);  
- } 
- 
- for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
-  PU.PUWeight.push_back(PUDATA.at(itVPU) / PUMC.at(itVPU) * sumPUMC / sumPUDATA);
- }
+ std::cout << ">>>>> PU::doWeightFromFile  " << doWeightFromFile  << std::endl;  
 
- PU.Write("autoWeight.cxx");
- gROOT->ProcessLine(".L autoWeight.cxx");
+ std::vector<double> PUMC;
+ std::vector<double> PUDATA;
+ PUclass PU;
+ double sumPUMC = 0;
+ double sumPUDATA = 0;
+ TH1F* hPUMC;
+ TH1F* hPUDATA;
+ TH1F* hPUWeight;
+ 
+ 
+ if (!doWeightFromFile) {
+  
+  PUMC   = gConfigParser -> readDoubleListOption("PU::PUMC");
+  PUDATA = gConfigParser -> readDoubleListOption("PU::PUDATA");
+  
+  std::cout << " PUMC.size()   = " << PUMC.size()   << std::endl;
+  std::cout << " PUDATA.size() = " << PUDATA.size() << std::endl;
+  
+  if (PUMC.size() != PUDATA.size()) {
+   std::cerr << " ERROR " << std::endl;
+   return 1;
+  }
+  
+  for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
+   sumPUMC += PUMC.at(itVPU);  
+  }
+  for (int itVPU = 0; itVPU < PUDATA.size(); itVPU++ ){
+   sumPUDATA += PUDATA.at(itVPU);  
+  } 
+  
+  for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
+   PU.PUWeight.push_back(PUDATA.at(itVPU) / PUMC.at(itVPU) * sumPUMC / sumPUDATA);
+  }
+  
+  PU.Write("autoWeight.cxx");
+  gROOT->ProcessLine(".L autoWeight.cxx");
+  
+  ///==== save PU distribution in TH1F ====
+  hPUMC   = new TH1F("hPUMC","hPUMC",PUMC.size(),0,PUMC.size());
+  hPUDATA = new TH1F("hPUDATA","hPUDATA",PUDATA.size(),0,PUDATA.size());
+  hPUWeight = new TH1F("hPUWeight","hPUWeight",PUDATA.size(),0,PUDATA.size());
+  
+  for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
+   hPUMC     -> SetBinContent(itVPU+1,PUMC.at(itVPU) / sumPUMC);
+   hPUDATA   -> SetBinContent(itVPU+1,PUDATA.at(itVPU) / sumPUDATA);
+   hPUWeight -> SetBinContent(itVPU+1,PUDATA.at(itVPU) / PUMC.at(itVPU) * sumPUMC / sumPUDATA);
+  }
+  
+ }
+ 
  ///==== PU reweight (end) ====
  
  
@@ -190,18 +222,6 @@ int main(int argc, char** argv)
  ///==== pT Higgs reweight (end) ====
  
  
- ///==== save PU distribution in TH1F ====
- TH1F* hPUMC   = new TH1F("hPUMC","hPUMC",PUMC.size(),0,PUMC.size());
- TH1F* hPUDATA = new TH1F("hPUDATA","hPUDATA",PUDATA.size(),0,PUDATA.size());
- TH1F* hPUWeight = new TH1F("hPUWeight","hPUWeight",PUDATA.size(),0,PUDATA.size());
- 
- for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
-  hPUMC     -> SetBinContent(itVPU+1,PUMC.at(itVPU) / sumPUMC);
-  hPUDATA   -> SetBinContent(itVPU+1,PUDATA.at(itVPU) / sumPUDATA);
-  hPUWeight -> SetBinContent(itVPU+1,PUDATA.at(itVPU) / PUMC.at(itVPU) * sumPUMC / sumPUDATA);
- }
- 
- 
  
  TTree *treeEffVect[100];
  TTree *treeJetLepVect[100];
@@ -209,16 +229,16 @@ int main(int argc, char** argv)
 
  
   //  [iCut][iVar] 
- TString* infoString[88][43];
- TLatex *infoLatex[88][43]; 
- TCanvas* ccCanvas[88][43];
- TCanvas* ccCanvasNormalize[88][43];
- TCanvas* ccCanvasPull[88][43];
- TCanvas* ccCanvasPullTrace[88][43];
- TH1F* histoSumMC[88][43];
+ TString* infoString[103][43];
+ TLatex *infoLatex[103][43]; 
+ TCanvas* ccCanvas[103][43];
+ TCanvas* ccCanvasNormalize[103][43];
+ TCanvas* ccCanvasPull[103][43];
+ TCanvas* ccCanvasPullTrace[103][43];
+ TH1F* histoSumMC[103][43];
  //  [iName][iCut][iVar]
- TH1F* histo[100][88][43];
- TH1F* histo_temp[100][88][43];
+ TH1F* histo[100][103][43];
+ TH1F* histo_temp[100][103][43];
 
  //  [iName][iCut]
  double numEvents[100][43];
@@ -436,10 +456,20 @@ int main(int argc, char** argv)
     }  
     if (!isData) {
      if (nameptHWeight != "" && name_samples.at(iSample) == nameptHWeightSample){
+      if (!doWeightFromFile) {
       CutExtended = Form ("(%s) * autoWeight(numPUMC) * ptHWeight(ptH)",Cut.Data());    
+      }
+      else {
+       CutExtended = Form ("(%s) * ptHWeight(ptH)",Cut.Data());    
+      }
      }
      else {
-      CutExtended = Form ("(%s) * autoWeight(numPUMC)",Cut.Data());    
+      if (!doWeightFromFile) {
+       CutExtended = Form ("(%s) * autoWeight(numPUMC)",Cut.Data());    
+      }
+      else {
+       CutExtended = Form ("(%s) * weight",Cut.Data());    
+      }
      }
      //      CutExtended = Form ("(%s) * autoWeight(numPUMC) * ptHWeight(ptH)",Cut.Data());    
     }
@@ -1035,9 +1065,11 @@ int main(int argc, char** argv)
  outFile.mkdir("PU");
  outFile.cd("PU");
  
- hPUMC     -> Write();
- hPUDATA   -> Write();
- hPUWeight -> Write();
+ if (!doWeightFromFile) { 
+  hPUMC     -> Write();
+  hPUDATA   -> Write();
+  hPUWeight -> Write();
+ }
  
  outFile.cd();
  outFile.mkdir("Cut");
