@@ -121,6 +121,10 @@ data {
  Nmet[7] <- NmueBmet
  Nmet[8] <- NmumuBmet
 
+
+ NeeBmetTemp   <- NeeBmet
+ NmumuBmetTemp <- NmumuBmet
+
 }
 
 ##########################################################
@@ -218,17 +222,29 @@ model
  #### priors ####
  ################
 
- tempNtotAInit ~ dunif (1,100000)
- NtotAInit <- round (tempNtotAInit)
+# tempNtotAInit ~ dunif (1,10000)
+# NtotAInit <- round (tempNtotAInit)
+# tempOtherAInit ~ dunif (2,tempNtotAInit-1)
+# OtherAInit <- round (tempOtherAInit)
+# DYAInit <- NtotAInit - OtherAInit
+
+# tempNtotBInit ~ dunif (1,10000)
+# NtotBInit <- round (tempNtotBInit)
+# tempOtherBInit ~ dunif (2,tempNtotBInit-1)
+# OtherBInit <- round (tempOtherBInit)
+# DYBInit <- NtotBInit - OtherBInit
+
  tempOtherAInit ~ dunif (1,10000)
  OtherAInit <- round (tempOtherAInit)
- DYAInit <- NtotAInit - OtherAInit
+ tempDYAInit ~ dunif (1,100000)
+ DYAInit <- round (tempDYAInit)
+ NtotAInit <- OtherAInit + DYAInit
 
- tempNtotBInit ~ dunif (1,100000)
- NtotBInit <- round (tempNtotBInit)
  tempOtherBInit ~ dunif (1,10000)
  OtherBInit <- round (tempOtherBInit)
- DYBInit <- NtotBInit - OtherBInit
+ tempDYBInit ~ dunif (1,100000)
+ DYBInit <- round (tempDYBInit)
+ NtotBInit <- OtherBInit + DYBInit
 
  
  e1A  ~ dunif(0,1)
@@ -240,7 +256,6 @@ model
  e2B  ~ dunif(0,1)
  mu1B ~ dunif(0,1)
  mu2B ~ dunif(0,1)
-
 
 
 
@@ -261,10 +276,10 @@ model
  #### B zone ####
  ################
 
- peeBmet   <- (0.5 * DYBInit * e1Bmet * e2Bmet + 0.25 * OtherBInit * e1Bmet * e2Bmet) / NtotBmet
- pemuBmet  <- 0.25 * OtherBInit * e1Bmet * mu2Bmet / NtotBmet
- pmueBmet  <- 0.25 * OtherBInit * mu1Bmet * e2Bmet / NtotBmet
- pmumuBmet <- (0.5 * DYBInit * mu1Bmet * mu2Bmet + 0.25 * OtherBInit * mu1Bmet * mu2Bmet) / NtotBmet
+ peeBmet   <- (0.5 * DYBmetInit * e1Bmet * e2Bmet + 0.25 * OtherBmetInit * e1Bmet * e2Bmet) / NtotBmet
+ pemuBmet  <- 0.25 * OtherBmetInit * e1Bmet * mu2Bmet / NtotBmet
+ pmueBmet  <- 0.25 * OtherBmetInit * mu1Bmet * e2Bmet / NtotBmet
+ pmumuBmet <- (0.5 * DYBmetInit * mu1Bmet * mu2Bmet + 0.25 * OtherBmetInit * mu1Bmet * mu2Bmet) / NtotBmet
 
  pBmet[1] <- peeBmet
  pBmet[2] <- pemuBmet
@@ -281,7 +296,7 @@ model
  #### ee ####
 
  peeBmetFinal   <-       pBmet[1] * NtotBmet / NtotABeemet
- peeAmetFinal   <- Ree * (pBmet[1] * (0.5 * DYBInit * e1Bmet * e2Bmet) / (0.5 * DYBInit * e1Bmet * e2Bmet + 0.25 * OtherBInit * e1Bmet * e2Bmet)) * NtotBmet / NtotABeemet
+ peeAmetFinal   <- Ree * (pBmet[1] * (0.5 * DYBmetInit * e1Bmet * e2Bmet) / (0.5 * DYBmetInit * e1Bmet * e2Bmet + 0.25 * OtherBmetInit * e1Bmet * e2Bmet)) * NtotBmet / NtotABeemet
  peeBFinal <- peeBmetFinal / (peeBmetFinal + peeAmetFinal)
 
  NeeBmet ~ dbin ( peeBFinal, NtotABeemet)
@@ -289,7 +304,7 @@ model
  NAeemetDYexact  <-   NtotABeemet - NeeBmet
  NeeBmetDYOther  <-   NtotABeemet * peeBFinal
  NAeemetDY       <-   NtotABeemet * (1-peeBFinal)
- NtotABeemetDY   <-   NAeemetDY + NeeBmet * (pBmet[1] * (0.5 * DYBInit * e1Bmet * e2Bmet) / (0.5 * DYBInit * e1Bmet * e2Bmet + 0.25 * OtherBInit * e1Bmet * e2Bmet))
+ NtotABeemetDY   <-   NAeemetDY + NeeBmet * (pBmet[1] * (0.5 * DYBmetInit * e1Bmet * e2Bmet) / (0.5 * DYBmetInit * e1Bmet * e2Bmet + 0.25 * OtherBmetInit * e1Bmet * e2Bmet))
  
  NAeemetDYSimple        <- (NeeBmet - sqrt(NeeBmet / NmumuBmet * NemuBmet * NmueBmet) ) * Ree
  NAeemetDYSimpleSimple  <- (NeeBmet - sqrt(NeeBmet / NmumuBmet * NemuBmet * NmueBmet) ) * ReeSimple
@@ -299,7 +314,7 @@ model
  #### mumu ####
 
  pmumuBmetFinal   <-       pBmet[4] * NtotBmet / NtotABmumumet
- pmumuAmetFinal   <- Rmumu * (pBmet[4] * (0.5 * DYBInit * mu1Bmet * mu2Bmet) / (0.5 * DYBInit * mu1Bmet * mu2Bmet + 0.25 * OtherBInit * mu1Bmet * mu2Bmet)) * NtotBmet / NtotABmumumet
+ pmumuAmetFinal   <- Rmumu * (pBmet[4] * (0.5 * DYBmetInit * mu1Bmet * mu2Bmet) / (0.5 * DYBmetInit * mu1Bmet * mu2Bmet + 0.25 * OtherBmetInit * mu1Bmet * mu2Bmet)) * NtotBmet / NtotABmumumet
  pmumuBFinal <- pmumuBmetFinal / (pmumuBmetFinal + pmumuAmetFinal)
 
  NmumuBmet ~ dbin ( pmumuBFinal, NtotABmumumet)
@@ -307,7 +322,7 @@ model
  NAmumumetDYexact  <-   NtotABmumumet - NmumuBmet
  NmumuBmetDYOther  <-   NtotABmumumet * pmumuBFinal
  NAmumumetDY       <-   NtotABmumumet * (1-pmumuBFinal)
- NtotABmumumetDY   <-   NAmumumetDY + NmumuBmet * (pBmet[4] * (0.5 * DYBInit * e1Bmet * e2Bmet) / (0.5 * DYBInit * e1Bmet * e2Bmet + 0.25 * OtherBInit * e1Bmet * e2Bmet))
+ NtotABmumumetDY   <-   NAmumumetDY + NmumuBmet * (pBmet[4] * (0.5 * DYBmetInit * e1Bmet * e2Bmet) / (0.5 * DYBmetInit * e1Bmet * e2Bmet + 0.25 * OtherBmetInit * e1Bmet * e2Bmet))
 
  NAmumumetDYSimple        <- (NmumuBmet - sqrt(NmumuBmet / NeeBmet * NmueBmet * NemuBmet) ) * Rmumu
  NAmumumetDYSimpleSimple  <- (NmumuBmet - sqrt(NmumuBmet / NeeBmet * NmueBmet * NemuBmet) ) * RmumuSimple
@@ -324,14 +339,22 @@ model
  mu1Bmet ~ dunif(0,1)
  mu2Bmet ~ dunif(0,1)
 
+
+ tempOtherBmetInit ~ dunif (1,1000)
+ OtherBmetInit <- round (tempOtherBmetInit)
+ tempDYBmetInit ~ dunif (1,10000)
+ DYBmetInit <- round (tempDYBmetInit)
+ NtotBmetInit <- OtherBmetInit + DYBmetInit
+
+
 # meanNtotABeemet   ~ dunif (0,100)
 # meanNtotABmumumet ~ dunif (0,100)
 
 # NtotABeemet   ~ dpois (meanNtotABeemet)
 # NtotABmumumet ~ dpois (meanNtotABmumumet)
 
- tempNtotABeemet   ~ dunif (0,200)
- tempNtotABmumumet ~ dunif (0,200)
+ tempNtotABeemet   ~ dunif (NeeBmetTemp,10000)
+ tempNtotABmumumet ~ dunif (NmumuBmetTemp,10000)
 
  NtotABeemet   <- round (tempNtotABeemet)
  NtotABmumumet <- round (tempNtotABmumumet)
@@ -343,10 +366,23 @@ model
  #### Combined with previous results ####
  ########################################
 
-# peeAmet   <- (0.5 * DYAInit * e1Amet * e2Amet + 0.25 * OtherAInit * e1Amet * e2Amet) / NtotAmet
- pemuAmet  <- 0.25 * OtherAInit * e1Amet * mu2Amet / NtotAmet
- pmueAmet  <- 0.25 * OtherAInit * mu1Amet * e2Amet / NtotAmet
-# pmumuAmet <- (0.5 * DYAInit * mu1Amet * mu2Amet + 0.25 * OtherAInit * mu1Amet * mu2Amet) / NtotAmet
+# peeAmet   <- (0.5 * DYAmetInit * e1Amet * e2Amet + 0.25 * OtherAmetInit * e1Amet * e2Amet) / NtotAmet
+ pemuAmet  <- 0.25 * OtherAmetInit * e1Amet * mu2Amet / NtotAmet
+ pmueAmet  <- 0.25 * OtherAmetInit * mu1Amet * e2Amet / NtotAmet
+# pmumuAmet <- (0.5 * DYAmetInit * mu1Amet * mu2Amet + 0.25 * OtherAmetInit * mu1Amet * mu2Amet) / NtotAmet
+ 
+# NAeemetDYM   <- (0.5 * DYAmetInit * e1Amet * e2Amet)   / (0.5 * DYAmetInit * e1Amet * e2Amet + 0.25 * OtherAmetInit * e1Amet * e2Amet)     * pAmet[1] * NtotAmet
+# NAeemetDY    <- (0.5 * DYAmetInit * e1Amet * e2Amet)   / (0.5 * DYAmetInit * e1Amet * e2Amet + 0.25 * OtherAmetInit * e1Amet * e2Amet)     * pAmet[1] * NtotAmet
+# pAmet[1]     <- NAeemetDY / ( (0.5 * DYAmetInit * e1Amet * e2Amet)   / (0.5 * DYAmetInit * e1Amet * e2Amet + 0.25 * OtherAmetInit * e1Amet * e2Amet) * NtotAmet )
+ peeAmet       <- NAeemetDY / (0.5 * DYAmetInit * e1Amet * e2Amet) * (0.5 * DYAmetInit * e1Amet * e2Amet + 0.25 * OtherAmetInit * e1Amet * e2Amet) / NtotAmet 
+ 
+# NAmumumetDYM <- (0.5 * DYAmetInit * mu1Amet * mu2Amet) / (0.5 * DYAmetInit * mu1Amet * mu2Amet + 0.25 * OtherAmetInit * mu1Amet * mu2Amet) * pAmet[4] * NtotAmet
+# NAmumumetDY  <- (0.5 * DYAmetInit * mu1Amet * mu2Amet) / (0.5 * DYAmetInit * mu1Amet * mu2Amet + 0.25 * OtherAmetInit * mu1Amet * mu2Amet) * pAmet[4] * NtotAmet
+# pAmet[4]     <- NAmumumetDY  / ((0.5 * DYAmetInit * mu1Amet * mu2Amet) / (0.5 * DYAmetInit * mu1Amet * mu2Amet + 0.25 * OtherAmetInit * mu1Amet * mu2Amet) * NtotAmet)
+ pmumuAmet     <- NAmumumetDY  / (0.5 * DYAmetInit * mu1Amet * mu2Amet) * (0.5 * DYAmetInit * mu1Amet * mu2Amet + 0.25 * OtherAmetInit * mu1Amet * mu2Amet) / NtotAmet
+ 
+ NAeemetAllM   <- pAmet[1] * NtotAmet
+ NAmumumetAllM <- pAmet[4] * NtotAmet
 
  totPAmet <- peeAmet + pemuAmet + pmueAmet + pmumuAmet
 
@@ -357,21 +393,9 @@ model
 
  NAmet ~ dmulti (pAmet, NtotAmet)
 
- 
-# NAeemetDYM   <- (0.5 * DYAInit * e1Amet * e2Amet)   / (0.5 * DYAInit * e1Amet * e2Amet + 0.25 * OtherAInit * e1Amet * e2Amet)     * pAmet[1] * NtotAmet
-# NAeemetDY    <- (0.5 * DYAInit * e1Amet * e2Amet)   / (0.5 * DYAInit * e1Amet * e2Amet + 0.25 * OtherAInit * e1Amet * e2Amet)     * pAmet[1] * NtotAmet
-# pAmet[1]     <- NAeemetDY / ( (0.5 * DYAInit * e1Amet * e2Amet)   / (0.5 * DYAInit * e1Amet * e2Amet + 0.25 * OtherAInit * e1Amet * e2Amet) * NtotAmet )
- peeAmet       <- NAeemetDY / (0.5 * DYAInit * e1Amet * e2Amet) * (0.5 * DYAInit * e1Amet * e2Amet + 0.25 * OtherAInit * e1Amet * e2Amet) / NtotAmet 
- 
-# NAmumumetDYM <- (0.5 * DYAInit * mu1Amet * mu2Amet) / (0.5 * DYAInit * mu1Amet * mu2Amet + 0.25 * OtherAInit * mu1Amet * mu2Amet) * pAmet[4] * NtotAmet
-# NAmumumetDY  <- (0.5 * DYAInit * mu1Amet * mu2Amet) / (0.5 * DYAInit * mu1Amet * mu2Amet + 0.25 * OtherAInit * mu1Amet * mu2Amet) * pAmet[4] * NtotAmet
-# pAmet[4]     <- NAmumumetDY  / ((0.5 * DYAInit * mu1Amet * mu2Amet) / (0.5 * DYAInit * mu1Amet * mu2Amet + 0.25 * OtherAInit * mu1Amet * mu2Amet) * NtotAmet)
- pmumuAmet     <- NAmumumetDY  / (0.5 * DYAInit * mu1Amet * mu2Amet) * (0.5 * DYAInit * mu1Amet * mu2Amet + 0.25 * OtherAInit * mu1Amet * mu2Amet) / NtotAmet
- 
- NAeemetAllM   <- pAmet[1] * NtotAmet
- NAmumumetAllM <- pAmet[4] * NtotAmet
+ NAmumumetDYM  <- (0.5 * DYAmetInit * mu1Amet * mu2Amet) / (0.5 * DYAmetInit * mu1Amet * mu2Amet + 0.25 * OtherAmetInit * mu1Amet * mu2Amet) * pAmet[4] * NtotAmet
+ NAeemetDYM    <- (0.5 * DYAmetInit * e1Amet * e2Amet)   / (0.5 * DYAmetInit * e1Amet * e2Amet + 0.25 * OtherAmetInit * e1Amet * e2Amet)     * pAmet[1] * NtotAmet
 
- 
  ################
  #### priors ####
  ################
@@ -380,6 +404,15 @@ model
  mu1Amet ~ dunif(0,1)
  e2Amet  ~ dunif(0,1)
  mu2Amet ~ dunif(0,1)
+
+
+
+ tempOtherAmetInit ~ dunif (1,1000)
+ OtherAmetInit <- round (tempOtherAmetInit)
+ tempDYAmetInit ~ dunif (1,10000)
+ DYAmetInit <- round (tempDYAmetInit)
+ NtotAmetInit <- OtherAmetInit + DYAmetInit
+
 
  meanNtotAmumueemet ~ dunif (0,100)
  NtotAmumueemet ~ dpois (meanNtotAmumueemet)
