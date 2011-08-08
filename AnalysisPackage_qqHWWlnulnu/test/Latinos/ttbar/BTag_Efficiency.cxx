@@ -58,7 +58,7 @@ int BTag_Efficiency()
  
 ///===== Acuisition info from txt file: Name of the samples, Cut applied and Variables of Plot 
  
- std::ifstream inFile("test/Latinos/ttbar/Btag_Efficiency.txt",ios::binary);
+ std::ifstream inFile("test/Latinos/ttbar/BTag_Efficiency.txt",ios::binary);
  std::string buffer;
  int flag=0, flag2=0;
  int iPoint=0;

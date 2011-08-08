@@ -1,0 +1,30 @@
+#[SampleName]  
+DY
+Other
+top
+ttbar
+ggWW
+ggH160
+qqH160
+DATA
+[cut]
+ttbar_noBtag
+ttbar_Btag
+VBF_noBtag
+VBF_Btag
+[variables]
+#q1_pT            
+#abs(q1_Eta)
+#q1_bTag_trackCountingHighPurBJetTags  
+#q2_pT            
+#abs(q2_Eta)    
+#q2_bTag_trackCountingHighPurBJetTags  
+#M_qq             
+#DEta_qq          
+#DPhi_qq          
+#NBjets_trackCountingHighPurBJetTags_21 
+(abs(q1_Eta)<abs(q2_Eta))*(abs(q1_Eta))+(abs(q1_Eta)>=abs(q2_Eta))*(abs(q2_Eta))
+0 0.5 0.75 1 1.5 2 2.5 3 3.5
+(abs(q1_Eta)<abs(q2_Eta))*(q1_pT)+(abs(q1_Eta)>=abs(q2_Eta))*(q2_pT)
+0 30 60 90 120 150 180 210 240 300
+#(abs(q1_Eta)>abs(q2_Eta))*(abs(q1_Eta))+(abs(q1_Eta)<=abs(q2_Eta))*(abs(q2_Eta))
