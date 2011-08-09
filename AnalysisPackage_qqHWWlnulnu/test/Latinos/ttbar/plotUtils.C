@@ -149,8 +149,9 @@ void PrintHContent (TH1F * histo)
 
 
 
-TH1F* DynamicalRebinHisto ( TH1F * original_Histo, TH1F* rebinned_Histo, const std::vector<float> & binning, const TString &nameHisto)
+TH1F* DynamicalRebinHisto ( TH1F * original_Histo, TH1F* rebinned_Histo, std::vector<float>  binning,  TString &nameHisto, bool isDATA, bool isDivide)
 {
+ 
  int original_iBin=0;
 
  std::vector<float> Bin_Counts;
@@ -203,25 +204,47 @@ TH1F* DynamicalRebinHisto ( TH1F * original_Histo, TH1F* rebinned_Histo, const s
    if(original_iBin ==original_Histo->GetNbinsX())
     edge.push_back(original_Histo->GetXaxis()->GetBinUpEdge(original_iBin));
    
+   if(isDivide)
+   {  
     Bin_Counts.at(iBin)=Bin_Counts.at(iBin)/(fabs(edge.at(iBin+1)-edge.at(iBin)));
     Bin_Errors.at(iBin)=Bin_Errors.at(iBin)/(fabs(edge.at(iBin+1)-edge.at(iBin)));
-//    std::cout<<" Counts.at(" <<iBin<< ")= "<<Bin_Counts.at(iBin)<<"  edge.at("<<iBin<<")=" <<edge.at(iBin)<<std::endl;
+    }
+    else{
+          Bin_Counts.at(iBin)=Bin_Counts.at(iBin);
+          Bin_Errors.at(iBin)=Bin_Errors.at(iBin);
+         }
+    
  }
  
+ binning.clear();
 
  for(int iBin=0; iBin<edge.size();iBin++)
  {
    Bin_size[iBin]=edge.at(iBin);
-   }
-
+   binning.push_back(edge.at(iBin)); 
+  }
+ 
  rebinned_Histo= new TH1F(nameHisto,original_Histo->GetTitle(),edge.size()-1,Bin_size);
 
-
- for(int iBin=0; iBin<edge.size()-1;iBin++)
- {rebinned_Histo->SetBinContent(iBin+1,Bin_Counts.at(iBin));
+ if(!isDATA || (isDATA && isDivide))
+ {  
+  for(int iBin=0; iBin<edge.size()-1;iBin++)
+  {rebinned_Histo->SetBinContent(iBin+1,Bin_Counts.at(iBin));
   rebinned_Histo->SetBinError(iBin+1,Bin_Errors.at(iBin));
+  }
  }
-
+ 
+ if(isDATA && !isDivide)
+ {
+   for( int iBin=0; iBin<edge.size()-1; iBin++)
+   { 
+     for(int iTime=0; iTime<Bin_Counts.at(iBin); iTime++)
+     {
+       rebinned_Histo->Fill(rebinned_Histo->GetBinCenter(iBin));
+     }
+   }
+ }
+     
 rebinned_Histo->SetMarkerStyle(original_Histo->GetMarkerStyle());
 rebinned_Histo->SetMarkerColor(original_Histo->GetMarkerColor());
 rebinned_Histo->SetLineColor(original_Histo->GetLineColor());
@@ -232,22 +255,24 @@ return(rebinned_Histo);
 }  
 
 
-TH1F* DynamicalRebinHisto ( TH1F * original_Histo, TH1F* rebinned_Histo, const std::vector<float> & binning)  
+TH1F* DynamicalRebinHisto ( TH1F * original_Histo, TH1F* rebinned_Histo, std::vector<float>  binning, bool isDATA, bool isDivide)  
 {
-  TString name =Form("%s_Rebinned",original_Histo->GetName());
-  rebinned_Histo=DynamicalRebinHisto(original_Histo,rebinned_Histo,binning,name);  
+  TRandom3* index= new TRandom3();
+  index->SetSeed(0);
+  TString name =Form("%s_Rebinned_%d",original_Histo->GetName(),int(index->Uniform(original_Histo->GetEntries())));
+  rebinned_Histo=DynamicalRebinHisto(original_Histo,rebinned_Histo,binning,name, isDATA, isDivide); 
   return(rebinned_Histo);
  }
  
  
  
- THStack* DynamicalRebinStack ( THStack * original_Stack, const std::vector<float> & binning)  
+ THStack* DynamicalRebinStack ( THStack * original_Stack,THStack* rebinned_Stack, std::vector<float> binning, bool isDATA, bool isDivide)  
 {
   TString name =Form("%s_Rebinned",original_Stack->GetName());
   
-  THStack *rebinned_Stack= new THStack();
-  
   TObjArray* histos = original_Stack->GetStack () ;
+  
+  rebinned_Stack = new THStack();
   
   for( int iHisto=0; iHisto< histos->GetEntries(); iHisto++)
   {
@@ -255,7 +280,8 @@ TH1F* DynamicalRebinHisto ( TH1F * original_Histo, TH1F* rebinned_Histo, const s
     {  
      TH1F* original_Histo1 = (TH1F*) histos->At(iHisto);
      TH1F* rebinned_Histo1;
-     rebinned_Histo1=DynamicalRebinHisto(original_Histo1,rebinned_Histo1,binning,name);
+     name=name+Form("_%d",iHisto);
+     rebinned_Histo1=DynamicalRebinHisto(original_Histo1,rebinned_Histo1,binning,name, isDATA, isDivide);
      rebinned_Stack->Add(rebinned_Histo1);
     }
     
@@ -264,10 +290,10 @@ TH1F* DynamicalRebinHisto ( TH1F * original_Histo, TH1F* rebinned_Histo, const s
            TH1F* original_Histo2 = (TH1F*) histos->At(iHisto);
 	   TH1F* rebinned_Histo1;
            TH1F* rebinned_Histo2;
-	   rebinned_Histo1=DynamicalRebinHisto(original_Histo1,rebinned_Histo1,binning,name);
-           rebinned_Histo2=DynamicalRebinHisto(original_Histo2,rebinned_Histo2,binning,name);
-	   rebinned_Histo1->Sumw2();
-	   rebinned_Histo2->Sumw2();
+	   TString name1=name+Form("_%d",iHisto);
+	   TString name2=name+Form("_%d_%d",iHisto,iHisto);
+	   rebinned_Histo1=DynamicalRebinHisto(original_Histo1,rebinned_Histo1,binning,name1, isDATA, isDivide);
+           rebinned_Histo2=DynamicalRebinHisto(original_Histo2,rebinned_Histo2,binning,name2, isDATA, isDivide);
 	   rebinned_Histo2->Add(rebinned_Histo1,-1);
 	   rebinned_Stack->Add(rebinned_Histo2);
     }
