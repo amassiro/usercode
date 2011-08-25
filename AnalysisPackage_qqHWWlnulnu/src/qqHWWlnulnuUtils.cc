@@ -617,6 +617,51 @@ TH1F* GetTrendInfo(TH1F* hTrend, double min, double max){
 
 
 ///==== Pull Plot ====
+std::pair<TGraphErrors*, TGraphErrors*> grPullPlot(TH1F* hDATA, TH1F* hMC){
+ int nbin = hDATA->GetNbinsX();
+ double max = hDATA->GetXaxis()->GetXmax();
+ double min = hDATA->GetXaxis()->GetXmin();
+ std::string name1 = hDATA->GetName();
+ std::string name2 = hMC->GetName(); 
+ std::string nameNew = name1 + name2; 
+ 
+ TGraphErrors* grPool = new TGraphErrors();
+ TGraphErrors* grPoolMC = new TGraphErrors();
+ int point = 0; 
+ for (int iBin = 0; iBin<nbin; iBin++){
+  double X = hDATA->GetBinCenter(iBin+1);
+  double DATA = hDATA->GetBinContent(iBin+1);
+  double MC = hMC->GetBinContent(iBin+1);
+  double errMC = hMC->GetBinError(iBin+1);
+  
+  grPool->SetPoint      (point, X, (MC ? DATA/MC : 0));
+  grPool->SetPointError (point, 0, (MC ? sqrt(DATA)/MC : 0));
+  
+  grPoolMC->SetPoint      (point, X, 1.);
+  grPoolMC->SetPointError (point, 0, (MC ? errMC / MC : 0));
+  point++;
+ }
+ grPool->SetLineColor(kRed);
+ grPool->SetLineWidth(2);
+ grPool->SetMarkerColor(kRed);
+ grPool->SetMarkerStyle(20);
+ grPool->SetMarkerSize(1);
+ grPool->GetXaxis()->SetTitle(hMC->GetXaxis()->GetTitle()); 
+ grPool->GetYaxis()->SetTitle("DATA/MC"); 
+ grPool->GetYaxis()->SetRangeUser(0.,3.); 
+ 
+ grPoolMC->SetLineWidth(0);
+ grPoolMC->SetMarkerSize(0);
+ grPoolMC->SetFillColor(kGreen);
+ grPoolMC->GetXaxis()->SetTitle(hMC->GetXaxis()->GetTitle()); 
+ grPoolMC->GetYaxis()->SetTitle("DATA/MC"); 
+ grPoolMC->GetYaxis()->SetRangeUser(0.,3.); 
+ 
+ return std::pair<TGraphErrors*, TGraphErrors*> (grPool, grPoolMC); 
+}
+
+
+//==== with TH1 ====
 
 TH1F* PullPlot(TH1F* hDATA, TH1F* hMC){
  int nbin = hDATA->GetNbinsX();
@@ -627,8 +672,8 @@ TH1F* PullPlot(TH1F* hDATA, TH1F* hMC){
  std::string nameNew = name1 + name2; 
  TH1F* hPool = new TH1F (nameNew.c_str(),nameNew.c_str(),nbin,min,max);
  for (int iBin = 0; iBin<nbin; iBin++){
-  double A = hDATA->GetBinContent(iBin);
-  double B = hMC->GetBinContent(iBin);
+  double A = hDATA->GetBinContent(iBin+1);
+  double B = hMC->GetBinContent(iBin+1);
   if (A+B != 0) {
    hPool->SetBinContent(iBin,(A-B)/(A+B)*2.);
 //    hPool->SetBinError(iBin,4. * A / (A+B) / (A+B) * sqrt(A+B));

@@ -10,6 +10,7 @@ qqHWWlnulnuUtils
 #include "TCanvas.h"
 #include "TH1.h"
 #include "THStack.h"
+#include "TGraphErrors.h"
 
 #include "treeReader.h"
 
@@ -31,6 +32,8 @@ TH1F* GetTrendInfo(TH1F* hTrend, double min = -1.5, double max = 1.5);
 void PullPlot(TCanvas* canvas, TH1* hDATA, TH1* hMC);
 void PullPlot(TCanvas* canvas, TH1* hDATA, THStack* hsMC);  
 TH1F* PullPlot(TH1F* hDATA, TH1F* hMC);
+std::pair<TGraphErrors*, TGraphErrors*> grPullPlot(TH1F* hDATA, TH1F* hMC);
+
 
 ///==== Draw Stack ====
 void DrawStack(THStack* hs, int error = 0, double syst = 0);
