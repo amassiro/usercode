@@ -88,11 +88,11 @@ int main(int argc, char** argv)
   kBlue,//(EColor)(kBlue+1),(EColor) (kBlue+2),
   (EColor) (kPink+2),//(EColor) (kPink+1),(EColor) (kPink+2),
   kViolet,
-  kGreen,
   kAzure,
 //   kWhite,
   kTeal,
   kYellow,
+  kGreen,
   (EColor) (kTeal+1),
   (EColor) (kOrange+2),
   (EColor) (kGreen+2),
@@ -148,6 +148,11 @@ int main(int argc, char** argv)
  TH1F* hPUDATA;
  TH1F* hPUWeight;
  
+ std::string nameWeight = "weight"; 
+ if (doWeightFromFile) {
+  nameWeight = gConfigParser -> readStringOption("PU::nameWeight");
+  std::cout << ">>>>> PU::nameWeight  " << nameWeight  << std::endl;  
+ }
  
  if (!doWeightFromFile) {
   
@@ -460,7 +465,7 @@ int main(int argc, char** argv)
       CutExtended = Form ("(%s) * autoWeight(numPUMC) * ptHWeight(ptH)",Cut.Data());    
       }
       else {
-       CutExtended = Form ("(%s) * ptHWeight(ptH)",Cut.Data());    
+       CutExtended = Form ("(%s) * ptHWeight(ptH) * (%s)",Cut.Data(),nameWeight.c_str());    
       }
      }
      else {
@@ -468,7 +473,7 @@ int main(int argc, char** argv)
        CutExtended = Form ("(%s) * autoWeight(numPUMC)",Cut.Data());    
       }
       else {
-       CutExtended = Form ("(%s) * weight",Cut.Data());    
+       CutExtended = Form ("(%s) * (%s)",Cut.Data(),nameWeight.c_str());    
       }
      }
      //      CutExtended = Form ("(%s) * autoWeight(numPUMC) * ptHWeight(ptH)",Cut.Data());    
@@ -607,6 +612,9 @@ int main(int argc, char** argv)
  THStack* hs[100][100];
  TH1F* hPull[100][100];
  TH1F* hPullTrace[100][100];
+
+ TGraphErrors* grPull[100][100];
+ TGraphErrors* grPullMC[100][100];
  
  
  std::cout << std::endl;
@@ -659,6 +667,10 @@ int main(int argc, char** argv)
    ///==== histo with pull plot ====
    hPull[iCut][iVar] = PullPlot(histo[numDATA][iCut][iVar], histoSumMC[iCut][iVar]);
    hPullTrace[iCut][iVar] = GetTrendInfo(hPull[iCut][iVar],-2.0,2.0);
+   
+   std::pair<TGraphErrors*, TGraphErrors*> tempPairGrPull = grPullPlot(histo[numDATA][iCut][iVar], histoSumMC[iCut][iVar]);
+   grPull  [iCut][iVar] = tempPairGrPull.first;
+   grPullMC[iCut][iVar] = tempPairGrPull.second;   
     
    std::cout << " MC / DATA[" << iCut << "][" << iVar << "] = "<< histoSumMC[iCut][iVar]->Integral() << " / " << histo[numDATA][iCut][iVar]->Integral() << " = " << (histo[numDATA][iCut][iVar]->Integral() ? histoSumMC[iCut][iVar]->Integral()/ histo[numDATA][iCut][iVar]->Integral() : 0) << std::endl;
    
@@ -761,6 +773,11 @@ int main(int argc, char** argv)
  ///==== hTrend with pull plot ====
  TH1F* hPullTrendSumMC = PullPlot(hTrend[numDATA], hTrendSumMC);
  TH1F* hPullTrendTraceSumMC = GetTrendInfo(hPullTrendSumMC,-2.0,2.0);
+ 
+ std::pair<TGraphErrors*, TGraphErrors*> tempPairGrPullTrend = grPullPlot(hTrend[numDATA], hTrendSumMC);
+ TGraphErrors* grPullTrendSumMC   = tempPairGrPullTrend.first;
+ TGraphErrors* grPullTrendSumMCMC = tempPairGrPullTrend.second;
+ 
  
  ///==== calculate agreement data-MC: Kolmogorov-Smirnov test ==== 
  ///==== cicle on selections ====
@@ -874,7 +891,11 @@ int main(int argc, char** argv)
  leg->Draw();
  latex->Draw();
  cTrendPull->cd(2);
- hPullTrendSumMC->Draw("EP");
+//  hPullTrendSumMC->Draw("EP");
+ grPullTrendSumMCMC -> Draw("AE3");
+ grPullTrendSumMC   -> Draw("PsameE");  
+ 
+ 
  gPad->SetGrid();
  cTrendPull->cd(3);
  gPad->SetGrid();
@@ -944,7 +965,9 @@ int main(int argc, char** argv)
    
    
    cCompareCutPull[iCut] -> cd(iVar+1+vVarName.size());
-   hPull[iCut][iVar]->Draw("EP");
+//    hPull[iCut][iVar]->Draw("EP");
+   grPullMC[iCut][iVar] -> Draw("AE3");
+   grPull  [iCut][iVar] -> Draw("PsameE");      
    gPad->SetGrid();
    gPad->SetLeftMargin(0.17);
    gPad->SetRightMargin(0.07);
@@ -954,7 +977,9 @@ int main(int argc, char** argv)
    gPad->SetGrid();
    
    cCompareVarPull[iVar] -> cd(iCut*3+2);
-   hPull[iCut][iVar]->Draw("EP");
+//    hPull[iCut][iVar]->Draw("EP");
+   grPullMC[iCut][iVar] -> Draw("AE3");
+   grPull  [iCut][iVar] -> Draw("PsameE");      
    gPad->SetGrid();
    gPad->SetLeftMargin(0.17);
    gPad->SetRightMargin(0.07);
@@ -985,7 +1010,9 @@ int main(int argc, char** argv)
    
    
    ccCanvasPull[iCut][iVar]-> cd();
-   hPull[iCut][iVar]->Draw("EP");
+//    hPull[iCut][iVar]->Draw("EP");
+   grPullMC[iCut][iVar] -> Draw("AE3");
+   grPull  [iCut][iVar] -> Draw("PsameE");      
    gPad->SetGrid();
    gPad->SetLeftMargin(0.17);
    gPad->SetRightMargin(0.07);

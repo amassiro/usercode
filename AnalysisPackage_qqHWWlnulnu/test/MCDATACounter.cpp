@@ -121,46 +121,73 @@ int main(int argc, char** argv)
  SignalName = gConfigParser -> readStringListOption("Input::SignalName");
  
  ///==== PU reweight (begin) ====
- std::vector<double> PUMC   = gConfigParser -> readDoubleListOption("PU::PUMC");
- std::vector<double> PUDATA = gConfigParser -> readDoubleListOption("PU::PUDATA");
+ bool doWeightFromFile = false; 
+ try {
+  doWeightFromFile = gConfigParser -> readStringOption("PU::doWeightFromFile");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ std::cout << ">>>>> PU::doWeightFromFile  " << doWeightFromFile  << std::endl;  
+ 
+ std::vector<double> PUMC;
+ std::vector<double> PUDATA;
  PUclass PU;
- 
- std::cout << " PUMC.size()   = " << PUMC.size()   << std::endl;
- std::cout << " PUDATA.size() = " << PUDATA.size() << std::endl;
- 
- if (PUMC.size() != PUDATA.size()) {
-  std::cerr << " ERROR " << std::endl;
-  return 1;
- }
- 
  double sumPUMC = 0;
- for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
-  sumPUMC += PUMC.at(itVPU);  
- }
  double sumPUDATA = 0;
- for (int itVPU = 0; itVPU < PUDATA.size(); itVPU++ ){
-  sumPUDATA += PUDATA.at(itVPU);  
- } 
+ TH1F* hPUMC;
+ TH1F* hPUDATA;
+ TH1F* hPUWeight;
  
- for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
-  PU.PUWeight.push_back(PUDATA.at(itVPU) / PUMC.at(itVPU) * sumPUMC / sumPUDATA);
+ 
+ std::string nameWeight = "weight"; 
+ if (doWeightFromFile) {
+  nameWeight = gConfigParser -> readStringOption("PU::nameWeight");
+  std::cout << ">>>>> PU::nameWeight  " << nameWeight  << std::endl;  
  }
-
- PU.Write("autoWeight.cxx");
- gROOT->ProcessLine(".L autoWeight.cxx");
+ 
+ if (!doWeightFromFile) {
+  
+  PUMC   = gConfigParser -> readDoubleListOption("PU::PUMC");
+  PUDATA = gConfigParser -> readDoubleListOption("PU::PUDATA");
+  
+  std::cout << " PUMC.size()   = " << PUMC.size()   << std::endl;
+  std::cout << " PUDATA.size() = " << PUDATA.size() << std::endl;
+  
+  if (PUMC.size() != PUDATA.size()) {
+   std::cerr << " ERROR " << std::endl;
+   return 1;
+  }
+  
+  for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
+   sumPUMC += PUMC.at(itVPU);  
+  }
+  for (int itVPU = 0; itVPU < PUDATA.size(); itVPU++ ){
+   sumPUDATA += PUDATA.at(itVPU);  
+  } 
+  
+  for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
+   PU.PUWeight.push_back(PUDATA.at(itVPU) / PUMC.at(itVPU) * sumPUMC / sumPUDATA);
+  }
+  
+  PU.Write("autoWeight.cxx");
+  gROOT->ProcessLine(".L autoWeight.cxx");
+  
+  ///==== save PU distribution in TH1F ====
+  hPUMC   = new TH1F("hPUMC","hPUMC",PUMC.size(),0,PUMC.size());
+  hPUDATA = new TH1F("hPUDATA","hPUDATA",PUDATA.size(),0,PUDATA.size());
+  hPUWeight = new TH1F("hPUWeight","hPUWeight",PUDATA.size(),0,PUDATA.size());
+  
+  for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
+   hPUMC     -> SetBinContent(itVPU+1,PUMC.at(itVPU) / sumPUMC);
+   hPUDATA   -> SetBinContent(itVPU+1,PUDATA.at(itVPU) / sumPUDATA);
+   hPUWeight -> SetBinContent(itVPU+1,PUDATA.at(itVPU) / PUMC.at(itVPU) * sumPUMC / sumPUDATA);
+  }
+  
+ }
+ 
  ///==== PU reweight (end) ====
- 
- ///==== save PU distribution in TH1F ====
- TH1F* hPUMC   = new TH1F("hPUMC","hPUMC",PUMC.size(),0,PUMC.size());
- TH1F* hPUDATA = new TH1F("hPUDATA","hPUDATA",PUDATA.size(),0,PUDATA.size());
- TH1F* hPUWeight = new TH1F("hPUWeight","hPUWeight",PUDATA.size(),0,PUDATA.size());
- 
- for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
-  hPUMC     -> SetBinContent(itVPU+1,PUMC.at(itVPU) / sumPUMC);
-  hPUDATA   -> SetBinContent(itVPU+1,PUDATA.at(itVPU) / sumPUDATA);
-  hPUWeight -> SetBinContent(itVPU+1,PUDATA.at(itVPU) / PUMC.at(itVPU) * sumPUMC / sumPUDATA);
- }
- 
+
  
  
  TTree *treeEffVect[100];
@@ -218,6 +245,36 @@ int main(int argc, char** argv)
   std::cerr << " exception = " << exceptionString << std::endl;
  }
  std::cout << ">>>>> input::Latinos  " << Latinos  << std::endl;  
+ 
+ 
+ ///==== pT Higgs reweight (begin) ====
+ std::string nameptHWeight; 
+ try {
+  nameptHWeight = gConfigParser -> readStringOption("Input::nameptHWeight");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ std::cout << ">>>>> input::nameptHWeight  " << nameptHWeight  << std::endl;  
+ if (nameptHWeight != ""){
+  TString toLoad;
+  //   toLoad = Form("cp %s ./",nameptHWeight.c_str());
+  //   gROOT->ProcessLine(toLoad.Data());
+  toLoad = Form(".L %s",nameptHWeight.c_str());
+  gROOT->ProcessLine(toLoad.Data());
+ }
+ 
+ std::string nameptHWeightSample; 
+ try {
+  nameptHWeight = gConfigParser -> readStringOption("Input::nameptHWeightSample");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ std::cout << ">>>>> input::nameptHWeightSample  " << nameptHWeightSample  << std::endl;  
+ 
+ 
+ ///==== pT Higgs reweight (end) ====
  
  
  ///==== debug flag ====
@@ -360,11 +417,28 @@ int main(int argc, char** argv)
     }
    }  
    if (!isData) {
-    CutExtended = Form ("(%s) * autoWeight(numPUMC)",Cut.Data());    
+    if (nameptHWeight != "" && name_samples.at(iSample) == nameptHWeightSample){
+     if (!doWeightFromFile) {
+      CutExtended = Form ("(%s) * autoWeight(numPUMC) * ptHWeight(ptH)",Cut.Data());    
+     }
+     else {
+      CutExtended = Form ("(%s) * ptHWeight(ptH) * (%s)",Cut.Data(),nameWeight.c_str());    
+     }
+    }
+    else {
+     if (!doWeightFromFile) {
+      CutExtended = Form ("(%s) * autoWeight(numPUMC)",Cut.Data());    
+     }
+     else {
+      CutExtended = Form ("(%s) * (%s)",Cut.Data(),nameWeight.c_str());    
+     }
+    }
+    //      CutExtended = Form ("(%s) * autoWeight(numPUMC) * ptHWeight(ptH)",Cut.Data());    
    }
    else {
     CutExtended = Form ("(%s)",Cut.Data());    
    }
+   
    treeJetLepVect[iSample]->Draw(toDraw,CutExtended,"");
    
    if (Normalization[iSample]>0) { 
@@ -751,7 +825,7 @@ int main(int argc, char** argv)
  std::cout << ">>>>> input::mass  " << mass << std::endl;  
  
  std::ofstream myfile;
- std::string nameOutDataCard = "dataCard_H" + mass + ".txt";
+ std::string nameOutDataCard = "dataCard." + mass + ".txt";
  
  ///==== output - txt file name ====
  try {
@@ -769,9 +843,10 @@ int main(int argc, char** argv)
  
  myfile << "Limit" << std::endl;
  myfile << "imax 1 number of channels" << std::endl;
- myfile << "jmax "<< (reduced_name_samples.size() - SignalName.size() - 1) << " number of background" << std::endl;
+ myfile << "jmax "<< (reduced_name_samples.size() - 2) << " number of background" << std::endl;
+// //  myfile << "jmax "<< (reduced_name_samples.size() - SignalName.size() - 1) << " number of background" << std::endl;
  //---- -1 to take into account "DATA"
- myfile << "kmax "<< 0 << " number of nuisance parameters" << std::endl;
+ myfile << "kmax "<< 15 << " number of nuisance parameters" << std::endl;
  
  double totalSig = 0;
  double totalBkg = 0;
@@ -790,19 +865,48 @@ int main(int argc, char** argv)
   }
  }
  myfile << "-------------------------------------------------" << std::endl;
-//  myfile << "Observation   " << ((Discovery==1) ? (int) (totalBkg+totalSig) : (int) (totalBkg)) << std::endl;
- myfile << "Observation   " << hTrend[numDATA]->GetBinContent(vCut.size()) << std::endl;
+ myfile << "bin             ll2j   " << std::endl;
+ //  myfile << "Observation   " << ((Discovery==1) ? (int) (totalBkg+totalSig) : (int) (totalBkg)) << std::endl;
+ myfile << "observation   " << hTrend[numDATA]->GetBinContent(vCut.size()) << std::endl;
  //# 1 = discovery, 0 = exclusion
  myfile << "-------------------------------------------------" << std::endl;
  
  
- myfile << std::setw (12) << " bin  " << std::setw (10) << 1 << "  ";
- for (int i=0; i < (reduced_name_samples.size() - SignalName.size() - 1); i++){
-  myfile << std::setw (10) << 1 << "  ";
+ myfile << std::setw (22) << "bin                ";
+//  myfile << std::setw (12) << " bin  " << std::setw (10) << "ll2j" << "  ";
+//  for (int i=0; i < (reduced_name_samples.size() - SignalName.size() - 1); i++){
+//   myfile << std::setw (10) << "ll2j" << "  ";
+//  }
+ for (int i=0; i < (reduced_name_samples.size() -1 ); i++){
+  myfile << std::setw (10) << "ll2j" << "  ";
  }
  myfile << std::endl;
  
- myfile << std::setw (12) << " process  " << std::setw (10) << "sig" << "  ";
+//  myfile << std::setw (12) << " process  " << std::setw (10) << "sig" << "  ";
+//  for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+//   if (iName != numDATA) {
+//    bool isSig = false;
+//    for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+//     if (reduced_name_samples.at(iName) == *itSig) isSig = true;
+//    }
+//    if (!isSig) {
+//     myfile << std::setw (10) << reduced_name_samples.at(iName) << "  ";
+//    }
+//   }
+//  }
+//  myfile << std::endl;
+
+ myfile << std::setw (22) << "process                ";
+ for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+  if (iName != numDATA) {
+   myfile << std::setw (10) << reduced_name_samples.at(iName) << "  ";
+  }
+ }
+ myfile << std::endl;
+
+ int cSig = -1;
+ int cBkg = 1;
+ myfile << std::setw (22) << "process                ";
  for (uint iName=0; iName<reduced_name_samples.size(); iName++){
   if (iName != numDATA) {
    bool isSig = false;
@@ -810,45 +914,68 @@ int main(int argc, char** argv)
     if (reduced_name_samples.at(iName) == *itSig) isSig = true;
    }
    if (!isSig) {
-    myfile << std::setw (10) << reduced_name_samples.at(iName) << "  ";
+    myfile << std::setw (10) << cBkg << "  ";
+    cBkg++;
+   }
+   else {
+    myfile << std::setw (10) << cSig << "  ";
+    cSig++;
    }
   }
  }
  myfile << std::endl;
  
- myfile << std::setw (12) << " process  " << std::setw (10) << 0 << "  ";
- for (int i=0; i < (reduced_name_samples.size() - SignalName.size() - 1); i++){
-  myfile << std::setw (10) << i+1 << "  ";
- }
- myfile << std::endl;
+//  myfile << std::setw (12) << " process  " << std::setw (10) << 0 << "  ";
+//  for (int i=0; i < (reduced_name_samples.size() - SignalName.size() - 1); i++){
+//   myfile << std::setw (10) << i+1 << "  ";
+//  }
+//  myfile << std::endl;
  
- myfile << std::setw (12) << " rate  " << std::setw (10) << totalSig << "  ";
+//  std::cout << " numDATA = " << numDATA << " reduced_name_samples.size() = " << reduced_name_samples.size() << std::endl;
+ for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+//   std::cout << " name[" << iName << "] = " << reduced_name_samples.at(iName) << std::endl;
+ }
+ myfile << std::setw (23) << "rate                 " ;
  for (uint iName=0; iName<reduced_name_samples.size(); iName++){
   if (iName != numDATA) {
-   bool isSig = false;
-   for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
-    if (reduced_name_samples.at(iName) == *itSig) isSig = true;
-   }
-   if (!isSig) {
+//    std::cout << " iName = " << iName << " -- > " <<  hTrend[iName]->GetBinContent(vCut.size())  << std::endl;
+//    bool isSig = false;
+//    for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+//     if (reduced_name_samples.at(iName) == *itSig) isSig = true;
+//    }
+//    if (!isSig) {
     myfile << std::setw (10) << hTrend[iName]->GetBinContent(vCut.size()) << "  ";
-   }
+//    }
   }
  }
  myfile << std::endl;
+ 
  
  
  myfile << "-------------------------------------------------" << std::endl;
- myfile << "1      lnN     1.04     -     -     -     -     -     -                                                   Lumi     Error on luminosity only affects signal?" << std::endl;
- myfile << "2      lnN      1.05    -     1.10   -    -    1.50    1.50   -                               JES" << std::endl;
- myfile << "3      lnN    1.03    -    1.04    -     1.04     1.02    -                                   Pile Up +/- 1" << std::endl;
- myfile << "4      lnN    1.002    -    -    -     -     1.007    -                                            Muon momentum" << std::endl;
- myfile << "5      lnN    1.002    -    -    -     -     1.007    -                                            Electron scale" << std::endl;
- myfile << "6      lnN    1.03    -    1.35    -     -     1.04    2.00                                   MET +/- 10%" << std::endl;
- myfile << "7      lnN    1.01    2.00    2.00    2.00     2.00     -    -                             MC statistics" << std::endl;
- myfile << "8      lnN    1.10        -         -          -            -         -      -                            Theory on Higgs" << std::endl;
- myfile << "9      lnN    1.05        -         -          -            -         -      -                            Btag" << std::endl;
- myfile << "10      lnN       -           -         -          -            -         1.60     -                     TTbar data driven" << std::endl;
- myfile << "11      lnN       -           -         -          -            -              -     1.20                DY data driven" << std::endl;
+ 
+ myfile << "CMS_eff_e                    lnN       1.020    1.020    1.020      1.020     1.020        -         -      " << std::endl; //               electron efficiency      " << std::endl;
+ myfile << "CMS_eff_m                    lnN       1.040    1.040    1.040      1.040     1.040        -         -      " << std::endl; //               muon efficiency          " << std::endl;
+ 
+ myfile << "PU                           lnN       1.03     1.03       -        1.04      1.04         -         -      " << std::endl; //               Pile Up +/- 1" << std::endl;
+ 
+ myfile << "CMS_p_scale_j                lnN       1.05     1.05       -        1.10      1.10         -         -      " << std::endl; //               JES" << std::endl;
+ myfile << "CMS_p_scale_m                lnN       1.002    1.002      -          -         -          -         -      " << std::endl; //               Muon momentum" << std::endl;
+ myfile << "CMS_p_scale_e                lnN       1.002    1.002      -          -         -          -         -      " << std::endl; //               Electron scale" << std::endl;
+ myfile << "MC_statistics                lnN         -      1.03       -        1.35      1.10         -         -      " << std::endl; //               MET +/- 10%" << std::endl;
+ 
+ myfile << "QCDscale_ggH                 lnN         -      1.160      -          -         -          -         -      " << std::endl; //               Theory on Higgs" << std::endl;
+ myfile << "QCDscale_ggH1in              lnN         -      1.160      -          -         -          -         -      " << std::endl; //               Theory on Higgs" << std::endl;
+ myfile << "QCDscale_ggVV                lnN         -        -        -        1.160       -          -         -      " << std::endl; //               Theory on Higgs" << std::endl;
+
+ myfile << "lumi                         lnN       1.060    1.060    1.060      1.060       -          -         -      " << std::endl; //              Luminosity     " << std::endl;
+ myfile << "pdf_gg                       lnN         -      1.080      -        1.080       -          -         -      " << std::endl; //              pdfgg        " << std::endl;
+ myfile << "pdf_qqbar                    lnN       1.050      -        -          -       1.030        -         -      " << std::endl; //              pdfqq        " << std::endl;
+
+ //  myfile << "pdf_gg                       lnN    1.040    1.040     1.040      -         -          -                    Luminosity     " << std::endl;
+//  myfile << "pdf_qqbar                    lnN    1.01    2.00    2.00    2.00     2.00     -    -                             MC statistics" << std::endl;
+ myfile << "CMS_ww_Top2j                 lnN         -        -        -          -         -         1.1        -     " << std::endl; //              TTbar data driven" << std::endl;
+ myfile << "CMS_ww_DY2j                  lnN         -        -        -          -         -          -       1.1     " << std::endl; //              DY data driven   " << std::endl;
  myfile << std::endl; 
  
  myfile.close(); 
@@ -858,78 +985,78 @@ int main(int argc, char** argv)
  
  ///==== plot on the screen ====
  
- std::cout << "Limit" << std::endl;
- std::cout << "imax 1 number of channels" << std::endl;
- std::cout << "jmax "<< (reduced_name_samples.size() - SignalName.size() - 1) << " number of background" << std::endl;
- //---- -1 to take into account "DATA"
- std::cout << "kmax "<< 0 << " number of nuisance parameters" << std::endl;
- 
- totalSig = 0;
- totalBkg = 0;
- for (uint iName=0; iName<reduced_name_samples.size(); iName++){
-  if (iName != numDATA) {
-   bool isSig = false;
-   for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
-    if (reduced_name_samples.at(iName) == *itSig) isSig = true;
-   }
-   if (isSig) {
-    totalSig += hTrend[iName]->GetBinContent(vCut.size());   ///---- last cut!
-   }
-   else {
-    totalBkg += hTrend[iName]->GetBinContent(vCut.size());   ///---- last cut!
-   }
-  }
- }
- std::cout << "-------------------------------------------------" << std::endl;
-//  std::cout << "Observation   " << ((Discovery==1) ? (int) (totalBkg+totalSig) : (int) (totalBkg)) << std::endl;
- std::cout << "Observation   " << hTrend[numDATA]->GetBinContent(vCut.size()) << std::endl;
- //# 1 = discovery, 0 = exclusion
- std::cout << "-------------------------------------------------" << std::endl;
- 
- 
- std::cout << std::setw (12) << " bin  " << std::setw (10) << 1 << "  ";
- for (int i=0; i < (reduced_name_samples.size() - SignalName.size() - 1); i++){
-  std::cout << std::setw (10) << 1 << "  ";
- }
- std::cout << std::endl;
- 
- std::cout << std::setw (12) << " process  " << std::setw (10) << "sig" << "  ";
- for (uint iName=0; iName<reduced_name_samples.size(); iName++){
-  if (iName != numDATA) {
-   bool isSig = false;
-   for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
-    if (reduced_name_samples.at(iName) == *itSig) isSig = true;
-   }
-   if (!isSig) {
-    std::cout << std::setw (10) << reduced_name_samples.at(iName) << "  ";
-   }
-  }
- }
- std::cout << std::endl;
- 
- std::cout << std::setw (12) << " process  " << std::setw (10) << 0 << "  ";
- for (int i=0; i < (reduced_name_samples.size() - SignalName.size() - 1); i++){
-  std::cout << std::setw (10) << i+1 << "  ";
- }
- std::cout << std::endl;
- 
- std::cout << std::setw (12) << " rate  " << std::setw (10) << totalSig << "  ";
- for (uint iName=0; iName<reduced_name_samples.size(); iName++){
-  if (iName != numDATA) {
-   bool isSig = false;
-   for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
-    if (reduced_name_samples.at(iName) == *itSig) isSig = true;
-   }
-   if (!isSig) {
-    std::cout << std::setw (10) << hTrend[iName]->GetBinContent(vCut.size()) << "  ";
-   }
-  }
- }
- std::cout << std::endl;
- 
- 
- std::cout << "-------------------------------------------------" << std::endl;
- 
+// //  std::cout << "Limit" << std::endl;
+// //  std::cout << "imax 1 number of channels" << std::endl;
+// //  std::cout << "jmax "<< (reduced_name_samples.size() - SignalName.size() - 1) << " number of background" << std::endl;
+// //  //---- -1 to take into account "DATA"
+// //  std::cout << "kmax "<< 0 << " number of nuisance parameters" << std::endl;
+// //  
+// //  totalSig = 0;
+// //  totalBkg = 0;
+// //  for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+// //   if (iName != numDATA) {
+// //    bool isSig = false;
+// //    for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+// //     if (reduced_name_samples.at(iName) == *itSig) isSig = true;
+// //    }
+// //    if (isSig) {
+// //     totalSig += hTrend[iName]->GetBinContent(vCut.size());   ///---- last cut!
+// //    }
+// //    else {
+// //     totalBkg += hTrend[iName]->GetBinContent(vCut.size());   ///---- last cut!
+// //    }
+// //   }
+// //  }
+// //  std::cout << "-------------------------------------------------" << std::endl;
+// // //  std::cout << "Observation   " << ((Discovery==1) ? (int) (totalBkg+totalSig) : (int) (totalBkg)) << std::endl;
+// //  std::cout << "Observation   " << hTrend[numDATA]->GetBinContent(vCut.size()) << std::endl;
+// //  //# 1 = discovery, 0 = exclusion
+// //  std::cout << "-------------------------------------------------" << std::endl;
+// //  
+// //  
+// //  std::cout << std::setw (12) << " bin  " << std::setw (10) << 1 << "  ";
+// //  for (int i=0; i < (reduced_name_samples.size() - SignalName.size() - 1); i++){
+// //   std::cout << std::setw (10) << 1 << "  ";
+// //  }
+// //  std::cout << std::endl;
+// //  
+// //  std::cout << std::setw (12) << " process  " << std::setw (10) << "sig" << "  ";
+// //  for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+// //   if (iName != numDATA) {
+// //    bool isSig = false;
+// //    for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+// //     if (reduced_name_samples.at(iName) == *itSig) isSig = true;
+// //    }
+// //    if (!isSig) {
+// //     std::cout << std::setw (10) << reduced_name_samples.at(iName) << "  ";
+// //    }
+// //   }
+// //  }
+// //  std::cout << std::endl;
+// //  
+// //  std::cout << std::setw (12) << " process  " << std::setw (10) << 0 << "  ";
+// //  for (int i=0; i < (reduced_name_samples.size() - SignalName.size() - 1); i++){
+// //   std::cout << std::setw (10) << i+1 << "  ";
+// //  }
+// //  std::cout << std::endl;
+// //  
+// //  std::cout << std::setw (12) << " rate  " << std::setw (10) << totalSig << "  ";
+// //  for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+// //   if (iName != numDATA) {
+// //    bool isSig = false;
+// //    for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+// //     if (reduced_name_samples.at(iName) == *itSig) isSig = true;
+// //    }
+// //    if (!isSig) {
+// //     std::cout << std::setw (10) << hTrend[iName]->GetBinContent(vCut.size()) << "  ";
+// //    }
+// //   }
+// //  }
+// //  std::cout << std::endl;
+// //  
+// //  
+// //  std::cout << "-------------------------------------------------" << std::endl;
+// //  
  
  std::cout << std::endl;
  std::cout << std::endl;
@@ -1000,10 +1127,11 @@ int main(int argc, char** argv)
  outFile.mkdir("PU");
  outFile.cd("PU");
  
- hPUMC     -> Write();
- hPUDATA   -> Write();
- hPUWeight -> Write();
- 
+ if (!doWeightFromFile) { 
+  hPUMC     -> Write();
+  hPUDATA   -> Write();
+  hPUWeight -> Write();
+ }
  
  outFile.cd();
  outFile.mkdir("Sample");
