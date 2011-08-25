@@ -2,204 +2,162 @@
 DATA                                   -1.              DATA  
 #
 #
+Summer11_DY50toLLMadD6T               0.084017952      DYmad 
+#
+# Summer11_DYtoElEl                     0.0567686049     DY
+# Summer11_DYtoMuMu                     0.0565481502     DY
+# Summer11_DYtoTauTau                   0.0835612165     DY
+# Summer11_DY10toElEl                   1.6292217438     DY-low
+# Summer11_DY10toMuMu                   1.5767956975     DY-low
+# Summer11_DY10toTauTau                 1.5713636364     DY-low
+#
+Summer11_TTJetsMad                    0.0432460989     ttbar
+Summer11_TtWFullDR                    0.0096636747     top
+Summer11_TbartWFullDR                 0.0097162413     top
+Summer11_TtFull                       0.0107482467     top
+Summer11_TbartFull                    0.0116462861     top
+Summer11_TsFull                       0.0122705994     top
+Summer11_TbarsFull                    0.0104362951     top
+#
+Summer11_WWJets2LMad                  0.0037693105     WW
+Summer11_GluGluToWWTo4L               0.0013910103     WW
+# 
+Summer11_WZFull                       0.0042670488     WZ
+Summer11_ZZFull                       0.0018314734     ZZ
+Summer11_GluGluZZ2L2L                 0.0000173000     ZZ
+Summer11_GluGluZZ4L                   0.0000123014     ZZ
+#
+Summer11_WJetsToLNuMad                0.3849171055     W
+Summer11_VGamma                       0.1545118876     Vg
 #
 #
-#   DYToEE_M-20_TuneZ2_7TeV-pythia6                     0.7363037991  DYpow   DYee20
-#   Summer11_DYToEE_M-20_CT10_TuneZ2_7TeV-powheg-pythia          0.0571980030  DYpow   DYeePow20
-#   Summer11_DYToEE_M-10To20_TuneZ2_7TeV-pythia6                 1.6292217438  DYpow   DYee10-20
+# 
+# Summer11_ggToH120toWWto2L2Nu          0.0010091551     ggH
+# Summer11_ggToH130toWWto2L2Nu          0.0018283314     ggH
+# Summer11_ggToH140toWWto2L2Nu          0.0026134876     ggH
+# Summer11_ggToH150toWWto2L2Nu          0.0031192611     ggH
+Summer11_ggToH160toWWto2L2Nu          0.0036198032     ggH
+# Summer11_ggToH170toWWto2L2Nu          0.0032840815     ggH
+# Summer11_ggToH180toWWto2L2Nu          0.0026720611     ggH
+# Summer11_ggToH190toWWto2L2Nu          0.0020133730     ggH
+# Summer11_ggToH200toWWto2L2Nu          0.0016564690     ggH
+# Summer11_ggToH210toWWto2L2Nu          0.0029074842     ggH
+# Summer11_ggToH220toWWto2L2Nu          0.0025985125     ggH
+# Summer11_ggToH230toWWto2L2Nu          0.0023547595     ggH
+# Summer11_ggToH250toWWto2L2Nu          0.0010241611     ggH
+# Summer11_ggToH300toWWto2L2Nu          0.0007100710     ggH
+# Summer11_ggToH350toWWto2L2Nu          0.0006536898     ggH
+# Summer11_ggToH400toWWto2L2Nu          0.0005009410     ggH
+# Summer11_ggToH450toWWto2L2Nu          0.0003200669     ggH
+# Summer11_ggToH500toWWto2L2Nu          0.0002000491     ggH
+# Summer11_ggToH550toWWto2L2Nu          0.0001254853     ggH
+# Summer11_ggToH600toWWto2L2Nu          0.0000791110     ggH
 #
-#   DYToMuMu_M-20_TuneZ2_7TeV-pythia6                 0.7939666162  DYpow DYmumu20
-#   Summer11_DYToMuMu_M-20_CT10_TuneZ2_7TeV-powheg-pythia      0.0623355250 DYpow  DYmumuPow20
-#   Summer11_DYToMuMu_M-10To20_TuneZ2_7TeV-pythia6             1.5767956975 DYpow  DYmumu10-20 
+# Summer11_ggToH120toWWtoLNuTauNu       0.0010091643     ggH
+# Summer11_ggToH130toWWtoLNuTauNu       0.0018442773     ggH
+# Summer11_ggToH140toWWtoLNuTauNu       0.0025956197     ggH
+# Summer11_ggToH150toWWtoLNuTauNu       0.0031193178     ggH
+Summer11_ggToH160toWWtoLNuTauNu       0.0035011319     ggH
+# Summer11_ggToH170toWWtoLNuTauNu       0.0031764791     ggH
+# Summer11_ggToH180toWWtoLNuTauNu       0.0026719396     ggH
+# Summer11_ggToH190toWWtoLNuTauNu       0.0019737799     ggH
+# Summer11_ggToH200toWWtoLNuTauNu       0.0016564841     ggH
+# Summer11_ggToH210toWWtoLNuTauNu       0.0029074842     ggH
+# Summer11_ggToH220toWWtoLNuTauNu       0.0025983708     ggH
+# Summer11_ggToH230toWWtoLNuTauNu       0.0023548023     ggH
+# Summer11_ggToH250toWWtoLNuTauNu       0.0010137122     ggH
+# Summer11_ggToH300toWWtoLNuTauNu       0.0007100516     ggH
+# Summer11_ggToH350toWWtoLNuTauNu       0.0006537136     ggH
+# Summer11_ggToH400toWWtoLNuTauNu       0.0005009319     ggH
+# Summer11_ggToH450toWWtoLNuTauNu       0.0003200553     ggH
+# Summer11_ggToH500toWWtoLNuTauNu       0.0002000418     ggH
+# Summer11_ggToH550toWWtoLNuTauNu       0.0001254762     ggH
+# Summer11_ggToH600toWWtoLNuTauNu       0.0000791074     ggH
 #
-#   Summer11_DYToTauTau_M-20_CT10_TuneZ2_7TeV-powheg-pythia-tauola         0.0854907913  DYpow    DYtautauPow20
-#   Summer11_DYToTauTau_M-10To20_TuneZ2_7TeV-pythia6-tauola                1.5713636364  DYpow    DYtautau10-20
+# Summer11_ggToH120toWWto2Tau2Nu        0.0005036730     ggH
+# Summer11_ggToH130toWWto2Tau2Nu        0.0009848455     ggH
+# Summer11_ggToH140toWWto2Tau2Nu        0.0013717579     ggH
+# Summer11_ggToH150toWWto2Tau2Nu        0.0015602269     ggH
+Summer11_ggToH160toWWto2Tau2Nu        0.0017511001     ggH
+# Summer11_ggToH170toWWto2Tau2Nu        0.0017227090     ggH
+# Summer11_ggToH180toWWto2Tau2Nu        0.0013541897     ggH
+# Summer11_ggToH190toWWto2Tau2Nu        0.0009873086     ggH
+# Summer11_ggToH200toWWto2Tau2Nu        0.0008688014     ggH
+# Summer11_ggToH210toWWto2Tau2Nu        0.0007637523     ggH
+# Summer11_ggToH220toWWto2Tau2Nu        0.0006491617     ggH
+# Summer11_ggToH230toWWto2Tau2Nu        0.0006186748     ggH
+# Summer11_ggToH250toWWto2Tau2Nu        0.0005174620     ggH
+# Summer11_ggToH300toWWto2Tau2Nu        0.0003723506     ggH
+# Summer11_ggToH350toWWto2Tau2Nu        0.0003273203     ggH
+# Summer11_ggToH400toWWto2Tau2Nu        0.0002635197     ggH
+# Summer11_ggToH450toWWto2Tau2Nu        0.0001715166     ggH
+# Summer11_ggToH500toWWto2Tau2Nu        0.0001071895     ggH
+# Summer11_ggToH550toWWto2Tau2Nu        0.0000636560     ggH
+# Summer11_ggToH600toWWto2Tau2Nu        0.0000428766     ggH
+#
+# Summer11_vbfToH120toWWto2L2Nu         0.0000764791     qqH
+# Summer11_vbfToH130toWWto2L2Nu         0.0001483693     qqH
+# Summer11_vbfToH140toWWto2L2Nu         0.0002230781     qqH
+# Summer11_vbfToH150toWWto2L2Nu         0.0002917482     qqH
+Summer11_vbfToH160toWWto2L2Nu         0.0003359096     qqH
+# Summer11_vbfToH170toWWto2L2Nu         0.0004050701     qqH
+# Summer11_vbfToH180toWWto2L2Nu         0.0002939399     qqH
+# Summer11_vbfToH190toWWto2L2Nu         0.0002298619     qqH
+# Summer11_vbfToH200toWWto2L2Nu         0.0001984308     qqH
+# Summer11_vbfToH210toWWto2L2Nu         0.0003604588     qqH
+# Summer11_vbfToH220toWWto2L2Nu         0.0003374914     qqH
+# Summer11_vbfToH230toWWto2L2Nu         0.0003021148     qqH
+# Summer11_vbfToH250toWWto2L2Nu         0.0001265270     qqH
+# Summer11_vbfToH300toWWto2L2Nu         0.0000873839     qqH
+# Summer11_vbfToH350toWWto2L2Nu         0.0000610556     qqH
+# Summer11_vbfToH400toWWto2L2Nu         0.0000401398     qqH
+# Summer11_vbfToH450toWWto2L2Nu         0.0000292107     qqH
+# Summer11_vbfToH500toWWto2L2Nu         0.0000220554     qqH
+# Summer11_vbfToH550toWWto2L2Nu         0.0000174782     qqH
+# Summer11_vbfToH600toWWto2L2Nu         0.0000139747     qqH
+#
+# Summer11_vbfToH120toWWtoLNuTauNu      0.0000764763     qqH
+# Summer11_vbfToH130toWWtoLNuTauNu      0.0001483923     qqH
+# Summer11_vbfToH140toWWtoLNuTauNu      0.0002230598     qqH
+# Summer11_vbfToH150toWWtoLNuTauNu      0.0002822004     qqH
+Summer11_vbfToH160toWWtoLNuTauNu      0.0003359279     qqH
+# Summer11_vbfToH170toWWtoLNuTauNu      0.0003313941     qqH
+# Summer11_vbfToH180toWWtoLNuTauNu      0.0002921980     qqH
+# Summer11_vbfToH190toWWtoLNuTauNu      0.0002284872     qqH
+# Summer11_vbfToH200toWWtoLNuTauNu      0.0002034265     qqH
+# Summer11_vbfToH210toWWtoLNuTauNu      0.0003604719     qqH
+# Summer11_vbfToH220toWWtoLNuTauNu      0.0003295283     qqH
+# Summer11_vbfToH230toWWtoLNuTauNu      0.0003022633     qqH
+# Summer11_vbfToH250toWWtoLNuTauNu      0.0001265201     qqH
+# Summer11_vbfToH300toWWtoLNuTauNu      0.0000873967     qqH
+# Summer11_vbfToH350toWWtoLNuTauNu      0.0001520378     qqH
+# Summer11_vbfToH400toWWtoLNuTauNu      0.0000403922     qqH
+# Summer11_vbfToH450toWWtoLNuTauNu      0.0000292032     qqH
+# Summer11_vbfToH500toWWtoLNuTauNu      0.0000227661     qqH
+# Summer11_vbfToH550toWWtoLNuTauNu      0.0000187541     qqH
+# Summer11_vbfToH600toWWtoLNuTauNu      0.0000138171     qqH
+#
+# Summer11_vbfToH120toWWto2Tau2Nu       0.0000397705     qqH
+# Summer11_vbfToH130toWWto2Tau2Nu       0.0000776251     qqH
+# Summer11_vbfToH140toWWto2Tau2Nu       0.0001110787     qqH
+# Summer11_vbfToH150toWWto2Tau2Nu       0.0001419808     qqH
+Summer11_vbfToH160toWWto2Tau2Nu       0.0001675194     qqH
+# Summer11_vbfToH170toWWto2Tau2Nu       0.0001785504     qqH
+# Summer11_vbfToH180toWWto2Tau2Nu       0.0001568966     qqH
+# Summer11_vbfToH190toWWto2Tau2Nu       0.0001146872     qqH
+# Summer11_vbfToH200toWWto2Tau2Nu       0.0000983338     qqH
+# Summer11_vbfToH210toWWto2Tau2Nu       0.0000892126     qqH
+# Summer11_vbfToH220toWWto2Tau2Nu       0.0000897953     qqH
+# Summer11_vbfToH230toWWto2Tau2Nu       0.0000746405     qqH
+# Summer11_vbfToH250toWWto2Tau2Nu       0.0000637035     qqH
+# Summer11_vbfToH300toWWto2Tau2Nu       0.0000472543     qqH
+# Summer11_vbfToH350toWWto2Tau2Nu       0.0000309812     qqH
+# Summer11_vbfToH400toWWto2Tau2Nu       0.0000200624     qqH
+# Summer11_vbfToH450toWWto2Tau2Nu       0.0000146140     qqH
+# Summer11_vbfToH500toWWto2Tau2Nu       0.0000111208     qqH
+# Summer11_vbfToH550toWWto2Tau2Nu       0.0000091388     qqH
+# Summer11_vbfToH600toWWto2Tau2Nu       0.0000073233     qqH
 #
 #
-#   DYToEE_M-20_TuneZ2_7TeV-pythia6                     0.7363037991     DYee20
-#    DYToEE_M-20_CT10_TuneZ2_7TeV-powheg-pythia          0.0571980030     DYeePow20
-#    DYToEE_M-10To20_TuneZ2_7TeV-pythia6                 1.6292217438     DYee10-20
-#
-#   DYToMuMu_M-20_TuneZ2_7TeV-pythia6                 0.7939666162   DYmumu20
-#    DYToMuMu_M-20_CT10_TuneZ2_7TeV-powheg-pythia      0.0623355250   DYmumuPow20
-#    DYToMuMu_M-10To20_TuneZ2_7TeV-pythia6             1.5767956975   DYmumu10-20 
-#
-#    DYToTauTau_M-20_CT10_TuneZ2_7TeV-powheg-pythia-tauola         0.0854907913      DYtautauPow20
-#    DYToTauTau_M-10To20_TuneZ2_7TeV-pythia6-tauola                1.5713636364      DYtautau10-20
-#
-#
-##
-#DYToEE_M-10To20_TuneZ2_7TeV-pythia6                        1.7884117951     DYee
-#DYToEE_M-20_CT10_TuneZ2_7TeV-powheg-pythia                 0.8362295184     DYee
-#DYToMuMu_M-10To20_TuneZ2_7TeV-pythia6                      1.5517272336     DYmumu
-#DYToMuMu_M-20_CT10_TuneZ2_7TeV-powheg-pythia               0.8396525673     DYmumu
-#DYToTauTau_M-10To20_CT10_TuneZ2_7TeV-powheg-pythia-tauola  1.7359419833     DYtautau
-#DYToTauTau_M-20_CT10_TuneZ2_7TeV-powheg-pythia-tauola      0.8349332880     DYtautau
-#
-DYJetsToLL_TuneD6T_M-10To50_7TeV-madgraph-tauola     4.091         DY-l       riscalato per 412.3 (mia sezione d'urto) / 12321 (da google doc) e moltiplico per 1.13 per avere concordanza con DY-50-inf  x 1.032 x 1.32 da data/mc comparison (?) ...  67.4720304038 / 12321 * 412.3 * 1.33 * 1.032 * 1.32    <--   67.4720304038    DY       DY10toLLMadD6T
-DYJetsToLL_TuneD6T_M-50_7TeV-madgraph-tauola         1.354          DY-h       DY50toLLMadD6T     1.1982516847 * 1.13
-#
-#
-#
-TTJets_TuneZ2_7TeV-madgraph-tauola            0.1352851037     ttbar            TTJetsMad
-#
-#
-#
-TToBLNu_TuneZ2_s-channel_7TeV-madgraph                0.0030111098    top        sTtoBLNu
-TToBLNu_TuneZ2_t-channel_7TeV-madgraph                0.0432392679    top        tTtoBLNu
-TToBLNu_TuneZ2_tW-channel_7TeV-madgraph               0.0216584222    top        tWTtoBLNu
-#
-#
-#
-WZtoAnything_TuneZ2_7TeV-pythia6-tauola                    0.0086320726     WZ     WZtoAny
-ZZtoAnything_TuneZ2_7TeV-pythia6-tauola                    0.0036374708     ZZ     ZZtoAny
-#   DYToEE_M-20_CT10_TuneZ2_7TeV-powheg-pythia                 0.8362295184      DYtoElEl
-#   DYToMuMu_M-20_CT10_TuneZ2_7TeV-powheg-pythia               0.8396525673      DYtoMuMu
-#   DYToTauTau_M-20_CT10_TuneZ2_7TeV-powheg-pythia-tauola      0.8349332880      DYtoTauTau
-#   DYToEE_M-20_TuneZ2_7TeV-pythia6                            0.8087429678      DYtoEEPythia
-#   DYToMuMu_M-20_TuneZ2_7TeV-pythia6     0.7421818096      DYtoMuMuPythia
-#   DYToTauTau_M-20_TuneZ2_7TeV-pythia6-tauola     0.8097417867      DYtoTauTauPythia
-#   VVJetsTo4L_TuneD6T_7TeV-madgraph-tauola     0.0066194202      VVJetsTo4L
-WWTo2L2Nu_TuneZ2_7TeV-pythia6                         0.0410360727    qqWW         WWto2L
-GluGluToWWTo4L_TuneZ2_7TeV-gg2ww-pythia6     0.0013909850      ggWW               GluGluToWWTo4L
-#   WWTo2L2Nu_7TeV-mcatnlo     0.0501652330      WWto2LMcnlo
-#   WWTo2L2Nu_scaleup_7TeV-mcatnlo     0.0501786167      WWto2LMcnloUp
-#   WWTo2L2Nu_scaledown_7TeV-mcatnlo     0.0501669056      WWto2LMcnloDown
-#   DYToEE_M-10To20_TuneZ2_7TeV-pythia6     1.7884117951      DY10toElElZ2
-#   DYToMuMu_M-10To20_TuneZ2_7TeV-pythia6     1.5517272336      DY10toMuMuZ2
-#   DYToTauTau_M-10To20_CT10_TuneZ2_7TeV-powheg-pythia-tauola     1.7359419833      DY10toTauTau
-#   PhotonVJets_7TeV-madgraph     0.1497015495      PhotonVJets
-WJetsToLNu_TuneZ2_7TeV-madgraph-tauola        2.0722688028     W-jet            WJetsToLNuMad
-#   WToLNu_TuneZ2_7TeV_pythia6     149.7890497192      WJetsPythia
-#   WToENu_TuneZ2_7TeV-pythia6     2.0559571743      WtoENu
-#   WToMuNu_TuneZ2_7TeV-pythia6     2.0715907467      WtoMuNu
-#   WToTauNu_TuneZ2_7TeV-pythia6-tauola     2.1865409793      WtoTauNu
-#   WPlusToENu_CT10_TuneZ2_7TeV-powheg-pythia     3.0791515116      WPlusENu
-#   WMinusToENu_CT10_TuneZ2_7TeV-powheg-pythia     2.2016361763      WMinusENu
-#   WPlusToTauNu_CT10_TuneZ2_7TeV-powheg-pythia-tauola     3.0823635395      WPlusTauNu
-#   WMinusToTauNu_CT10_TuneZ2_7TeV-powheg-pythia-tauola     2.1562794470      WMinusTauNu
-#   WPlusToMuNu_CT10_TuneZ2_7TeV-powheg-pythia     3.1024702764      WPlusMuNu
-#   WMinusToMuNu_CT10_TuneZ2_7TeV-powheg-pythia     2.1661890538      WMinusMuNu
-#         
-#   
-#   
-#   
-#    GluGluToHToWWTo2L2Nu_M-120_7TeV-powheg-pythia6     0.0010517638      ggH
-#    GluGluToHToWWTo2L2Nu_M-130_7TeV-powheg-pythia6     0.0018282649      ggH
-#    GluGluToHToWWTo2L2Nu_M-140_7TeV-powheg-pythia6     0.0026542584      ggH
-#    GluGluToHToWWTo2L2Nu_M-150_7TeV-powheg-pythia6     0.0031658885      ggH
-GluGluToHToWWTo2L2Nu_M-160_7TeV-powheg-pythia6     0.0036210625      ggH
-#    GluGluToHToWWTo2L2Nu_M-170_7TeV-powheg-pythia6     0.0032730986      ggH
-#    GluGluToHToWWTo2L2Nu_M-180_7TeV-powheg-pythia6     0.0026918110      ggH
-#    GluGluToHToWWTo2L2Nu_M-190_7TeV-powheg-pythia6     0.0020183708      ggH
-#    GluGluToHToWWTo2L2Nu_M-200_7TeV-powheg-pythia6     0.0016565444      ggH
-#    GluGluToHToWWTo2L2Nu_M-210_7TeV-powheg-pythia6     0.0032314781      ggH
-#    GluGluToHToWWTo2L2Nu_M-220_7TeV-powheg-pythia6     0.0021654140      ggH
-#    GluGluToHToWWTo2L2Nu_M-230_7TeV-powheg-pythia6     0.0027710018      ggH
-#    GluGluToHToWWTo2L2Nu_M-250_7TeV-powheg-pythia6     0.0009872997      ggH
-#    GluGluToHToWWTo2L2Nu_M-300_7TeV-powheg-pythia6     0.0007100387      ggH
-#    GluGluToHToWWTo2L2Nu_M-350_7TeV-powheg-pythia6     0.0006537017      ggH
-#    GluGluToHToWWTo2L2Nu_M-400_7TeV-powheg-pythia6     0.0005010275      ggH
-#    GluGluToHToWWTo2L2Nu_M-450_7TeV-powheg-pythia6     0.0003200698      ggH
-#    GluGluToHToWWTo2L2Nu_M-500_7TeV-powheg-pythia6     0.0002000491      ggH
-#    GluGluToHToWWTo2L2Nu_M-550_7TeV-powheg-pythia6     0.0001254819      ggH
-#    GluGluToHToWWTo2L2Nu_M-600_7TeV-powheg-pythia6     0.0000791103      ggH
-#          
-#    GluGluToHToWWToLNuTauNu_M-120_7TeV-powheg-pythia6     0.0010091735      ggH
-#    GluGluToHToWWToLNuTauNu_M-130_7TeV-powheg-pythia6     0.0018281984      ggH
-#    GluGluToHToWWToLNuTauNu_M-140_7TeV-powheg-pythia6     0.0025956905      ggH
-#    GluGluToHToWWToLNuTauNu_M-150_7TeV-powheg-pythia6     0.0031194028      ggH
-GluGluToHToWWToLNuTauNu_M-160_7TeV-powheg-pythia6     0.0035009727      ggH
-#    GluGluToHToWWToLNuTauNu_M-170_7TeV-powheg-pythia6     0.0031766813      ggH
-#    GluGluToHToWWToLNuTauNu_M-180_7TeV-powheg-pythia6     0.0026722069      ggH
-#    GluGluToHToWWToLNuTauNu_M-190_7TeV-powheg-pythia6     0.0019737620      ggH
-#    GluGluToHToWWToLNuTauNu_M-200_7TeV-powheg-pythia6     0.0027607315      ggH
-#    GluGluToHToWWToLNuTauNu_M-210_7TeV-powheg-pythia6     0.0024229843      ggH
-#    GluGluToHToWWToLNuTauNu_M-220_7TeV-powheg-pythia6     0.0021653812      ggH
-#    GluGluToHToWWToLNuTauNu_M-230_7TeV-powheg-pythia6     0.0011773584      ggH
-#    GluGluToHToWWToLNuTauNu_M-250_7TeV-powheg-pythia6     0.0009873445      ggH
-#    GluGluToHToWWToLNuTauNu_M-300_7TeV-powheg-pythia6     0.0008154699      ggH
-#    GluGluToHToWWToLNuTauNu_M-350_7TeV-powheg-pythia6     0.0006536958      ggH
-#    GluGluToHToWWToLNuTauNu_M-400_7TeV-powheg-pythia6     0.0005010093      ggH
-#    GluGluToHToWWToLNuTauNu_M-450_7TeV-powheg-pythia6     0.0003200582      ggH
-#    GluGluToHToWWToLNuTauNu_M-500_7TeV-powheg-pythia6     0.0002000327      ggH
-#    GluGluToHToWWToLNuTauNu_M-550_7TeV-powheg-pythia6     0.0001282468      ggH
-#    GluGluToHToWWToLNuTauNu_M-600_7TeV-powheg-pythia6     0.0000808513      ggH
-#           
-#    GluGluToHToWWTo2Tau2Nu_M-120_7TeV-powheg-pythia6     0.0004197224      ggH
-#    GluGluToHToWWTo2Tau2Nu_M-130_7TeV-powheg-pythia6     0.0007621790      ggH
-#    GluGluToHToWWTo2Tau2Nu_M-140_7TeV-powheg-pythia6     0.0010819165      ggH
-#    GluGluToHToWWTo2Tau2Nu_M-150_7TeV-powheg-pythia6     0.0013000788      ggH
-GluGluToHToWWTo2Tau2Nu_M-160_7TeV-powheg-pythia6     0.0014591572      ggH
-#    GluGluToHToWWTo2Tau2Nu_M-170_7TeV-powheg-pythia6     0.0013228275      ggH
-#    GluGluToHToWWTo2Tau2Nu_M-180_7TeV-powheg-pythia6     0.0011137207      ggH
-#    GluGluToHToWWTo2Tau2Nu_M-190_7TeV-powheg-pythia6     0.0008227896      ggH
-#    GluGluToHToWWTo2Tau2Nu_M-200_7TeV-powheg-pythia6     0.0006894566      ggH
-#    GluGluToHToWWTo2Tau2Nu_M-210_7TeV-powheg-pythia6     0.0022047070      ggH
-#    GluGluToHToWWTo2Tau2Nu_M-220_7TeV-powheg-pythia6     0.0005409501      ggH
-#    GluGluToHToWWTo2Tau2Nu_M-230_7TeV-powheg-pythia6     0.0004909388      ggH
-#    GluGluToHToWWTo2Tau2Nu_M-250_7TeV-powheg-pythia6     0.0004106745      ggH
-#    GluGluToHToWWTo2Tau2Nu_M-300_7TeV-powheg-pythia6     0.0002954814      ggH
-#    GluGluToHToWWTo2Tau2Nu_M-350_7TeV-powheg-pythia6     0.0002727686      ggH
-#    GluGluToHToWWTo2Tau2Nu_M-400_7TeV-powheg-pythia6     0.0002091194      ggH
-#    GluGluToHToWWTo2Tau2Nu_M-450_7TeV-powheg-pythia6     0.0001333616      ggH
-#    GluGluToHToWWTo2Tau2Nu_M-500_7TeV-powheg-pythia6     0.0000833498      ggH
-#    GluGluToHToWWTo2Tau2Nu_M-550_7TeV-powheg-pythia6     0.0000530440      ggH
-#    GluGluToHToWWTo2Tau2Nu_M-600_7TeV-powheg-pythia6     0.0000333450      ggH
-#           
-#    VBF_HToWWTo2L2Nu_M-120_7TeV-powheg-pythia6     0.0000764742      qqH
-#    VBF_HToWWTo2L2Nu_M-130_7TeV-powheg-pythia6     0.0001483666      qqH
-#    VBF_HToWWTo2L2Nu_M-140_7TeV-powheg-pythia6     0.0002287988      qqH
-#    VBF_HToWWTo2L2Nu_M-150_7TeV-powheg-pythia6     0.0002821953      qqH
-VBF_HToWWTo2L2Nu_M-160_7TeV-powheg-pythia6     0.0003359004      qqH
-#    VBF_HToWWTo2L2Nu_M-170_7TeV-powheg-pythia6     0.0003344758      qqH
-#    VBF_HToWWTo2L2Nu_M-180_7TeV-powheg-pythia6     0.0002949392      qqH
-#    VBF_HToWWTo2L2Nu_M-190_7TeV-powheg-pythia6     0.0002291986      qqH
-#    VBF_HToWWTo2L2Nu_M-200_7TeV-powheg-pythia6     0.0001984470      qqH
-#    VBF_HToWWTo2L2Nu_M-250_7TeV-powheg-pythia6     0.0001265270      qqH
-#    VBF_HToWWTo2L2Nu_M-300_7TeV-powheg-pythia6     0.0000877618      qqH
-#    VBF_HToWWTo2L2Nu_M-350_7TeV-powheg-pythia6     0.0000613519      qqH
-#    VBF_HToWWTo2L2Nu_M-400_7TeV-powheg-pythia6     0.0000403211      qqH
-#    VBF_HToWWTo2L2Nu_M-450_7TeV-powheg-pythia6     0.0000292633      qqH
-#    VBF_HToWWTo2L2Nu_M-500_7TeV-powheg-pythia6     0.0000225270      qqH
-#    VBF_HToWWTo2L2Nu_M-550_7TeV-powheg-pythia6     0.0000178338      qqH
-#    VBF_HToWWTo2L2Nu_M-600_7TeV-powheg-pythia6     0.0000140794      qqH
-#           
-#    VBF_HToWWToLNuTauNu_M-120_7TeV-powheg-pythia6     0.0000764777      qqH
-#    VBF_HToWWToLNuTauNu_M-130_7TeV-powheg-pythia6     0.0001483761      qqH
-#    VBF_HToWWToLNuTauNu_M-140_7TeV-powheg-pythia6     0.0002288394      qqH
-#    VBF_HToWWToLNuTauNu_M-150_7TeV-powheg-pythia6     0.0002822364      qqH
-VBF_HToWWToLNuTauNu_M-160_7TeV-powheg-pythia6     0.0003358881      qqH
-#    VBF_HToWWToLNuTauNu_M-170_7TeV-powheg-pythia6     0.0003489966      qqH
-#    VBF_HToWWToLNuTauNu_M-180_7TeV-powheg-pythia6     0.0003007589      qqH
-#    VBF_HToWWToLNuTauNu_M-190_7TeV-powheg-pythia6     0.0002343976      qqH
-#    VBF_HToWWToLNuTauNu_M-200_7TeV-powheg-pythia6     0.0001986242      qqH
-#    VBF_HToWWToLNuTauNu_M-250_7TeV-powheg-pythia6     0.0001267473      qqH
-#    VBF_HToWWToLNuTauNu_M-300_7TeV-powheg-pythia6     0.0000876088      qqH
-#    VBF_HToWWToLNuTauNu_M-350_7TeV-powheg-pythia6     0.0000612616      qqH
-#    VBF_HToWWToLNuTauNu_M-400_7TeV-powheg-pythia6     0.0000439065      qqH
-#    VBF_HToWWToLNuTauNu_M-450_7TeV-powheg-pythia6     0.0000292593      qqH
-#    VBF_HToWWToLNuTauNu_M-500_7TeV-powheg-pythia6     0.0000239490      qqH
-#    VBF_HToWWToLNuTauNu_M-550_7TeV-powheg-pythia6     0.0000189596      qqH
-#    VBF_HToWWToLNuTauNu_M-600_7TeV-powheg-pythia6     0.0000149681      qqH
-#           
-#    VBF_HToWWTo2Tau2Nu_M-120_7TeV-powheg-pythia6     0.0000318728      qqH
-#    VBF_HToWWTo2Tau2Nu_M-130_7TeV-powheg-pythia6     0.0000621994      qqH
-#    VBF_HToWWTo2Tau2Nu_M-140_7TeV-powheg-pythia6     0.0000925687      qqH
-#    VBF_HToWWTo2Tau2Nu_M-150_7TeV-powheg-pythia6     0.0001183163      qqH
-VBF_HToWWTo2Tau2Nu_M-160_7TeV-powheg-pythia6     0.0001395822      qqH
-#    VBF_HToWWTo2Tau2Nu_M-170_7TeV-powheg-pythia6     0.0001380943      qqH
-#    VBF_HToWWTo2Tau2Nu_M-180_7TeV-powheg-pythia6     0.0001213574      qqH
-#    VBF_HToWWTo2Tau2Nu_M-190_7TeV-powheg-pythia6     0.0000955878      qqH
-#    VBF_HToWWTo2Tau2Nu_M-200_7TeV-powheg-pythia6     0.0000819461      qqH
-#    VBF_HToWWTo2Tau2Nu_M-250_7TeV-powheg-pythia6     0.0000531051      qqH
-#    VBF_HToWWTo2Tau2Nu_M-300_7TeV-powheg-pythia6     0.0000364515      qqH
-#    VBF_HToWWTo2Tau2Nu_M-350_7TeV-powheg-pythia6     0.0000258374      qqH
-#    VBF_HToWWTo2Tau2Nu_M-400_7TeV-powheg-pythia6     0.0000167418      qqH
-#    VBF_HToWWTo2Tau2Nu_M-450_7TeV-powheg-pythia6     0.0000121895      qqH
-#    VBF_HToWWTo2Tau2Nu_M-500_7TeV-powheg-pythia6     0.0000091398      qqH
-#    VBF_HToWWTo2Tau2Nu_M-550_7TeV-powheg-pythia6     0.0000076165      qqH
-#    VBF_HToWWTo2Tau2Nu_M-600_7TeV-powheg-pythia6     0.0000061034      qqH
-#           
 #
 #
