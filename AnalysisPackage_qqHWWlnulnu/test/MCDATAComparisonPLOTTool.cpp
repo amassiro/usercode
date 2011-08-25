@@ -150,7 +150,12 @@ int main(int argc, char** argv)
  
  std::string nameWeight = "weight"; 
  if (doWeightFromFile) {
-  nameWeight = gConfigParser -> readStringOption("PU::nameWeight");
+  try {
+   nameWeight = gConfigParser -> readStringOption("PU::nameWeight");
+  }
+  catch (char const* exceptionString){
+   std::cerr << " exception = " << exceptionString << std::endl;
+  }
   std::cout << ">>>>> PU::nameWeight  " << nameWeight  << std::endl;  
  }
  
