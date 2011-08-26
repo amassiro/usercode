@@ -3,7 +3,7 @@
 
 TLegend * makeLegend (THStack stack, const std::vector<std::string> & nameSample)
 {
-  TLegend * leg = new TLegend (0.6, 0.5, 0.95, 0.95, NULL, "brNDC") ;
+  TLegend * leg = new TLegend (0.7, 0.6, 0.9, 0.9, NULL, "brNDC") ;
   leg->SetBorderSize (0) ;
   leg->SetTextFont (42) ;
   leg->SetTextSize (0.04) ;
@@ -51,13 +51,13 @@ TLegend * makeLegendTitle (THStack stack)
 }
 
 
-TH1F * PullPlot (TH1F* hDATA, TH1F* hMC, double min, double max)
+TH1D * PullPlot (TH1D* hDATA, TH1D* hMC, double min, double max)
   {
      std::string nameNew = "pp_" ;
      nameNew += hDATA->GetName() ;
      nameNew += "_" ;
      nameNew += hMC->GetName() ; 
-     TH1F * hPool = (TH1F *) hDATA->Clone (nameNew.c_str ()) ;
+     TH1D * hPool = (TH1D *) hDATA->Clone (nameNew.c_str ()) ;
      for (int iBin = 0 ; iBin < hDATA->GetNbinsX () ; ++iBin)
        {
          double A = hDATA->GetBinContent (iBin) ;
@@ -94,13 +94,13 @@ TH1F * PullPlot (TH1F* hDATA, TH1F* hMC, double min, double max)
   }
 
 
-TH1F * PullPlotAsRatio (TH1F* hDATA, TH1F* hMC, double min, double max)
+TH1D * PullPlotAsRatio (TH1D* hDATA, TH1D* hMC, double min, double max)
   {
     std::string nameNew = "ppR_" ;
     nameNew += hDATA->GetName() ;
     nameNew += "_" ;
     nameNew += hMC->GetName() ; 
-    TH1F * hPool = (TH1F *) hMC->Clone (nameNew.c_str ()) ;
+    TH1D * hPool = (TH1D *) hMC->Clone (nameNew.c_str ()) ;
     for (int iBin = 0 ; iBin < hDATA->GetNbinsX () ; ++iBin)
        {
          double A = hDATA->GetBinContent (iBin) ;
@@ -136,7 +136,7 @@ TH1F * PullPlotAsRatio (TH1F* hDATA, TH1F* hMC, double min, double max)
   }
 
 
-void PrintHContent (TH1F * histo)
+void PrintHContent (TH1D * histo)
   {
     for (int iBin = 0 ; iBin < histo->GetNbinsX () ; ++iBin)
        {
@@ -149,7 +149,7 @@ void PrintHContent (TH1F * histo)
 
 
 
-TH1F* DynamicalRebinHisto ( TH1F * original_Histo, TH1F* rebinned_Histo, std::vector<float>  binning,  TString &nameHisto, bool isDATA, bool isDivide)
+TH1D* DynamicalRebinHisto ( TH1D * original_Histo, TH1D* rebinned_Histo, std::vector<float>  binning,  TString &nameHisto, bool isDATA, bool isDivide)
 {
  
  int original_iBin=0;
@@ -224,7 +224,7 @@ TH1F* DynamicalRebinHisto ( TH1F * original_Histo, TH1F* rebinned_Histo, std::ve
    binning.push_back(edge.at(iBin)); 
   }
  
- rebinned_Histo= new TH1F(nameHisto,original_Histo->GetTitle(),edge.size()-1,Bin_size);
+ rebinned_Histo= new TH1D(nameHisto,original_Histo->GetTitle(),edge.size()-1,Bin_size);
 
  if(!isDATA || (isDATA && isDivide))
  {  
@@ -240,7 +240,7 @@ TH1F* DynamicalRebinHisto ( TH1F * original_Histo, TH1F* rebinned_Histo, std::ve
    { 
      for(int iTime=0; iTime<Bin_Counts.at(iBin); iTime++)
      {
-       rebinned_Histo->Fill(rebinned_Histo->GetBinCenter(iBin));
+       rebinned_Histo->Fill(rebinned_Histo->GetBinCenter(iBin+1));
      }
    }
  }
@@ -255,11 +255,11 @@ return(rebinned_Histo);
 }  
 
 
-TH1F* DynamicalRebinHisto ( TH1F * original_Histo, TH1F* rebinned_Histo, std::vector<float>  binning, bool isDATA, bool isDivide)  
+TH1D* DynamicalRebinHisto ( TH1D * original_Histo, TH1D* rebinned_Histo, std::vector<float>  binning, bool isDATA, bool isDivide)  
 {
   TRandom3* index= new TRandom3();
   index->SetSeed(0);
-  TString name =Form("%s_Rebinned_%d",original_Histo->GetName(),int(index->Uniform(original_Histo->GetEntries())));
+  TString name =Form("%s_Rebinned_%d",original_Histo->GetName(),int(index->Uniform(0,1000000)));
   rebinned_Histo=DynamicalRebinHisto(original_Histo,rebinned_Histo,binning,name, isDATA, isDivide); 
   return(rebinned_Histo);
  }
@@ -268,7 +268,9 @@ TH1F* DynamicalRebinHisto ( TH1F * original_Histo, TH1F* rebinned_Histo, std::ve
  
  THStack* DynamicalRebinStack ( THStack * original_Stack,THStack* rebinned_Stack, std::vector<float> binning, bool isDATA, bool isDivide)  
 {
-  TString name =Form("%s_Rebinned",original_Stack->GetName());
+  TRandom3* index= new TRandom3();
+  index->SetSeed(0);
+  TString name =Form("%s_Rebinned_%d",original_Stack->GetName(),int(index->Uniform(0,10000000)));
   
   TObjArray* histos = original_Stack->GetStack () ;
   
@@ -278,18 +280,18 @@ TH1F* DynamicalRebinHisto ( TH1F * original_Histo, TH1F* rebinned_Histo, std::ve
   {
     if(iHisto==0)
     {  
-     TH1F* original_Histo1 = (TH1F*) histos->At(iHisto);
-     TH1F* rebinned_Histo1;
+     TH1D* original_Histo1 = (TH1D*) histos->At(iHisto);
+     TH1D* rebinned_Histo1;
      name=name+Form("_%d",iHisto);
      rebinned_Histo1=DynamicalRebinHisto(original_Histo1,rebinned_Histo1,binning,name, isDATA, isDivide);
      rebinned_Stack->Add(rebinned_Histo1);
     }
     
     else{
-           TH1F* original_Histo1 = (TH1F*) histos->At(iHisto-1);
-           TH1F* original_Histo2 = (TH1F*) histos->At(iHisto);
-	   TH1F* rebinned_Histo1;
-           TH1F* rebinned_Histo2;
+           TH1D* original_Histo1 = (TH1D*) histos->At(iHisto-1);
+           TH1D* original_Histo2 = (TH1D*) histos->At(iHisto);
+	   TH1D* rebinned_Histo1;
+           TH1D* rebinned_Histo2;
 	   TString name1=name+Form("_%d",iHisto);
 	   TString name2=name+Form("_%d_%d",iHisto,iHisto);
 	   rebinned_Histo1=DynamicalRebinHisto(original_Histo1,rebinned_Histo1,binning,name1, isDATA, isDivide);
@@ -302,3 +304,92 @@ TH1F* DynamicalRebinHisto ( TH1F * original_Histo, TH1F* rebinned_Histo, std::ve
   
   return(rebinned_Stack);
  }
+ 
+/*TH2D* DynamicalRebinHisto2D( TH2D* original_Histo, TH2D* rebinned_Histo, std::vector<float>  binningX, std::vector<float>  binningY, bool isDATA, bool isDivide)  
+{
+  TRandom3* index= new TRandom3();
+  index->SetSeed(0);
+  TString name_Rebinned_px =Form("%s_Rebinned_px_%d",original_Histo->GetName(),int(index->Uniform(0,1000000)));
+  TString name_Rebinned_py =Form("%s_Rebinned_py_%d",original_Histo->GetName(),int(index->Uniform(0,1000000)));
+  
+  TString name_px=Form("%s_px",original_Histo->GetName());
+  TString name_py=Form("%s_py",original_Histo->GetName());
+
+  TH1D* original_Histo_px = original_Histo->ProjectionX(name_px,1,original_Histo->GetNbinsX(),"e");
+  TH1D* original_Histo_py = original_Histo->ProjectionX(name_py,1,original_Histo->GetNbinsY(),"e");
+  TH1D* rebinned_Histo_px;
+  TH1D* rebinned_Histo_py;
+  
+  rebinned_Histo_px=DynamicalRebinHisto(original_Histo_px,rebinned_Histo_px,binningX,name_Rebinned_px, isDATA, isDivide);
+  rebinned_Histo_py=DynamicalRebinHisto(original_Histo_py,rebinned_Histo_py,binningY,name_Rebinned_py, isDATA, isDivide);
+ 
+  Float_t Bin_sizeX[1000];
+  Float_t Bin_sizeY[1000];
+ 
+  for(int iBin=0; iBin<binningX.size();iBin++)
+  {
+   Bin_sizeX[iBin]=binningX.at(iBin);
+  }
+   
+  for(int iBin=0; iBin<binningY.size();iBin++)
+  {
+   Bin_sizeY[iBin]=binningY.at(iBin);
+  }
+  
+  TString name =Form("%s_Rebinned_%d",original_Histo->GetName(),int(index->Uniform(0,1000000)));
+  
+  rebinned_Histo= new TH2D(name,original_Histo->GetTitle(),binningX.size()-1,Bin_sizeX,binningY.size()-1,Bin_sizeY);
+  
+ for(int iBinX=0; iBinX<rebinned_Histo->GetNbinsX(); iBinX++)
+  {
+    for(int iBinY=0; iBinY<rebinned_Histo->GetNbinsY(); iBinY++)
+    {
+      int x=rebinned_Histo->GetXaxis()->GetBinCenter(iBinX+1);
+      int y=rebinned_Histo->GetYaxis()->GetBinCenter(iBinY+1);
+      int binglobal=rebinned_Histo->FindBin(x,y);
+      rebinned_Histo->GetBinXYZ(binglobal,x,y);
+//       rebinned_Histo->SetBinContent(x,y,
+    }
+  }
+      
+  
+  
+  return(rebinned_Histo);
+ }
+ */
+ 
+/*
+ THStack* DynamicalRebinStack2D ( THStack * original_Stack,THStack* rebinned_Stack, std::vector<float> binningX, std::vector<float> binningY, bool isDATA, bool isDivide)  
+{
+  TString name =Form("%s_Rebinned",original_Stack->GetName());
+  
+  TObjArray* histos = original_Stack->GetStack () ;
+  
+  rebinned_Stack = new THStack();
+  
+  for( int iHisto=0; iHisto< histos->GetEntries(); iHisto++)
+  {
+    if(iHisto==0)
+    {  
+     TH2D* original_Histo1 = (TH2D*) histos->At(iHisto);
+     TH2D* rebinned_Histo1;
+     rebinned_Histo1=DynamicalRebinHisto2D(original_Histo1,rebinned_Histo1,binningX,binningY,isDATA, isDivide);
+     rebinned_Stack->Add(rebinned_Histo1);
+    }
+    
+    else{
+           TH2D* original_Histo1 = (TH2D*) histos->At(iHisto-1);
+           TH2D* original_Histo2 = (TH2D*) histos->At(iHisto);
+	   TH2D* rebinned_Histo1;
+           TH2D* rebinned_Histo2;
+	   rebinned_Histo1=DynamicalRebinHisto2D(original_Histo1,rebinned_Histo1,binningX,binningY, isDATA, isDivide);
+           rebinned_Histo2=DynamicalRebinHisto2D(original_Histo2,rebinned_Histo2,binningX,binningY, isDATA, isDivide);
+	   rebinned_Histo2->Add(rebinned_Histo1,-1);
+	   rebinned_Stack->Add(rebinned_Histo2);
+    }
+      
+  }
+  
+  return(rebinned_Stack);
+ }
+*/

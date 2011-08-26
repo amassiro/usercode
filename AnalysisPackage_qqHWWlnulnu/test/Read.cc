@@ -121,50 +121,42 @@ int ReadFileVar(std::string VarFile, std::vector<double>& vMin, std::vector<doub
 
 
 
+///==== read list of variables file ====
 
-
-///==== read list of variables file 2D ====
-
-int ReadFileVar2D(std::string VarFile, std::vector<std::pair<double, double> >& vMin, std::vector<std::pair<double, double> >& vMax, std::vector<std::pair<int, int> >& vNBin, std::vector<std::pair<std::string, std::string> >& vVarName, std::vector<std::pair<std::string, std::string> >& vVarNameHR){
+int ReadFileVar2D(std::string VarFile, std::vector<std::pair<double,double> >& vMin, std::vector<std::pair<double, double> >& vMax, std::vector<std::pair<int, int> >& vNBin, std::vector<std::pair< std::string, std::string> >& vVarName, std::vector<std::pair< std::string, std::string> >& vVarNameHR){
  std::ifstream inFile(VarFile.c_str());
  std::string buffer;
  char temp[10000];
+ std::pair<double,double> temp_min;
+ std::pair<double,double> temp_max;
+ std::pair<double,double> temp_NBin;
+ std::pair<std::string, std::string> temp_VarName;
+ std::pair<std::string, std::string> temp_VarNameHR;
  std::string tempString;
  while(!inFile.eof()){
   getline(inFile,buffer);
   if (buffer != ""){ ///---> save from empty line at the end!
    if (buffer.at(0) != '#'){   
     std::stringstream line( buffer );
+    line >> temp; tempString = temp; temp_VarName.first=tempString;
+    line >> temp; temp_min.first=atof(temp);
+    line >> temp; temp_max.first=atof(temp);
+    line >> temp; temp_NBin.first=atoi(temp);
+    line >> temp; tempString = temp; temp_VarNameHR.first=tempString;
     
-    std::pair<double, double> vMinTemp;
-    std::pair<double, double> vMaxTemp;
-    std::pair<int, int> vNBinTemp;
-    std::pair<std::string, std::string> vVarNameTemp;
-    std::pair<std::string, std::string> vVarNameHRTemp;
-    
-    line >> temp; tempString = temp; vVarNameTemp.first = tempString;
-    line >> temp; vMinTemp.first = (atof(temp));
-    line >> temp; vMaxTemp.first = (atof(temp));
-    line >> temp; vNBinTemp.first = (atoi(temp));
-    line >> temp; tempString = temp; vVarNameHRTemp.first = tempString;
-    
-    line >> temp; tempString = temp; vVarNameTemp.second = tempString;
-    line >> temp; vMinTemp.second = (atof(temp));
-    line >> temp; vMaxTemp.second = (atof(temp));
-    line >> temp; vNBinTemp.second = (atoi(temp));
-    line >> temp; tempString = temp; vVarNameHRTemp.second = tempString;
-    
-    
-    vMin.push_back(vMinTemp);
-    vMax.push_back(vMaxTemp);
-    vNBin.push_back(vNBinTemp);
-    vVarName.push_back(vVarNameTemp);
-    vVarNameHR.push_back(vVarNameHRTemp);
-    
+    line >> temp; tempString = temp; temp_VarName.second=tempString;
+    line >> temp; temp_min.second=atof(temp);
+    line >> temp; temp_max.second=atof(temp);
+    line >> temp; temp_NBin.second=atoi(temp);
+    line >> temp; tempString = temp; temp_VarNameHR.second=tempString;
+    vMin.push_back(temp_min);
+    vMax.push_back(temp_max);
+    vNBin.push_back(temp_NBin);
+    vVarName.push_back(temp_VarName);
+    vVarNameHR.push_back(temp_VarNameHR);
     std::cout << " var = " << buffer << std::endl;
    } 
   }
  }
  return vVarName.size();
 }
-

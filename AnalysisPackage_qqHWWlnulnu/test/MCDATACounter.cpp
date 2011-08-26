@@ -294,12 +294,13 @@ int main(int argc, char** argv)
  double start, end;
  start = clock();
  
+ int Entries[100];
  
  for (int iSample=0; iSample<numberOfSamples; iSample++){
   xsection[iSample] = atof(xsectionName[iSample]);
  }
- 
- for (int iSample=0; iSample<numberOfSamples; iSample++){
+
+for (int iSample=0; iSample<numberOfSamples; iSample++){
   
   char nameFile[20000];
   sprintf(nameFile,"%s/out_NtupleProducer_%s.root",inputDirectory.c_str(),nameSample[iSample]);  
@@ -314,6 +315,7 @@ int main(int argc, char** argv)
   char nameTreeJetLep[100];
   sprintf(nameTreeJetLep,"treeJetLep_%d",iSample); 
   treeJetLepVect[iSample]->SetName(nameTreeJetLep);
+  
  }
  
  ///===== create map for joint sample ====
@@ -337,10 +339,11 @@ int main(int argc, char** argv)
    reduced_name_samples.push_back(name_samples.at(iSample));
    reduced_name_samples_flag.push_back(-1);
   }
+
  }
+
  
  std::cout << " numberOfSamples = " << numberOfSamples << std::endl;
- 
  for (int iSample = (numberOfSamples-1); iSample>= 0; iSample--){
   double XSection;
   int numEntriesBefore;
@@ -349,10 +352,8 @@ int main(int argc, char** argv)
   treeEffVect[iSample]->SetBranchAddress("numEntriesBefore",&numEntriesBefore);
   treeEffVect[iSample]->SetBranchAddress("preselection_efficiency",&preselection_efficiency);  
   treeEffVect[iSample]->GetEntry(0);
-  
   std::cout << " Xsection = " << XSection << " ~~~> " << xsection[iSample] << std::endl;
   XSection = xsection[iSample];
-  
   if (numEntriesBefore != 0) {
    Normalization[iSample] = LUMI * XSection * preselection_efficiency / numEntriesBefore;
   }
@@ -363,7 +364,7 @@ int main(int argc, char** argv)
   if (Latinos) Normalization[iSample] = XSection * LUMI / 1000.;
   
  }
- 
+
  
  
  TLegend* leg = new TLegend(0.8,0.25,0.98,0.78);
@@ -384,13 +385,14 @@ int main(int argc, char** argv)
    numDATA = iName;
   }
  }
- 
- 
+
  if (debug) std::cout << " Cut size = " << vCut.size() << " ~~ " << std::endl;
- std::cout.precision (2) ;
+ std::cout.precision (5) ;
  std::cout.unsetf(std::ios::scientific);
+
+ 
  ///==== cicle on selections ====
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
+ for (uint iCut =0; iCut<vCut.size(); iCut++){
   TString Cut = Form ("%s",vCut.at(iCut).c_str());
   if (debug) std::cout << " Cut[" << iCut << ":" << vCut.size() << "] = " << Cut.Data() << " ~~ " << std::endl;
   ///==== initialize ====
@@ -403,9 +405,10 @@ int main(int argc, char** argv)
    if (debug) std::cout << " Sample[" << iSample << ":" << numberOfSamples << "] = " << nameSample[iSample] << " ~~ " << std::endl;
    TString name_histo_temp = Form("%s_%d_temp",nameSample[iSample], iCut);
    histo_temp[iSample][iCut] = new TH1F(name_histo_temp,name_histo_temp,100,-10,10000000000);
-   char toDraw[1000];
-   sprintf(toDraw,"eventId >> %s",name_histo_temp.Data());      
-   histo_temp[iSample][iCut] -> Sumw2(); //---- così mette l'errore giusto!
+   //char toDraw[1000];
+   //sprintf(toDraw,"eventId >> %s",name_histo_temp.Data());      
+   TString toDraw= Form("eventId >> %s",name_histo_temp.Data());
+   histo_temp[iSample][iCut] -> Sumw2(); //---- cosÃ¬ mette l'errore giusto!
    
    TString CutExtended;
    bool isData = false;
@@ -450,16 +453,16 @@ int main(int argc, char** argv)
       TString name_histoTot_temp = Form("%s_%d_Tot_temp",reduced_name_samples.at(iName).c_str(),iCut);
       TString name_HR_histoTot_temp = Form("cut %d",iCut);
       histo[iName][iCut] = new TH1F(name_histoTot_temp,name_HR_histoTot_temp,100,-10,10000000000);
-      histo[iName][iCut] -> Sumw2(); //---- così mette l'errore giusto!
+      histo[iName][iCut] -> Sumw2(); //---- cosÃ¬ mette l'errore giusto!
       reduced_name_samples_flag.at(iName) = 1;
      }
      histo[iName][iCut] -> Add(histo_temp[iSample][iCut]);
     }
    }
-   std::cout << "Processing: " << blue << (((double) iCut)/vCut.size())*100. << "% "  << normal <<  " -- " <<  red << (((double) numberOfSamples - iSample)/(numberOfSamples))*100. << "% \r"  << normal << std::flush;   
+   std::cout <<"Processing: " << blue << (((double) iCut)/vCut.size())*100. << "% "  << normal <<  " -- " <<  red << (((double) numberOfSamples - iSample)/(numberOfSamples))*100. << "% \r"  << normal << std::flush;   
   } ///==== end cicle on samples ====
-//   std::cout << "Processing: " << blue << (((double) iCut)/vCut.size())*100. << "% \r"  << normal << std::flush;   
- } ///==== end cicle on selections ====
+   //std::cout << "Processing: " << blue << (((double) iCut)/vCut.size())*100. << "% \r"  << normal << std::flush;   
+  } ///==== end cicle on selections ====
  
  //  [iName]
  TH1F* hTrend[100];
@@ -468,14 +471,14 @@ int main(int argc, char** argv)
  TPie* hTrendPie[100];
  
  //  [iCut]
- THStack* hs[100];
+ std::vector<THStack*> hs;
  
  std::cout << std::endl;
  
  ///==== cicle on selections ====
  for (uint iCut = 0; iCut<vCut.size(); iCut++){
   TString nameStack = Form("%d_stack",iCut);
-  hs[iCut] = new THStack(nameStack,nameStack);
+  hs.push_back(new THStack(nameStack,nameStack));
   
   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
    histo[iName][iCut]->GetXaxis()->SetTitle("eventId");
@@ -491,7 +494,7 @@ int main(int argc, char** argv)
    }
    
    if (!isSig && reduced_name_samples.at(iName) != "DATA") {
-    hs[iCut]->Add(histo[iName][iCut]);
+    hs.at(iCut)->Add(histo[iName][iCut]);
    }
    else {
     if (!isSig) {
@@ -511,13 +514,15 @@ int main(int argc, char** argv)
     }
    }
   }
+  
   ///==== histo sum MC ====    
   ///==== Add systrematic error ====
-  AddError(hs[iCut],LumiSyst);
-  histoSumMC[iCut] = ((TH1F*)(hs[iCut]->GetStack()->Last()));
+   AddError(hs.at(iCut),LumiSyst);
+   histoSumMC[iCut] = ((TH1F*)(hs.at(iCut)->GetStack()->Last()));
 
-  std::cout << " MC / DATA[" << iCut << "] = "<< histoSumMC[iCut]->Integral() << " / " << histo[numDATA][iCut]->Integral() << " = " << (histo[numDATA][iCut]->Integral() ? histoSumMC[iCut]->Integral()/ histo[numDATA][iCut]->Integral() : 0) << std::endl;
-  
+   std::cout << " MC / DATA[" << iCut << "] = "<< histoSumMC[iCut]->Integral() << " / " << histo[numDATA][iCut]->Integral() << " = " << (histo[numDATA][iCut]->Integral() ? histoSumMC[iCut]->Integral()/ histo[numDATA][iCut]->Integral() : 0) << std::endl;
+
+ 
   ///==== legend ====
   if (!LegendBuilt){
    for (uint iName=0; iName<reduced_name_samples.size(); iName++){
@@ -568,9 +573,11 @@ int main(int argc, char** argv)
    hTrend[iName]->GetXaxis()->SetBinLabel(iCut+1,nameBin);
 //     IntegralAndError
 //     Double_t IntegralAndError(Int_t binx1, Int_t binx2, Double_t& err, Option_t* option = "") const
-   std::cout << ">>>  numEvents[" << iName << "," << reduced_name_samples.at(iName) << "][" << iCut << "] = " << numEvents[iName][iCut] << " , " << histo[iName][iCut]->GetEntries() << " , " << histo[iName][iCut]->GetEffectiveEntries() << std::endl;
-   
-   if (iName != numDATA) {
+   std::cout << ">>>  numEvents[" << iName << "," << reduced_name_samples.at(iName) << "][" << iCut << "] = " << numEvents[iName][iCut] << " , " << histo[iName][iCut]->GetEntries() << " , " << histo[iName][iCut]->GetEffectiveEntries()<<" , "<<" error: "<<sqrt(numEvents[iName][iCut])<<std::endl;
+   if(iCut!=0)  
+   std::cout<<  ">>> CutEfficiency[" <<iName<<"," <<  reduced_name_samples.at(iName) << "][" << iCut << "] = " <<numEvents[iName][iCut]/(numEvents[iName][iCut-1]) << " , " << histo[iName][iCut]->GetEntries()/(histo[iName][iCut-1]->GetEntries()) << " , "<< histo[iName][iCut]->GetEffectiveEntries()/(histo[iName][iCut-1]->GetEffectiveEntries())<<" error: "<<sqrt(numEvents[iName][iCut])/(numEvents[iName][iCut-1])<<std::endl; 
+   std::cout<<std::endl;
+    if (iName != numDATA) {
     hTrendPie[iCut]->SetTextSize(0.04);
     hTrendPie[iCut]->SetTextFont(12);
     hTrendPie[iCut]->SetEntryFillColor(iName,vColor[iName]);
@@ -1142,7 +1149,7 @@ int main(int argc, char** argv)
  }  
  
  leg->Write();
- 
+
 }
 
 

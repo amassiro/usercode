@@ -307,7 +307,6 @@ int main(int argc, char** argv)
   }
  }
  
- 
  ///==== output file ====
  std::string OutFileName    = gConfigParser -> readStringOption("Output::outFileName");
  std::cout << ">>>>> Output::outFileName  " << OutFileName  << std::endl;  
@@ -346,7 +345,6 @@ int main(int argc, char** argv)
  for (int iSample=0; iSample<numberOfSamples; iSample++){
   xsection[iSample] = atof(xsectionName[iSample]);
  }
- 
  for (int iSample=0; iSample<numberOfSamples; iSample++){
   
   char nameFile[20000];
@@ -441,7 +439,7 @@ int main(int argc, char** argv)
   TString Cut = Form ("%s",vCut.at(iCut).c_str());
   if (debug) std::cout << " Cut[" << iCut << ":" << vCut.size() << "] = " << Cut.Data() << " ~~ " << std::endl;
   ///==== cicle on variables to plot ====
-  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){  
    if (debug) std::cout << " Var[" << iVar << ":" << vVarName.size() << "] = " << vVarName.at(iVar).first << " && " << vVarName.at(iVar).second << " ~~ " << std::endl;
    ///==== initialize ====
    for (uint iName=0; iName<reduced_name_samples.size(); iName++){

@@ -263,7 +263,7 @@ struct Variables
 
 
 void InitializeTree(Variables&, const std::string&);
-void InitializeTreeTrigger(Variables&, const std::vector<std::string> &, treeReader&);
+void InitializeTreeTrigger(Variables& vars, const std::vector<std::string> & HLTVector, treeReader& reader);
 
 void FillTree(Variables& vars);
 void FillEfficiencyTree(Variables& vars);
@@ -285,7 +285,7 @@ void SetTriggerVariables(Variables&, treeReader& reader);
 
 void SetNSoftMu(Variables& vars,  treeReader& reader,  const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2);
 
-void SetMTVariable(Variables& vars, treeReader& reader, const std::string& metType, const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2);
+void SetmTVariable(Variables& vars, treeReader& reader, const std::string& metType, const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2);
 
 void SetDPhiJetll(Variables& vars, treeReader& reader, const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2, const int& q1, const int& q2);
 
