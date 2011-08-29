@@ -52,7 +52,7 @@ EColor vColor[1000] = {
  
  ///=== Open the input ROOT File
  
- TFile * Input_File = TFile::Open("/home/raffaele/Programmi/AnalysisPackage/AnalysisPackage_qqHWWlnulnu/output/out_ComparisonPLOTT_H120.root ");
+ TFile * Input_File = TFile::Open("/home/raffaele/Programmi/AnalysisPackage/AnalysisPackage_qqHWWlnulnu/output/out_ComparisonPLOTT_H160.root ");
  std::vector<std::string> nameSample;
  std::vector<std::string> Cuts;
  std::vector<std::pair<std::string,int> > Variable;
@@ -62,13 +62,13 @@ EColor vColor[1000] = {
  
  ///===== Output ROOT file
 
-TFile  output_Plott("test/Latinos/ttbar/output/Efficiency_Plott_H120.root","RECREATE");
+TFile  output_Plott("test/Latinos/ttbar/output/Efficiency_Plott_H160.root","RECREATE");
 output_Plott.cd();
 gStyle->SetOptStat(0);
 
  ///===== Output txt file
 
-std::ofstream outFile("/home/raffaele/Programmi/AnalysisPackage/AnalysisPackage_qqHWWlnulnu/test/Latinos/ttbar/output/Event_Dumper_H120.txt",std::ios::out);
+std::ofstream outFile("/home/raffaele/Programmi/AnalysisPackage/AnalysisPackage_qqHWWlnulnu/test/Latinos/ttbar/output/Event_Dumper_H160.txt",std::ios::out);
  
 ///===== Acuisition info from txt file: Name of the samples, Cut applied and Variables of Plot and their binning
  
@@ -1372,18 +1372,7 @@ for(int iVar=0; iVar<Variable.size(); iVar++)
      outFile<<error<<std::endl;          
      edge.clear();
      error.clear();
-     
-     if(nameHumanVariable.at(iVar)=="|#eta|^{CJet}")
-     {
-      outFile<<"#####  "<<std::endl;
-      outFile<<"#    (alfa+beta)/alfa     "<<std::endl;
-      outFile<<"#####  "<<std::endl;
-      ratio=(alfa+beta)/(alfa);
-      err_ratio=sqrt((1/(alfa*alfa))*(err_beta*err_beta)+(beta/(alfa*alfa))*(beta/(alfa*alfa))*(err_alfa*err_alfa));
-      outFile<<alfa<<"   "<<err_alfa<<std::endl;
-      outFile<<beta<<"   "<<err_beta<<std::endl;
-      outFile<<ratio<<"   "<<err_ratio<<std::endl;
-     }
+
      
      
      for(int iBin=0; iBin<num_DATA_VBF_Sig_Rebinned->GetNbinsX(); iBin++)
@@ -1420,6 +1409,19 @@ for(int iVar=0; iVar<Variable.size(); iVar++)
      edge.clear();
      error.clear();
      
+          
+     if(nameHumanVariable.at(iVar)=="|#eta|^{CJet}")
+     {
+      outFile<<"#####  "<<std::endl;
+      outFile<<"#    (alfa+beta)/alfa     "<<std::endl;
+      outFile<<"#####  "<<std::endl;
+      ratio=(alfa+beta)/(alfa);
+      err_ratio=sqrt((1/(alfa*alfa))*(err_beta*err_beta)+(beta/(alfa*alfa))*(beta/(alfa*alfa))*(err_alfa*err_alfa));
+      outFile<<alfa<<"   "<<err_alfa<<std::endl;
+      outFile<<beta<<"   "<<err_beta<<std::endl;
+      outFile<<ratio<<"   "<<err_ratio<<std::endl;
+     }
+     
      
      
      
@@ -1447,8 +1449,7 @@ for(int iVar=0; iVar<Variable.size(); iVar++)
   edge.clear();
   error.clear();
   
-    
-    
+      
  for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++)
  {
    std::ostringstream ss,se,sf;
@@ -1456,10 +1457,11 @@ for(int iVar=0; iVar<Variable.size(); iVar++)
    {  
      if(ratio!=0)
      {
-      ss<<((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*ratio*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
+      ss<<((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
       edge=edge+' '+' '+(ss.str());
-      se<<VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin));
-      sf<<VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin));
+      se<<sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)))*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))));
+      sf<<sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)))*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))));
+
       error=error+' '+'+'+(se.str())+' '+'-'+(sf.str());
      }
      else{
@@ -1479,7 +1481,7 @@ for(int iVar=0; iVar<Variable.size(); iVar++)
  }
  
   outFile<<"#-------------------   "<<std::endl;
-  outFile<<"### Data driven events in the signal region "<<std::endl;
+  outFile<<"### Data driven events in the signal region ( no correction factor)"<<std::endl;
   outFile<<"#-------------------   "<<std::endl;
   outFile<<edge<<std::endl;
   outFile<<error<<std::endl;          
@@ -1493,11 +1495,11 @@ for(int iVar=0; iVar<Variable.size(); iVar++)
    {  
      if(ratio!=0)
      {  
-      ss<<((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*ratio);
+      ss<<((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))));
       edge=edge+' '+' '+(ss.str());
-      se<<VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin);
-      sf<<VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin);
-      error=error+' '+'+'+(se.str())+' '+'-'+(sf.str());
+      se<<sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin))*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)));
+      sf<<sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)));
+       error=error+' '+'+'+(se.str())+' '+'-'+(sf.str());
        
     }
     else{
@@ -1518,7 +1520,7 @@ for(int iVar=0; iVar<Variable.size(); iVar++)
  }
  
   outFile<<"#-------------------   "<<std::endl;
-  outFile<<"### Data driven events in the signal region divide Bin Width "<<std::endl;
+  outFile<<"### Data driven events in the signal region divide Bin Width (no correction factor)"<<std::endl;
   outFile<<"#-------------------   "<<std::endl;
   outFile<<edge<<std::endl;
   outFile<<error<<std::endl;          
@@ -1532,8 +1534,8 @@ for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++)
    {  
      if(ratio!=0)
      {  
-      tt_Events=tt_Events+VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*ratio*((Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
-      tt_Events_Error=sqrt(tt_Events_Error*tt_Events_Error+((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));  
+      tt_Events=tt_Events+VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin));
+      tt_Events_Error=sqrt(tt_Events_Error*tt_Events_Error+((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
    
      }
      else{
@@ -1550,7 +1552,154 @@ for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++)
   double Final_Error=1+tt_Events_Error/(tt_Events);
   
   outFile<<"#-------------------   "<<std::endl;
-  outFile<<"### Data driven Final Result "<<std::endl;
+  outFile<<"### Data driven Final Result (no correction factor)"<<std::endl;
+  outFile<<"#-------------------   "<<std::endl;
+  outFile<<"  tt Events   "<< tt_Events<<"  error  "<<Final_Error<<"  sys   "<<err_ratio<<std::endl;
+  outFile<<error<<std::endl;          
+  edge.clear();
+  error.clear();
+  
+  tt_Events=0;
+  tt_Events_Error=0;
+  Final_Error=0;
+  
+for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++)
+ {
+   if(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)!=0)
+   {  
+     if(ratio!=0)
+     { 
+      tt_Events=tt_Events+VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)));
+      tt_Events_Error=sqrt(tt_Events_Error*tt_Events_Error+((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2));  
+   
+     }
+     else{
+           tt_Events=tt_Events+VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)));
+           tt_Events_Error=sqrt(tt_Events_Error*tt_Events_Error+((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2));  
+     }
+   }
+ }
+ 
+  Final_Error=1+tt_Events_Error/(tt_Events);
+  
+  outFile<<"#-------------------   "<<std::endl;
+  outFile<<"### Data driven Final Result divided by Bin Width (no correction factor) "<<std::endl;
+  outFile<<"#-------------------   "<<std::endl;
+  outFile<<"  tt Events   "<< tt_Events<<"  error  "<<Final_Error<<"  sys   "<<err_ratio<<std::endl;
+  outFile<<error<<std::endl;          
+  edge.clear();
+  error.clear();
+ 
+
+  tt_Events=0;
+  tt_Events_Error=0;
+  Final_Error=0;
+    
+    
+ for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++)
+ {
+   std::ostringstream ss,se,sf;
+   if(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)!=0)
+   {  
+     if(ratio!=0)
+     {
+      ss<<((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*ratio*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
+      edge=edge+' '+' '+(ss.str());
+      se<<sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*ratio)*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*ratio)+err_ratio*err_ratio*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))));
+      sf<<sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*ratio)*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*ratio)+err_ratio*err_ratio*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))));
+
+      error=error+' '+'+'+(se.str())+' '+'-'+(sf.str());
+     }
+     else{
+          ss<<(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))));
+          edge=edge+' '+' '+(ss.str());
+          se<<VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin);
+          sf<<VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin);
+          error=error+' '+'+'+(se.str())+' '+'-'+(sf.str());
+	  
+    }
+           
+   }
+   else{
+        edge=edge+' '+' '+'0';
+        error=error+' '+'+'+'0'+' '+'-'+'0';
+   }
+ }
+ 
+  outFile<<"#-------------------   "<<std::endl;
+  outFile<<"### Data driven events in the signal region (corrected)"<<std::endl;
+  outFile<<"#-------------------   "<<std::endl;
+  outFile<<edge<<std::endl;
+  outFile<<error<<std::endl;          
+  edge.clear();
+  error.clear();
+ 
+ for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++)
+ {
+   std::ostringstream ss,se,sf;
+   if(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)!=0)
+   {  
+     if(ratio!=0)
+     {  
+      ss<<((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*ratio);
+      edge=edge+' '+' '+(ss.str());
+      se<<sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)*ratio)*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)*ratio)+err_ratio*err_ratio*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))));
+      sf<<sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)*ratio)*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)*ratio)+err_ratio*err_ratio*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))));
+
+       error=error+' '+'+'+(se.str())+' '+'-'+(sf.str());
+       
+    }
+    else{
+          ss<<(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))));
+          edge=edge+' '+' '+(ss.str());
+          se<<VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin);
+          sf<<VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin);
+          error=error+' '+'+'+(se.str())+' '+'-'+(sf.str());
+	  
+    }
+      
+      
+   }
+   else{
+        edge=edge+' '+' '+'0';
+        error=error+' '+'+'+'0'+' '+'-'+'0';
+   }
+ }
+ 
+  outFile<<"#-------------------   "<<std::endl;
+  outFile<<"### Data driven events in the signal region divide Bin Width (corrected)"<<std::endl;
+  outFile<<"#-------------------   "<<std::endl;
+  outFile<<edge<<std::endl;
+  outFile<<error<<std::endl;          
+  edge.clear();
+  error.clear(); 
+
+  
+for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++)
+ {
+   if(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)!=0)
+   {  
+     if(ratio!=0)
+     {  
+      tt_Events=tt_Events+VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*ratio*((Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
+      tt_Events_Error=sqrt(tt_Events_Error*tt_Events_Error+((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*ratio*ratio+err_ratio*err_ratio*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))));  
+   
+     }
+     else{
+           tt_Events=tt_Events+VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*((Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
+           tt_Events_Error=sqrt(tt_Events_Error*tt_Events_Error+((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
+     }
+       
+     
+    }
+   
+   
+ }
+ 
+  double Final_Error=1+tt_Events_Error/(tt_Events);
+  
+  outFile<<"#-------------------   "<<std::endl;
+  outFile<<"### Data driven Final Result (corrected)"<<std::endl;
   outFile<<"#-------------------   "<<std::endl;
   outFile<<"  tt Events   "<< tt_Events<<"  error  "<<Final_Error<<"  sys   "<<err_ratio<<std::endl;
   outFile<<error<<std::endl;          
@@ -1568,7 +1717,8 @@ for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++)
      if(ratio!=0)
      { 
       tt_Events=tt_Events+VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*ratio;
-      tt_Events_Error=sqrt(tt_Events_Error*tt_Events_Error+((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2));  
+      tt_Events_Error=sqrt(tt_Events_Error*tt_Events_Error+((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*ratio*ratio+err_ratio*err_ratio*VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))));  
+   
      }
      else{
            tt_Events=tt_Events+VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*((Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
@@ -1580,7 +1730,7 @@ for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++)
   Final_Error=1+tt_Events_Error/(tt_Events);
   
   outFile<<"#-------------------   "<<std::endl;
-  outFile<<"### Data driven Final Result divided by Bin Width "<<std::endl;
+  outFile<<"### Data driven Final Result divided by Bin Width (corrected) "<<std::endl;
   outFile<<"#-------------------   "<<std::endl;
   outFile<<"  tt Events   "<< tt_Events<<"  error  "<<Final_Error<<"  sys   "<<err_ratio<<std::endl;
   outFile<<error<<std::endl;          
@@ -1826,3 +1976,5 @@ for(int iBin=0; iBin<Sig_Estimation_Final->GetNbinsX(); iBin++)
 return(0);
 
 }
+
+
