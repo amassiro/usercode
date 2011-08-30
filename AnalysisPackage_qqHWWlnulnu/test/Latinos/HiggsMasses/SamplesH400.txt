@@ -10,8 +10,8 @@ Summer11_DY10toElEl        1.6292217438  DY ee DYpow -l   DYee10-20
 Summer11_DYtoMuMu                0.0623355250 DY mumu DYpow -h  DYmumuPow20
 Summer11_DY10toMuMu              1.5767956975 DY mumu DYpow -l  DYmumu10-20 
 #
-Summer11_DYtoTauTau                   0.0854907913  DY tautau DYpow -h    DYtautauPow20
-Summer11_DY10toTauTau                 1.5713636364  DY tautau DYpow -l    DYtautau10-20
+Summer11_DYtoTauTau                   0.0854907913  DY-tautau DYpow -h    DYtautauPow20
+Summer11_DY10toTauTau                 1.5713636364  DY-tautau DYpow -l    DYtautau10-20
 #
 Spring11_TTJets_TuneZ2_7TeV-madgraph-tauola            0.1352851037     top            TTJetsMad
 #
