@@ -1,0 +1,114 @@
+############################################
+#### Cut for SideBand studies Drell-Yan ####
+############################################
+#
+########################################
+#
+# H120    H130    H140    H150   
+#
+# 1-A-CR
+# 1-B-CR
+# 1-A-SR
+# 1-B-SR
+#
+(!(M_ll<106.1876 && M_ll>76.1876))  &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour==l2_flavour))) && M_ll<70 && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && DPhi_ll<1.5 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(M_ll<106.1876 && M_ll>76.1876)     &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && DPhi_ll<1.5 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(!(M_ll<106.1876 && M_ll>76.1876))  &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour==l2_flavour))) && M_ll<70 && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && DPhi_ll<1.5 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(M_ll<106.1876 && M_ll>76.1876)     &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && DPhi_ll<1.5 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+#
+########################################
+#
+# H160    H170
+#
+# 2-A-CR
+# 2-B-CR
+# 2-A-SR
+# 2-B-SR
+#
+(!(M_ll<106.1876 && M_ll>76.1876))  &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour==l2_flavour))) && M_ll<80 && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && DPhi_ll<1.5 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(M_ll<106.1876 && M_ll>76.1876)     &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && DPhi_ll<1.5 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(!(M_ll<106.1876 && M_ll>76.1876))  &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour==l2_flavour))) && M_ll<80 && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && DPhi_ll<1.5 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(M_ll<106.1876 && M_ll>76.1876)     &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && DPhi_ll<1.5 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+#
+########################################
+#
+# H180    H190
+#
+# 3-A-CR
+# 3-B-CR
+# 3-A-SR
+# 3-B-SR
+#
+(!(M_ll<106.1876 && M_ll>76.1876))  &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour==l2_flavour))) && M_ll<100 && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && DPhi_ll<1.5 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(M_ll<106.1876 && M_ll>76.1876)     &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && DPhi_ll<1.5 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(!(M_ll<106.1876 && M_ll>76.1876))  &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour==l2_flavour))) && M_ll<100 && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && DPhi_ll<1.5 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(M_ll<106.1876 && M_ll>76.1876)     &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && DPhi_ll<1.5 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+#
+########################################
+#
+# H200
+#
+# 4-A-CR
+# 4-B-CR
+# 4-A-SR
+# 4-B-SR
+#
+(!(M_ll<106.1876 && M_ll>76.1876))  &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour==l2_flavour))) && M_ll<100 && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && DPhi_ll<2.0 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(M_ll<106.1876 && M_ll>76.1876)     &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && DPhi_ll<2.0 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(!(M_ll<106.1876 && M_ll>76.1876))  &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour==l2_flavour))) && M_ll<100 && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && DPhi_ll<2.0 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(M_ll<106.1876 && M_ll>76.1876)     &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && DPhi_ll<2.0 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+#
+########################################
+#
+# H250    H300
+#
+# 5-A-CR
+# 5-B-CR
+# 5-A-SR
+# 5-B-SR
+#
+(!(M_ll<106.1876 && M_ll>76.1876))  &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>4.0 && DPhi_ll<2.5 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(M_ll<106.1876 && M_ll>76.1876)     &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>4.0 && DPhi_ll<2.5 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(!(M_ll<106.1876 && M_ll>76.1876))  &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>4.0 && DPhi_ll<2.5 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(M_ll<106.1876 && M_ll>76.1876)     &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>4.0 && DPhi_ll<2.5 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+#
+########################################
+#
+# H350    H400    H450    
+#
+# 6-A-CR
+# 6-B-CR
+# 6-A-SR
+# 6-B-SR
+#
+(!(M_ll<106.1876 && M_ll>76.1876))  &&         M_ll>12 && l1_pT>30 && l2_pT>15 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour==l2_flavour))) && M_ll>100 && CJV_30 == 0 && M_qq>450 && DEta_qq>4.0 && DPhi_ll>1.0 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(M_ll<106.1876 && M_ll>76.1876)     &&         M_ll>12 && l1_pT>30 && l2_pT>15 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>4.0 && DPhi_ll>1.0 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(!(M_ll<106.1876 && M_ll>76.1876))  &&         M_ll>12 && l1_pT>30 && l2_pT>15 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour==l2_flavour))) && M_ll>100 && CJV_30 == 0 && M_qq>450 && DEta_qq>4.0 && DPhi_ll>1.0 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(M_ll<106.1876 && M_ll>76.1876)     &&         M_ll>12 && l1_pT>30 && l2_pT>15 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>4.0 && DPhi_ll>1.0 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+#
+########################################
+#
+# H500    H550    H600
+#
+# 7-A-CR
+# 7-B-CR
+# 7-A-SR
+# 7-B-SR
+#
+(!(M_ll<106.1876 && M_ll>76.1876))  &&         M_ll>12 && l1_pT>30 && l2_pT>30 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour==l2_flavour))) && M_ll>100 && CJV_30 == 0 && M_qq>450 && DEta_qq>4.0 && DPhi_ll>1.0 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(M_ll<106.1876 && M_ll>76.1876)     &&         M_ll>12 && l1_pT>30 && l2_pT>30 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>4.0 && DPhi_ll>1.0 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(!(M_ll<106.1876 && M_ll>76.1876))  &&         M_ll>12 && l1_pT>30 && l2_pT>30 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour==l2_flavour))) && M_ll>100 && CJV_30 == 0 && M_qq>450 && DEta_qq>4.0 && DPhi_ll>1.0 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+(M_ll<106.1876 && M_ll>76.1876)     &&         M_ll>12 && l1_pT>30 && l2_pT>30 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>4.0 && DPhi_ll>1.0 && Nleptons_pT10==0 && abs(Z_ll)<0.5 && abs(l1_Z)<0.5 && abs(l2_Z)<0.5  && NsoftMu==0 && q2_bTag_trackCountingHighPurBJetTags<1.93 && q1_bTag_trackCountingHighPurBJetTags<1.93
+#
+########################################
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
