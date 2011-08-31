@@ -118,15 +118,52 @@ struct Variables
  double met;
  double pmet; 
  double chmet; 
+ double chmet_X; 
+ double chmet_Y; 
  double pchmet; 
  double minMet;
+
+ //---- jetdeau [jd] variables: met and jet corrections
+
+ double jd_dphi1;
+ double jd_dphi2;
+
+ double jd_Delta_q1_P;
+ double jd_Delta_q2_P;  
+
+ double jd_between;
+ 
+ double jd_met;
+ double jd_met_X;
+ double jd_met_Y;
+ double jd_pmet;
+ 
+ double jd_q1_pX;
+ double jd_q1_pY;
+ double jd_q1_pZ;
+ double jd_q1_pT;
+ double jd_q1_E;
+ double jd_q1_Eta;
+ double jd_q1_Phi;
+ 
+ double jd_q2_pX;
+ double jd_q2_pY;
+ double jd_q2_pZ;
+ double jd_q2_pT;
+ double jd_q2_E;
+ double jd_q2_Eta;
+ double jd_q2_Phi;
+ 
+ double jd_M_qq;
+ 
 
  //---- transverse mass
  double mT;
 
  //---- dphi_Jet_ll
  double DPhiJet_ll;
-
+ double maxDPhiJet_ll;
+ 
  double DPhiSingleJet_ll;
  double DPhiDoubleJet_ll;
   
@@ -201,6 +238,14 @@ struct Variables
  int NBjets_trackCountingHighEffBJetTags_22;
  int NBjets_trackCountingHighEffBJetTags_30;
  
+ 
+ int NBjets_trackCountingHighEffBJetTags_193_softJet;
+ int NBjets_trackCountingHighEffBJetTags_210_softJet; 
+ int NBjets_trackCountingHighPurBJetTags_193_softJet;
+ int NBjets_trackCountingHighPurBJetTags_210_softJet;
+
+
+
  int NsoftMu;
  
  int totalJV_20;
@@ -257,6 +302,7 @@ struct Variables
  
  //std::vector < std::pair < std::string, std::vector<int> > > expandedHLTVector;
  std::vector < std::vector<int> > expandedHLTVector;
+ std::vector < std::vector<std::string> > expandedNamesHLTVector;
   
 };
 
@@ -289,5 +335,6 @@ void SetmTVariable(Variables& vars, treeReader& reader, const std::string& metTy
 
 void SetDPhiJetll(Variables& vars, treeReader& reader, const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2, const int& q1, const int& q2);
 
+void SetJDVariables(Variables& vars, treeReader& reader, const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2, const int& q1, const int& q2, const std::string& metType);
 
 void SaveTree(Variables& vars);
