@@ -298,7 +298,10 @@ void InitializeTreeTrigger(Variables& vars, const std::vector<std::string> & HLT
 // std::vector < std::pair < std::string, std::vector<std::string> > > expandedHLTVector;
 //  std::vector < std::pair < std::string, std::vector<int> > > expandedHLTVector;
 //  std::vector < std::vector<int> > expandedHLTVector;
-std::string strStar ("*");
+    
+ //==== (1)     create list of trigger pieces: A_B*C_D* --> A_B, C_D
+ //==== (2)     and create list of triggers: A* ---> A_1, A_43, ...
+ std::string strStar ("*");
  for (int iHLT = 0; iHLT < HLTVector.size(); iHLT++){ 
  //==== (1)  
   size_t found;
@@ -377,7 +380,6 @@ std::string strStar ("*");
  }
  vars.m_reducedTree -> Branch("HLTVectorNames","std::vector<std::string>",&vars.HLTVector_names_);
  vars.m_reducedTree -> Branch("HLTVector","std::vector<int>",&vars.HLTVector_);  
- 
 }
 
 
@@ -875,7 +877,7 @@ void SetQJetVariables(Variables& vars, treeReader& reader, const int& q1, const 
   for(unsigned int kk = 0; kk < blacklistJet_forBtag.size(); ++kk) {
    if(blacklistJet_forBtag.at(kk) == static_cast<int>(iJet)) skipJet = true;
   }
-  if (reader.Get4V("jets")->at(iJet).pt() < 7.0) skipJet = true;
+  if (reader.Get4V("jets")->at(iJet).pt() < 20.0) skipJet = true;
       if (skipJet) continue;
       if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) > -50.0) vars.NBjets_trackCountingHighPurBJetTags++;
       if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) > -50.0) vars.NBjets_trackCountingHighEffBJetTags++;
@@ -971,7 +973,7 @@ void SetNSoftMu(Variables& vars,  treeReader& reader,  const int& iLep1, const i
 
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void SetmTVariable(Variables& vars, treeReader& reader, const std::string& metType, const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2){
+void SetMTVariable(Variables& vars, treeReader& reader, const std::string& metType, const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2){
 
  ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >  totalP4; 
  
