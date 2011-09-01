@@ -3,7 +3,42 @@
 
 ./bin/MCDATAComparisonPLOTTool.exe test/Latinos/testMCDATAComparisonPLOTTool.cfg
 
+./bin/MCDATAComparisonPLOTTool.exe test/Latinos/testMCDATAComparisonPLOTTool_ForNote.cfg
+
+
+./bin/MCDATAComparisonPLOTTool.exe test/Latinos/testMCDATAComparisonPLOTTool_ForJD.cfg
+./bin/MCDATAComparisonPLOTTool2D.exe test/Latinos/testMCDATAComparisonPLOTTool2D_ForJD.cfg
+
+
+
+
+#### for Syncronization (begin) ####
+./bin/MCDATACounter.exe test/Latinos/testMCDATACounter_ForSyncro.cfg
+
+#### for Syncronization (end) ####
+
+
+
 ./bin/MCDATACounter.exe test/Latinos/testMCDATACounter.cfg
+
+
+./bin/MCModifyWeight.exe test/Latinos/testMCModifyWeight.cfg
+
+
+
+chmod 666 output_Latinos_Weight/o*
+./bin/MCAddWeight.exe test/Latinos/testMCAddWeight.cfg
+./bin/MCModifyWeight.exe test/Latinos/testMCModifyWeight_Electron.cfg
+./bin/MCModifyWeight.exe test/Latinos/testMCModifyWeight_Muon.cfg
+
+cp -r output_Latinos_Spring11_11Aug2011/ output_Latinos_Spring11_11Aug2011_backup_bis/
+./bin/MCModifyWeight.exe test/Latinos/testMCModifyWeight_Final.cfg
+
+
+to test:
+./bin/MCModifyWeight.exe test/Latinos/testMCModifyWeight.cfg
+
+
 
 
 
@@ -32,86 +67,15 @@ r00t test/Latinos/createWeightFile.cxx\(\"test/Latinos/k_factors/scalefactor.mh6
 
 
 
+mv out_NtupleProducer_DYToEE_M-10To20_TuneZ2_7TeV-pythia6.root out_NtupleProducer_Summer11_DYToEE_M-10To20_TuneZ2_7TeV-pythia6.root
+mv out_NtupleProducer_DYToEE_M-20_CT10_TuneZ2_7TeV-powheg-pythia.root out_NtupleProducer_Summer11_DYToEE_M-20_CT10_TuneZ2_7TeV-powheg-pythia.root
+mv out_NtupleProducer_DYToEE_M-20_TuneZ2_7TeV-pythia6.root out_NtupleProducer_Summer11_DYToEE_M-20_TuneZ2_7TeV-pythia6.root
+mv out_NtupleProducer_DYToMuMu_M-10To20_TuneZ2_7TeV-pythia6.root out_NtupleProducer_Summer11_DYToMuMu_M-10To20_TuneZ2_7TeV-pythia6.root
+mv out_NtupleProducer_DYToMuMu_M-20_CT10_TuneZ2_7TeV-powheg-pythia.root out_NtupleProducer_Summer11_DYToMuMu_M-20_CT10_TuneZ2_7TeV-powheg-pythia.root
+mv out_NtupleProducer_DYToMuMu_M-20_TuneZ2_7TeV-pythia6.root out_NtupleProducer_Summer11_DYToMuMu_M-20_TuneZ2_7TeV-pythia6.root
+mv out_NtupleProducer_DYToTauTau_M-10To20_TuneZ2_7TeV-pythia6-tauola.root out_NtupleProducer_Summer11_DYToTauTau_M-10To20_TuneZ2_7TeV-pythia6-tauola.root
+mv out_NtupleProducer_DYToTauTau_M-20_CT10_TuneZ2_7TeV-powheg-pythia-tauola.root out_NtupleProducer_Summer11_DYToTauTau_M-20_CT10_TuneZ2_7TeV-powheg-pythia-tauola.root
 
 
 
-
-***********************
-**** DATA workflow ****
-***********************
-
-From PAT-Latinos
-
-    1) Crab -> @hercules:  /gwtera/cms/users/amassiro/MiBiCommonNT/PATtoNT/
-           and then add them together 
-
-//                  cd /gwtera/cms/users/amassiro/MiBiCommonNT/PATtoNT/MC/Spring11/Jul042011
-//
-//                  for fol in `ls` ; do \
-//                  mkdir /gwteray/users/amassiro/VBF/Spring11_9July_MCandDATA_PATLatinos/$fol ; \
-//                  hadd /gwteray/users/amassiro/VBF/Spring11_9July_MCandDATA_PATLatinos/$fol/$fol.root $fol/*root ; \
-//                  done
-
-    2) Copy from GRID to Hercules (
-//           srmls   srm://storm.mib.infn.it:8444/cms/store/user/mangano//GluGluToHToWWTo2L2Nu_M-160_7TeV-powheg-pythia6/R42X_S1_V04_S2_V00_S3_V00_ID101160_ggToH160toWWto2L2Nu-v1/8a66f640cda46e57b12f252bbcf377c8
-           ) and then run CMSSW in local.
-//            cd /gwpool/users/amassiro/VBF/Releases/CMSSW_4_1_5/src/PhysicsTools/MiBiCommonPAT/test/pyfig
-//            cd /gwpool/users/amassiro/VBF/Releases/CMSSW_4_1_5/src/PhysicsTools/MiBiCommonPAT/test/singles
-
-
-
-
-Run NtupleProducer RootPlain on Hercules
-
-
-//                 root -l test/Spring11/cfgCreator_FinalSelector_HERCULES_PATtoNT.cxx
-//                 root -l test/Spring11/cfgLauncher_FinalSelection_HERCULES_PATtoNT.cxx
- 
-plain root saved in 
-
-//                 /gwteray/users/amassiro/VBFPlainRoot/Latinos_9Jul2011/
-
-
-now copy on laptop and proceed!
-
-//                 scp amassiro@hercules.mib.infn.it:/gwteray/users/amassiro/VBFPlainRoot/Latinos_9Jul2011/*.root ./
-
- 
-
-*********************
-**** PU reweight ****
-*********************
-
-r00t certifiedPileUp.root 
-TH1F* pileup = (TH1F*) _file0->Get("pileup");
-for (int iBin = 0; iBin < pileup->GetNbinsX(); iBin++) {std::cout << pileup->GetBinContent(iBin+1) / pileup->Integral() << ", ";  }
-// pileup->Draw();
-std::cout << std::endl;
-.q
-
-
-
-
-
-
-
-********************
-**** Selections ****
-********************
-
-MET selection:
-  min-MET > 20 for emu
-  min-MET > 35 for ee and mumu
-  
-(((pchmet*(pchmet<pmet)+pmet*(pchmet>=pmet))>20 *(l1_flavour!=l2_flavour)) || ((pchmet*(pchmet<pmet)+pmet*(pchmet>=pmet))>35 *(l1_flavour==l2_flavour)))
-
-
-
-****************************
-Z veto and low resonances
-
-   m_Z +/- 15 GeV veto
-   m_ll > 12, low resonances veto
-   
-((!(M_ll<105&&M_ll>75&&l1_flavour==l2_flavour))||(l1_flavour!=l2_flavour))
 

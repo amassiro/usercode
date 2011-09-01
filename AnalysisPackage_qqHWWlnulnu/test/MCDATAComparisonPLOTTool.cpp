@@ -12,6 +12,7 @@
 #include "qqHWWlnulnuUtils.h"
 #include "Variables.h"
 
+#include "../test/LatinoStyle.C"
 #include "../test/TDRStyle.cc"
 #include "../test/Read.cc"
 // #include "../test/DrawTools.h"
@@ -48,7 +49,8 @@ int GetNumList(std::vector<int> &list){
 
 int main(int argc, char** argv)
 { 
- TDRStyle();
+//  TDRStyle();
+ LatinoStyle();
  
  gStyle->SetPadTopMargin(0.11);
  gStyle->SetPadLeftMargin(0.07);
@@ -78,7 +80,20 @@ int main(int argc, char** argv)
  char Bred[] = { 0x1b, '[', '1', ';', '3', '1', 'm', 0 };
  //for bold colors, just change the 0 after the [ to a 1
  
+ 
+ ///==== Latinos colours ====
+ 
  EColor vColor[1000] = {
+  (EColor) (kRed+1),
+  (EColor) (kRed+3),
+  (EColor) (kGray+1),
+  (EColor) (kAzure-2),
+  (EColor) (kAzure-9),
+  (EColor) (kYellow),
+  (EColor) (kGreen+2),
+//   
+//   
+//   
   kGreen,
   //kMagenta,(EColor) (kMagenta+1),(EColor) (kMagenta+2),
   kTeal,//(EColor) (kTeal+1),
@@ -215,7 +230,7 @@ int main(int argc, char** argv)
   TString toLoad;
 //   toLoad = Form("cp %s ./",nameptHWeight.c_str());
 //   gROOT->ProcessLine(toLoad.Data());
-  toLoad = Form(".L %s",nameptHWeight.c_str());
+  toLoad = Form(".L %s+",nameptHWeight.c_str());
   gROOT->ProcessLine(toLoad.Data());
  }
  
@@ -394,7 +409,7 @@ int main(int argc, char** argv)
   treeEffVect[iSample]->SetBranchAddress("preselection_efficiency",&preselection_efficiency);  
   treeEffVect[iSample]->GetEntry(0);
   
-  std::cout << " Xsection = " << XSection << " ~~~> " << xsection[iSample] << std::endl;
+//   std::cout << " Xsection = " << XSection << " ~~~> " << xsection[iSample] << std::endl;
   XSection = xsection[iSample];
   
   if (numEntriesBefore != 0) {

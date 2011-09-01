@@ -79,6 +79,14 @@ int main(int argc, char** argv)
  //for bold colors, just change the 0 after the [ to a 1
  
  EColor vColor[1000] = {
+  (EColor) (kRed+1),
+  (EColor) (kRed+3),
+  (EColor) (kGray+1),
+  (EColor) (kAzure-2),
+  (EColor) (kAzure-9),
+  (EColor) (kYellow),
+  (EColor) (kGreen+2),
+//   
   kGreen,
   //kMagenta,(EColor) (kMagenta+1),(EColor) (kMagenta+2),
   kTeal,//(EColor) (kTeal+1),
@@ -142,7 +150,12 @@ int main(int argc, char** argv)
  
  std::string nameWeight = "weight"; 
  if (doWeightFromFile) {
-  nameWeight = gConfigParser -> readStringOption("PU::nameWeight");
+  try {
+   nameWeight = gConfigParser -> readStringOption("PU::nameWeight");
+  }
+  catch (char const* exceptionString){
+   std::cerr << " exception = " << exceptionString << std::endl;
+  }
   std::cout << ">>>>> PU::nameWeight  " << nameWeight  << std::endl;  
  }
  
@@ -219,14 +232,37 @@ int main(int argc, char** argv)
 
  int numberOfSamples = ReadFile(nameFileIn, nameSample, nameHumanReadable, xsectionName);
 
- 
- double XSection  = gConfigParser -> readDoubleOption("Plot::XSection");
+//  double XSection  = gConfigParser -> readDoubleOption("Plot::XSection");
  
  ///==== list of selections to perform (NOT sequential additive selections) ====
  std::string CutFile = gConfigParser -> readStringOption("Selections::CutFile");
- std::vector<std::string> vCut;
+ std::string CutHRFile = "";
+ try {
+  CutHRFile = gConfigParser -> readStringOption("Selections::CutHRFile");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
  
- std::cout << " nCuts = " << ReadFileCut(CutFile, vCut) << std::endl;
+ std::vector<std::string> vCut;
+ std::vector<std::string> vCutHR;
+ 
+ std::cout << " nCuts   = " << ReadFileCut(CutFile, vCut) << std::endl;
+ if (CutHRFile != "") {
+  std::cout << " nCutsHR = " << ReadFileCutHR(CutHRFile, vCutHR) << std::endl;
+ }
+ 
+ if (vCutHR.size() < vCut.size()) {
+  int size1 = vCut.size();
+  int size2 = vCutHR.size();
+  for (int i=0; i<(size1-size2+2); i++) {
+   vCutHR.push_back("test");
+  }
+ }
+
+ for (uint iCut = 0; iCut<vCutHR.size(); iCut++){ 
+  std::cout << " vCutHR[" << iCut << "] = " << vCutHR.at(iCut).c_str() << std::endl;
+ }
  
  ///==== output file ====
  std::string OutFileName    = gConfigParser -> readStringOption("Output::outFileName");
@@ -405,10 +441,9 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
    if (debug) std::cout << " Sample[" << iSample << ":" << numberOfSamples << "] = " << nameSample[iSample] << " ~~ " << std::endl;
    TString name_histo_temp = Form("%s_%d_temp",nameSample[iSample], iCut);
    histo_temp[iSample][iCut] = new TH1F(name_histo_temp,name_histo_temp,100,-10,10000000000);
-   //char toDraw[1000];
-   //sprintf(toDraw,"eventId >> %s",name_histo_temp.Data());      
-   TString toDraw= Form("eventId >> %s",name_histo_temp.Data());
-   histo_temp[iSample][iCut] -> Sumw2(); //---- cosÃ¬ mette l'errore giusto!
+   char toDraw[1000];
+   sprintf(toDraw,"1 >> %s",name_histo_temp.Data());      
+   histo_temp[iSample][iCut] -> Sumw2(); //---- così mette l'errore giusto!
    
    TString CutExtended;
    bool isData = false;
@@ -660,15 +695,19 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
  std::cout << std::endl;
  std::cout << std::endl;
  std::cout << " *********************************** " << std::endl;
+ std::cout << " **** samples Y : selections X  **** " << std::endl;
+ std::cout << " *********************************** " << std::endl;
  std::cout << std::setw (12) << "sample";
  std::cout << " | " << std::setw (10) <<  -1;
  std::cout << " [" << std::setw (10) <<  "XXX";
  std::cout << " ]";
  for (uint iCut = 0; iCut<vCut.size(); iCut++){
-  std::cout << " | " << std::setw (10) <<  iCut;
+  std::cout << " | " << std::setw (10) <<  vCutHR.at(iCut).c_str();  
+//   std::cout << " | " << std::setw (10) <<  iCut << "::" << vCut.size();
   std::cout << " [" << std::setw (10) <<  "XXX";
   std::cout << " ]";
  }
+ std::cout << " pappappero!!!" << std::endl;
  std::cout << std::endl;
  for (uint iName=0; iName<reduced_name_samples.size(); iName++){
   std::cout << std::setw (12) << reduced_name_samples.at(iName) ;
@@ -685,19 +724,24 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
  
  std::cout << std::endl;
  std::cout << " *********************************** " << std::endl;
+ std::cout << " **** selections Y : samples X  **** " << std::endl;
+ std::cout << " *********************************** " << std::endl;
  for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+  std::cout << std::setw (10) <<  "cut";
   std::cout << " | " << std::setw (10) << reduced_name_samples.at(iName) ;
   std::cout << " [" << std::setw (10) <<  "err";
   std::cout << " ]";
  }
  std::cout << std::endl;
  for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+  std::cout << std::setw (10) <<  "cut";
   std::cout << " | " << cyan << std::setw (10) <<  numEntriesFirstStep_reduced_samples.at(iName);
   std::cout << normal << " [" << std::setw (10) <<  "XXX";
   std::cout << " ]";
  }
  std::cout << std::endl;
  for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  std::cout << std::setw (10) <<  vCutHR.at(iCut).c_str();
   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
    std::cout << " | " << blue << std::setw (10) <<  hTrend[iName]->GetBinContent(iCut+1);
    std::cout << normal << " [" << std::setw (10) <<  hTrend[iName]->GetBinError(iCut+1);
@@ -961,28 +1005,28 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
  
  myfile << "-------------------------------------------------" << std::endl;
  
- myfile << "CMS_eff_e                    lnN       1.020    1.020    1.020      1.020     1.020        -         -      " << std::endl; //               electron efficiency      " << std::endl;
- myfile << "CMS_eff_m                    lnN       1.040    1.040    1.040      1.040     1.040        -         -      " << std::endl; //               muon efficiency          " << std::endl;
+ myfile << "CMS_eff_e                    lnN       1.020    1.020    1.020      1.020     1.020      -         1.020       -      " << std::endl; //               electron efficiency      " << std::endl;
+ myfile << "CMS_eff_m                    lnN       1.040    1.040    1.040      1.040     1.040      -         1.040       -      " << std::endl; //               muon efficiency          " << std::endl;
  
- myfile << "PU                           lnN       1.03     1.03       -        1.04      1.04         -         -      " << std::endl; //               Pile Up +/- 1" << std::endl;
+ myfile << "PU                           lnN       1.03     1.03       -        1.04      1.04       -         1.04        -      " << std::endl; //               Pile Up +/- 1" << std::endl;
  
- myfile << "CMS_p_scale_j                lnN       1.05     1.05       -        1.10      1.10         -         -      " << std::endl; //               JES" << std::endl;
- myfile << "CMS_p_scale_m                lnN       1.002    1.002      -          -         -          -         -      " << std::endl; //               Muon momentum" << std::endl;
- myfile << "CMS_p_scale_e                lnN       1.002    1.002      -          -         -          -         -      " << std::endl; //               Electron scale" << std::endl;
- myfile << "MC_statistics                lnN         -      1.03       -        1.35      1.10         -         -      " << std::endl; //               MET +/- 10%" << std::endl;
+ myfile << "CMS_p_scale_j                lnN       1.05     1.05       -        1.10      1.10       -         1.10        -      " << std::endl; //               JES" << std::endl;
+ myfile << "CMS_p_scale_m                lnN       1.002    1.002      -          -         -        -            -        -      " << std::endl; //               Muon momentum" << std::endl;
+ myfile << "CMS_p_scale_e                lnN       1.002    1.002      -          -         -        -            -        -      " << std::endl; //               Electron scale" << std::endl;
+ myfile << "MC_statistics                lnN         -      1.03       -        1.35      1.10       -         2.00        -      " << std::endl; //               MET +/- 10%" << std::endl;
  
- myfile << "QCDscale_ggH                 lnN         -      1.160      -          -         -          -         -      " << std::endl; //               Theory on Higgs" << std::endl;
- myfile << "QCDscale_ggH1in              lnN         -      1.160      -          -         -          -         -      " << std::endl; //               Theory on Higgs" << std::endl;
- myfile << "QCDscale_ggVV                lnN         -        -        -        1.160       -          -         -      " << std::endl; //               Theory on Higgs" << std::endl;
-
- myfile << "lumi                         lnN       1.060    1.060    1.060      1.060       -          -         -      " << std::endl; //              Luminosity     " << std::endl;
- myfile << "pdf_gg                       lnN         -      1.080      -        1.080       -          -         -      " << std::endl; //              pdfgg        " << std::endl;
- myfile << "pdf_qqbar                    lnN       1.050      -        -          -       1.030        -         -      " << std::endl; //              pdfqq        " << std::endl;
-
- //  myfile << "pdf_gg                       lnN    1.040    1.040     1.040      -         -          -                    Luminosity     " << std::endl;
-//  myfile << "pdf_qqbar                    lnN    1.01    2.00    2.00    2.00     2.00     -    -                             MC statistics" << std::endl;
- myfile << "CMS_ww_Top2j                 lnN         -        -        -          -         -         1.1        -     " << std::endl; //              TTbar data driven" << std::endl;
- myfile << "CMS_ww_DY2j                  lnN         -        -        -          -         -          -       1.1     " << std::endl; //              DY data driven   " << std::endl;
+ myfile << "QCDscale_ggH                 lnN         -      1.160      -          -         -        -            -        -      " << std::endl; //               Theory on Higgs" << std::endl;
+ myfile << "QCDscale_ggH1in              lnN         -      1.160      -          -         -        -            -        -      " << std::endl; //               Theory on Higgs" << std::endl;
+ myfile << "QCDscale_ggVV                lnN         -        -        -        1.160       -        -            -        -      " << std::endl; //               Theory on Higgs" << std::endl;
+ 
+ myfile << "lumi                         lnN       1.060    1.060    1.060      1.060    1.060       -        1.060        -      " << std::endl; //              Luminosity     " << std::endl;
+ myfile << "pdf_gg                       lnN         -      1.080      -        1.080       -        -            -        -      " << std::endl; //              pdfgg        " << std::endl;
+ myfile << "pdf_qqbar                    lnN       1.050      -        -          -       1.030      -        1.060        -      " << std::endl; //              pdfqq        " << std::endl;
+ 
+ //  myfile << "pdf_gg                       lnN    1.040    1.040     1.040      -         -                     -         Luminosity     " << std::endl;
+ //  myfile << "pdf_qqbar                    lnN    1.01    2.00    2.00    2.00     2.00     -               -                  MC statistics" << std::endl;
+ myfile << "CMS_ww_Top2j                 lnN         -        -        -          -         -      1.1            -       -     " << std::endl; //              TTbar data driven" << std::endl;
+ myfile << "CMS_ww_DY2j                  lnN         -        -        -          -         -        -            -      1.1     " << std::endl; //              DY data driven   " << std::endl;
  myfile << std::endl; 
  
  myfile.close(); 

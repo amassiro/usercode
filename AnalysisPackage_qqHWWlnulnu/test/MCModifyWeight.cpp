@@ -5,6 +5,7 @@
 #include "ConfigParser.h"
 #include "ntpleUtils.h"
 
+#include "TLeaf.h"
 #include "TH1F.h"
 #include "TH2F.h"
 #include "TFile.h"
@@ -110,7 +111,7 @@ int main(int argc, char** argv){
   indata >> nameReweightingFunctionFileFormula;
   indata.close();
  
-  TString toLoad = Form (".L %s",nameReweightingFunctionFile.c_str());
+  TString toLoad = Form (".L %s+",nameReweightingFunctionFile.c_str());
   std::cout << " to Load = " << toLoad.Data() << std::endl;
   gROOT->ProcessLine(toLoad);
   fromFile = true;
@@ -134,12 +135,19 @@ int main(int argc, char** argv){
  std::cout << ">>>>> Rewight::nameOldWeight  " << nameOldWeight  << std::endl;  
  
  
+//  TString toDo;
+//  if (!fromFile) {
+//   toDo = Form ("nuovoWeight = %s ; \n",nameReweightingFunction.c_str());
+//  }
+//  else {
+//   toDo   = Form ("nuovoWeight = %s ; \n",nameReweightingFunctionFileFormula.c_str());
+//  }  
+//  std::cout << " to Do = " << toDo.Data() << std::endl;
  
  for (int iSample=0; iSample<numberOfSamples; iSample++){
   char nameFile[20000];
   sprintf(nameFile,"%s/out_NtupleProducer_%s.root",inputDirectory.c_str(),nameSample[iSample]);  
   std::cout << " nameFile = " << nameFile << std::endl;
-  Double_t *weightBefore;
   std::cout << " nameSample[" << iSample << ":" << numberOfSamples << "] = " << nameSample[iSample] << std::endl;
   ///==== GetTree (begin) ==== 
   TFile* f = new TFile(nameFile, "update");      
@@ -147,27 +155,48 @@ int main(int argc, char** argv){
   ///==== GetTree (end) ====
   
   std::cout << " >>>>> GetEntries " << treeJetLepVect[iSample]->GetEntries() << std::endl;    
-  treeJetLepVect[iSample]->Draw(nameOldWeight.c_str(),"","para goff"); //---- save "weights" ----
-  weightBefore = treeJetLepVect[iSample]->GetV1(); //---- get them ----
 
-  double newweight;
-  TString newBranchName = Form ("%s/D");
-  TBranch *newBranch = treeJetLepVect[iSample] -> Branch(nameNewWeight.c_str(),&newweight,newBranchName);  //---- add new weight branch
   Long64_t nentries = treeJetLepVect[iSample]->GetEntries();
+  treeJetLepVect[iSample]->SetEstimate(nentries);
   
-  //---- get values of new weight ----
+//   treeJetLepVect[iSample]->Draw(nameOldWeight.c_str(),"","para goff"); //---- save "weights" ----
+//   weightBefore = treeJetLepVect[iSample]->GetV1(); //---- get them ----
+//   std::cout << " >>>> previous weights got" << std::endl;
+  double newweight;
+  TString newBranchName = Form ("%s/D",nameNewWeight.c_str());
+  TBranch *newBranch = treeJetLepVect[iSample] -> Branch(nameNewWeight.c_str(),&newweight,newBranchName);  //---- add new weight branch
+  
+  TString toDraw;
   if (!fromFile) {
-   treeJetLepVect[iSample]->Draw(nameReweightingFunction.c_str(),"","para goff");
+   toDraw = Form ("%s:%s",nameOldWeight.c_str(),nameReweightingFunction.c_str());
   }
   else {
-   treeJetLepVect[iSample]->Draw(nameReweightingFunctionFileFormula.c_str(),"","para goff");
+   toDraw = Form ("%s:%s",nameOldWeight.c_str(),nameReweightingFunctionFileFormula.c_str());
   }  
-  Double_t *weightTemp = treeJetLepVect[iSample]->GetV1();
+  std::cout << " toDraw = " << toDraw.Data() << std::endl;
+  treeJetLepVect[iSample]->Draw(toDraw,"","para goff");
+  
+  Double_t *weightBefore = treeJetLepVect[iSample]->GetV1();
+  Double_t *weightTemp = treeJetLepVect[iSample]->GetV2();
   
   for (Long64_t iEntry = 0; iEntry < nentries; iEntry++){
    if((iEntry%((nentries+10)/10)) == 0) std::cout << ">>>>> analysis::GetEntry " << iEntry << " : " << nentries << std::endl;   
    treeJetLepVect[iSample]->GetEntry(iEntry);
+   
+//    double nuovoWeight = 0;
+//    gROOT->ProcessLine(toDo);
+//    std::cout << " nuovoWeight = " << nuovoWeight << std::endl;
+//    newweight = nuovoWeight; //---- update weight ...
+   
+//    newweight = weightBefore[iEntry] * weightTemp[iEntry]; //---- update weight ...
+   
+//    std::cout << " value = " << treeJetLepVect[iSample]->GetLeaf("weight_PU")->GetValue() << std::endl;
+      
    newweight = weightBefore[iEntry] * weightTemp[iEntry]; //---- update weight ...
+   
+//    std::cout << " newweight = " << newweight << " =  weightBefore[iEntry]{" << weightBefore[iEntry] << "} * weightTemp[iEntry]{" << weightTemp[iEntry] << "} " << std::endl;
+   
+   
    newBranch->Fill();                       //---- ... and save it!
   }
   // save only the new version of the tree

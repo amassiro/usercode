@@ -95,6 +95,14 @@ int main(int argc, char** argv)
  //for bold colors, just change the 0 after the [ to a 1
  
  EColor vColor[1000] = {
+  (EColor) (kRed+1),
+  (EColor) (kRed+3),
+  (EColor) (kGray+1),
+  (EColor) (kAzure-2),
+  (EColor) (kAzure-9),
+  (EColor) (kYellow),
+  (EColor) (kGreen+2),
+//   
   kGreen,
   //kMagenta,(EColor) (kMagenta+1),(EColor) (kMagenta+2),
   kTeal,//(EColor) (kTeal+1),
@@ -159,9 +167,15 @@ int main(int argc, char** argv)
  TH1F* hPUWeight;
  
  
+ 
  std::string nameWeight = "weight"; 
  if (doWeightFromFile) {
-  nameWeight = gConfigParser -> readStringOption("PU::nameWeight");
+  try {
+   nameWeight = gConfigParser -> readStringOption("PU::nameWeight");
+  }
+  catch (char const* exceptionString){
+   std::cerr << " exception = " << exceptionString << std::endl;
+  }
   std::cout << ">>>>> PU::nameWeight  " << nameWeight  << std::endl;  
  }
  
