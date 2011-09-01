@@ -4,7 +4,7 @@
 #include "stdHisto.h"
 #include "ConfigParser.h"
 #include "ntpleUtils.h"
-#include "TTree.h"
+
 #include "TH1F.h"
 #include "TH2F.h"
 #include "TFile.h"
@@ -78,7 +78,7 @@ int main(int argc, char** argv)
  treeReader reader((TTree*)(chain));
  
  
- bool  debug = true; 
+ bool  debug = false; 
  try {
   debug = gConfigParser -> readBoolOption("Input::debug");
  }
@@ -119,7 +119,7 @@ int main(int argc, char** argv)
   std::cerr << " exception = " << exceptionString << std::endl;
  }
  std::cout << ">>>>> Input::inFileNameJSON  " << inFileNameJSON  << std::endl;  
- std::map<int, std::vector<std::pair<int, int> > > jsonMap;
+ std::map<int, std::vector<std::pair<int, int> > > jsonMap;  if (debug) std::cout << " STEP -1 " << std::endl;
  if( dataFlag == 1 ) {
    jsonMap = readJSONFile(inFileNameJSON);
 }
@@ -188,7 +188,7 @@ int main(int argc, char** argv)
  ///**** definition of electron ID ****
  ///**** https://twiki.cern.ch/twiki/bin/viewauth/CMS/SimpleCutBasedEleID
  ///**** https://twiki.cern.ch/twiki/bin/viewauth/CMS/SimpleCutBasedEleID2011
- ///**** http://mssw.cvs.cern.ch/cgi-bin/cmssw.cgi/UserCode/Mangano/WWAnalysis/AnalysisStep/python/electronIDs_cff.py?revision=1.17&view=markup 
+ ///**** http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/UserCode/Mangano/WWAnalysis/AnalysisStep/python/electronIDs_cff.py?revision=1.17&view=markup 
  
   ///***********************************
   ///**** definition of muon ID ****
@@ -199,30 +199,32 @@ int main(int argc, char** argv)
   std::cout << ">>>>> analysis::entryMIN " << entryMIN << " ==> entryMAX " << entryMAX << ":" << reader.GetEntries() << std::endl;   
   
   int step = 0;
-
   start = clock();
-  for(int iEvent = entryMIN ; iEvent < entryMAX; ++iEvent) {
+  for(int iEvent = entryMIN ; iEvent < entryMAX ; ++iEvent) {
    reader.GetEntry(iEvent);
    if((iEvent%entryMOD) == 0) std::cout << ">>>>> analysis::GetEntry " << iEvent << " : " << entryMAX - entryMIN << std::endl;   
    
   ///==== define variables ==== 
   std::vector<ROOT::Math::XYZTVector>* jets = reader.Get4V("jets");
-  std::vector<ROOT::Math::XYZTVector>* muons = reader.Get4V("muons");
-  std::vector<ROOT::Math::XYZTVector>* electrons = reader.Get4V("electrons");
+//   std::vector<ROOT::Math::XYZTVector>* muons = reader.Get4V("muons");
+//   std::vector<ROOT::Math::XYZTVector>* electrons = reader.Get4V("electrons");
     
   ///*********************************************************************************************
   ///*********************************************************************************************
   
   ///=============================
   ///==== fill MC information ====
+  if (debug) std::cout << " SetMCVariables " << std::endl;
   SetMCVariables(vars, reader);
   
   ///=============================
   ///==== fill Primary Vertex ====
+  if (debug) std::cout << " SetPVVariables " << std::endl;
   SetPVVariables(vars, reader);
   
   ///================================
   ///==== fill Event information ====
+  if (debug) std::cout << " SetEventVariables " << std::endl;
   SetEventVariables(vars, reader);
   
   ///***************************************************
@@ -269,12 +271,12 @@ int main(int argc, char** argv)
   ///************* it's performed another time here to make sure that the cleaning worked well
   ///************* Jet - electrons (pT > 5)
   ///************* Jet - muons     (pT > 5)
-  ///************ In addition only jets with pT > 15 are considered from now on!
+  ///************ In addition only jets with pT > 7 are considered from now on!
   ///************ No selections are applied here
    
   step = 1;
   if (step > nStepToDo) {
-   //FillTree(vars);
+//    FillTree(vars);
    continue;
   }  
   if (debug) std::cout << ">>> STEP 1 <<<" << std::endl;
@@ -288,61 +290,52 @@ int main(int argc, char** argv)
    if( reader.Get4V("electrons")->at(iEle).pt() < 5. ) continue;
    bool flag =  IsEle_VBFMerged(reader,iEle);   
    if (!flag) continue;
+   
    leptons_jetCleaning.push_back( reader.Get4V("electrons")->at(iEle) );
   }
   
   ///==== CLEANING WITH MUONS ====
   for (int iMu = 0; iMu < reader.Get4V("muons")->size(); iMu++){    
    if (reader.Get4V("muons")->at(iMu).pt() < 5.0) continue;
-   if (fabs(reader.Get4V("muons")->at(iMu).Eta()) > 2.4) continue;
-    
+   if (fabs(reader.Get4V("muons")->at(iMu).Eta()) > 2.5) continue;
    bool flag =  IsMu_VBFMerged(reader,iMu);
    
    if (!flag) continue;
 
-
    leptons_jetCleaning.push_back( reader.Get4V("muons")->at(iMu) );
   }
   
-
+  
   ///==== now clean jet collection ====
   
   int nJets = reader.Get4V("jets")->size();
   std::vector<int> whitelistJet; ///~~~~ all jets, 0 if rejected, 1 if accepted
   std::vector<int> blacklistJet; ///~~~~ list of numbers of jets that are "rejected"
   std::vector<int> blacklistJet_forCJV;
+  std::vector<int> blacklistJet_forTotalCJV;
   std::vector<int> blacklistJet_forBtag;
-  std::vector<int> blacklistJet_forCJVTotal;
-
   for (int iJet = 0; iJet < nJets; iJet++){
-   
-    bool skipJet = false;
-
-    if (reader.Get4V("jets")->at(iJet).Et() <7.0) skipJet = true;
-                                                 
-                                                     
-    for(unsigned int iLep = 0; iLep < leptons_jetCleaning.size(); ++iLep) {
+   bool skipJet = false;   
+   bool JetID = IsJetID(reader,iJet);
+   if (reader.Get4V("jets")->at(iJet).Et() < 7.0) skipJet = true; //---> 15 --> 7 GeV for SoftJet selections
+   for(unsigned int iLep = 0; iLep < leptons_jetCleaning.size(); ++iLep) {
     ROOT::Math::XYZTVector lep = leptons_jetCleaning.at(iLep);
     if (ROOT::Math::VectorUtil::DeltaR(reader.Get4V("jets")->at(iJet),lep) < 0.3 ) skipJet = true;
-      }
-   
-   bool JetID = IsJetID(reader, iJet);
-   
-    if (skipJet) {
-                  whitelistJet.push_back(0); ///---- reject
-                  blacklistJet.push_back(iJet); ///---- reject ///== black list is in a different format
-                  blacklistJet_forCJV.push_back(iJet);
-                  blacklistJet_forCJVTotal.push_back(iJet); ///---- reject ///== black list is in a different format
-                  blacklistJet_forBtag.push_back(iJet); ///---- reject ///== black list is in a different format
+   }
+   if (skipJet) {
+    whitelistJet.push_back(0); ///---- reject
+    blacklistJet.push_back(iJet); ///---- reject ///== black list is in a different format
+    blacklistJet_forCJV.push_back(iJet); ///---- reject ///== black list is in a different format
+    blacklistJet_forTotalCJV.push_back(iJet); ///---- reject ///== black list is in a different format
+    blacklistJet_forBtag.push_back(iJet); ///---- reject ///== black list is in a different format
    }
    else {
-            if(JetID)   
-            whitelistJet.push_back(1); ///---- select
-            else 
-                { whitelistJet.push_back(0);
-                  blacklistJet.push_back(iJet);	}
-          
-         }
+    if (JetID) whitelistJet.push_back(1); ///---- select
+    else {
+    whitelistJet.push_back(0); ///---- reject
+    blacklistJet.push_back(iJet); ///---- reject ///== black list is in a different format
+    }
+   }
   }
      
    ///**************************************
@@ -352,7 +345,7 @@ int main(int argc, char** argv)
    ///    Objects considered and selections
    
    ///   Muon
-   ///   Pt>10GeV, eta<2.4
+   ///   Pt>10GeV, eta<2.5
    ///   MuonId & Iso
    ///
    ///   Electron
@@ -372,7 +365,7 @@ int main(int argc, char** argv)
   
   step = 2;
   if (step > nStepToDo) {
-   //FillTree(vars);
+//    FillTree(vars);
    continue;
   }  
   if (debug) std::cout << ">>> STEP 2 <<<" << std::endl;
@@ -399,9 +392,9 @@ int main(int argc, char** argv)
     whitelistEle.push_back(1); ///---- select
    }
   }
-           
+       
    ///   Muon
-   ///   Pt>10GeV, eta<2.4
+   ///   Pt>10GeV, eta<2.5
    ///   MuonId & Iso
    std::vector<int> whitelistMu;
    std::vector<int> blacklistMu;
@@ -409,7 +402,7 @@ int main(int argc, char** argv)
    for (int iMu = 0; iMu < nMus; iMu++){    
     bool skipMu = false;
     if (reader.Get4V("muons")->at(iMu).pt() < 10.0) skipMu = true;
-    if (fabs(reader.Get4V("muons")->at(iMu).Eta()) > 2.4) skipMu = true;    
+    if (fabs(reader.Get4V("muons")->at(iMu).Eta()) > 2.5) skipMu = true;    
     bool flag =  IsMu_VBFMerged(reader,iMu);    
     if (!flag) skipMu = true;
 
@@ -428,7 +421,7 @@ int main(int argc, char** argv)
    int numEles_Accepted = GetNumList(whitelistEle);
    
    int numLeptons_Accepted = numMus_Accepted + numEles_Accepted;
-    if (numLeptons_Accepted < 2) continue;
+   if (numLeptons_Accepted < 2) continue;
    
    ///   Jet
    ///   At least two calo jets or two pf jets with pt>20 GeV
@@ -436,6 +429,7 @@ int main(int argc, char** argv)
    int numJets_Accepted = GetNumList(whitelistJet);
    if (numJets_Accepted < 2) continue; ///==== at least 2 jets "isolated"
    
+
   ///*************************
   ///**** STEP 3 - Jet ID ****
   ///************* Identification of two tag jets
@@ -456,11 +450,12 @@ int main(int argc, char** argv)
   ///---- check Pt order ----
   if (jets->at(q1).Pt() < jets->at(q2).Pt()) {
    int tempq = q1;
-    q1 = q2;
+   q1 = q2;
    q2 = tempq;
   }
 
 if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
+
 
   ///---- update white/black list jets ----
   for (int iJet = 0; iJet < nJets; iJet++){
@@ -473,16 +468,15 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
     whitelistJet.at(iJet) = 0;
    }
   }
- 
 
- SetQJetVariables(vars, reader, q1, q2, blacklistJet_forCJV, blacklistJet_forBtag, blacklistJet_forCJVTotal);
+ SetQJetVariables(vars, reader, q1, q2, blacklistJet_forCJV, blacklistJet_forBtag, blacklistJet_forTotalCJV);
 
   ///********************************
   ///**** STEP 4 - Lepton ID ****
   ///************* Identification of the two leptons
   step = 4;
   if (step > nStepToDo) {
-   //FillTree(vars);
+   FillTree(vars);
    continue;
   }  
   if (debug) std::cout << ">>> STEP 4 <<<" << std::endl;
@@ -509,7 +503,7 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
   }
   
   std::vector<int> itSelLep;
-  double maxPt_lept_selected = SelectLepton(itSelLep,leptons,"maxSumPt",-1.,0);
+  double maxPt_lept_selected = SelectJets(itSelLep,leptons,"maxSumPt",-1.,0);
   
   int l1 = itSelLep.at(0);
   int l2 = itSelLep.at(1);
@@ -536,13 +530,15 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
   if (debug) std::cerr << ">> SoftMu variables set" << std::endl;
 
   ///--- MT Higgs ----
-  SetmTVariable(vars,reader,"PFMet",leptonILep.at(l1),leptonILep.at(l2),leptonFlavours.at(l1), leptonFlavours.at(l2));
+  SetMTVariable(vars, reader, "PFMet", leptonILep.at(l1), leptonILep.at(l2),leptonFlavours.at(l1), leptonFlavours.at(l2));
+//  SetMTVariable(vars, reader, "PFMet", leptonILep.at(l1), leptonILep.at(l2), leptonFlavours.at(l1), leptonFlavours.at(l2));
   if (debug) std::cerr << ">> MT Higgs variables set" << std::endl;
    
   ///--- Dphi leptons and jet(s) ----
-  SetDPhiJetll(vars, reader,leptonILep.at(l1),leptonILep.at(l2),leptonFlavours.at(l1), leptonFlavours.at(l2),q1,q2);
+  SetDPhiJetll(vars, reader, leptonILep.at(l1),leptonILep.at(l2),leptonFlavours.at(l1), leptonFlavours.at(l2), q1, q2);
   if (debug) std::cerr << ">> DPhi Jet-leptons variables set" << std::endl;
    
+      
    
   //---- lepton veto
   std::vector<int> blacklistLepton;
@@ -564,21 +560,25 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
   ///************* Loose selections of tag jets
   step = 5;
   if (step > nStepToDo) {
-   //FillTree(vars);
+   FillTree(vars);
    continue;
   }  
   if (debug) std::cout << ">>> STEP 5 <<<" << std::endl;
   
   ///----  hardcoded fixed preselections ---- VBF (begin) ----
-  //if (vars.q1_pT < 20.) continue;
-  //if (vars.q2_pT < 15.) continue;
-//   if (vars.M_qq <   0.) continue;
-//   if (vars.DEta_qq < 0.) continue;
+  if (vars.q1_pT < 20.) continue;
+  if (vars.q2_pT < 15.) continue;
+  if (vars.M_qq <   0.) continue;
+  if (vars.DEta_qq < 0.) continue;
   ///----  hardcoded fixed preselections ---- VBF (end) ----
 
   ///==== save trigger variables ====
   SetTriggerVariables(vars, reader);
   
+  ///==== save Jetdeau variables ====
+  SetJDVariables(vars, reader, leptonILep.at(l1),leptonILep.at(l2),leptonFlavours.at(l1), leptonFlavours.at(l2), q1, q2, "PFMet");
+  if (debug) std::cerr << ">> SetJDVariables variables set" << std::endl;
+
   ///************************************
   ///**** STEP 6 - Final Production *****
   ///************************************
@@ -586,7 +586,7 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
 
   step = 6;
   if (step > nStepToDo) {
-   //FillTree(vars);
+   FillTree(vars);
    continue;
   }  
   if (debug) std::cout << ">>> STEP 6 <<<" << std::endl;
