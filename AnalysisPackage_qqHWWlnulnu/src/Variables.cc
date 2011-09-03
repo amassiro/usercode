@@ -659,11 +659,11 @@ void SetMetVariables(Variables& vars, treeReader& reader, const std::string& met
 
  ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >  totalP4; 
  for(int iCand = 0; iCand <  reader.Get4V ("PFCandidate")->size(); iCand ++){
-        double DPhi1 = deltaPhi (reader.Get4V ("PFCandidate")->at(iCand).Eta(), Lep1_phi);
+        double DPhi1 = deltaPhi (reader.Get4V ("PFCandidate")->at(iCand).Phi(), Lep1_phi);
         double DEta1 = Lep1_eta - reader.Get4V ("PFCandidate")->at(iCand).Eta();        
         double DR1 = sqrt(DPhi1 * DPhi1 + DEta1 * DEta1);
         
-        double DPhi2 = deltaPhi (reader.Get4V ("PFCandidate")->at(iCand).Eta(), Lep2_phi);
+        double DPhi2 = deltaPhi (reader.Get4V ("PFCandidate")->at(iCand).Phi(), Lep2_phi);
         double DEta2 = Lep2_eta - reader.Get4V ("PFCandidate")->at(iCand).Eta();        
         double DR2 = sqrt(DPhi2 * DPhi2 + DEta2 * DEta2);
         
@@ -935,12 +935,12 @@ void SetQJetVariables(Variables& vars, treeReader& reader, const int& q1, const 
   for(unsigned int kk = 0; kk < blacklistJet_forBtag.size(); ++kk) {
    if(blacklistJet_forBtag.at(kk) == static_cast<int>(iJet)) skipJet = true;
   }
-  if (reader.Get4V("jets")->at(iJet).pt() <= 30.0 && reader.Get4V("jets")->at(iJet).pt() >= 7) skipJet = true;
+  if (reader.Get4V("jets")->at(iJet).pt() >= 30.0 || reader.Get4V("jets")->at(iJet).pt() <= 7) skipJet = true;
       if (skipJet) continue;
-      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >= 1.93) vars. NBjets_trackCountingHighEffBJetTags_193_softJet ++;
-      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >= 2.10) vars. NBjets_trackCountingHighEffBJetTags_210_softJet ++;
-      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >= 1.93) vars. NBjets_trackCountingHighPurBJetTags_193_softJet ++;
-      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >= 2.10) vars. NBjets_trackCountingHighPurBJetTags_210_softJet ++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >= 1.93) vars.NBjets_trackCountingHighEffBJetTags_193_softJet ++;
+      if (reader.GetFloat("trackCountingHighEffBJetTags")->at(iJet) >= 2.10) vars.NBjets_trackCountingHighEffBJetTags_210_softJet ++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >= 1.93) vars.NBjets_trackCountingHighPurBJetTags_193_softJet ++;
+      if (reader.GetFloat("trackCountingHighPurBJetTags")->at(iJet) >= 2.10) vars.NBjets_trackCountingHighPurBJetTags_210_softJet ++;
  }
  
  
