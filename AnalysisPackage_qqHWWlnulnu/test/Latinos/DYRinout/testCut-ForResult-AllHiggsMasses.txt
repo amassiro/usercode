@@ -102,6 +102,32 @@
 #
 ########################################
 #
+# MIT low mass <=200
+#
+# 8-A-CR
+# 8-B-CR
+# 8-A-SR
+# 8-B-SR
+#
+(!(M_ll<106.1876 && M_ll>76.1876))  &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && Nleptons_pT10==0 && q2_bTag_trackCountingHighEffBJetTags<2.1 && q1_bTag_trackCountingHighEffBJetTags<2.1 && M_ll<100 
+(M_ll<106.1876 && M_ll>76.1876)     &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && Nleptons_pT10==0 && q2_bTag_trackCountingHighEffBJetTags<2.1 && q1_bTag_trackCountingHighEffBJetTags<2.1
+(!(M_ll<106.1876 && M_ll>76.1876))  &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && Nleptons_pT10==0 && q2_bTag_trackCountingHighEffBJetTags<2.1 && q1_bTag_trackCountingHighEffBJetTags<2.1 && M_ll<100 
+(M_ll<106.1876 && M_ll>76.1876)     &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && Nleptons_pT10==0 && q2_bTag_trackCountingHighEffBJetTags<2.1 && q1_bTag_trackCountingHighEffBJetTags<2.1
+#
+########################################
+#
+# MIT high mass >=250
+#
+# 9-A-CR
+# 9-B-CR
+# 9-A-SR
+# 9-B-SR
+#
+(!(M_ll<106.1876 && M_ll>76.1876))  &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && Nleptons_pT10==0 && q2_bTag_trackCountingHighEffBJetTags<2.1 && q1_bTag_trackCountingHighEffBJetTags<2.1
+(M_ll<106.1876 && M_ll>76.1876)     &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>10 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && Nleptons_pT10==0 && q2_bTag_trackCountingHighEffBJetTags<2.1 && q1_bTag_trackCountingHighEffBJetTags<2.1
+(!(M_ll<106.1876 && M_ll>76.1876))  &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && Nleptons_pT10==0 && q2_bTag_trackCountingHighEffBJetTags<2.1 && q1_bTag_trackCountingHighEffBJetTags<2.1
+(M_ll<106.1876 && M_ll>76.1876)     &&         M_ll>12 && l1_pT>20 && l2_pT>10 && (l2_flavour == 13 || l2_pT>15) && q1_pT>30 && q2_pT>30 && l1_charge * l2_charge == -1 && (((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour!=l2_flavour)) || ((abs(pchmet)*(abs(pchmet)<pmet)+pmet*(abs(pchmet)>=pmet))>40 && (l1_flavour==l2_flavour))) && CJV_30 == 0 && M_qq>450 && DEta_qq>3.5 && Nleptons_pT10==0 && q2_bTag_trackCountingHighEffBJetTags<2.1 && q1_bTag_trackCountingHighEffBJetTags<2.1
+#
 #
 #
 #

@@ -1,0 +1,113 @@
+Sideband method for DY estimation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+****************
+**** Rinout ****
+****************
+
+./bin/MCDATAComparisonPLOTTool.exe test/Latinos/DYRinout/testMCDATAComparisonPLOTTool_DYRinout_AllHiggsMassPoints.cfg
+
+
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_26Aug1100-ForResult.root\",1\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_26Aug1100-ForResult.root\",2\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_26Aug1100-ForResult.root\",3\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_26Aug1100-ForResult.root\",4\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_26Aug1100-ForResult.root\",5\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_26Aug1100-ForResult.root\",6\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_26Aug1100-ForResult.root\",7\)
+
+
+
+
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_29Aug1100-ForResult.root\",1\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_29Aug1100-ForResult.root\",2\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_29Aug1100-ForResult.root\",3\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_29Aug1100-ForResult.root\",4\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_29Aug1100-ForResult.root\",5\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_29Aug1100-ForResult.root\",6\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_29Aug1100-ForResult.root\",7\)
+
+
+
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_30Aug1800-ForResult.root\",1\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_30Aug1800-ForResult.root\",2\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_30Aug1800-ForResult.root\",3\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_30Aug1800-ForResult.root\",4\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_30Aug1800-ForResult.root\",5\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_30Aug1800-ForResult.root\",6\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_30Aug1800-ForResult.root\",7\)
+# MIT LOW
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_30Aug1800-ForResult.root\",8\)
+# MIT HIGH
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_30Aug1800-ForResult.root\",9\)
+
+
+
+
+
+
+./bin/Sideband1D.exe test/Latinos/DYRinout/testSideband1D.cfg   &> DYRinout-Results.txt
+
+r00t test/Latinos/DYRinout/drawResults_DATA_MC_and_Occupancy.cxx
+
+
+./bin/MCDATAComparisonPLOTTool.exe test/Latinos/DYRinout/testMCDATAComparisonPLOTTool_DYRinout.cfg
+r00t test/Latinos/DYRinout/GetDYRinout.cxx\(\"out_DYRinout_Latinos_29July1100.root\"\)
+
+r00t test/Latinos/DYRinout/GetDYRinout.cxx\(\"out_DYRinout_Latinos_29July1730.root\"\)
+
+
+r00t test/Latinos/DYRinout/GetDYRinout.cxx\(\"out_DYRinout_Latinos_02Aug0800-topRejection.root\"\)
+
+
+
+r00t test/Latinos/DYRinout/GetDYRinout-Mllll-method.cxx\(\"out_DYRinout_Latinos_02Aug1400-preselection.root\"\)
+r00t test/Latinos/DYRinout/GetDYRinout-Mllll-method.cxx\(\"out_DYRinout_Latinos_02Aug1400-final-selection.root\"\)
+
+
+
+r00t test/Latinos/DYRinout/GetDYRinout.cxx\(\"out_DYRinout_Latinos_02Aug1400-preselection.root\"\)
+r00t test/Latinos/DYRinout/GetDYRinout.cxx\(\"out_DYRinout_Latinos_02Aug1400-final-selection.root\"\)
+
+
+r00t test/Latinos/DYRinout/GetDY-K-for-Rinout.cxx\(\"out_DYRinout_Latinos_02Aug1400-preselection.root\"\)
+r00t test/Latinos/DYRinout/GetDY-K-for-Rinout.cxx\(\"out_DYRinout_Latinos_02Aug1400-final-selection.root\"\)
+
+
+
+r00t test/Latinos/DYRinout/CompareRinoutM.cxx\(\"out_DYRinout_Latinos_02Aug1400-preselection.root\"\)
+r00t test/Latinos/DYRinout/CompareRinoutM.cxx\(\"out_DYRinout_Latinos_02Aug1400-final-selection.root\"\)
+
+r00t test/Latinos/DYRinout/CompareRinoutM.cxx\(\"out_DYRinout_Latinos_03Aug0900-preselection.root\"\)
+r00t test/Latinos/DYRinout/CompareRinoutM.cxx\(\"out_DYRinout_Latinos_03Aug0900-final-selection.root\"\)
+
+
+
+///==== check efficiency ====
+void CheckEfficiencyElectronMuon(TString nameRootFile, int step_e = 5, int step_mu = 6, int plot = 5)
+r00t test/Latinos/DYRinout/CheckEfficiencyElectronMuon.cxx\(\"out_test_Latinos_04Aug2011_1200_DY_Powheg_vs_Madgraph.root\",5,6,5\)
+r00t test/Latinos/DYRinout/CheckEfficiencyElectronMuon.cxx\(\"out_test_Latinos_04Aug2011_1200_DY_Powheg_vs_Madgraph.root\",5,6,6\)
+r00t test/Latinos/DYRinout/CheckEfficiencyElectronMuon.cxx\(\"out_test_Latinos_04Aug2011_1200_DY_Powheg_vs_Madgraph.root\",7,8,5\)
+r00t test/Latinos/DYRinout/CheckEfficiencyElectronMuon.cxx\(\"out_test_Latinos_04Aug2011_1200_DY_Powheg_vs_Madgraph.root\",7,8,6\)
+
+e1/mu1 ; r00t test/Latinos/DYRinout/CheckEfficiencyElectronMuon.cxx\(\"out_test_Latinos_04Aug2011_1230_DY_Powheg_vs_Madgraph.root\",5,6,5\)
+e2/mu2 ;  r00t test/Latinos/DYRinout/CheckEfficiencyElectronMuon.cxx\(\"out_test_Latinos_04Aug2011_1230_DY_Powheg_vs_Madgraph.root\",7,8,6\)
+r00t test/Latinos/DYRinout/CheckEfficiencyElectronMuon.cxx\(\"out_test_Latinos_04Aug2011_1230_DY_Powheg_vs_Madgraph.root\",5,6,6\)
+r00t test/Latinos/DYRinout/CheckEfficiencyElectronMuon.cxx\(\"out_test_Latinos_04Aug2011_1230_DY_Powheg_vs_Madgraph.root\",7,8,5\)
+
+cut:
+   (l1_flavour==11)   ->   5
+   (l1_flavour==13)   ->   6
+   (l2_flavour==11)   ->   7
+   (l2_flavour==13)   ->   8
+
+variable:
+   l1 -> 5
+   l2 -> 6
+
+
+
+
+
+
+
