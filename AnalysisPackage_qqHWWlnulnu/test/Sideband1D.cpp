@@ -282,7 +282,7 @@ int main(int argc, char** argv)
  std::vector<int>         reduced_name_samples_flag;
  for (int iSample = (numberOfSamples-1); iSample>= 0; iSample--){
   bool flag_name = false;
-  for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
    if (reduced_name_samples.at(iName) == name_samples.at(iSample)) flag_name = true;
   }
   if (flag_name == false) {
@@ -331,7 +331,7 @@ int main(int argc, char** argv)
   
  ///==== get number in sample list that correspond to DATA ====
  int numDATA = -1;
- for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+ for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
   if (reduced_name_samples.at(iName) == "DATA") {
    numDATA = iName;
   }
@@ -341,16 +341,16 @@ int main(int argc, char** argv)
  std::cout.precision (2) ;
  
  ///==== cicle on selections ====
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
   TString Cut = Form ("%s",vCut.at(iCut).c_str());
   if (debug) std::cout << " Cut[" << iCut << ":" << vCut.size() << "] = " << Cut.Data() << " ~~ " << std::endl;
 
   ///==== calculate Data Driven A/B ratio (begin) ====
   ///==== A_DATA = A_MC / B_MC * B_DATA
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    
    ///==== initialize ====
-   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
     reduced_name_samples_flag.at(iName) = -1;
    } 
    ///==== cicle on samples ====
@@ -399,7 +399,7 @@ int main(int argc, char** argv)
     
     histoRegions_temp[iSample][iCut] -> Add(histo_temp[iSample][iCut][iRegion]);
     
-    for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+    for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
      if (name_samples.at(iSample) == reduced_name_samples.at(iName)){
       if (reduced_name_samples_flag.at(iName) == -1){
        TString name_histoTot_temp = Form("%s_%d_%d_Tot_temp",reduced_name_samples.at(iName).c_str(),iCut, iRegion);
@@ -444,13 +444,13 @@ int main(int argc, char** argv)
  
  
  ///==== cicle on selections ====
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
   ///==== cicle on Data Driven A/B ratio ====
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    TString nameStack = Form("%d_%d_stack",iCut,iRegion);
    hs[iCut][iRegion] = new THStack(nameStack,nameStack);
    
-   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
     histo[iName][iCut][iRegion]->GetXaxis()->SetTitle("regions");
     histo[iName][iCut][iRegion]->SetMarkerColor(vColor[iName]);
     histo[iName][iCut][iRegion]->SetLineColor(vColor[iName]);
@@ -493,7 +493,7 @@ int main(int argc, char** argv)
    
    ///==== legend ====
    if (!LegendBuilt){
-    for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+    for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
      leg->AddEntry(histo[iName][iCut][iRegion],reduced_name_samples.at(iName).c_str(),"pf");    
      LegendBuilt = true;
     }
@@ -505,11 +505,11 @@ int main(int argc, char** argv)
  
  
  ///==== cicle on selections ====
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
   TString nameStack = Form("%d_stack_Regions",iCut);
   hsRegions[iCut] = new THStack(nameStack,nameStack);
   
-  for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
    histoRegions[iName][iCut]->GetXaxis()->SetTitle("regions");
    histoRegions[iName][iCut]->SetMarkerColor(vColor[iName]);
    histoRegions[iName][iCut]->SetLineColor(vColor[iName]);
@@ -557,14 +557,14 @@ int main(int argc, char** argv)
  //  [iName][iCut]
  hsTrend = new THStack("Trend","Trend");
  
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    TString nameTHTrendPie = Form("%d_%d_Trend_Pie",iCut,iRegion);
    hTrendPie[iCut][iRegion] = new TPie (nameTHTrendPie,nameTHTrendPie,reduced_name_samples.size());
   }
  }
  
- for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+ for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
   TString nameTHTrend = Form("%d_Trend",iName);
   hTrend[iName] = new TH1F (nameTHTrend,nameTHTrend,vCut.size(),0,vCut.size());
   hTrend[iName]->GetXaxis()->SetTitle("Selections");
@@ -585,9 +585,9 @@ int main(int argc, char** argv)
    hTrend[iName]->SetLineWidth(2);
    hTrend[iName]->SetFillStyle(3001);
   }
-  for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
    double tot = 0;
-   for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+   for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
     numEvents[iName][iCut][iRegion] = histo[iName][iCut][iRegion]->Integral(); //--- consider each population
     tot += numEvents[iName][iCut][iRegion];
     if (debug) std::cout << ">>> >>>  numEvents[" << iName << "," << reduced_name_samples.at(iName) << "][" << iCut << "][" << iRegion << "] = " << numEvents[iName][iCut][iRegion] << " , " << histo[iName][iCut][iRegion]->GetEntries() << " , " << histo[iName][iCut][iRegion]->GetEffectiveEntries() << std::endl;
@@ -597,7 +597,7 @@ int main(int argc, char** argv)
 //     Double_t IntegralAndError(Int_t binx1, Int_t binx2, Double_t& err, Option_t* option = "") const
    if (debug) std::cout << ">>>  numEvents[" << iName << "," << reduced_name_samples.at(iName) << "][" << iCut << "] = " << tot << std::endl;
    
-   for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+   for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
     if (iName != numDATA) {
      hTrendPie[iCut][iRegion]->SetTextSize(0.04);
      hTrendPie[iCut][iRegion]->SetTextFont(12);
@@ -629,9 +629,9 @@ int main(int argc, char** argv)
  
  ///==== calculate agreement data-MC: Kolmogorov-Smirnov test ==== 
  ///==== cicle on selections ====
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
   ///==== cicle on Data Driven A/B ratio ====
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    double KS = -1;
    double Chi2 = -1;
    if (histo[numDATA][iCut][iRegion]->GetEntries() != 0 && histoSumMC[iCut][iRegion]->GetEntries() != 0) {
@@ -653,8 +653,8 @@ int main(int argc, char** argv)
  
  std::cout << std::endl;
  
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    TString nameTHRegionsRatio = Form("%d_%d_Ratio",iCut,iRegion);    
    histoRegionsRatio[iCut][iRegion] = new TH1F(nameTHRegionsRatio,nameTHRegionsRatio,reduced_name_samples.size()+1,0, reduced_name_samples.size()+1);
    
@@ -666,7 +666,7 @@ int main(int argc, char** argv)
    double ratio;
    double error;
    double num;
-   for (uint iName=0; iName<reduced_name_samples.size(); iName++){ 
+   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){ 
     ratio_0 = histo[iName][iCut][0]->Integral();
     ratio_0 = (ratio_0 ? ratio_0 : -1);
     
@@ -707,8 +707,8 @@ int main(int argc, char** argv)
  }
  
  ///==== ratio with respect to DATA ====
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    TString nameTHRegionsRatio = Form("%d_%d_Ratio_wrt_DATA",iCut,iRegion);    
    histoRegionsRatio_wrt_DATA[iCut][iRegion] = new TH1F(nameTHRegionsRatio,nameTHRegionsRatio,reduced_name_samples.size()+1,0, reduced_name_samples.size()+1);
    
@@ -716,7 +716,7 @@ int main(int argc, char** argv)
    double ratio;
    double error;
    double num;
-   for (uint iName=0; iName<reduced_name_samples.size(); iName++){ 
+   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){ 
     ratio_0 = histo[numDATA][iCut][iRegion]->Integral();
     ratio_0 = (ratio_0 ? ratio_0 : -1);
     
@@ -748,8 +748,8 @@ int main(int argc, char** argv)
  }
  
  ///==== purity ====
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    TString nameTHRegionsRatio = Form("%d_%d_Ratio_Purity",iCut,iRegion);    
    histoRegionsRatio_Purity[iCut][iRegion] = new TH1F(nameTHRegionsRatio,nameTHRegionsRatio,reduced_name_samples.size()+1,0, reduced_name_samples.size()+1);
    
@@ -757,7 +757,7 @@ int main(int argc, char** argv)
    double ratio;
    double error;
    double num;
-   for (uint iName=0; iName<reduced_name_samples.size(); iName++){ 
+   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){ 
     ratio_0 = histoSumMC[iCut][iRegion]->Integral();
     ratio_0 = (ratio_0 ? ratio_0 : 1);
     
@@ -811,8 +811,8 @@ int main(int argc, char** argv)
  TCanvas* cCompareRegionRatio_wrt_DATA[100][10]; 
  TCanvas* cCompareRegionRatio_Purity[100][10]; 
  
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    TString nameCanvas = Form("%d_%d_Ratio_Canvas",iRegion,iCut);
    cCompareRegionRatio[iCut][iRegion] = new TCanvas (nameCanvas,nameCanvas,500,500);
    
@@ -885,7 +885,7 @@ int main(int argc, char** argv)
    
  
  
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
   TString nameCanvas = Form("%d_Cut_Canvas",iCut);
   cCompareCut[iCut] = new TCanvas(nameCanvas,nameCanvas,400 * vCutAB.size(),400);
   cCompareCut[iCut] -> Divide (vCutAB.size(),1);
@@ -901,7 +901,7 @@ int main(int argc, char** argv)
  }
  
  ///==== cicle on Data Driven A/B ratio ====
- for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+ for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
   TString nameCanvas = Form("%d_Region_Canvas",iRegion);
   cCompareRegion[iRegion] = new TCanvas(nameCanvas,nameCanvas,400,400 * vCut.size());
   cCompareRegion[iRegion] -> Divide (1,vCut.size());
@@ -911,8 +911,8 @@ int main(int argc, char** argv)
  }
  
  
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    TString nameCanvas = Form("%d_%d_Canvas",iCut,iRegion);
    ccCanvas[iCut][iRegion] = new TCanvas(nameCanvas,nameCanvas,400,400);
    TString nameCanvasPull = Form("%d_%d_CanvasPull",iCut,iRegion);
@@ -943,8 +943,8 @@ int main(int argc, char** argv)
  gPad->SetGrid();
  
  
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    TString nameCanvas = Form("%d_%d_Canvas_Trend",iCut,iRegion);
    cTrendPie[iCut][iRegion] = new TCanvas(nameCanvas,nameCanvas,400,400);
    cTrendPie[iCut][iRegion]->cd();
@@ -966,7 +966,7 @@ int main(int argc, char** argv)
  
  
  ///==== cicle on selections ====
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
   
   cCompareRegionsCut[iCut] -> cd();
   DrawStack(hsRegions[iCut],1,LumiSyst);
@@ -995,7 +995,7 @@ int main(int argc, char** argv)
   
   
   ///==== cicle on Data Driven A/B ratio ====
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    ///==== draw in canvas ====
    cCompareCut[iCut] -> cd(iRegion+1);
    DrawStack(hs[iCut][iRegion],1,LumiSyst);
@@ -1061,7 +1061,7 @@ int main(int argc, char** argv)
    
    
    
-   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
     
     bool isSig = false;
     for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
@@ -1113,8 +1113,8 @@ int main(int argc, char** argv)
  outFile.cd();
  outFile.mkdir("Ratio");
  outFile.cd("Ratio");
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    cCompareRegionRatio[iCut][iRegion] -> Write();
   }
  }
@@ -1123,8 +1123,8 @@ int main(int argc, char** argv)
  outFile.cd();
  outFile.mkdir("Absolute");
  outFile.cd("Absolute");
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    cCompareRegionRatioAbsolute[iCut][iRegion] -> Write();
   }
  }
@@ -1134,8 +1134,8 @@ int main(int argc, char** argv)
  outFile.cd();
  outFile.mkdir("RatioWrtDATA");
  outFile.cd("RatioWrtDATA");
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    cCompareRegionRatio_wrt_DATA[iCut][iRegion] -> Write();
   }
  }
@@ -1143,8 +1143,8 @@ int main(int argc, char** argv)
  outFile.cd();
  outFile.mkdir("RatioPurity");
  outFile.cd("RatioPurity");
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    cCompareRegionRatio_Purity[iCut][iRegion] -> Write();
   }
  }
@@ -1154,8 +1154,8 @@ int main(int argc, char** argv)
  outFile.cd();
  outFile.mkdir("Trend");
  outFile.cd("Trend");
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    cTrendPie[iCut][iRegion] -> Write();
   }
  }
@@ -1164,7 +1164,7 @@ int main(int argc, char** argv)
  outFile.cd();
  outFile.mkdir("Cut");
  outFile.cd("Cut");
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
   cCompareCut[iCut] -> Write();
   cCompareCutPull[iCut] -> Write();
  }
@@ -1173,7 +1173,7 @@ int main(int argc, char** argv)
  outFile.cd();
  outFile.mkdir("CutRegions");
  outFile.cd("CutRegions");
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
   cCompareRegionsCut[iCut] -> Write();
   cCompareRegionsCutPull[iCut] -> Write();
  }
@@ -1183,7 +1183,7 @@ int main(int argc, char** argv)
  outFile.mkdir("Region");
  outFile.cd("Region");
  ///==== cicle on Data Driven A/B ratio ====
- for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+ for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
   cCompareRegion[iRegion] -> Write();
   cCompareRegionPull[iRegion] -> Write();
  }
@@ -1193,16 +1193,16 @@ int main(int argc, char** argv)
  cdAll->mkdir("Region");
  cdAll->mkdir("Pull");
  outFile.cd("All/Region");
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    ccCanvas[iCut][iRegion]-> Write();
   }
  }
  
  outFile.cd();
  outFile.cd("All/Pull");
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    ccCanvasPull[iCut][iRegion]-> Write();
   }
  }
@@ -1210,10 +1210,10 @@ int main(int argc, char** argv)
  outFile.cd();
  outFile.mkdir("Data");
  outFile.cd("Data");
- for (uint iCut = 0; iCut<vCut.size(); iCut++){
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    hs[iCut][iRegion] -> Write() ;
-   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
     if (reduced_name_samples.at(iName) == "DATA") {
      histo[iName][iCut][iRegion] -> Write();
     }
@@ -1239,12 +1239,12 @@ int main(int argc, char** argv)
   std::cout << std::endl;
   std::cout << " *********************************** " << std::endl;
   
-  for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+  for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
    std::cout << " *********************************** " << std::endl;
    std::cout << "Region = " << iRegion << std::endl;
    
    
-   for (uint iCut = 0; iCut<vCut.size(); iCut++){
+   for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
     
     std::cout << " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ " << std::endl;
     std::cout << " iCut = " << iCut << std::endl;
@@ -1297,7 +1297,7 @@ int main(int argc, char** argv)
    std::cout << " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ " << std::endl;
    std::cout << std::setw (12) << histoRegionsRatio[0][0] -> GetXaxis() -> GetBinLabel(iBin)  << std::endl;
    
-   for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){
+   for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){
     std::cout << " *********************************** " << std::endl;
     std::cout << "Region = " << iRegion << std::endl;
     std::cout << std::setw (12) << "iCut";
@@ -1336,7 +1336,7 @@ int main(int argc, char** argv)
     std::cout << std::endl;
     
     
-    for (uint iCut = 0; iCut<vCut.size(); iCut++){
+    for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
      
      //     std::cout << std::setw (12) << (reduced_name_samples.size()>(iBin-1) ? reduced_name_samples.at(iBin-1) : "   ") ;
      std::cout << std::setw (12) << iCut ;
@@ -1472,9 +1472,9 @@ int main(int argc, char** argv)
    std::cout << " ]";
    std::cout << std::endl;
      
-   for (uint iCut = 0; iCut<vCut.size(); iCut++){
+   for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
     std::cout << std::setw (5) << iCut;
-    for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){     
+    for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){     
       std::cout << " | " << red << std::setw (8) <<  histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(iBin);
       std::cout << normal << " [" << std::setw (8) <<  histoRegionsRatioAbsolute[iCut][iRegion]->GetBinError(iBin);
       std::cout << " ]";
@@ -1487,7 +1487,7 @@ int main(int argc, char** argv)
      std::cout << normal << " [" << std::setw (8) <<  sqrt((histoRegionsRatioAbsolute[iCut][3]->GetBinError(iBin) * histoRegionsRatioAbsolute[iCut][3]->GetBinError(iBin) / histoRegionsRatioAbsolute[iCut][2]->GetBinContent(iBin) / histoRegionsRatioAbsolute[iCut][2]->GetBinContent(iBin) ) + (histoRegionsRatioAbsolute[iCut][2]->GetBinError(iBin) * histoRegionsRatioAbsolute[iCut][2]->GetBinError(iBin) / histoRegionsRatioAbsolute[iCut][2]->GetBinContent(iBin) / histoRegionsRatioAbsolute[iCut][2]->GetBinContent(iBin) / histoRegionsRatioAbsolute[iCut][2]->GetBinContent(iBin) / histoRegionsRatioAbsolute[iCut][2]->GetBinContent(iBin) * histoRegionsRatioAbsolute[iCut][3]->GetBinContent(iBin) * histoRegionsRatioAbsolute[iCut][3]->GetBinContent(iBin) ) );
      std::cout << " ]";
      
-     for (uint iRegion = 0; iRegion<vCutAB.size(); iRegion++){     
+     for (unsigned int iRegion = 0; iRegion<vCutAB.size(); iRegion++){     
       std::cout << " | " << green << std::setw (8) <<  histoRegionsRatioAbsolute[iCut][iRegion]->GetBinContent(numDATA+1);
       std::cout << normal << " [" << std::setw (8) <<  histoRegionsRatioAbsolute[iCut][iRegion]->GetBinError(numDATA+1);
       std::cout << " ]";
