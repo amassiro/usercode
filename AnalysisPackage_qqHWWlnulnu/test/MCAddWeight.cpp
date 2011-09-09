@@ -159,6 +159,8 @@ int main(int argc, char** argv){
   }
   // save only the new version of the tree
   treeJetLepVect[iSample]->Write("", TObject::kOverwrite);
+  f->Close () ;
+  delete f ; 
  }
  
  
