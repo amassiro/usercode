@@ -21,8 +21,9 @@
 ./bin/MCDATACounter.exe test/Latinos/HiggsMasses/H550.cfg
 ./bin/MCDATACounter.exe test/Latinos/HiggsMasses/H600.cfg
 
-
-
+for mass in 120 130 140 150 160 170 180 190 200 250 300 350 400 450 500 550 600 ; do \
+./bin/MCDATACounter.exe test/Latinos/HiggsMasses/H$mass.cfg > output_$mass.txt ; \
+done
 
 #### draw distributions ####
 ./bin/MCComparison.exe test/Latinos/HiggsMasses/testMCComparison.cfg
