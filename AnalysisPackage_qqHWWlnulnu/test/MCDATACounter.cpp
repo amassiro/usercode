@@ -670,8 +670,11 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
   numEntriesFirstStep_reduced_samples.push_back(0);
   for (int iSample = (numberOfSamples-1); iSample>= 0; iSample--){
    if (name_samples.at(iSample) == reduced_name_samples.at(iName)){
-//     numEntriesFirstStep_reduced_samples.at(iName) += (Normalization[iSample] ? (1. / Normalization[iSample] * LUMI * xsection[iSample] * LUMI * xsection[iSample]) : -1);
-    numEntriesFirstStep_reduced_samples.at(iName) += (xsection[iSample] * LUMI);
+//     numEntriesFirstStep_reduced_samples.at(iName) += (Normalization[iSample] ? (1. / Normalization[iSample] * LUMI * xsection[iSample] * LUMI * xsection[iSample]) : -1);    
+//     if (Latinos) numEntriesFirstStep_reduced_samples.at(iName) += ((xsection[iSample] * LUMI / 1000.);
+    if (Latinos) numEntriesFirstStep_reduced_samples.at(iName) += hTrend[iName]->GetBinContent(1);
+    else numEntriesFirstStep_reduced_samples.at(iName) += (Normalization[iSample] ? (1. / Normalization[iSample] * LUMI * xsection[iSample] * LUMI * xsection[iSample]) : -1);
+    
    }
   }
  }
