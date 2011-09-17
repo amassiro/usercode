@@ -75,6 +75,44 @@ r00t test/Latinos/DYRinout/GetDY-K-for-Rinout.cxx\(\"out_DYRinout_Latinos_02Aug1
 
 
 
+
+///==== to make plot for met selection independence of DY A/B composition ====
+
+1) run (it takes some time ... 15 min each)
+     ./bin/MCDATAComparisonPLOTTool.exe test/Latinos/DYRinout/testMCDATAComparisonPLOTTool_DYRinout.cfg
+
+both with 
+
+       [Selections]
+       CutFile   = test/Latinos/DYRinout/testCut-ForResult-Preselection.txt
+       [Output]
+       outFileName =  out_DYRinout_Latinos-preselection.root
+
+and
+
+       [Selections]
+       CutFile   = test/Latinos/DYRinout/testCut-ForResult.txt
+       [Output]
+       outFileName =  out_DYRinout_Latinos-final-selection.root
+
+
+2) run
+
+       r00t test/Latinos/DYRinout/CompareRinoutM.cxx\(\"out_DYRinout_Latinos-preselection.root\"\)
+       r00t test/Latinos/DYRinout/CompareRinoutM.cxx\(\"out_DYRinout_Latinos-final-selection.root\"\)
+
+For Rmumu and Ree plot:
+       c_R_mumu
+       c_R_ee
+
+Ree Standard is = ee - 0.5 * sqrt(Nee/Nmumu*(Nemu+Nmue))
+Ree  is         = ee - sqrt(Nee/Nmumu*Nemu*Nmue)
+
+
+
+
+
+///=====================================================================================================
 r00t test/Latinos/DYRinout/CompareRinoutM.cxx\(\"out_DYRinout_Latinos_02Aug1400-preselection.root\"\)
 r00t test/Latinos/DYRinout/CompareRinoutM.cxx\(\"out_DYRinout_Latinos_02Aug1400-final-selection.root\"\)
 
