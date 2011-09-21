@@ -1,0 +1,90 @@
+###################################
+#### Cut for Analysis workflow ####
+###################################
+#### Syncronization ####
+########################
+#
+############################
+#
+# mumu
+#
+channel == 0
+channel == 0
+channel == 0  &&  pfmet>12
+channel == 0  &&  pfmet>12  &&  mll>12
+channel == 0  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))                
+channel == 0  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40)) 
+channel == 0  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2
+channel == 0  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5
+channel == 0  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1
+channel == 0  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0
+channel == 0  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto
+channel == 0  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0
+channel == 0  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0  && mll<100
+channel == 0  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0  && mll<100  && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5 
+channel == 0  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0  && mll<100  && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && detajj > 3.5
+channel == 0  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0  && mll<100  && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && detajj > 3.5  && mjj>450
+#
+############################
+#
+# mue
+#
+channel == 3
+channel == 3
+channel == 3  &&  pfmet>12
+channel == 3  &&  pfmet>12  &&  mll>12
+channel == 3  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))                
+channel == 3  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40)) 
+channel == 3  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2
+channel == 3  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5
+channel == 3  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1
+channel == 3  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0
+channel == 3  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto
+channel == 3  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0
+channel == 3  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0  && mll<100
+channel == 3  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0  && mll<100  && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5 
+channel == 3  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0  && mll<100  && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && detajj > 3.5
+channel == 3  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0  && mll<100  && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && detajj > 3.5  && mjj>450
+#
+############################
+#
+# emu
+#
+channel == 2
+channel == 2
+channel == 2  &&  pfmet>12
+channel == 2  &&  pfmet>12  &&  mll>12
+channel == 2  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))                
+channel == 2  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40)) 
+channel == 2  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2
+channel == 2  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5
+channel == 2  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1
+channel == 2  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0
+channel == 2  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto
+channel == 2  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0
+channel == 2  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0  && mll<100
+channel == 2  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0  && mll<100  && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5 
+channel == 2  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0  && mll<100  && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && detajj > 3.5
+channel == 2  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0  && mll<100  && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && detajj > 3.5  && mjj>450
+#
+############################
+#
+# ee
+#
+channel == 1
+channel == 1
+channel == 1  &&  pfmet>12
+channel == 1  &&  pfmet>12  &&  mll>12
+channel == 1  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))                
+channel == 1  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40)) 
+channel == 1  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2
+channel == 1  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5
+channel == 1  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1
+channel == 1  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0
+channel == 1  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto
+channel == 1  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0
+channel == 1  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0  && mll<100
+channel == 1  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0  && mll<100  && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5 
+channel == 1  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0  && mll<100  && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && detajj > 3.5
+channel == 1  &&  pfmet>12  &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  dphill < 1.5  &&  bveto_mu == 1  &&  nextra == 0  && bveto  && njetvbf == 0  && mll<100  && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && detajj > 3.5  && mjj>450
+#

@@ -1,0 +1,88 @@
+###################################
+#### Cut for Analysis workflow ####
+###################################
+#### Syncronization ####
+########################
+####################################
+#
+# mumu
+#
+entry point           
+trigger               
+\met
+m_{\ell\ell} > 12   
+Z veto                
+p\met>40/20
+two jets               
+\Delta\phi < 165    
+soft-\mu veto       
+lepton veto           
+b-tag veto            
+no central jets       
+m_{\ell\ell} < 100
+central leptons       
+\Delta\eta(j,j)       
+m_{jj} > 450
+####################################
+#
+# mue
+#
+entry point           
+trigger               
+\met
+m_{\ell\ell} > 12   
+Z veto                
+p\met>40/20
+two jets               
+\Delta\phi < 165    
+soft-\mu veto       
+lepton veto           
+b-tag veto            
+no central jets       
+m_{\ell\ell} < 100
+central leptons       
+\Delta\eta(j,j)       
+m_{jj} > 450
+####################################
+#
+# emu
+#
+entry point           
+trigger               
+\met
+m_{\ell\ell} > 12   
+Z veto                
+p\met>40/20
+two jets               
+\Delta\phi < 165    
+soft-\mu veto       
+lepton veto           
+b-tag veto            
+no central jets       
+m_{\ell\ell} < 100
+central leptons       
+\Delta\eta(j,j)       
+m_{jj} > 450
+####################################
+#
+# ee
+#
+entry point           
+trigger               
+\met
+m_{\ell\ell} > 12   
+Z veto                
+p\met>40/20
+two jets               
+\Delta\phi < 165    
+soft-\mu veto       
+lepton veto           
+b-tag veto            
+no central jets       
+m_{\ell\ell} < 100
+central leptons       
+\Delta\eta(j,j)       
+m_{jj} > 450
+#
+#
+#

@@ -1,0 +1,17 @@
+///****   From Latinos Tree   ****///
+
+#### for Plotting (begin) ####
+
+### not yet available!
+
+./bin/MCDATAComparisonPLOTTool.exe test/Latinos/Syncro/testMCDATAComparisonPLOTTool.cfg
+
+#### for Plotting (end) ####
+
+
+#### for Syncronization (begin) ####
+./bin/MCDATACounter.exe test/Latinos/Syncro/testMCDATACounter_ForSyncro.cfg
+
+#### for Syncronization (end) ####
+
+
