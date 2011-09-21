@@ -21,6 +21,7 @@
 #include <iomanip>
 
 
+
 #if not defined(__CINT__) || defined(__MAKECINT__)
 #include "TMVA/Tools.h"
 #include "TMVA/Reader.h"
@@ -36,12 +37,9 @@
 ///   
 ///   
 
+// std::vector<double> PUWeight;
 
-using namespace std;
-
-// vector<double> PUWeight;
-
-int GetNumList(vector<int> &list){
+int GetNumList(std::vector<int> &list){
  int result = 0;
  for (int it = 0; it<list.size(); it++) result += list.at(it);
  return result;
@@ -58,14 +56,14 @@ int main(int argc, char** argv)
  gStyle->cd(); 
  
  
- cout << " " << endl;
- cout << " " << endl;
- cout << "      ___|                       |                     \\  |   ___|         /      __ \\     \\  __ __|   \\          " << endl;
- cout << "     |       _ \\   |   |  __ \\   __|   _ \\   __|      |\\/ |  |            /       |   |   _ \\    |    _ \\       " << endl;
- cout << "     |      (   |  |   |  |   |  |     __/  |         |   |  |           /        |   |  ___ \\   |   ___ \\          " << endl;
- cout << "    \\____| \\___/  \\__,_| _|  _| \\__| \\___| _|        _|  _| \\____|     _/        ____/ _/    _\\ _| _/    _\\   " << endl; 
- cout << " " << endl;
- cout << " " << endl; 
+ std::cout << " " << std::endl;
+ std::cout << " " << std::endl;
+ std::cout << "      ___|                       |                     \\  |   ___|         /      __ \\     \\  __ __|   \\          " << std::endl;
+ std::cout << "     |       _ \\   |   |  __ \\   __|   _ \\   __|      |\\/ |  |            /       |   |   _ \\    |    _ \\       " << std::endl;
+ std::cout << "     |      (   |  |   |  |   |  |     __/  |         |   |  |           /        |   |  ___ \\   |   ___ \\          " << std::endl;
+ std::cout << "    \\____| \\___/  \\__,_| _|  _| \\__| \\___| _|        _|  _| \\____|     _/        ____/ _/    _\\ _| _/    _\\   " << std::endl; 
+ std::cout << " " << std::endl;
+ std::cout << " " << std::endl; 
 
  char normal[] = { 0x1b, '[', '0', ';', '3', '9', 'm', 0 };
  char black[] = { 0x1b, '[', '0', ';', '3', '0', 'm', 0 };
@@ -108,7 +106,7 @@ int main(int argc, char** argv)
  //Check if all nedeed arguments to parse are there                                                                                                                               
  if(argc != 2)
  {
-  cerr << ">>>>> analysis.cpp::usage: " << argv[0] << " configFileName" << endl ;
+  std::cerr << ">>>>> analysis.cpp::usage: " << argv[0] << " configFileName" << std::endl ;
   return 1;
  }
 
@@ -116,10 +114,19 @@ int main(int argc, char** argv)
  // Parse the config file                                                                                                                                                          
  parseConfigFile (argv[1]) ;
  
- string treeName  = gConfigParser -> readStringOption("Input::treeName");
- string treeNameSelections = gConfigParser -> readStringOption("Input::treeNameSelections");
- string fileSamples = gConfigParser -> readStringOption("Input::fileSamples");
- string inputDirectory = gConfigParser -> readStringOption("Input::inputDirectory");
+ std::string treeName  = gConfigParser -> readStringOption("Input::treeName");
+ std::string treeNameSelections = gConfigParser -> readStringOption("Input::treeNameSelections");
+ std::string fileSamples = gConfigParser -> readStringOption("Input::fileSamples");
+ std::string inputDirectory = gConfigParser -> readStringOption("Input::inputDirectory");
+ 
+ std::string inputBeginningFile = "out_NtupleProducer_"; 
+ try {
+  inputBeginningFile = gConfigParser -> readStringOption("Input::inputBeginningFile");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ std::cout << ">>>>> Input::inputBeginningFile  " << inputBeginningFile  << std::endl;  
  
  double LUMI = gConfigParser -> readDoubleOption("Input::Lumi");
  
@@ -127,7 +134,7 @@ int main(int argc, char** argv)
  
  double Discovery = gConfigParser -> readDoubleOption("Input::Discovery");
  
- vector<string> SignalName;
+ std::vector<std::string> SignalName;
  SignalName = gConfigParser -> readStringListOption("Input::SignalName");
  
  ///==== PU reweight (begin) ====
@@ -136,12 +143,12 @@ int main(int argc, char** argv)
   doWeightFromFile = gConfigParser -> readStringOption("PU::doWeightFromFile");
  }
  catch (char const* exceptionString){
-  cerr << " exception = " << exceptionString << endl;
+  std::cerr << " exception = " << exceptionString << std::endl;
  }
- cout << ">>>>> PU::doWeightFromFile  " << doWeightFromFile  << endl;  
+ std::cout << ">>>>> PU::doWeightFromFile  " << doWeightFromFile  << std::endl;  
  
- vector<double> PUMC;
- vector<double> PUDATA;
+ std::vector<double> PUMC;
+ std::vector<double> PUDATA;
  PUclass PU;
  double sumPUMC = 0;
  double sumPUDATA = 0;
@@ -150,15 +157,15 @@ int main(int argc, char** argv)
  TH1F* hPUWeight;
  
  
- string nameWeight = "weight"; 
+ std::string nameWeight = "weight"; 
  if (doWeightFromFile) {
   try {
    nameWeight = gConfigParser -> readStringOption("PU::nameWeight");
   }
   catch (char const* exceptionString){
-   cerr << " exception = " << exceptionString << endl;
+   std::cerr << " exception = " << exceptionString << std::endl;
   }
-  cout << ">>>>> PU::nameWeight  " << nameWeight  << endl;  
+  std::cout << ">>>>> PU::nameWeight  " << nameWeight  << std::endl;  
  }
  
  if (!doWeightFromFile) {
@@ -166,11 +173,11 @@ int main(int argc, char** argv)
   PUMC   = gConfigParser -> readDoubleListOption("PU::PUMC");
   PUDATA = gConfigParser -> readDoubleListOption("PU::PUDATA");
   
-  cout << " PUMC.size()   = " << PUMC.size()   << endl;
-  cout << " PUDATA.size() = " << PUDATA.size() << endl;
+  std::cout << " PUMC.size()   = " << PUMC.size()   << std::endl;
+  std::cout << " PUDATA.size() = " << PUDATA.size() << std::endl;
   
   if (PUMC.size() != PUDATA.size()) {
-   cerr << " ERROR " << endl;
+   std::cerr << " ERROR " << std::endl;
    return 1;
   }
   
@@ -237,21 +244,21 @@ int main(int argc, char** argv)
 //  double XSection  = gConfigParser -> readDoubleOption("Plot::XSection");
  
  ///==== list of selections to perform (NOT sequential additive selections) ====
- string CutFile = gConfigParser -> readStringOption("Selections::CutFile");
- string CutHRFile = "";
+ std::string CutFile = gConfigParser -> readStringOption("Selections::CutFile");
+ std::string CutHRFile = "";
  try {
   CutHRFile = gConfigParser -> readStringOption("Selections::CutHRFile");
  }
  catch (char const* exceptionString){
-  cerr << " exception = " << exceptionString << endl;
+  std::cerr << " exception = " << exceptionString << std::endl;
  }
  
- vector<string> vCut;
- vector<string> vCutHR;
+ std::vector<std::string> vCut;
+ std::vector<std::string> vCutHR;
  
- cout << " nCuts   = " << ReadFileCut(CutFile, vCut) << endl;
+ std::cout << " nCuts   = " << ReadFileCut(CutFile, vCut) << std::endl;
  if (CutHRFile != "") {
-  cout << " nCutsHR = " << ReadFileCutHR(CutHRFile, vCutHR) << endl;
+  std::cout << " nCutsHR = " << ReadFileCutHR(CutHRFile, vCutHR) << std::endl;
  }
  
  if (vCutHR.size() < vCut.size()) {
@@ -263,12 +270,12 @@ int main(int argc, char** argv)
  }
 
  for (unsigned int iCut = 0; iCut<vCutHR.size(); iCut++){ 
-  cout << " vCutHR[" << iCut << "] = " << vCutHR.at(iCut).c_str() << endl;
+  std::cout << " vCutHR[" << iCut << "] = " << vCutHR.at(iCut).c_str() << std::endl;
  }
  
  ///==== output file ====
- string OutFileName    = gConfigParser -> readStringOption("Output::outFileName");
- cout << ">>>>> Output::outFileName  " << OutFileName  << endl;  
+ std::string OutFileName    = gConfigParser -> readStringOption("Output::outFileName");
+ std::cout << ">>>>> Output::outFileName  " << OutFileName  << std::endl;  
  
  TFile outFile(OutFileName.c_str(),"RECREATE");
  outFile.cd();
@@ -280,20 +287,20 @@ int main(int argc, char** argv)
   Latinos = gConfigParser -> readBoolOption("Input::Latinos");
  }
  catch (char const* exceptionString){
-  cerr << " exception = " << exceptionString << endl;
+  std::cerr << " exception = " << exceptionString << std::endl;
  }
- cout << ">>>>> input::Latinos  " << Latinos  << endl;  
+ std::cout << ">>>>> input::Latinos  " << Latinos  << std::endl;  
  
  
  ///==== pT Higgs reweight (begin) ====
- string nameptHWeight; 
+ std::string nameptHWeight; 
  try {
   nameptHWeight = gConfigParser -> readStringOption("Input::nameptHWeight");
  }
  catch (char const* exceptionString){
-  cerr << " exception = " << exceptionString << endl;
+  std::cerr << " exception = " << exceptionString << std::endl;
  }
- cout << ">>>>> input::nameptHWeight  " << nameptHWeight  << endl;  
+ std::cout << ">>>>> input::nameptHWeight  " << nameptHWeight  << std::endl;  
  if (nameptHWeight != ""){
   TString toLoad;
   //   toLoad = Form("cp %s ./",nameptHWeight.c_str());
@@ -302,14 +309,14 @@ int main(int argc, char** argv)
   gROOT->ProcessLine(toLoad.Data());
  }
  
- string nameptHWeightSample; 
+ std::string nameptHWeightSample; 
  try {
   nameptHWeight = gConfigParser -> readStringOption("Input::nameptHWeightSample");
  }
  catch (char const* exceptionString){
-  cerr << " exception = " << exceptionString << endl;
+  std::cerr << " exception = " << exceptionString << std::endl;
  }
- cout << ">>>>> input::nameptHWeightSample  " << nameptHWeightSample  << endl;  
+ std::cout << ">>>>> input::nameptHWeightSample  " << nameptHWeightSample  << std::endl;  
  
  
  ///==== pT Higgs reweight (end) ====
@@ -322,9 +329,9 @@ int main(int argc, char** argv)
   debug = gConfigParser -> readBoolOption("Input::debug");
  }
  catch (char const* exceptionString){
-  cerr << " exception = " << exceptionString << endl;
+  std::cerr << " exception = " << exceptionString << std::endl;
  }
- cout << ">>>>> input::debug  " << debug  << endl;  
+ std::cout << ">>>>> input::debug  " << debug  << std::endl;  
  
  ///==== program ====
  
@@ -341,33 +348,36 @@ int main(int argc, char** argv)
 for (int iSample=0; iSample<numberOfSamples; iSample++){
   
   char nameFile[20000];
-  sprintf(nameFile,"%s/out_NtupleProducer_%s.root",inputDirectory.c_str(),nameSample[iSample]);  
+  sprintf(nameFile,"%s/%s%s.root",inputDirectory.c_str(),inputBeginningFile.c_str(),nameSample[iSample]);  
+  if (debug) std::cout << " nameFile = " << nameFile << std::endl;
+  
   TFile* f = new TFile(nameFile, "READ");
   
   treeEffVect[iSample] = (TTree*) f->Get(treeNameSelections.c_str());
-  char nameTreeEff[100];
-  sprintf(nameTreeEff,"treeEff_%d",iSample); 
-  treeEffVect[iSample]->SetName(nameTreeEff);      
+  if (treeEffVect[iSample] != 0) {
+   char nameTreeEff[100];
+   sprintf(nameTreeEff,"treeEff_%d",iSample); 
+   treeEffVect[iSample]->SetName(nameTreeEff);      
+  }
   
   treeJetLepVect[iSample] = (TTree*) f->Get(treeName.c_str());
   char nameTreeJetLep[100];
   sprintf(nameTreeJetLep,"treeJetLep_%d",iSample); 
   treeJetLepVect[iSample]->SetName(nameTreeJetLep);
-  
  }
  
  ///===== create map for joint sample ====
  
- vector<int> join_samples;
- vector<string> name_samples;
+ std::vector<int> join_samples;
+ std::vector<std::string> name_samples;
  for (int iSample=0; iSample<numberOfSamples; iSample++){
   name_samples.push_back(nameHumanReadable[iSample]);
   join_samples.push_back(-1);
  }
  
  
- vector<string> reduced_name_samples;
- vector<int>         reduced_name_samples_flag;
+ std::vector<std::string> reduced_name_samples;
+ std::vector<int>         reduced_name_samples_flag;
  for (int iSample = (numberOfSamples-1); iSample>= 0; iSample--){
   bool flag_name = false;
   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
@@ -381,16 +391,18 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
  }
 
  
- cout << " numberOfSamples = " << numberOfSamples << endl;
+ std::cout << " numberOfSamples = " << numberOfSamples << std::endl;
  for (int iSample = (numberOfSamples-1); iSample>= 0; iSample--){
   double XSection;
   int numEntriesBefore;
   double preselection_efficiency;
-  treeEffVect[iSample]->SetBranchAddress("XSection",&XSection);
-  treeEffVect[iSample]->SetBranchAddress("numEntriesBefore",&numEntriesBefore);
-  treeEffVect[iSample]->SetBranchAddress("preselection_efficiency",&preselection_efficiency);  
-  treeEffVect[iSample]->GetEntry(0);
-  cout << " Xsection = " << XSection << " ~~~> " << xsection[iSample] << endl;
+  if (treeEffVect[iSample] != 0) {   
+   treeEffVect[iSample]->SetBranchAddress("XSection",&XSection);
+   treeEffVect[iSample]->SetBranchAddress("numEntriesBefore",&numEntriesBefore);
+   treeEffVect[iSample]->SetBranchAddress("preselection_efficiency",&preselection_efficiency);  
+   treeEffVect[iSample]->GetEntry(0);
+  }
+  std::cout << " Xsection = " << XSection << " ~~~> " << xsection[iSample] << std::endl;
   XSection = xsection[iSample];
   if (numEntriesBefore != 0) {
    Normalization[iSample] = LUMI * XSection * preselection_efficiency / numEntriesBefore;
@@ -424,15 +436,15 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
   }
  }
 
- if (debug) cout << " Cut size = " << vCut.size() << " ~~ " << endl;
- cout.precision (5) ;
- cout.unsetf(ios::scientific);
+ if (debug) std::cout << " Cut size = " << vCut.size() << " ~~ " << std::endl;
+ std::cout.precision (5) ;
+ std::cout.unsetf(std::ios::scientific);
 
  
  ///==== cicle on selections ====
  for (unsigned int iCut =0; iCut<vCut.size(); iCut++){
   TString Cut = Form ("%s",vCut.at(iCut).c_str());
-  if (debug) cout << " Cut[" << iCut << ":" << vCut.size() << "] = " << Cut.Data() << " ~~ " << endl;
+  if (debug) std::cout << " Cut[" << iCut << ":" << vCut.size() << "] = " << Cut.Data() << " ~~ " << std::endl;
   ///==== initialize ====
   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
    reduced_name_samples_flag.at(iName) = -1;
@@ -440,7 +452,7 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
   
   ///==== cicle on samples ====
   for (int iSample = (numberOfSamples-1); iSample>= 0; iSample--){
-   if (debug) cout << " Sample[" << iSample << ":" << numberOfSamples << "] = " << nameSample[iSample] << " ~~ " << endl;
+   if (debug) std::cout << " Sample[" << iSample << ":" << numberOfSamples << "] = " << nameSample[iSample] << " ~~ " << std::endl;
    TString name_histo_temp = Form("%s_%d_temp",nameSample[iSample], iCut);
    histo_temp[iSample][iCut] = new TH1F(name_histo_temp,name_histo_temp,100,-10,10000000000);
    char toDraw[1000];
@@ -496,10 +508,12 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
      histo[iName][iCut] -> Add(histo_temp[iSample][iCut]);
     }
    }
-   cout <<"Processing: " << blue << (((double) iCut)/vCut.size())*100. << "% "  << normal <<  " -- " <<  red << (((double) numberOfSamples - iSample)/(numberOfSamples))*100. << "% \r"  << normal << flush;   
+   std::cout <<"Processing: " << blue << (((double) iCut)/vCut.size())*100. << "% "  << normal <<  " -- " <<  red << (((double) numberOfSamples - iSample)/(numberOfSamples))*100. << "% \r"  << normal << std::flush;   
   } ///==== end cicle on samples ====
-   //cout << "Processing: " << blue << (((double) iCut)/vCut.size())*100. << "% \r"  << normal << flush;   
+   //std::cout << "Processing: " << blue << (((double) iCut)/vCut.size())*100. << "% \r"  << normal << std::flush;   
   } ///==== end cicle on selections ====
+ 
+ if (debug) std::cout << " >>> Reprocessing ... " << std::endl;
  
  //  [iName]
  TH1F* hTrend[100];
@@ -508,9 +522,9 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
  TPie* hTrendPie[100];
  
  //  [iCut]
- vector<THStack*> hs;
+ std::vector<THStack*> hs;
  
- cout << endl;
+ std::cout << std::endl;
  
  ///==== cicle on selections ====
  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
@@ -526,7 +540,7 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
    histo[iName][iCut]->SetFillStyle(3001);
    
    bool isSig = false;
-   for (vector<string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+   for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
     if (reduced_name_samples.at(iName) == *itSig) isSig = true;
    }
    
@@ -557,7 +571,7 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
    AddError(hs.at(iCut),LumiSyst);
    histoSumMC[iCut] = ((TH1F*)(hs.at(iCut)->GetStack()->Last()));
 
-   cout << " MC / DATA[" << iCut << "] = "<< histoSumMC[iCut]->Integral() << " / " << histo[numDATA][iCut]->Integral() << " = " << (histo[numDATA][iCut]->Integral() ? histoSumMC[iCut]->Integral()/ histo[numDATA][iCut]->Integral() : 0) << endl;
+   if (numDATA != -1) std::cout << " MC / DATA[" << iCut << "] = "<< histoSumMC[iCut]->Integral() << " / " << histo[numDATA][iCut]->Integral() << " = " << (histo[numDATA][iCut]->Integral() ? histoSumMC[iCut]->Integral()/ histo[numDATA][iCut]->Integral() : 0) << std::endl;
 
  
   ///==== legend ====
@@ -568,7 +582,7 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
    }
   }
  }
- cout << endl << endl;
+ std::cout << std::endl << std::endl;
  
  ///==== calculate number of events after each step of the analysis ====
  //  [iName][iCut]
@@ -610,11 +624,9 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
    hTrend[iName]->GetXaxis()->SetBinLabel(iCut+1,nameBin);
 //     IntegralAndError
 //     Double_t IntegralAndError(Int_t binx1, Int_t binx2, Double_t& err, Option_t* option = "") const
-   cout << ">>>  numEvents[" << iName << "," << reduced_name_samples.at(iName) << "][" << iCut << "] = " << numEvents[iName][iCut] << " , " << histo[iName][iCut]->GetEntries() << " , " << histo[iName][iCut]->GetEffectiveEntries()<<" , "<<" error: "<<sqrt(numEvents[iName][iCut])<<endl;
-   if(iCut!=0)  
-   cout<<  ">>> CutEfficiency[" <<iName<<"," <<  reduced_name_samples.at(iName) << "][" << iCut << "] = " <<numEvents[iName][iCut]/(numEvents[iName][iCut-1]) << " , " << histo[iName][iCut]->GetEntries()/(histo[iName][iCut-1]->GetEntries()) << " , "<< histo[iName][iCut]->GetEffectiveEntries()/(histo[iName][iCut-1]->GetEffectiveEntries())<<" error: "<<sqrt(numEvents[iName][iCut])/(numEvents[iName][iCut-1])<<endl; 
-   cout<<endl;
-    if (iName != numDATA) {
+   std::cout << ">>>  numEvents[" << iName << "," << reduced_name_samples.at(iName) << "][" << iCut << "] = " << numEvents[iName][iCut] << " , " << histo[iName][iCut]->GetEntries() << " , " << histo[iName][iCut]->GetEffectiveEntries()<<" , "<<" error: "<<sqrt(numEvents[iName][iCut])<<std::endl;
+   if(iCut!=0) std::cout<<  ">>> CutEfficiency[" << iName << "," <<  reduced_name_samples.at(iName) << "][" << iCut << "] = " << numEvents[iName][iCut]/(numEvents[iName][iCut-1]) << " , " << histo[iName][iCut]->GetEntries()/(histo[iName][iCut-1]->GetEntries()) << " , "<< histo[iName][iCut]->GetEffectiveEntries()/(histo[iName][iCut-1]->GetEffectiveEntries()) << " error: " << sqrt(numEvents[iName][iCut])/(numEvents[iName][iCut-1]) << std::endl; 
+   if (iName != numDATA) {
     hTrendPie[iCut]->SetTextSize(0.04);
     hTrendPie[iCut]->SetTextFont(12);
     hTrendPie[iCut]->SetEntryFillColor(iName,vColor[iName]);
@@ -638,8 +650,9 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
  
  TH1F* hTrendSumMC = ((TH1F*)(hsTrend->GetStack()->Last()));
  ///==== hTrend with pull plot ====
- TH1F* hPullTrendSumMC = PullPlot(hTrend[numDATA], hTrendSumMC);
-  
+ TH1F* hPullTrendSumMC; 
+ if (numDATA != -1) hPullTrendSumMC = PullPlot(hTrend[numDATA], hTrendSumMC);
+ 
  LumiSyst = 0; ///---- bug fix
  
  
@@ -667,7 +680,7 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
  
  ///~~~~ for efficiency calculation ~~~~
  
- vector<double> numEntriesFirstStep_reduced_samples;
+ std::vector<double> numEntriesFirstStep_reduced_samples;
  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
   numEntriesFirstStep_reduced_samples.push_back(0);
   for (int iSample = (numberOfSamples-1); iSample>= 0; iSample--){
@@ -686,231 +699,168 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
 //   1. / Normalization[iSample] * LUMI * xsection[iSample] * LUMI * xsection[iSample] = numEntriesBefore / preselection_efficiency * LUMI * xsection[iSample];
 
  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
-  cout << "[" << reduced_name_samples.at(iName) << "] = " << numEntriesFirstStep_reduced_samples.at(iName) << endl;
+  std::cout << "[" << reduced_name_samples.at(iName) << "] = " << numEntriesFirstStep_reduced_samples.at(iName) << std::endl;
  }
  
- cout.precision (5) ;
- cout.unsetf(ios::scientific);
+ std::cout.precision (5) ;
+ std::cout.unsetf(std::ios::scientific);
 
 
  
- cout << endl;
- cout << endl;
- cout << endl;
- cout << endl;
- cout << endl;
- cout << " *********************************** " << endl;
- cout << " **** samples Y : selections X  **** " << endl;
- cout << " *********************************** " << endl;
- cout << setw (12) << "sample";
- cout << " | " << setw (10) <<  -1;
- cout << " [" << setw (10) <<  "XXX";
- cout << " ]";
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << " *********************************** " << std::endl;
+ std::cout << " **** samples Y : selections X  **** " << std::endl;
+ std::cout << " *********************************** " << std::endl;
+ std::cout << std::setw (12) << "sample";
+ std::cout << " | " << std::setw (10) <<  -1;
+ std::cout << " [" << std::setw (10) <<  "XXX";
+ std::cout << " ]";
  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  cout << " | " << setw (10) <<  vCutHR.at(iCut).c_str();  
-//   cout << " | " << setw (10) <<  iCut << "::" << vCut.size();
-  cout << " [" << setw (10) <<  "XXX";
-  cout << " ]";
+  std::cout << " | " << std::setw (10) <<  vCutHR.at(iCut).c_str();  
+//   std::cout << " | " << std::setw (10) <<  iCut << "::" << vCut.size();
+  std::cout << " [" << std::setw (10) <<  "XXX";
+  std::cout << " ]";
  }
- cout << " pappappero!!!" << endl;
- cout << endl;
+ std::cout << " pappappero!!!" << std::endl;
+ std::cout << std::endl;
  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
-  cout << setw (12) << reduced_name_samples.at(iName) ;
-  cout << " | " << cyan << setw (10) <<  numEntriesFirstStep_reduced_samples.at(iName);
-  cout << normal << " [" << setw (10) <<  "XXX";
-  cout << " ]";
+  std::cout << std::setw (12) << reduced_name_samples.at(iName) ;
+  std::cout << " | " << cyan << std::setw (10) <<  numEntriesFirstStep_reduced_samples.at(iName);
+  std::cout << normal << " [" << std::setw (10) <<  "XXX";
+  std::cout << " ]";
   for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-   cout << " | " << blue << setw (10) <<  hTrend[iName]->GetBinContent(iCut+1);
-   cout << normal << " [" << setw (10) <<  hTrend[iName]->GetBinError(iCut+1);
-   cout << " ]";
+   std::cout << " | " << blue << std::setw (10) <<  hTrend[iName]->GetBinContent(iCut+1);
+   std::cout << normal << " [" << std::setw (10) <<  hTrend[iName]->GetBinError(iCut+1);
+   std::cout << " ]";
   }
-  cout << endl;
+  std::cout << std::endl;
  }
-
- //PG latex format
- //PG --- --- --- --- --- --- --- --- ---  
- //PG header
- cout << endl;
- cout << "LATEX " << " \\hline\n" ;
- cout << "LATEX " << setw (12) << "sample"
-      << " & " << setw (10) <<  -1
-      << " (" << setw (10) <<  "XXX"
-      << " )";
- for (unsigned int iCut = 0; iCut < vCut.size () ; iCut++)
-   {
-     cout << " & " << setw (10) <<  vCutHR.at(iCut).c_str() 
-          << " (" << setw (10) <<  "$\\varepsilon$"
-          << " )" ;
-   }
- cout << " \\\\" << endl;
- cout << "LATEX " << " \\hline\n" ;
- //PG samples list
- for (unsigned int iName = 0; iName < reduced_name_samples.size () ; iName++)
-   {
-     cout << "LATEX " << setw (12) << reduced_name_samples.at(iName) 
-          << " & " << setw (10) <<  numEntriesFirstStep_reduced_samples.at(iName)
-          << " (" << setw (10) <<  "XXX"
-          << " )";
-     for (unsigned int iCut = 0 ; iCut < vCut.size () ; iCut++)
-       {
-         cout << " & " << setw (10) <<  hTrend[iName]->GetBinContent(iCut+1)
-              << " (" << setw (10) <<  hTrend[iName]->GetBinError(iCut+1)
-              << " )";
-       }
-     cout << " \\\\" << endl;
-   }
- cout << "LATEX " << " \\hline\n" ;
- cout << endl;
-
- cout << " *********************************** " << endl;
- cout << " **** selections Y : samples X  **** " << endl;
- cout << " *********************************** " << endl;
+ 
+ std::cout << std::endl;
+ std::cout << " *********************************** " << std::endl;
+ std::cout << " **** selections Y : samples X  **** " << std::endl;
+ std::cout << " *********************************** " << std::endl;
  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
-  cout << setw (10) <<  "cut";
-  cout << " | " << setw (10) << reduced_name_samples.at(iName) ;
-  cout << " [" << setw (10) <<  "err";
-  cout << " ]";
+  std::cout << std::setw (30) <<  "cut";
+  std::cout << " | " << std::setw (10) << reduced_name_samples.at(iName) ;
+  std::cout << " [" << std::setw (10) <<  "err";
+  std::cout << " ]";
  }
- cout << endl;
+ std::cout << std::endl;
  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
-  cout << setw (10) <<  "cut";
-  cout << " | " << cyan << setw (10) <<  numEntriesFirstStep_reduced_samples.at(iName);
-  cout << normal << " [" << setw (10) <<  "XXX";
-  cout << " ]";
+  std::cout << std::setw (30) <<  "cut";
+  std::cout << " | " << cyan << std::setw (10) <<  numEntriesFirstStep_reduced_samples.at(iName);
+  std::cout << normal << " [" << std::setw (10) <<  "XXX";
+  std::cout << " ]";
  }
- cout << endl;
+ std::cout << std::endl;
  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  cout << setw (10) <<  vCutHR.at(iCut).c_str();
+  std::cout << std::setw (30) <<  vCutHR.at(iCut).c_str();
   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
-   cout << " | " << blue << setw (10) <<  hTrend[iName]->GetBinContent(iCut+1);
-   cout << normal << " [" << setw (10) <<  hTrend[iName]->GetBinError(iCut+1);
-   cout << " ]";
+   std::cout << " | " << blue << std::setw (10) <<  hTrend[iName]->GetBinContent(iCut+1);
+   std::cout << normal << " [" << std::setw (10) <<  hTrend[iName]->GetBinError(iCut+1);
+   std::cout << " ]";
   }
-  cout << endl;
+  std::cout << std::endl;
  }
  
  
  
- cout << endl;
- cout << endl;
- cout << endl;
- cout << " *********************************** " << endl;
- cout << " ************* 1 fb-1 ************* " << endl;
- cout << setw (12) << "sample";
- cout << " | " << setw (10) <<  -1;
- cout << " [" << setw (10) <<  "XXX";
- cout << " ]";
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << " *********************************** " << std::endl;
+ std::cout << " ************* 1 fb-1 ************* " << std::endl;
+ std::cout << std::setw (12) << "sample";
+ std::cout << " | " << std::setw (10) <<  -1;
+ std::cout << " [" << std::setw (10) <<  "XXX";
+ std::cout << " ]";
  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  cout << " | " << setw (10) <<  iCut;
-  cout << " [" << setw (10) <<  "XXX";
-  cout << " ]";
+  std::cout << " | " << std::setw (10) <<  iCut;
+  std::cout << " [" << std::setw (10) <<  "XXX";
+  std::cout << " ]";
  }
- cout << endl;
+ std::cout << std::endl;
  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
-  cout << setw (12) << reduced_name_samples.at(iName) ;
-  cout << " | " << purple << setw (9) <<  1000 / LUMI * numEntriesFirstStep_reduced_samples.at(iName);
-  cout << normal << " [" << setw (9) <<  "XXX";
-  cout << " ]";
+  std::cout << std::setw (12) << reduced_name_samples.at(iName) ;
+  std::cout << " | " << purple << std::setw (9) <<  1000 / LUMI * numEntriesFirstStep_reduced_samples.at(iName);
+  std::cout << normal << " [" << std::setw (9) <<  "XXX";
+  std::cout << " ]";
   for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-   cout << " | " << red << setw (9) <<  hTrend[iName]->GetBinContent(iCut+1) / LUMI * 1000.;
-   cout << normal << " [" << setw (9) <<  hTrend[iName]->GetBinError(iCut+1) / LUMI * 1000.;
-   cout << " ]";
+   std::cout << " | " << red << std::setw (9) <<  hTrend[iName]->GetBinContent(iCut+1) / LUMI * 1000.;
+   std::cout << normal << " [" << std::setw (9) <<  hTrend[iName]->GetBinError(iCut+1) / LUMI * 1000.;
+   std::cout << " ]";
   }
-  cout << endl;
+  std::cout << std::endl;
  }
  
- cout << endl;
- cout << " *********************************** " << endl;
+ std::cout << std::endl;
+ std::cout << " *********************************** " << std::endl;
  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
-  cout << " | " << red << setw (10) << reduced_name_samples.at(iName) ;
-  cout << normal << " [" << setw (10) <<  "err";
-  cout << " ]";
+  std::cout << " | " << red << std::setw (10) << reduced_name_samples.at(iName) ;
+  std::cout << normal << " [" << std::setw (10) <<  "err";
+  std::cout << " ]";
  }
- cout << endl;
+ std::cout << std::endl;
  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
-  cout << " | " << purple << setw (10) <<  1000 / LUMI * numEntriesFirstStep_reduced_samples.at(iName);
-  cout << normal << " [" << setw (10) <<  "XXX";
-  cout << " ]";
+  std::cout << " | " << purple << std::setw (10) <<  1000 / LUMI * numEntriesFirstStep_reduced_samples.at(iName);
+  std::cout << normal << " [" << std::setw (10) <<  "XXX";
+  std::cout << " ]";
  }
- cout << endl;
+ std::cout << std::endl;
  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
-   cout << " | " << red << setw (10) <<  hTrend[iName]->GetBinContent(iCut+1) / LUMI * 1000.;
-   cout << normal << " [" << setw (10) <<  hTrend[iName]->GetBinError(iCut+1) / LUMI * 1000.;
-   cout << " ]";
+   std::cout << " | " << red << std::setw (10) <<  hTrend[iName]->GetBinContent(iCut+1) / LUMI * 1000.;
+   std::cout << normal << " [" << std::setw (10) <<  hTrend[iName]->GetBinError(iCut+1) / LUMI * 1000.;
+   std::cout << " ]";
   }
-  cout << endl;
+  std::cout << std::endl;
  }
  
   
- cout << endl;
- cout << endl;
- cout << endl;
- cout << " **************************************** " << endl;
- cout << " ************* efficiency *************** " << endl;
- cout << setw (12) << "sample";
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << " **************************************** " << std::endl;
+ std::cout << " ************* efficiency *************** " << std::endl;
+ std::cout << std::setw (12) << "sample";
  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  cout << " | " << setw (10) <<  iCut;
-  cout << " [" << setw (10) <<  "XXX";
-  cout << " ]";
+  std::cout << " | " << std::setw (10) <<  iCut;
+  std::cout << " [" << std::setw (10) <<  "XXX";
+  std::cout << " ]";
  }
- cout << endl;
+ std::cout << std::endl;
  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
-  cout << setw (12) << reduced_name_samples.at(iName) ;
+  std::cout << std::setw (12) << reduced_name_samples.at(iName) ;
   for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-   cout << " | " << yellow << setw (10) <<  hTrend[iName]->GetBinContent(iCut+1) / numEntriesFirstStep_reduced_samples.at(iName);
-   cout << normal << " [" << setw (10) <<  hTrend[iName]->GetBinError(iCut+1) / numEntriesFirstStep_reduced_samples.at(iName);
-//    cout << " | " << yellow << setw (10) <<  hTrend[iName]->GetBinContent(iCut+1) << " / " << numEntriesFirstStep_reduced_samples.at(iName);
-//    cout << normal << " [" << setw (10) <<  hTrend[iName]->GetBinError(iCut+1) << " / " << numEntriesFirstStep_reduced_samples.at(iName);
-   cout << " ]";
+   std::cout << " | " << yellow << std::setw (10) <<  hTrend[iName]->GetBinContent(iCut+1) / numEntriesFirstStep_reduced_samples.at(iName);
+   std::cout << normal << " [" << std::setw (10) <<  hTrend[iName]->GetBinError(iCut+1) / numEntriesFirstStep_reduced_samples.at(iName);
+//    std::cout << " | " << yellow << std::setw (10) <<  hTrend[iName]->GetBinContent(iCut+1) << " / " << numEntriesFirstStep_reduced_samples.at(iName);
+//    std::cout << normal << " [" << std::setw (10) <<  hTrend[iName]->GetBinError(iCut+1) << " / " << numEntriesFirstStep_reduced_samples.at(iName);
+   std::cout << " ]";
   }
-  cout << endl;
+  std::cout << std::endl;
  }
  
- //PG latex-like output
- //PG --- --- --- --- --- --- --- ---
- 
- 
- cout << endl;
- cout << "LATEX " << " \\hline\n" ;
- cout << "LATEX " << setw (12) << "sample";
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++)
-  {
-    cout << " & " << setw (10) << vCutHR.at(iCut).c_str() 
-         << " (" << setw (10) <<  "$\\varepsilon$"
-         << " )";
-  }
- cout << " \\\\" << endl;
- cout << "LATEX " << " \\hline\n" ;
- 
- for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++)
-   {
-     cout << "LATEX " << setw (12) << reduced_name_samples.at(iName) ;
-     for (unsigned int iCut = 0; iCut<vCut.size(); iCut++)
-      {
-        cout << " & " << setw (10) << setprecision (2) <<  hTrend[iName]->GetBinContent(iCut+1) / numEntriesFirstStep_reduced_samples.at(iName)
-             << " (" << setw (10) << setprecision (2) <<  hTrend[iName]->GetBinError(iCut+1) / numEntriesFirstStep_reduced_samples.at(iName)
-             << " )";
-      }
-     cout << " \\\\" << endl;
-   }
- cout << "LATEX " << " \\hline\n" ;
- 
- cout << endl;
- cout << " *********************************** " << endl;
+ std::cout << std::endl;
+ std::cout << " *********************************** " << std::endl;
  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
-  cout << " | " << setw (10) << reduced_name_samples.at(iName) ;
-  cout << " [" << setw (10) <<  "err";
-  cout << " ]";
+  std::cout << " | " << std::setw (10) << reduced_name_samples.at(iName) ;
+  std::cout << " [" << std::setw (10) <<  "err";
+  std::cout << " ]";
  }
- cout << endl;
+ std::cout << std::endl;
  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
-   cout << " | " << yellow << setw (10) <<  hTrend[iName]->GetBinContent(iCut+1) / numEntriesFirstStep_reduced_samples.at(iName);
-   cout << normal << " [" << setw (10) <<  hTrend[iName]->GetBinError(iCut+1) / numEntriesFirstStep_reduced_samples.at(iName);
-   cout << " ]";
+   std::cout << " | " << yellow << std::setw (10) <<  hTrend[iName]->GetBinContent(iCut+1) / numEntriesFirstStep_reduced_samples.at(iName);
+   std::cout << normal << " [" << std::setw (10) <<  hTrend[iName]->GetBinError(iCut+1) / numEntriesFirstStep_reduced_samples.at(iName);
+   std::cout << " ]";
   }
-  cout << endl;
+  std::cout << std::endl;
  }
  
  
@@ -919,60 +869,60 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
  
  
  
- cout << endl;
- cout << endl;
- cout << endl;
- cout << endl;
- cout << endl;
- cout << " ****************************************************************** " << endl;
- cout << " ****************************************************************** " << endl;
- cout << " *********************** for Lands datacard *********************** " << endl;
- cout << endl;
- cout << endl;
- cout << endl;
- cout << endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << " ****************************************************************** " << std::endl;
+ std::cout << " ****************************************************************** " << std::endl;
+ std::cout << " *********************** for Lands datacard *********************** " << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
  
  
  
- string mass = "160";
+ std::string mass = "160";
  try {
   mass = gConfigParser -> readStringOption("Input::mass");
  }
  catch (char const* exceptionString){
-  cerr << " exception = " << exceptionString << endl;
+  std::cerr << " exception = " << exceptionString << std::endl;
  }
- cout << ">>>>> input::mass  " << mass << endl;  
+ std::cout << ">>>>> input::mass  " << mass << std::endl;  
  
- ofstream myfile;
- string nameOutDataCard = "dataCard." + mass + ".txt";
+ std::ofstream myfile;
+ std::string nameOutDataCard = "dataCard." + mass + ".txt";
  
  ///==== output - txt file name ====
  try {
   nameOutDataCard = gConfigParser -> readStringOption("Output::DataCard");
  }
  catch (char const* exceptionString){
-  cerr << " exception = " << exceptionString << endl;
+  std::cerr << " exception = " << exceptionString << std::endl;
  }
  
  myfile.open (nameOutDataCard.c_str());
- cout << "Writing to: " << nameOutDataCard << endl;
- cout << endl;
+ std::cout << "Writing to: " << nameOutDataCard << std::endl;
+ std::cout << std::endl;
  
  
  
- myfile << "Limit" << endl;
- myfile << "imax 1 number of channels" << endl;
- myfile << "jmax "<< (reduced_name_samples.size() - 2) << " number of background" << endl;
-// //  myfile << "jmax "<< (reduced_name_samples.size() - SignalName.size() - 1) << " number of background" << endl;
+ myfile << "Limit" << std::endl;
+ myfile << "imax 1 number of channels" << std::endl;
+ myfile << "jmax "<< (reduced_name_samples.size() - 2) << " number of background" << std::endl;
+// //  myfile << "jmax "<< (reduced_name_samples.size() - SignalName.size() - 1) << " number of background" << std::endl;
  //---- -1 to take into account "DATA"
- myfile << "kmax "<< 15 << " number of nuisance parameters" << endl;
+ myfile << "kmax "<< 15 << " number of nuisance parameters" << std::endl;
  
  double totalSig = 0;
  double totalBkg = 0;
  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
   if (iName != numDATA) {
    bool isSig = false;
-   for (vector<string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+   for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
     if (reduced_name_samples.at(iName) == *itSig) isSig = true;
    }
    if (isSig) {
@@ -983,119 +933,119 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
    }
   }
  }
- myfile << "-------------------------------------------------" << endl;
- myfile << "bin             ll2j   " << endl;
- //  myfile << "Observation   " << ((Discovery==1) ? (int) (totalBkg+totalSig) : (int) (totalBkg)) << endl;
- myfile << "observation   " << hTrend[numDATA]->GetBinContent(vCut.size()) << endl;
+ myfile << "-------------------------------------------------" << std::endl;
+ myfile << "bin             ll2j   " << std::endl;
+ //  myfile << "Observation   " << ((Discovery==1) ? (int) (totalBkg+totalSig) : (int) (totalBkg)) << std::endl;
+ if (numDATA != -1) myfile << "observation   " << hTrend[numDATA]->GetBinContent(vCut.size()) << std::endl;
  //# 1 = discovery, 0 = exclusion
- myfile << "-------------------------------------------------" << endl;
+ myfile << "-------------------------------------------------" << std::endl;
  
  
- myfile << setw (22) << "bin                ";
-//  myfile << setw (12) << " bin  " << setw (10) << "ll2j" << "  ";
+ myfile << std::setw (22) << "bin                ";
+//  myfile << std::setw (12) << " bin  " << std::setw (10) << "ll2j" << "  ";
 //  for (int i=0; i < (reduced_name_samples.size() - SignalName.size() - 1); i++){
-//   myfile << setw (10) << "ll2j" << "  ";
+//   myfile << std::setw (10) << "ll2j" << "  ";
 //  }
  for (int i=0; i < (reduced_name_samples.size() -1 ); i++){
-  myfile << setw (10) << "ll2j" << "  ";
+  myfile << std::setw (10) << "ll2j" << "  ";
  }
- myfile << endl;
+ myfile << std::endl;
  
-//  myfile << setw (12) << " process  " << setw (10) << "sig" << "  ";
+//  myfile << std::setw (12) << " process  " << std::setw (10) << "sig" << "  ";
 //  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
 //   if (iName != numDATA) {
 //    bool isSig = false;
-//    for (vector<string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+//    for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
 //     if (reduced_name_samples.at(iName) == *itSig) isSig = true;
 //    }
 //    if (!isSig) {
-//     myfile << setw (10) << reduced_name_samples.at(iName) << "  ";
+//     myfile << std::setw (10) << reduced_name_samples.at(iName) << "  ";
 //    }
 //   }
 //  }
-//  myfile << endl;
+//  myfile << std::endl;
 
- myfile << setw (22) << "process                ";
+ myfile << std::setw (22) << "process                ";
  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
   if (iName != numDATA) {
-   myfile << setw (10) << reduced_name_samples.at(iName) << "  ";
+   myfile << std::setw (10) << reduced_name_samples.at(iName) << "  ";
   }
  }
- myfile << endl;
+ myfile << std::endl;
 
  int cSig = -1;
  int cBkg = 1;
- myfile << setw (22) << "process                ";
+ myfile << std::setw (22) << "process                ";
  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
   if (iName != numDATA) {
    bool isSig = false;
-   for (vector<string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+   for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
     if (reduced_name_samples.at(iName) == *itSig) isSig = true;
    }
    if (!isSig) {
-    myfile << setw (10) << cBkg << "  ";
+    myfile << std::setw (10) << cBkg << "  ";
     cBkg++;
    }
    else {
-    myfile << setw (10) << cSig << "  ";
+    myfile << std::setw (10) << cSig << "  ";
     cSig++;
    }
   }
  }
- myfile << endl;
+ myfile << std::endl;
  
-//  myfile << setw (12) << " process  " << setw (10) << 0 << "  ";
+//  myfile << std::setw (12) << " process  " << std::setw (10) << 0 << "  ";
 //  for (int i=0; i < (reduced_name_samples.size() - SignalName.size() - 1); i++){
-//   myfile << setw (10) << i+1 << "  ";
+//   myfile << std::setw (10) << i+1 << "  ";
 //  }
-//  myfile << endl;
+//  myfile << std::endl;
  
-//  cout << " numDATA = " << numDATA << " reduced_name_samples.size() = " << reduced_name_samples.size() << endl;
+//  std::cout << " numDATA = " << numDATA << " reduced_name_samples.size() = " << reduced_name_samples.size() << std::endl;
  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
-//   cout << " name[" << iName << "] = " << reduced_name_samples.at(iName) << endl;
+//   std::cout << " name[" << iName << "] = " << reduced_name_samples.at(iName) << std::endl;
  }
- myfile << setw (23) << "rate                 " ;
+ myfile << std::setw (23) << "rate                 " ;
  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
   if (iName != numDATA) {
-//    cout << " iName = " << iName << " -- > " <<  hTrend[iName]->GetBinContent(vCut.size())  << endl;
+//    std::cout << " iName = " << iName << " -- > " <<  hTrend[iName]->GetBinContent(vCut.size())  << std::endl;
 //    bool isSig = false;
-//    for (vector<string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+//    for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
 //     if (reduced_name_samples.at(iName) == *itSig) isSig = true;
 //    }
 //    if (!isSig) {
-    myfile << setw (10) << hTrend[iName]->GetBinContent(vCut.size()) << "  ";
+    myfile << std::setw (10) << hTrend[iName]->GetBinContent(vCut.size()) << "  ";
 //    }
   }
  }
- myfile << endl;
+ myfile << std::endl;
  
  
  
- myfile << "-------------------------------------------------" << endl;
+ myfile << "-------------------------------------------------" << std::endl;
  
- myfile << "CMS_eff_e                    lnN       1.020    1.020    1.020      1.020     1.020      -         1.020       -      " << endl; //               electron efficiency      " << endl;
- myfile << "CMS_eff_m                    lnN       1.040    1.040    1.040      1.040     1.040      -         1.040       -      " << endl; //               muon efficiency          " << endl;
+ myfile << "CMS_eff_e                    lnN       1.020    1.020    1.020      1.020     1.020      -         1.020       -      " << std::endl; //               electron efficiency      " << std::endl;
+ myfile << "CMS_eff_m                    lnN       1.040    1.040    1.040      1.040     1.040      -         1.040       -      " << std::endl; //               muon efficiency          " << std::endl;
  
- myfile << "PU                           lnN       1.03     1.03       -        1.04      1.04       -         1.04        -      " << endl; //               Pile Up +/- 1" << endl;
+ myfile << "PU                           lnN       1.03     1.03       -        1.04      1.04       -         1.04        -      " << std::endl; //               Pile Up +/- 1" << std::endl;
  
- myfile << "CMS_p_scale_j                lnN       1.05     1.05       -        1.10      1.10       -         1.10        -      " << endl; //               JES" << endl;
- myfile << "CMS_p_scale_m                lnN       1.002    1.002      -          -         -        -            -        -      " << endl; //               Muon momentum" << endl;
- myfile << "CMS_p_scale_e                lnN       1.002    1.002      -          -         -        -            -        -      " << endl; //               Electron scale" << endl;
- myfile << "MC_statistics                lnN         -      1.03       -        1.35      1.10       -         2.00        -      " << endl; //               MET +/- 10%" << endl;
+ myfile << "CMS_p_scale_j                lnN       1.05     1.05       -        1.10      1.10       -         1.10        -      " << std::endl; //               JES" << std::endl;
+ myfile << "CMS_p_scale_m                lnN       1.002    1.002      -          -         -        -            -        -      " << std::endl; //               Muon momentum" << std::endl;
+ myfile << "CMS_p_scale_e                lnN       1.002    1.002      -          -         -        -            -        -      " << std::endl; //               Electron scale" << std::endl;
+ myfile << "MC_statistics                lnN         -      1.03       -        1.35      1.10       -         2.00        -      " << std::endl; //               MET +/- 10%" << std::endl;
  
- myfile << "QCDscale_ggH                 lnN         -      1.160      -          -         -        -            -        -      " << endl; //               Theory on Higgs" << endl;
- myfile << "QCDscale_ggH1in              lnN         -      1.160      -          -         -        -            -        -      " << endl; //               Theory on Higgs" << endl;
- myfile << "QCDscale_ggVV                lnN         -        -        -        1.160       -        -            -        -      " << endl; //               Theory on Higgs" << endl;
+ myfile << "QCDscale_ggH                 lnN         -      1.160      -          -         -        -            -        -      " << std::endl; //               Theory on Higgs" << std::endl;
+ myfile << "QCDscale_ggH1in              lnN         -      1.160      -          -         -        -            -        -      " << std::endl; //               Theory on Higgs" << std::endl;
+ myfile << "QCDscale_ggVV                lnN         -        -        -        1.160       -        -            -        -      " << std::endl; //               Theory on Higgs" << std::endl;
  
- myfile << "lumi                         lnN       1.060    1.060    1.060      1.060    1.060       -        1.060        -      " << endl; //              Luminosity     " << endl;
- myfile << "pdf_gg                       lnN         -      1.080      -        1.080       -        -            -        -      " << endl; //              pdfgg        " << endl;
- myfile << "pdf_qqbar                    lnN       1.050      -        -          -       1.030      -        1.060        -      " << endl; //              pdfqq        " << endl;
+ myfile << "lumi                         lnN       1.060    1.060    1.060      1.060    1.060       -        1.060        -      " << std::endl; //              Luminosity     " << std::endl;
+ myfile << "pdf_gg                       lnN         -      1.080      -        1.080       -        -            -        -      " << std::endl; //              pdfgg        " << std::endl;
+ myfile << "pdf_qqbar                    lnN       1.050      -        -          -       1.030      -        1.060        -      " << std::endl; //              pdfqq        " << std::endl;
  
- //  myfile << "pdf_gg                       lnN    1.040    1.040     1.040      -         -                     -         Luminosity     " << endl;
- //  myfile << "pdf_qqbar                    lnN    1.01    2.00    2.00    2.00     2.00     -               -                  MC statistics" << endl;
- myfile << "CMS_ww_Top2j                 lnN         -        -        -          -         -      1.1            -       -     " << endl; //              TTbar data driven" << endl;
- myfile << "CMS_ww_DY2j                  lnN         -        -        -          -         -        -            -      1.1     " << endl; //              DY data driven   " << endl;
- myfile << endl; 
+ //  myfile << "pdf_gg                       lnN    1.040    1.040     1.040      -         -                     -         Luminosity     " << std::endl;
+ //  myfile << "pdf_qqbar                    lnN    1.01    2.00    2.00    2.00     2.00     -               -                  MC statistics" << std::endl;
+ myfile << "CMS_ww_Top2j                 lnN         -        -        -          -         -      1.1            -       -     " << std::endl; //              TTbar data driven" << std::endl;
+ myfile << "CMS_ww_DY2j                  lnN         -        -        -          -         -        -            -      1.1     " << std::endl; //              DY data driven   " << std::endl;
+ myfile << std::endl; 
  
  myfile.close(); 
  
@@ -1104,18 +1054,18 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
  
  ///==== plot on the screen ====
  
-// //  cout << "Limit" << endl;
-// //  cout << "imax 1 number of channels" << endl;
-// //  cout << "jmax "<< (reduced_name_samples.size() - SignalName.size() - 1) << " number of background" << endl;
+// //  std::cout << "Limit" << std::endl;
+// //  std::cout << "imax 1 number of channels" << std::endl;
+// //  std::cout << "jmax "<< (reduced_name_samples.size() - SignalName.size() - 1) << " number of background" << std::endl;
 // //  //---- -1 to take into account "DATA"
-// //  cout << "kmax "<< 0 << " number of nuisance parameters" << endl;
+// //  std::cout << "kmax "<< 0 << " number of nuisance parameters" << std::endl;
 // //  
 // //  totalSig = 0;
 // //  totalBkg = 0;
 // //  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
 // //   if (iName != numDATA) {
 // //    bool isSig = false;
-// //    for (vector<string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+// //    for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
 // //     if (reduced_name_samples.at(iName) == *itSig) isSig = true;
 // //    }
 // //    if (isSig) {
@@ -1126,78 +1076,134 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
 // //    }
 // //   }
 // //  }
-// //  cout << "-------------------------------------------------" << endl;
-// // //  cout << "Observation   " << ((Discovery==1) ? (int) (totalBkg+totalSig) : (int) (totalBkg)) << endl;
-// //  cout << "Observation   " << hTrend[numDATA]->GetBinContent(vCut.size()) << endl;
+// //  std::cout << "-------------------------------------------------" << std::endl;
+// // //  std::cout << "Observation   " << ((Discovery==1) ? (int) (totalBkg+totalSig) : (int) (totalBkg)) << std::endl;
+// //  std::cout << "Observation   " << hTrend[numDATA]->GetBinContent(vCut.size()) << std::endl;
 // //  //# 1 = discovery, 0 = exclusion
-// //  cout << "-------------------------------------------------" << endl;
+// //  std::cout << "-------------------------------------------------" << std::endl;
 // //  
 // //  
-// //  cout << setw (12) << " bin  " << setw (10) << 1 << "  ";
+// //  std::cout << std::setw (12) << " bin  " << std::setw (10) << 1 << "  ";
 // //  for (int i=0; i < (reduced_name_samples.size() - SignalName.size() - 1); i++){
-// //   cout << setw (10) << 1 << "  ";
+// //   std::cout << std::setw (10) << 1 << "  ";
 // //  }
-// //  cout << endl;
+// //  std::cout << std::endl;
 // //  
-// //  cout << setw (12) << " process  " << setw (10) << "sig" << "  ";
+// //  std::cout << std::setw (12) << " process  " << std::setw (10) << "sig" << "  ";
 // //  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
 // //   if (iName != numDATA) {
 // //    bool isSig = false;
-// //    for (vector<string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+// //    for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
 // //     if (reduced_name_samples.at(iName) == *itSig) isSig = true;
 // //    }
 // //    if (!isSig) {
-// //     cout << setw (10) << reduced_name_samples.at(iName) << "  ";
+// //     std::cout << std::setw (10) << reduced_name_samples.at(iName) << "  ";
 // //    }
 // //   }
 // //  }
-// //  cout << endl;
+// //  std::cout << std::endl;
 // //  
-// //  cout << setw (12) << " process  " << setw (10) << 0 << "  ";
+// //  std::cout << std::setw (12) << " process  " << std::setw (10) << 0 << "  ";
 // //  for (int i=0; i < (reduced_name_samples.size() - SignalName.size() - 1); i++){
-// //   cout << setw (10) << i+1 << "  ";
+// //   std::cout << std::setw (10) << i+1 << "  ";
 // //  }
-// //  cout << endl;
+// //  std::cout << std::endl;
 // //  
-// //  cout << setw (12) << " rate  " << setw (10) << totalSig << "  ";
+// //  std::cout << std::setw (12) << " rate  " << std::setw (10) << totalSig << "  ";
 // //  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
 // //   if (iName != numDATA) {
 // //    bool isSig = false;
-// //    for (vector<string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+// //    for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
 // //     if (reduced_name_samples.at(iName) == *itSig) isSig = true;
 // //    }
 // //    if (!isSig) {
-// //     cout << setw (10) << hTrend[iName]->GetBinContent(vCut.size()) << "  ";
+// //     std::cout << std::setw (10) << hTrend[iName]->GetBinContent(vCut.size()) << "  ";
 // //    }
 // //   }
 // //  }
-// //  cout << endl;
+// //  std::cout << std::endl;
 // //  
 // //  
-// //  cout << "-------------------------------------------------" << endl;
+// //  std::cout << "-------------------------------------------------" << std::endl;
 // //  
  
- cout << endl;
- cout << endl;
- cout << endl;
- cout << endl;
- cout << endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
  
- cout << endl;
- cout << endl;
- cout << endl;
- cout << endl;
- cout << endl;
- 
- 
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
  
  
+ //---- latex format
+ //--- --- --- --- --- --- --- --- --- ---  
+ //---- header
+ std::cout << std::endl;
+ std::cout << "LATEX " << " \\hline\n" ;
+ std::cout << "LATEX " << std::setw (12) << "sample" << " & " << std::setw (10) <<  -1 << " (" << std::setw (10) <<  "XXX" << " )";
+ for (unsigned int iCut = 0; iCut < vCut.size () ; iCut++) {
+  std::cout << " & " << std::setw (10) <<  vCutHR.at(iCut).c_str() << " (" << std::setw (10) <<  "$\\varepsilon$" << " )" ;
+ }
+ std::cout << " \\\\" << std::endl;
+ std::cout << "LATEX " << " \\hline\n" ;
+ //---- samples list
+ for (unsigned int iName = 0; iName < reduced_name_samples.size () ; iName++) {
+  std::cout << "LATEX " << std::setw (12) << reduced_name_samples.at(iName) << " & " << std::setw (10) << numEntriesFirstStep_reduced_samples.at(iName) << " (" << std::setw (10) <<  "XXX" << " )";
+  for (unsigned int iCut = 0 ; iCut < vCut.size () ; iCut++) {
+   std::cout << " & " << std::setw (10) <<  hTrend[iName]->GetBinContent(iCut+1) << " (" << std::setw (10) <<  hTrend[iName]->GetBinError(iCut+1) << " )";
+  }
+  std::cout << " \\\\" << std::endl;
+ }
+ std::cout << "LATEX " << " \\hline\n" ;
+ std::cout << std::endl;
+
+ 
+ 
+ 
+ 
+ //---- latex-like output
+ //--- --- --- --- --- --- --- --- ---
+ 
+ std::cout << std::endl;
+ std::cout << "LATEX " << " \\hline\n" ;
+ std::cout << "LATEX " << std::setw (12) << "sample";
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++) {
+  std::cout << " & " << std::setw (10) << vCutHR.at(iCut).c_str() << " (" << std::setw (10) <<  "$\\varepsilon$" << " )";
+ }
+ std::cout << " \\\\" << std::endl;
+ std::cout << "LATEX " << " \\hline\n" ;
+ 
+ for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++) {
+  std::cout << "LATEX " << std::setw (12) << reduced_name_samples.at(iName) ;
+  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+   std::cout << " & " << std::setw (10) << std::setprecision (2) <<  hTrend[iName]->GetBinContent(iCut+1) / numEntriesFirstStep_reduced_samples.at(iName);
+   std::cout << " (" << std::setw (10) << std::setprecision (2) <<  hTrend[iName]->GetBinError(iCut+1) / numEntriesFirstStep_reduced_samples.at(iName);
+   std::cout << " )";
+  }
+  std::cout << " \\\\" << std::endl;
+ }
+ std::cout << "LATEX " << " \\hline\n" ;
+ 
+ std::cout << std::endl;
+ std::cout << " *********************************** " << std::endl;
+
+ 
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
+ std::cout << std::endl;
  
  
  ///==== draw trend vs cut (begin)
  cTrend->cd();
  DrawStack(hsTrend,1,LumiSyst);
- hTrend[numDATA] -> Draw("EsameP");
+ if (numDATA != -1) hTrend[numDATA] -> Draw("EsameP");
  gPad->SetLogy();
  gPad->SetGrid();
  leg->Draw();
@@ -1224,9 +1230,9 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
  
  
  
- cerr << " ******************************************* end *******************************************" << endl;
+ std::cerr << " ******************************************* end *******************************************" << std::endl;
  end = clock();
- cout <<"Time = " <<  ((double) (end - start)) << " (a.u.)" << endl;  
+ std::cout <<"Time = " <<  ((double) (end - start)) << " (a.u.)" << std::endl;  
  
  
  
