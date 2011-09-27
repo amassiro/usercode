@@ -1,0 +1,25 @@
+### Name       Min   Max   NBin    NameHR
+#
+#
+#
+#
+channel         0      4      4        channel
+pfmet           0    500     50        pfmet
+mll            10    400     70        M_{l,l}
+sameflav        0      2      2        sameflav
+mpmet           0    300     50        min-proj-MET(GeV)
+njet            0     10     10        N-jets
+dphiveto        0      2      2        #Delta#phi_{ll,jet1}-veto
+bveto_mu        0      2      2        B-Veto-#mu
+nextra          0     10     10        extra-leptons_{pT10}
+bveto_ip        0      2      2        low-pt-Btag
+nbjet           0     10     10        Btag-jets
+njetvbf         0     10     10        CJV
+abs(eta1-(jeteta1+jeteta2)/2)/detajj   0       2       10      z_{l1}
+abs(eta2-(jeteta1+jeteta2)/2)/detajj   0       2       10      z_{l2}
+detajj          0     10     50        #Delta#eta_{jet-jet}
+mjj             0   2000    100        M_{jet-jet}
+#
+#
+#
+#

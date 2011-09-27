@@ -2,9 +2,7 @@
 
 #### for Plotting (begin) ####
 
-### not yet available!
-
-./bin/MCDATAComparisonPLOTTool.exe test/Latinos/Syncro/testMCDATAComparisonPLOTTool.cfg
+./bin/MCDATAComparisonPLOTTool.exe test/Latinos/Syncro/testMCDATAComparisonPLOTTool_ForSyncro.cfg
 
 #### for Plotting (end) ####
 
