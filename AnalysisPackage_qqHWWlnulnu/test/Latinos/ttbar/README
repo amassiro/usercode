@@ -1,0 +1,63 @@
+##############################################
+ Top Background Data Driven Estimation Tool
+##############################################
+
+1) Run test/MCDATAComparisonPLOTTool.cpp with the following specific:
+
+   test/Latinos/ttbar/H*.cfg config file define for each working point
+   
+   --->List of Sample is Defined on the standard test/Latinos/ttbar/HiggsMasses/SamplesH*.txt
+   --->Cut File Example is reported in test/Latinos/ttbar/CutH160.txt ---> 3 Cut for the Efficiency region (All, BTag and BVeto), 3 Cut for the VBF Signal Region
+       and 3 Cut for the VBF-Like region in which Closure Test is developed 
+
+   Run: * ls test/Latinos/ttbar/H*.cfg | awk '{printf "./bin/MCDATAComparisonPLOTTool.exe "$1" \n"}' | /bin/sh   ---> All Working Point
+        * ./bin/MCDATAComparisonPLOTTool.exe test/Latinos/ttbar/H160.cfg   ----> Single working Point
+
+2) Run test/Latinos/ttbar/BTag_Efficiency.cxx
+   
+   3 input parameters: input root file = output MCDATAComparisonPLOTToll.cpp ; output file name ; output file for event dumper information
+   
+   1 txt file configuration---> BTag_Efficiency.txt ----> * List of Sample in the inverse order of test/Latinos/ttbar/HiggsMasses/SamplesH*.txt
+                                                          * Cut String Definition
+                                                          * Variables used for efficiency study + binning chosen
+                                                          * Number of Closure Test
+
+   Run:   * root -l test/Latinos/ttbar/Btag_Efficiency.cxx\(\"input.root\",\"output.root\",\"out_Dumper.txt\"\)  [Single Working Point]
+          
+          * ls output/out_ComparisonPLOTT_H*.root| tr "_" " "  | awk '{ printf "root -l test/Latinos/ttbar/BTag_Efficiency.cxx\(\\\"output/out_ComparisonPLOTT_"$3"\\\",
+             \\\"test/Latinos/ttbar/output/Efficiency_Plott_"$3"\\\",\\\"test/Latinos/ttbar/output/Event_Dumper_"$3"\\\"\)\n"}' | /bin/sh  
+            
+          [All working Point]
+
+#############################################################################
+Study of Btag Efficiency vs Selection from Effciency Region to Signal one
+#############################################################################
+
+1) Run test/MCDATAComparisonPLOTTool.cpp with the following specific:
+
+   test/Latinos/ttbar/Eff_Cut_H*.cfg config file define for each working point
+   
+   --->List of Sample is Defined on the standard test/Latinos/ttbar/HiggsMasses/SamplesH*.txt
+   --->Cut File Example is reported in test/Latinos/ttbar/Efficiency_vs_CutH160.txt ---> 3 Cut for each step from the Efficiency
+       region to the signal one (All, BTag and BVeto)
+
+   Run: * ls test/Latinos/ttbar/Eff_Cut_H*.cfg | awk '{printf "./bin/MCDATAComparisonPLOTTool.exe "$1" \n"}' | /bin/sh   ---> All Working Point
+        * ./bin/MCDATAComparisonPLOTTool.exe test/Latinos/ttbar/Eff_Cut_H160.cfg   ----> Single working Point
+
+2) Run test/Latinos/ttbar/Efficiency_vs_Cut.cxx
+
+   2 input parameters: input root file = output MCDATAComparisonPLOTToll.cpp ; output file name ;
+   
+   1 txt file configuration---> Efficiency_vs_Cut.txt ---->  * List of Sample in the inverse order of test/Latinos/ttbar/HiggsMasses/SamplesH*.txt
+                                                             * Cut String Definition
+                                                             * Variables used for efficiency study + binning chosen
+   
+   Run:   * root -l test/Latinos/ttbar/Efficiency_vs_Cut.cxx\(\"input.root\",\"output.root\"\)  [Single Working Point]
+          
+          * ls output/out_ComparisonPLOTT_Efficiency_vs_Cut_*.root| tr "_" " "  | awk '{ printf "root -l test/Latinos/ttbar/Efficiency_vs_Cut.cxx\(\\\"output/         
+            out_ComparisonPLOTT_"$3"\\\",\\\"test/Latinos/ttbar/output/Efficiency_Plott_"$3"\\\"\)\n"}' | /bin/sh  
+            
+          [All working Point]
+
+                                                          
+ 
