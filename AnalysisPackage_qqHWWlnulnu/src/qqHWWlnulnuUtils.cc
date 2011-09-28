@@ -20,10 +20,10 @@ std::pair<int,int> GetMCDecayChannel(const std::vector<float>& pdgId){
   ///== pdgId.at(2) ==> f21
   ///== pdgId.at(3) ==> f22
   
-  int f11 = fabs(pdgId.at(0));
-  int f12 = fabs(pdgId.at(1));
-  int f21 = fabs(pdgId.at(2));
-  int f22 = fabs(pdgId.at(3));
+  int f11 = abs(pdgId.at(0));
+  int f12 = abs(pdgId.at(1));
+  int f21 = abs(pdgId.at(2));
+  int f22 = abs(pdgId.at(3));
   
   
   ///==== lepton - lepton ====
@@ -1258,7 +1258,7 @@ bool IsMu_VBFMerged( treeReader& reader, int iMu){
            ) 
         )
       && reader.GetInt("muons_innerTrack_found")->at(iMu)>10 
-//      && reader.GetInt("muons_numberOfValidPixelHits")->at(iMu)>0       //------------------------> to be added!
+      && reader.GetInt("muons_numberOfValidPixelHits")->at(iMu)>0       //------------------------> to be added!
       && fabs(reader.GetFloat("muons_trackPtErrorOverPt")->at(iMu)) < 0.10
       )   
      ) skipMu=true;
@@ -1361,8 +1361,7 @@ bool IsMu_Soft( treeReader& reader, int iMu){
      reader.Get4V("muons")->at(iMu).pt()>3 && 
      reader.GetInt("muons_tracker")->at(iMu) &&
 
-     reader.GetFloat("muons_TMLastStationTight")->at(iMu) > 0.5 &&  //=========> angTIght to be added!
-     reader.GetFloat("muons_TMLastStationTight")->at(iMu) > 0.5 &&  //=========> angTIght to be added!
+     reader.GetFloat("muons_TMLastStationAngTight")->at(iMu) > 0.5 &&  //=========> angTIght to be added!
      
      reader.GetInt("muons_innerTrack_found")->at(iMu)>10 &&
      fabs(reader.GetFloat("muons_dz_PV")->at(iMu))<0.1&&
@@ -1399,7 +1398,7 @@ bool IsJetID( treeReader& reader, int iJet){
      multiplicity ==0
      )   skipJet=true;
 
-  if(reader.Get4V("jets")->at(iJet).Eta() <2.4) { 
+  if(fabs(reader.Get4V("jets")->at(iJet).Eta()) <2.4) { 
      if( 
          reader.GetFloat("jets_chargedEmEnergyFraction")->at(iJet)>=0.99 ||
          reader.GetFloat("jets_chargedHadronEnergyFraction")->at(iJet) ==0 ||

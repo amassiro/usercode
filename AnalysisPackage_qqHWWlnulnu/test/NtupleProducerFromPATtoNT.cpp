@@ -314,6 +314,8 @@ int main(int argc, char** argv)
   std::vector<int> blacklistJet_forCJV;
   std::vector<int> blacklistJet_forTotalCJV;
   std::vector<int> blacklistJet_forBtag;
+  
+  
   for (int iJet = 0; iJet < nJets; iJet++){
    bool skipJet = false;   
    bool JetID = IsJetID(reader,iJet);
@@ -337,6 +339,8 @@ int main(int argc, char** argv)
     }
    }
   }
+  
+     
      
    ///**************************************
    ///**** STEP 2 - Super-Preselections ****
