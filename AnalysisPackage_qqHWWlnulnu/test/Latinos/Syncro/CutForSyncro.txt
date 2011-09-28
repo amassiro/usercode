@@ -110,4 +110,8 @@ channel == 1  &&  pfmet > 20   &&  mll>12  && (!sameflav || !(mll<106.1876 && ml
 1  &&  pfmet > 20   &&  mll>12  && (!sameflav || !(mll<106.1876 && mll>76.1876))  &&  ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))  &&  njet >= 2  &&  (dphiveto || !sameflav)  &&  bveto_mu == 1  &&  nextra == 0  && bveto_ip && nbjet == 0  && njetvbf == 0  && mll<100  && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && detajj > 3.5  && mjj>450
 #
 #
+njet >= 2
+#
+#
+#
 #

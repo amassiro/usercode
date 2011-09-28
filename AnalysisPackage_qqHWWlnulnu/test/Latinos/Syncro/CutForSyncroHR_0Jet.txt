@@ -1,0 +1,107 @@
+###################################
+#### Cut for Analysis workflow ####
+###################################
+#### Syncronization ####
+########################
+####################################
+#
+# mumu
+#
+entry point           
+trigger               
+\met
+m_{\ell\ell} > 12   
+Z veto                
+p\met>40/20
+jet veto              
+\Delta\phi(ll,j)
+soft-\mu veto       
+lepton veto           
+soft b-tag veto       
+m_{\ell\ell} < 45
+p_T^{max} > 25      
+p_T^{min} > 10      
+\Delta\phi < 90
+m_T^H               
+####################################
+#
+# mue
+#
+entry point           
+trigger               
+\met
+m_{\ell\ell} > 12   
+Z veto                
+p\met>40/20
+jet veto              
+\Delta\phi(ll,j)
+soft-\mu veto       
+lepton veto           
+soft b-tag veto       
+m_{\ell\ell} < 45
+p_T^{max} > 25      
+p_T^{min} > 10      
+\Delta\phi < 90
+m_T^H               
+####################################
+#
+# emu
+#
+entry point           
+trigger               
+\met
+m_{\ell\ell} > 12   
+Z veto                
+p\met>40/20
+jet veto              
+\Delta\phi(ll,j)
+soft-\mu veto       
+lepton veto           
+soft b-tag veto       
+m_{\ell\ell} < 45
+p_T^{max} > 25      
+p_T^{min} > 10      
+\Delta\phi < 90
+m_T^H               
+####################################
+#
+# ee
+#
+entry point           
+trigger               
+\met
+m_{\ell\ell} > 12   
+Z veto                
+p\met>40/20
+jet veto              
+\Delta\phi(ll,j)
+soft-\mu veto       
+lepton veto           
+soft b-tag veto       
+m_{\ell\ell} < 45
+p_T^{max} > 25      
+p_T^{min} > 10      
+\Delta\phi < 90
+m_T^H               
+####################################
+#
+# all
+#
+entry point           
+trigger               
+\met
+m_{\ell\ell} > 12   
+Z veto                
+p\met>40/20
+jet veto              
+\Delta\phi(ll,j)
+soft-\mu veto       
+lepton veto           
+soft b-tag veto       
+m_{\ell\ell} < 45
+p_T^{max} > 25      
+p_T^{min} > 10      
+\Delta\phi < 90
+m_T^H               
+#
+#

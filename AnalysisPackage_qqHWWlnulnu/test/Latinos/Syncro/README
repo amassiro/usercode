@@ -10,6 +10,14 @@
 #### for Syncronization (begin) ####
 ./bin/MCDATACounter.exe test/Latinos/Syncro/testMCDATACounter_ForSyncro.cfg
 
+
+./bin/MCDATACounter.exe test/Latinos/Syncro/testMCDATACounter_ForSyncro_0Jet.cfg
+./bin/MCDATACounter.exe test/Latinos/Syncro/testMCDATACounter_ForSyncro_1Jet.cfg
+
+
+
+./bin/MCDATACounter.exe test/Latinos/Syncro/testMCDATACounter_ForSyncro_MiBiNT.cfg
+
 #### for Syncronization (end) ####
 
 
