@@ -134,47 +134,116 @@ int main(int argc, char** argv)
  std::string fileSamples = gConfigParser -> readStringOption("Input::fileSamples");
  std::string inputDirectory = gConfigParser -> readStringOption("Input::inputDirectory");
  
+ std::string inputBeginningFile = "out_NtupleProducer_"; 
+ try {
+  inputBeginningFile = gConfigParser -> readStringOption("Input::inputBeginningFile");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ std::cout << ">>>>> Input::inputBeginningFile  " << inputBeginningFile  << std::endl;  
+ 
+ 
  ///==== PU reweight (begin) ====
- std::vector<double> PUMC   = gConfigParser -> readDoubleListOption("PU::PUMC");
- std::vector<double> PUDATA = gConfigParser -> readDoubleListOption("PU::PUDATA");
+ bool doWeightFromFile = false; 
+ try {
+  doWeightFromFile = gConfigParser -> readStringOption("PU::doWeightFromFile");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ std::cout << ">>>>> PU::doWeightFromFile  " << doWeightFromFile  << std::endl;  
+ 
+ std::vector<double> PUMC;
+ std::vector<double> PUDATA;
  PUclass PU;
- 
- std::cout << " PUMC.size()   = " << PUMC.size()   << std::endl;
- std::cout << " PUDATA.size() = " << PUDATA.size() << std::endl;
- 
- if (PUMC.size() != PUDATA.size()) {
-  std::cerr << " ERROR " << std::endl;
-  return 1;
- }
- 
  double sumPUMC = 0;
- for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
-  sumPUMC += PUMC.at(itVPU);  
- }
  double sumPUDATA = 0;
- for (int itVPU = 0; itVPU < PUDATA.size(); itVPU++ ){
-  sumPUDATA += PUDATA.at(itVPU);  
- } 
+ TH1F* hPUMC;
+ TH1F* hPUDATA;
+ TH1F* hPUWeight;
  
- for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
-  PU.PUWeight.push_back(PUDATA.at(itVPU) / PUMC.at(itVPU) * sumPUMC / sumPUDATA);
+ std::string nameWeight = "weight"; 
+ if (doWeightFromFile) {
+  try {
+   nameWeight = gConfigParser -> readStringOption("PU::nameWeight");
+  }
+  catch (char const* exceptionString){
+   std::cerr << " exception = " << exceptionString << std::endl;
+  }
+  std::cout << ">>>>> PU::nameWeight  " << nameWeight  << std::endl;  
  }
-
- PU.Write("autoWeight.cxx");
- gROOT->ProcessLine(".L autoWeight.cxx");
+ 
+ if (!doWeightFromFile) {
+  
+  PUMC   = gConfigParser -> readDoubleListOption("PU::PUMC");
+  PUDATA = gConfigParser -> readDoubleListOption("PU::PUDATA");
+  
+  std::cout << " PUMC.size()   = " << PUMC.size()   << std::endl;
+  std::cout << " PUDATA.size() = " << PUDATA.size() << std::endl;
+  
+  if (PUMC.size() != PUDATA.size()) {
+   std::cerr << " ERROR " << std::endl;
+   return 1;
+  }
+  
+  for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
+   sumPUMC += PUMC.at(itVPU);  
+  }
+  for (int itVPU = 0; itVPU < PUDATA.size(); itVPU++ ){
+   sumPUDATA += PUDATA.at(itVPU);  
+  } 
+  
+  for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
+   PU.PUWeight.push_back(PUDATA.at(itVPU) / PUMC.at(itVPU) * sumPUMC / sumPUDATA);
+  }
+  
+  PU.Write("autoWeight.cxx");
+  gROOT->ProcessLine(".L autoWeight.cxx");
+  
+  ///==== save PU distribution in TH1F ====
+  hPUMC   = new TH1F("hPUMC","hPUMC",PUMC.size(),0,PUMC.size());
+  hPUDATA = new TH1F("hPUDATA","hPUDATA",PUDATA.size(),0,PUDATA.size());
+  hPUWeight = new TH1F("hPUWeight","hPUWeight",PUDATA.size(),0,PUDATA.size());
+  
+  for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
+   hPUMC     -> SetBinContent(itVPU+1,PUMC.at(itVPU) / sumPUMC);
+   hPUDATA   -> SetBinContent(itVPU+1,PUDATA.at(itVPU) / sumPUDATA);
+   hPUWeight -> SetBinContent(itVPU+1,PUDATA.at(itVPU) / PUMC.at(itVPU) * sumPUMC / sumPUDATA);
+  }
+  
+ }
+ 
  ///==== PU reweight (end) ====
  
- ///==== save PU distribution in TH1F ====
- TH1F* hPUMC   = new TH1F("hPUMC","hPUMC",PUMC.size(),0,PUMC.size());
- TH1F* hPUDATA = new TH1F("hPUDATA","hPUDATA",PUDATA.size(),0,PUDATA.size());
- TH1F* hPUWeight = new TH1F("hPUWeight","hPUWeight",PUDATA.size(),0,PUDATA.size());
- 
- for (int itVPU = 0; itVPU < PUMC.size(); itVPU++ ){
-  hPUMC     -> SetBinContent(itVPU+1,PUMC.at(itVPU) / sumPUMC);
-  hPUDATA   -> SetBinContent(itVPU+1,PUDATA.at(itVPU) / sumPUDATA);
-  hPUWeight -> SetBinContent(itVPU+1,PUDATA.at(itVPU) / PUMC.at(itVPU) * sumPUMC / sumPUDATA);
+ ///==== pT Higgs reweight (begin) ====
+ std::string nameptHWeight; 
+ try {
+  nameptHWeight = gConfigParser -> readStringOption("Input::nameptHWeight");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ std::cout << ">>>>> input::nameptHWeight  " << nameptHWeight  << std::endl;  
+ if (nameptHWeight != ""){
+  TString toLoad;
+  //   toLoad = Form("cp %s ./",nameptHWeight.c_str());
+  //   gROOT->ProcessLine(toLoad.Data());
+  toLoad = Form(".L %s+",nameptHWeight.c_str());
+  gROOT->ProcessLine(toLoad.Data());
  }
  
+ std::string nameptHWeightSample; 
+ try {
+  nameptHWeight = gConfigParser -> readStringOption("Input::nameptHWeightSample");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ std::cout << ">>>>> input::nameptHWeightSample  " << nameptHWeightSample  << std::endl;  
+ 
+ 
+ ///==== pT Higgs reweight (end) ====
  
  
  TTree *treeEffVect[100];
@@ -283,13 +352,15 @@ int main(int argc, char** argv)
  for (int iSample=0; iSample<numberOfSamples; iSample++){
   
   char nameFile[20000];
-  sprintf(nameFile,"%s/out_NtupleProducer_%s.root",inputDirectory.c_str(),nameSample[iSample]);  
+  sprintf(nameFile,"%s/%s%s.root",inputDirectory.c_str(),inputBeginningFile.c_str(),nameSample[iSample]);  
   TFile* f = new TFile(nameFile, "READ");
   
   treeEffVect[iSample] = (TTree*) f->Get(treeNameSelections.c_str());
-  char nameTreeEff[100];
-  sprintf(nameTreeEff,"treeEff_%d",iSample); 
-  treeEffVect[iSample]->SetName(nameTreeEff);      
+  if (treeEffVect[iSample] != 0) {   
+   char nameTreeEff[100];
+   sprintf(nameTreeEff,"treeEff_%d",iSample); 
+   treeEffVect[iSample]->SetName(nameTreeEff);      
+  }
   
   treeJetLepVect[iSample] = (TTree*) f->Get(treeName.c_str());
   char nameTreeJetLep[100];
@@ -311,7 +382,7 @@ int main(int argc, char** argv)
  std::vector<int>         reduced_name_samples_flag;
  for (int iSample = (numberOfSamples-1); iSample>= 0; iSample--){
   bool flag_name = false;
-  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+  for (uint iName=0; iName<reduced_name_samples.size(); iName++){
    if (reduced_name_samples.at(iName) == name_samples.at(iSample)) flag_name = true;
   }
   if (flag_name == false) {
@@ -326,10 +397,12 @@ int main(int argc, char** argv)
   double XSection;
   int numEntriesBefore;
   double preselection_efficiency;
-  treeEffVect[iSample]->SetBranchAddress("XSection",&XSection);
-  treeEffVect[iSample]->SetBranchAddress("numEntriesBefore",&numEntriesBefore);
-  treeEffVect[iSample]->SetBranchAddress("preselection_efficiency",&preselection_efficiency);  
-  treeEffVect[iSample]->GetEntry(0);
+  if (treeEffVect[iSample] != 0) {   
+   treeEffVect[iSample]->SetBranchAddress("XSection",&XSection);
+   treeEffVect[iSample]->SetBranchAddress("numEntriesBefore",&numEntriesBefore);
+   treeEffVect[iSample]->SetBranchAddress("preselection_efficiency",&preselection_efficiency);  
+   treeEffVect[iSample]->GetEntry(0);
+  }
   
   std::cout << " Xsection = " << XSection << " ~~~> " << xsection[iSample] << std::endl;
   XSection = xsection[iSample];
@@ -352,14 +425,14 @@ int main(int argc, char** argv)
  std::cout.precision (2) ;
  
  ///==== cicle on selections ====
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
   TString Cut = Form ("%s",vCut.at(iCut).c_str());
   if (debug) std::cout << " Cut[" << iCut << ":" << vCut.size() << "] = " << Cut.Data() << " ~~ " << std::endl;
   ///==== cicle on variables to plot ====
-  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    if (debug) std::cout << " Var[" << iVar << ":" << vVarName.size() << "] = " << vVarName.at(iVar) << " ~~ " << std::endl;
    ///==== initialize ====
-   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
     reduced_name_samples_flag.at(iName) = -1;
    }
    
@@ -374,13 +447,30 @@ int main(int argc, char** argv)
     histo_temp[iSample][iCut][iVar] -> Sumw2(); //---- così mette l'errore giusto!
     
     TString CutExtended;
-    CutExtended = Form ("(%s) * autoWeight(numPUMC)",Cut.Data());    
+    
+    if (nameptHWeight != "" && name_samples.at(iSample) == nameptHWeightSample){
+     if (!doWeightFromFile) {
+      CutExtended = Form ("(%s) * autoWeight(numPUMC) * ptHWeight(ptH)",Cut.Data());    
+     }
+     else {
+      CutExtended = Form ("(%s) * ptHWeight(ptH) * (%s)",Cut.Data(),nameWeight.c_str());    
+     }
+    }
+    else {
+     if (!doWeightFromFile) {
+      CutExtended = Form ("(%s) * autoWeight(numPUMC)",Cut.Data());    
+     }
+     else {
+      CutExtended = Form ("(%s) * (%s)",Cut.Data(),nameWeight.c_str());    
+     }
+    }
+    
     treeJetLepVect[iSample]->Draw(toDraw,CutExtended,"");
     
     if (Normalization[iSample]>0) { 
      histo_temp[iSample][iCut][iVar] -> Scale(Normalization[iSample]); 
     }    
-    for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+    for (uint iName=0; iName<reduced_name_samples.size(); iName++){
      if (name_samples.at(iSample) == reduced_name_samples.at(iName)){
       if (reduced_name_samples_flag.at(iName) == -1){
        TString name_histoTot_temp = Form("%s_%d_%d_Tot_temp",reduced_name_samples.at(iName).c_str(),iCut, iVar);
@@ -399,10 +489,10 @@ int main(int argc, char** argv)
  std::cout << std::endl; 
  
  ///==== cicle on selections ====
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
   ///==== cicle on variables to plot ====
-  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
-   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
     histo[iName][iCut][iVar]->GetXaxis()->SetTitle(vVarNameHR.at(iVar).c_str());
     histo[iName][iCut][iVar]->SetMarkerColor(vColor[iName]);
     histo[iName][iCut][iVar]->SetLineColor(vColor[iName]);
@@ -417,7 +507,7 @@ int main(int argc, char** argv)
    }
    ///==== legend ====
    if (!LegendBuilt){
-    for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+    for (uint iName=0; iName<reduced_name_samples.size(); iName++){
      leg->AddEntry(histo[iName][iCut][iVar],reduced_name_samples.at(iName).c_str(),"pf");    
      LegendBuilt = true;
     }
@@ -427,9 +517,9 @@ int main(int argc, char** argv)
  std::cout << std::endl << std::endl;
  
  ///==== normalization (begin) ====
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
-   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
     double integral = histo[iName][iCut][iVar]->Integral();
     if (integral!=0) integral = 1. / integral;
     histo[iName][iCut][iVar]->Scale(integral);
@@ -443,33 +533,33 @@ int main(int argc, char** argv)
  TCanvas* cCompareCut[100];
  TCanvas* cCompareVar[100];
  
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
   TString nameCanvas = Form("%d_Cut_Canvas",iCut);
   cCompareCut[iCut] = new TCanvas(nameCanvas,nameCanvas,400 * vVarName.size(),400);
   cCompareCut[iCut] -> Divide (vVarName.size(),1);
  }
  
- for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){ ///==== cicle on variables to plot ====
+ for (uint iVar = 0; iVar<vVarName.size(); iVar++){ ///==== cicle on variables to plot ====
    TString nameCanvas = Form("%d_Var_Canvas",iVar);
    cCompareVar[iVar] = new TCanvas(nameCanvas,nameCanvas,400,400 * vCut.size());
    cCompareVar[iVar] -> Divide (1,vCut.size());
  }
  
  
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    TString nameCanvas = Form("%d_%d_Canvas",iCut,iVar);
    ccCanvas[iCut][iVar] = new TCanvas(nameCanvas,nameCanvas,400,400);
   }
  } 
  
  ///==== cicle on selections ====
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
   ///==== cicle on variables to plot ====
-  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    ///==== draw in canvas ====
    cCompareCut[iCut] -> cd(iVar+1);
-   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
     if (iName==0) {histo[iName][iCut][iVar]->Draw("EP");}
     else {histo[iName][iCut][iVar]->Draw("EsameP");}
    }
@@ -478,7 +568,7 @@ int main(int argc, char** argv)
    leg->Draw();
 
    cCompareVar[iVar] -> cd(iCut+1);
-   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
     if (iName==0) {histo[iName][iCut][iVar]->Draw("EP");}
     else {histo[iName][iCut][iVar]->Draw("EsameP");}
    }
@@ -488,7 +578,7 @@ int main(int argc, char** argv)
    
  
    ccCanvas[iCut][iVar]-> cd();
-   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
     if (iName==0) {histo[iName][iCut][iVar]->Draw("EP");}
     else {histo[iName][iCut][iVar]->Draw("EsameP");}
    }
@@ -508,23 +598,27 @@ int main(int argc, char** argv)
  ///==== save output ====
  outFile.cd();
 
+ outFile.cd();
  outFile.mkdir("PU");
  outFile.cd("PU");
- hPUMC     -> Write();
- hPUDATA   -> Write();
- hPUWeight -> Write();
+ 
+ if (!doWeightFromFile) { 
+  hPUMC     -> Write();
+  hPUDATA   -> Write();
+  hPUWeight -> Write();
+ }
  
  outFile.cd();
  outFile.mkdir("Cut");
  outFile.cd("Cut");
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
   cCompareCut[iCut] -> Write();
  }
  
  outFile.cd();
  outFile.mkdir("Var");
  outFile.cd("Var");
- for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
+ for (uint iVar = 0; iVar<vVarName.size(); iVar++){
   cCompareVar[iVar] -> Write();
  }
  
@@ -532,8 +626,8 @@ int main(int argc, char** argv)
  TDirectory* cdAll = (TDirectory*) outFile.mkdir("All");
  cdAll->mkdir("Var");
  outFile.cd("All/Var");
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    ccCanvas[iCut][iVar]-> Write();
   }
  }
@@ -541,9 +635,9 @@ int main(int argc, char** argv)
  outFile.cd();
  outFile.mkdir("Data");
  outFile.cd("Data");
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
-   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
     if (reduced_name_samples.at(iName) == "DATA") {
      histo[iName][iCut][iVar] -> Write();
     }

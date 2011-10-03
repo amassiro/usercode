@@ -20,7 +20,7 @@
 #include "PUclass.h"
 
 
-
+#include "TProof.h"
 
 
 #if not defined(__CINT__) || defined(__MAKECINT__)
@@ -49,11 +49,14 @@ int GetNumList(std::vector<int> &list){
 
 int main(int argc, char** argv)
 { 
+ 
+ TProof::Open("");
+ 
 //  TDRStyle();
  LatinoStyle();
  
  gStyle->SetPadTopMargin(0.11);
- gStyle->SetPadLeftMargin(0.07);
+ gStyle->SetPadLeftMargin(0.17);
  gStyle->SetPadRightMargin(0.23);
  gStyle->cd(); 
  
@@ -132,6 +135,16 @@ int main(int argc, char** argv)
  std::string treeNameSelections = gConfigParser -> readStringOption("Input::treeNameSelections");
  std::string fileSamples = gConfigParser -> readStringOption("Input::fileSamples");
  std::string inputDirectory = gConfigParser -> readStringOption("Input::inputDirectory");
+ 
+ std::string inputBeginningFile = "out_NtupleProducer_"; 
+ try {
+  inputBeginningFile = gConfigParser -> readStringOption("Input::inputBeginningFile");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ std::cout << ">>>>> Input::inputBeginningFile  " << inputBeginningFile  << std::endl;  
+ 
  
  double LUMI = gConfigParser -> readDoubleOption("Input::Lumi");
  
@@ -361,13 +374,16 @@ int main(int argc, char** argv)
  for (int iSample=0; iSample<numberOfSamples; iSample++){
   
   char nameFile[20000];
-  sprintf(nameFile,"%s/out_NtupleProducer_%s.root",inputDirectory.c_str(),nameSample[iSample]);  
+  sprintf(nameFile,"%s/%s%s.root",inputDirectory.c_str(),inputBeginningFile.c_str(),nameSample[iSample]);  
   TFile* f = new TFile(nameFile, "READ");
   
   treeEffVect[iSample] = (TTree*) f->Get(treeNameSelections.c_str());
-  char nameTreeEff[100];
-  sprintf(nameTreeEff,"treeEff_%d",iSample); 
-  treeEffVect[iSample]->SetName(nameTreeEff);      
+  
+  if (treeEffVect[iSample] != 0) {
+   char nameTreeEff[100];
+   sprintf(nameTreeEff,"treeEff_%d",iSample); 
+   treeEffVect[iSample]->SetName(nameTreeEff);      
+  }
   
   treeJetLepVect[iSample] = (TTree*) f->Get(treeName.c_str());
   char nameTreeJetLep[100];
@@ -389,7 +405,7 @@ int main(int argc, char** argv)
  std::vector<int>         reduced_name_samples_flag;
  for (int iSample = (numberOfSamples-1); iSample>= 0; iSample--){
   bool flag_name = false;
-  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+  for (uint iName=0; iName<reduced_name_samples.size(); iName++){
    if (reduced_name_samples.at(iName) == name_samples.at(iSample)) flag_name = true;
   }
   if (flag_name == false) {
@@ -404,10 +420,12 @@ int main(int argc, char** argv)
   double XSection;
   int numEntriesBefore;
   double preselection_efficiency;
-  treeEffVect[iSample]->SetBranchAddress("XSection",&XSection);
-  treeEffVect[iSample]->SetBranchAddress("numEntriesBefore",&numEntriesBefore);
-  treeEffVect[iSample]->SetBranchAddress("preselection_efficiency",&preselection_efficiency);  
-  treeEffVect[iSample]->GetEntry(0);
+  if (treeEffVect[iSample] != 0) {   
+   treeEffVect[iSample]->SetBranchAddress("XSection",&XSection);
+   treeEffVect[iSample]->SetBranchAddress("numEntriesBefore",&numEntriesBefore);
+   treeEffVect[iSample]->SetBranchAddress("preselection_efficiency",&preselection_efficiency);  
+   treeEffVect[iSample]->GetEntry(0);
+  }
   
 //   std::cout << " Xsection = " << XSection << " ~~~> " << xsection[iSample] << std::endl;
   XSection = xsection[iSample];
@@ -438,7 +456,7 @@ int main(int argc, char** argv)
   
  ///==== get number in sample list that correspond to DATA ====
  int numDATA = -1;
- for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+ for (uint iName=0; iName<reduced_name_samples.size(); iName++){
   if (reduced_name_samples.at(iName) == "DATA") {
    numDATA = iName;
   }
@@ -449,14 +467,14 @@ int main(int argc, char** argv)
  std::cout.precision (2) ;
  
  ///==== cicle on selections ====
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
   TString Cut = Form ("%s",vCut.at(iCut).c_str());
   if (debug) std::cout << " Cut[" << iCut << ":" << vCut.size() << "] = " << Cut.Data() << " ~~ " << std::endl;
   ///==== cicle on variables to plot ====
-  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    if (debug) std::cout << " Var[" << iVar << ":" << vVarName.size() << "] = " << vVarName.at(iVar) << " ~~ " << std::endl;
    ///==== initialize ====
-   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
     reduced_name_samples_flag.at(iName) = -1;
    }
    
@@ -472,7 +490,7 @@ int main(int argc, char** argv)
     
     TString CutExtended;
     bool isData = false;
-    for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+    for (uint iName=0; iName<reduced_name_samples.size(); iName++){
      if (name_samples.at(iSample) == reduced_name_samples.at(iName)){
       if (iName == numDATA) {
        isData = true;
@@ -521,15 +539,15 @@ int main(int argc, char** argv)
 
  
  ///---- create "big" histos ----
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    ///---- initialize (begin) ----
-   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
     reduced_name_samples_flag.at(iName) = -1;
    }
    ///---- initialize (end) ----
    for (int iSample = (numberOfSamples-1); iSample>= 0; iSample--){    
-    for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+    for (uint iName=0; iName<reduced_name_samples.size(); iName++){
      if (name_samples.at(iSample) == reduced_name_samples.at(iName) && iName == numDATA){
       if (reduced_name_samples_flag.at(iName) == -1){
        TString name_histoTot_temp = Form("%s_%d_%d_Tot_temp",reduced_name_samples.at(iName).c_str(),iCut, iVar);
@@ -548,18 +566,19 @@ int main(int argc, char** argv)
  
  
  if (Normalize == 1) { //---- normalize to Data ----
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    ///---- initialize (begin) ----
-   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
     reduced_name_samples_flag.at(iName) = -1;
    }
    ///---- initialize (end) ----
-   double data_int = histo[numDATA][iCut][iVar] -> Integral();
+   double data_int = 0;
+   if (numDATA != -1) data_int = histo[numDATA][iCut][iVar] -> Integral();
    double mc_int = 0;
    
    for (int iSample = (numberOfSamples-1); iSample>= 0; iSample--){
-    for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+    for (uint iName=0; iName<reduced_name_samples.size(); iName++){
      if (name_samples.at(iSample) == reduced_name_samples.at(iName) && iName != numDATA){
       mc_int += histo_temp[iSample][iCut][iVar] -> Integral();
      }
@@ -570,7 +589,7 @@ int main(int argc, char** argv)
    for (int iSample = (numberOfSamples-1); iSample>= 0; iSample--){ 
     histo_temp[iSample][iCut][iVar] -> Scale (data_int / mc_int);
     
-    for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+    for (uint iName=0; iName<reduced_name_samples.size(); iName++){
      if (name_samples.at(iSample) == reduced_name_samples.at(iName)  && iName != numDATA){
       if (reduced_name_samples_flag.at(iName) == -1){
        TString name_histoTot_temp = Form("%s_%d_%d_Tot_temp",reduced_name_samples.at(iName).c_str(),iCut, iVar);
@@ -590,16 +609,16 @@ int main(int argc, char** argv)
  }
  else { //---- normalize to Lumi
   
-  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-   for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
+  for (uint iCut = 0; iCut<vCut.size(); iCut++){
+   for (uint iVar = 0; iVar<vVarName.size(); iVar++){
     ///---- initialize (begin) ----
-    for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+    for (uint iName=0; iName<reduced_name_samples.size(); iName++){
      reduced_name_samples_flag.at(iName) = -1;
     }
     ///---- initialize (end) ----
     for (int iSample = (numberOfSamples-1); iSample>= 0; iSample--){
      
-     for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+     for (uint iName=0; iName<reduced_name_samples.size(); iName++){
       if (name_samples.at(iSample) == reduced_name_samples.at(iName) && iName != numDATA ){
        if (reduced_name_samples_flag.at(iName) == -1){
 	TString name_histoTot_temp = Form("%s_%d_%d_Tot_temp",reduced_name_samples.at(iName).c_str(),iCut, iVar);
@@ -624,11 +643,13 @@ int main(int argc, char** argv)
 //  [iName]
  TH1F* hTrend[100];
  THStack* hsTrend;
+ THStack* hsSignalTrend;
  //  [iCut]
  TPie* hTrendPie[100];
  
  
  //  [iCut][iVar]
+ THStack* hsSignal[100][100];
  THStack* hs[100][100];
  TH1F* hPull[100][100];
  TH1F* hPullTrace[100][100];
@@ -640,13 +661,16 @@ int main(int argc, char** argv)
  std::cout << std::endl;
  
  ///==== cicle on selections ====
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
   ///==== cicle on variables to plot ====
-  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    TString nameStack = Form("%d_%d_stack",iCut,iVar);
    hs[iCut][iVar] = new THStack(nameStack,nameStack);
    
-   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+   nameStack = Form("%d_%d_stack_signal",iCut,iVar);
+   hsSignal[iCut][iVar] = new THStack(nameStack,nameStack);
+   
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
     histo[iName][iCut][iVar]->GetXaxis()->SetTitle(vVarNameHR.at(iVar).c_str());
     histo[iName][iCut][iVar]->SetMarkerColor(vColor[iName]);
     histo[iName][iCut][iVar]->SetLineColor(vColor[iName]);
@@ -677,6 +701,7 @@ int main(int argc, char** argv)
       histo[iName][iCut][iVar]->SetMarkerSize(1);
       histo[iName][iCut][iVar]->SetLineWidth(2);
       histo[iName][iCut][iVar]->SetFillStyle(3001);  
+      hsSignal[iCut][iVar]->Add(histo[iName][iCut][iVar]);
      }
     }
    }
@@ -684,19 +709,28 @@ int main(int argc, char** argv)
    ///==== Add systrematic error ====
    AddError(hs[iCut][iVar],LumiSyst);
    histoSumMC[iCut][iVar] = ((TH1F*)(hs[iCut][iVar]->GetStack()->Last()));
-   ///==== histo with pull plot ====
-   hPull[iCut][iVar] = PullPlot(histo[numDATA][iCut][iVar], histoSumMC[iCut][iVar]);
-   hPullTrace[iCut][iVar] = GetTrendInfo(hPull[iCut][iVar],-2.0,2.0);
    
-   std::pair<TGraphErrors*, TGraphErrors*> tempPairGrPull = grPullPlot(histo[numDATA][iCut][iVar], histoSumMC[iCut][iVar]);
-   grPull  [iCut][iVar] = tempPairGrPull.first;
-   grPullMC[iCut][iVar] = tempPairGrPull.second;   
-    
-   std::cout << " MC / DATA[" << iCut << "][" << iVar << "] = "<< histoSumMC[iCut][iVar]->Integral() << " / " << histo[numDATA][iCut][iVar]->Integral() << " = " << (histo[numDATA][iCut][iVar]->Integral() ? histoSumMC[iCut][iVar]->Integral()/ histo[numDATA][iCut][iVar]->Integral() : 0) << std::endl;
+   //---- signal stack
+//    if (Discovery) AddError(hsSignal[iCut][iVar],0);
+   
+   ///==== histo with pull plot ====
+   if (numDATA != -1) {
+    hPull[iCut][iVar] = PullPlot(histo[numDATA][iCut][iVar], histoSumMC[iCut][iVar]);
+    hPullTrace[iCut][iVar] = GetTrendInfo(hPull[iCut][iVar],-2.0,2.0);
+   }
+   
+   std::pair<TGraphErrors*, TGraphErrors*> tempPairGrPull;
+   if (numDATA != -1) {
+    tempPairGrPull = grPullPlot(histo[numDATA][iCut][iVar], histoSumMC[iCut][iVar]);
+    grPull  [iCut][iVar] = tempPairGrPull.first;
+    grPullMC[iCut][iVar] = tempPairGrPull.second;   
+   }
+   
+   if (numDATA != -1) std::cout << " MC / DATA[" << iCut << "][" << iVar << "] = "<< histoSumMC[iCut][iVar]->Integral() << " / " << histo[numDATA][iCut][iVar]->Integral() << " = " << (histo[numDATA][iCut][iVar]->Integral() ? histoSumMC[iCut][iVar]->Integral()/ histo[numDATA][iCut][iVar]->Integral() : 0) << std::endl;
    
    ///==== legend ====
    if (!LegendBuilt){
-    for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+    for (uint iName=0; iName<reduced_name_samples.size(); iName++){
      leg->AddEntry(histo[iName][iCut][iVar],reduced_name_samples.at(iName).c_str(),"pf");    
      if (reduced_name_samples.at(iName) != "DATA") {
       legMC->AddEntry(histo[iName][iCut][iVar],reduced_name_samples.at(iName).c_str(),"pf");    
@@ -711,13 +745,14 @@ int main(int argc, char** argv)
  ///==== calculate number of events after each step of the analysis ====
  //  [iName][iCut]
  hsTrend = new THStack("Trend","Trend");
+ hsSignalTrend = new THStack("TrendSignal","TrendSignal");
  
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
   TString nameTHTrendPie = Form("%d_Trend_Pie",iCut);
   hTrendPie[iCut] = new TPie (nameTHTrendPie,nameTHTrendPie,reduced_name_samples.size());
  }
  
- for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+ for (uint iName=0; iName<reduced_name_samples.size(); iName++){
   TString nameTHTrend = Form("%d_Trend",iName);
   hTrend[iName] = new TH1F (nameTHTrend,nameTHTrend,vCut.size()+1,0,vCut.size()+1);
   hTrend[iName]->GetXaxis()->SetTitle("Selections");
@@ -738,7 +773,7 @@ int main(int argc, char** argv)
    hTrend[iName]->SetLineWidth(2);
    hTrend[iName]->SetFillStyle(3001);
   }
-  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iCut = 0; iCut<vCut.size(); iCut++){
    double error = 0;
    numEvents[iName][iCut] = histo[iName][iCut][0]->IntegralAndError(0,histo[iName][iCut][0]->GetNbinsX()+1,error); //--- iVar = 0, it should be the same whatever var you use
 //    numEvents[iName][iCut] = histo[iName][iCut][0]->Integral(); //--- iVar = 0, it should be the same whatever var you use
@@ -782,48 +817,61 @@ int main(int argc, char** argv)
   }
   if (!isSig && reduced_name_samples.at(iName) != "DATA") {
    hsTrend->Add(hTrend[iName]);
-   }
+  }
+  else if (isSig) {
+   hsSignalTrend->Add(hTrend[iName]);
+  }   
 //   if (iName != numDATA) {
 //    hsTrend->Add(hTrend[iName]);
 //   }
  }
  AddError(hsTrend,LumiSyst);
+//  AddError(hsSignalTrend,0); 
  
- TH1F* hTrendSumMC = ((TH1F*)(hsTrend->GetStack()->Last()));
+ TH1F* hTrendSumMC       = ((TH1F*)(hsTrend->GetStack()->Last()));
+ TH1F* hTrendSignalSumMC;
+ if (Discovery) hTrendSignalSumMC = ((TH1F*)(hsSignalTrend->GetStack()->Last()));
+ 
  ///==== hTrend with pull plot ====
- TH1F* hPullTrendSumMC = PullPlot(hTrend[numDATA], hTrendSumMC);
- TH1F* hPullTrendTraceSumMC = GetTrendInfo(hPullTrendSumMC,-2.0,2.0);
+ TH1F* hPullTrendSumMC;
+ if (numDATA != -1) hPullTrendSumMC = PullPlot(hTrend[numDATA], hTrendSumMC);
+ TH1F* hPullTrendTraceSumMC;
+ if (numDATA != -1) hPullTrendTraceSumMC = GetTrendInfo(hPullTrendSumMC,-2.0,2.0);
  
- std::pair<TGraphErrors*, TGraphErrors*> tempPairGrPullTrend = grPullPlot(hTrend[numDATA], hTrendSumMC);
- TGraphErrors* grPullTrendSumMC   = tempPairGrPullTrend.first;
- TGraphErrors* grPullTrendSumMCMC = tempPairGrPullTrend.second;
+ std::pair<TGraphErrors*, TGraphErrors*> tempPairGrPullTrend;
+ TGraphErrors* grPullTrendSumMC;
+ TGraphErrors* grPullTrendSumMCMC;
+ if (numDATA != -1) {
+  tempPairGrPullTrend = grPullPlot(hTrend[numDATA], hTrendSumMC);
+  grPullTrendSumMC   = tempPairGrPullTrend.first;
+  grPullTrendSumMCMC = tempPairGrPullTrend.second;
+ }
  
  
  ///==== calculate agreement data-MC: Kolmogorov-Smirnov test ==== 
  ///==== cicle on selections ====
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  ///==== cicle on variables to plot ====
-  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
-   double KS = -1;
-   double Chi2 = -1;
-   if (histo[numDATA][iCut][iVar]->GetEntries() != 0 && histoSumMC[iCut][iVar]->GetEntries() != 0) {
-    KS = histo[numDATA][iCut][iVar]->KolmogorovTest(histoSumMC[iCut][iVar],"M");
-    Chi2 = histo[numDATA][iCut][iVar]->Chi2Test(histoSumMC[iCut][iVar],"UW");
+ if (numDATA != -1) {
+  for (uint iCut = 0; iCut<vCut.size(); iCut++){
+   ///==== cicle on variables to plot ====
+   for (uint iVar = 0; iVar<vVarName.size(); iVar++){
+    double KS = -1;
+    double Chi2 = -1;
+    if (histo[numDATA][iCut][iVar]->GetEntries() != 0 && histoSumMC[iCut][iVar]->GetEntries() != 0) {
+     KS = histo[numDATA][iCut][iVar]->KolmogorovTest(histoSumMC[iCut][iVar],"M");
+     Chi2 = histo[numDATA][iCut][iVar]->Chi2Test(histoSumMC[iCut][iVar],"UW");
+    }
+    std::cout << " KS[" << iCut << "][" << iVar << "] = " << KS << std::endl;
+    infoString[iCut][iVar] = new TString(Form("#splitline{KS prob = %.4f}{#chi^{2} prob = %.4f}",KS,Chi2));
+    infoLatex[iCut][iVar] = new TLatex(0.80, 0.10, *(infoString[iCut][iVar])); 
+    infoLatex[iCut][iVar]->SetTextAlign(12);
+    infoLatex[iCut][iVar]->SetNDC();
+    infoLatex[iCut][iVar]->SetTextFont(42);
+    infoLatex[iCut][iVar]->SetTextSize(0.03);
    }
-   std::cout << " KS[" << iCut << "][" << iVar << "] = " << KS << std::endl;
-   infoString[iCut][iVar] = new TString(Form("#splitline{KS prob = %.4f}{#chi^{2} prob = %.4f}",KS,Chi2));
-   infoLatex[iCut][iVar] = new TLatex(0.80, 0.10, *(infoString[iCut][iVar])); 
-   infoLatex[iCut][iVar]->SetTextAlign(12);
-   infoLatex[iCut][iVar]->SetNDC();
-   infoLatex[iCut][iVar]->SetTextFont(42);
-   infoLatex[iCut][iVar]->SetTextSize(0.03);
   }
  }
  
- 
  LumiSyst = 0; ///---- bug fix
- 
- 
  
  
  TCanvas* cTrendPie[100];
@@ -838,7 +886,7 @@ int main(int argc, char** argv)
  TCanvas* cCompareCut[100];
  TCanvas* cCompareVar[100];
  
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
   TString titleCanvas = Form("%d_Cut_Canvas %s",iCut,vCutHR.at(iCut).c_str());
   TString nameCanvas = Form("%d_Cut_Canvas",iCut);
   cCompareCut[iCut] = new TCanvas(nameCanvas,titleCanvas,400 * vVarName.size(),400);
@@ -848,7 +896,7 @@ int main(int argc, char** argv)
   cCompareCutPull[iCut] -> Divide (vVarName.size(),3);
  }
  
- for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){ ///==== cicle on variables to plot ====
+ for (uint iVar = 0; iVar<vVarName.size(); iVar++){ ///==== cicle on variables to plot ====
    TString nameCanvas = Form("%d_Var_Canvas",iVar);
    cCompareVar[iVar] = new TCanvas(nameCanvas,nameCanvas,400,400 * vCut.size());
    cCompareVar[iVar] -> Divide (1,vCut.size());
@@ -858,8 +906,8 @@ int main(int argc, char** argv)
  }
  
  
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    TString titleCanvas = Form("%d_%d_Canvas %s %s",iCut,iVar,vCutHR.at(iCut).c_str(),vVarNameHR.at(iVar).c_str());
    TString nameCanvas = Form("%d_%d_Canvas",iCut,iVar);
    ccCanvas[iCut][iVar] = new TCanvas(nameCanvas,titleCanvas,400,400);
@@ -871,60 +919,59 @@ int main(int argc, char** argv)
    ccCanvasNormalize[iCut][iVar] = new TCanvas(nameCanvas,titleCanvas,400,400);
   }
  } 
- 
- 
+  
  ///==== draw trend vs cut (begin)
  cTrend->cd();
  DrawStack(hsTrend,1,LumiSyst);
- hTrend[numDATA] -> Draw("EsameP");
- for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
-  bool isSig = false;
-  for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
-   if (reduced_name_samples.at(iName) == *itSig) isSig = true;
-  }
-  if (isSig) {
-   hTrend[iName]->Draw("EsameP");
-  }
- } 
+ if (Discovery) DrawStack(hsSignalTrend,0,0,"EsameP");
+ 
+ if (numDATA != -1) hTrend[numDATA] -> Draw("EsameP");
+//  for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+//   bool isSig = false;
+//   for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+//    if (reduced_name_samples.at(iName) == *itSig) isSig = true;
+//   }
+//   if (isSig) {
+//    hTrend[iName]->Draw("EsameP");
+//   }
+//  } 
 
  gPad->SetLogy();
  gPad->SetGrid();
  leg->Draw();
  latex->Draw();
- 
- 
+  
  cTrendPull->Divide(1,3);
  cTrendPull->cd(1);
  DrawStack(hsTrend,1,LumiSyst);
- hTrend[numDATA] -> Draw("EsameP");
- for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
-  bool isSig = false;
-  for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
-   if (reduced_name_samples.at(iName) == *itSig) isSig = true;
-  }
-  if (isSig) {
-   hTrend[iName]->Draw("EsameP");
-  }
- }
+ if (Discovery) DrawStack(hsSignalTrend,0,0,"EsameP");
+ if (numDATA != -1) hTrend[numDATA] -> Draw("EsameP"); 
+//  for (uint iName=0; iName<reduced_name_samples.size(); iName++){
+//   bool isSig = false;
+//   for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+//    if (reduced_name_samples.at(iName) == *itSig) isSig = true;
+//   }
+//   if (isSig) {
+//    hTrend[iName]->Draw("EsameP");
+//   }
+//  }
  gPad->SetLogy();
  gPad->SetGrid();
  leg->Draw();
  latex->Draw();
  cTrendPull->cd(2);
 //  hPullTrendSumMC->Draw("EP");
- grPullTrendSumMCMC -> Draw("AE3");
- grPullTrendSumMC   -> Draw("PsameE");  
+ if (grPullTrendSumMCMC) grPullTrendSumMCMC -> Draw("AE3");
+ if (grPullTrendSumMC)   grPullTrendSumMC   -> Draw("PsameE");  
  
  
  gPad->SetGrid();
  cTrendPull->cd(3);
  gPad->SetGrid();
- hPullTrendTraceSumMC->Draw();
+ if (hPullTrendTraceSumMC) hPullTrendTraceSumMC->Draw();
  gPad->SetGrid();
- 
- 
- 
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+  
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
   TString nameCanvas = Form("%d_Canvas_Trend",iCut);
   cTrendPie[iCut] = new TCanvas(nameCanvas,nameCanvas,400,400);
   cTrendPie[iCut]->cd();
@@ -945,9 +992,10 @@ int main(int argc, char** argv)
  
  
  ///==== cicle on selections ====
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
   ///==== cicle on variables to plot ====
-  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
+      
    ///==== draw in canvas ====
    cCompareCut[iCut] -> cd(iVar+1);
    DrawStack(hs[iCut][iVar],1,LumiSyst);
@@ -955,7 +1003,8 @@ int main(int argc, char** argv)
    gPad->SetGrid();
    leg->Draw();
    latex->Draw();
-   infoLatex[iCut][iVar]->Draw();
+   
+   if (numDATA != -1 && infoLatex[iCut][iVar]) infoLatex[iCut][iVar]->Draw();
    
    cCompareVar[iVar] -> cd(iCut+1);
    DrawStack(hs[iCut][iVar],1,LumiSyst);
@@ -963,16 +1012,15 @@ int main(int argc, char** argv)
    gPad->SetGrid();
    leg->Draw();
    latex->Draw();
-   infoLatex[iCut][iVar]->Draw();
-   
-   
+   if (numDATA != -1 && infoLatex[iCut][iVar]) infoLatex[iCut][iVar]->Draw();
+      
    cCompareCutPull[iCut] -> cd(iVar+1);
    DrawStack(hs[iCut][iVar],1,LumiSyst);
    gPad->SetLogy();
    gPad->SetGrid();
    leg->Draw();
    latex->Draw();
-   infoLatex[iCut][iVar]->Draw();
+   if (numDATA != -1 && infoLatex[iCut][iVar]) infoLatex[iCut][iVar]->Draw();
    
    cCompareVarPull[iVar] -> cd(iCut*3+1);
    DrawStack(hs[iCut][iVar],1,LumiSyst);
@@ -980,35 +1028,32 @@ int main(int argc, char** argv)
    gPad->SetGrid();
    leg->Draw();
    latex->Draw();
-   infoLatex[iCut][iVar]->Draw();
-   
-   
+   if (numDATA != -1 && infoLatex[iCut][iVar]) infoLatex[iCut][iVar]->Draw();
    
    cCompareCutPull[iCut] -> cd(iVar+1+vVarName.size());
 //    hPull[iCut][iVar]->Draw("EP");
-   grPullMC[iCut][iVar] -> Draw("AE3");
-   grPull  [iCut][iVar] -> Draw("PsameE");      
+   if (grPullMC[iCut][iVar]) grPullMC[iCut][iVar] -> Draw("AE3");
+   if (grPull  [iCut][iVar]) grPull  [iCut][iVar] -> Draw("PsameE");      
    gPad->SetGrid();
-   gPad->SetLeftMargin(0.17);
+//    gPad->SetLeftMargin(0.17);
    gPad->SetRightMargin(0.07);
 
    cCompareCutPull[iCut] -> cd(iVar+1+vVarName.size()*2);
-   hPullTrace[iCut][iVar]->Draw();
+   if (hPullTrace[iCut][iVar]) hPullTrace[iCut][iVar]->Draw();
    gPad->SetGrid();
    
    cCompareVarPull[iVar] -> cd(iCut*3+2);
 //    hPull[iCut][iVar]->Draw("EP");
-   grPullMC[iCut][iVar] -> Draw("AE3");
-   grPull  [iCut][iVar] -> Draw("PsameE");      
+   if (grPullMC[iCut][iVar]) grPullMC[iCut][iVar] -> Draw("AE3");
+   if (grPull  [iCut][iVar]) grPull  [iCut][iVar] -> Draw("PsameE");      
    gPad->SetGrid();
-   gPad->SetLeftMargin(0.17);
+//    gPad->SetLeftMargin(0.17);
    gPad->SetRightMargin(0.07);
    
    cCompareVarPull[iVar] -> cd(iCut*3+3);
-   hPullTrace[iCut][iVar]->Draw("hbar2");
+   if (hPullTrace[iCut][iVar]) hPullTrace[iCut][iVar]->Draw("hbar2");
    gPad->SetRightMargin(0.07);
    gPad->SetGrid();
-   
    
    ccCanvas[iCut][iVar]-> cd();
    DrawStack(hs[iCut][iVar],1,LumiSyst);
@@ -1016,7 +1061,7 @@ int main(int argc, char** argv)
    gPad->SetGrid();
    leg->Draw();
    latex->Draw();
-   infoLatex[iCut][iVar]->Draw();
+   if (numDATA != -1 && infoLatex[iCut][iVar]) infoLatex[iCut][iVar]->Draw();
    
    
    ccCanvasNormalize[iCut][iVar]-> cd();
@@ -1026,23 +1071,20 @@ int main(int argc, char** argv)
    legMC->Draw();
    latex->Draw();
 //    infoLatex[iCut][iVar]->Draw();
-   
-   
-   
+      
    ccCanvasPull[iCut][iVar]-> cd();
 //    hPull[iCut][iVar]->Draw("EP");
-   grPullMC[iCut][iVar] -> Draw("AE3");
-   grPull  [iCut][iVar] -> Draw("PsameE");      
+   if (grPullMC[iCut][iVar]) grPullMC[iCut][iVar] -> Draw("AE3");
+   if (grPull  [iCut][iVar]) grPull  [iCut][iVar] -> Draw("PsameE");      
    gPad->SetGrid();
-   gPad->SetLeftMargin(0.17);
+//    gPad->SetLeftMargin(0.17);
    gPad->SetRightMargin(0.07);
    
    ccCanvasPullTrace[iCut][iVar]-> cd();
-   hPullTrace[iCut][iVar]->Draw();
+   if (hPullTrace[iCut][iVar]) hPullTrace[iCut][iVar]->Draw();
    gPad->SetGrid();
    
-   
-   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
     
     bool isSig = false;
     for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
@@ -1050,29 +1092,47 @@ int main(int argc, char** argv)
     }
     
     if (isSig || reduced_name_samples.at(iName) == "DATA") {
-     cCompareCut[iCut] -> cd(iVar+1);
-     histo[iName][iCut][iVar]->Draw("EsameB");
-     
-     cCompareVar[iVar] -> cd(iCut+1);
-     histo[iName][iCut][iVar]->Draw("EsameB");
-     
-     cCompareCutPull[iCut] -> cd(iVar+1);
-     histo[iName][iCut][iVar]->Draw("EsameB");
-
-     cCompareVarPull[iVar] -> cd(iCut*3+1);
-     histo[iName][iCut][iVar]->Draw("EsameB");
-     
-     ccCanvas[iCut][iVar]-> cd();
-     histo[iName][iCut][iVar]->Draw("EsameB");
-     
-//      if (isSig){
+     if (!isSig){
+      cCompareCut[iCut] -> cd(iVar+1);
+      histo[iName][iCut][iVar]->Draw("EsameB");
+      
+      cCompareVar[iVar] -> cd(iCut+1);
+      histo[iName][iCut][iVar]->Draw("EsameB");
+      
+      cCompareCutPull[iCut] -> cd(iVar+1);
+      histo[iName][iCut][iVar]->Draw("EsameB");
+      
+      cCompareVarPull[iVar] -> cd(iCut*3+1);
+      histo[iName][iCut][iVar]->Draw("EsameB");
+      
+      ccCanvas[iCut][iVar]-> cd();
+      histo[iName][iCut][iVar]->Draw("EsameB");
+     }
+     if (isSig){
       ccCanvasNormalize[iCut][iVar]-> cd();
       histo[iName][iCut][iVar]->DrawNormalized("same L");
-//      }
+     }
      
     }
    }
    
+   
+   cCompareCut[iCut] -> cd(iVar+1);
+   if (Discovery) DrawStack(hsSignal[iCut][iVar],0,0,"EsameB");
+   
+   cCompareVar[iVar] -> cd(iCut+1);
+   if (Discovery) DrawStack(hsSignal[iCut][iVar],0,0,"EsameB");
+   
+   cCompareCutPull[iCut] -> cd(iVar+1);
+   if (Discovery) DrawStack(hsSignal[iCut][iVar],0,0,"EsameB");
+   
+   cCompareVarPull[iVar] -> cd(iCut*3+1);
+   if (Discovery) DrawStack(hsSignal[iCut][iVar],0,0,"EsameB");
+   
+   ccCanvas[iCut][iVar]-> cd();
+   if (Discovery) DrawStack(hsSignal[iCut][iVar],0,0,"EsameB");
+   
+      
    cCompareCut[iCut] -> cd(iVar+1);
    leg->Draw();
    cCompareVar[iVar] -> cd(iCut+1);
@@ -1094,7 +1154,6 @@ int main(int argc, char** argv)
  std::cout <<"Time = " <<  ((double) (end - start)) << " (a.u.)" << std::endl;  
  
  
- 
  ///==== save output ====
  outFile.cd();
  cTrend -> Write();
@@ -1102,7 +1161,7 @@ int main(int argc, char** argv)
  
  outFile.mkdir("Trend");
  outFile.cd("Trend");
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
   cTrendPie[iCut] -> Write();
  }
  cTrendPieAll -> Write();
@@ -1121,7 +1180,7 @@ int main(int argc, char** argv)
  outFile.cd();
  outFile.mkdir("Cut");
  outFile.cd("Cut");
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
   cCompareCut[iCut] -> Write();
   cCompareCutPull[iCut] -> Write();
   TString nameCut = Form ("Cut_%d",iCut);
@@ -1133,7 +1192,7 @@ int main(int argc, char** argv)
  outFile.cd();
  outFile.mkdir("Var");
  outFile.cd("Var");
- for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
+ for (uint iVar = 0; iVar<vVarName.size(); iVar++){
   cCompareVar[iVar] -> Write();
   cCompareVarPull[iVar] -> Write();
  }
@@ -1145,32 +1204,32 @@ int main(int argc, char** argv)
  cdAll->mkdir("Pull");
  cdAll->mkdir("PullTrace");
  outFile.cd("All/Var");
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    ccCanvas[iCut][iVar]-> Write();
   }
  }
  
  outFile.cd();
  outFile.cd("All/Norm");
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    ccCanvasNormalize[iCut][iVar]-> Write();
   }
  }
  
  outFile.cd();
  outFile.cd("All/Pull");
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    ccCanvasPull[iCut][iVar]-> Write();
   }
  }
  
  outFile.cd();
  outFile.cd("All/PullTrace");
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    ccCanvasPullTrace[iCut][iVar]-> Write();
   }
  }
@@ -1179,10 +1238,10 @@ int main(int argc, char** argv)
  outFile.cd();
  outFile.mkdir("Data");
  outFile.cd("Data");
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
+ for (uint iCut = 0; iCut<vCut.size(); iCut++){
+  for (uint iVar = 0; iVar<vVarName.size(); iVar++){
    hs[iCut][iVar] -> Write() ;
-   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+   for (uint iName=0; iName<reduced_name_samples.size(); iName++){
     histo[iName][iCut][iVar] -> Write();
 //     bool isSig = false;
 //     for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
