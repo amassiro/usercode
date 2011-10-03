@@ -6,9 +6,9 @@
 
    test/Latinos/ttbar/H*.cfg config file define for each working point
    
-   --->List of Sample is Defined on the standard test/Latinos/ttbar/HiggsMasses/SamplesH*.txt
-   --->Cut File Example is reported in test/Latinos/ttbar/CutH160.txt ---> 3 Cut for the Efficiency region (All, BTag and BVeto), 3 Cut for the VBF Signal Region
-       and 3 Cut for the VBF-Like region in which Closure Test is developed 
+   ---> List of Sample is Defined on the standard test/Latinos/ttbar/HiggsMasses/SamplesH*.txt
+   ---> Cut File Example is reported in test/Latinos/ttbar/CutH160.txt ---> 3 Cut for the Efficiency region (All, BTag and BVeto), 3 Cut for the VBF Signal Region
+        and 3 Cut for the VBF-Like region in which Closure Test is developed 
 
    Run: * ls test/Latinos/ttbar/H*.cfg | awk '{printf "./bin/MCDATAComparisonPLOTTool.exe "$1" \n"}' | /bin/sh   ---> All Working Point
         * ./bin/MCDATAComparisonPLOTTool.exe test/Latinos/ttbar/H160.cfg   ----> Single working Point
@@ -24,8 +24,7 @@
 
    Run:   * root -l test/Latinos/ttbar/Btag_Efficiency.cxx\(\"input.root\",\"output.root\",\"out_Dumper.txt\"\)  [Single Working Point]
           
-          * ls output/out_ComparisonPLOTT_H*.root| tr "_" " "  | awk '{ printf "root -l test/Latinos/ttbar/BTag_Efficiency.cxx\(\\\"output/out_ComparisonPLOTT_"$3"\\\",
-             \\\"test/Latinos/ttbar/output/Efficiency_Plott_"$3"\\\",\\\"test/Latinos/ttbar/output/Event_Dumper_"$3"\\\"\)\n"}' | /bin/sh  
+          * ls output/out_ComparisonPLOTT_H*.root| tr "_" " "  | awk '{ print "root -l test/Latinos/ttbar/BTag_Efficiency.cxx#(\\\@output/out_ComparisonPLOTT_"$3"\\\@,\\\@test/Latinos/ttbar/output/Efficiency_Plott_"$3"\\\@,\\\@test/Latinos/ttbar/output/Event_Dumper_"$3"\\\@#)"}' | tr "@" "\"" | tr "#" "\\" | /bin/sh                
             
           [All working Point]
 
