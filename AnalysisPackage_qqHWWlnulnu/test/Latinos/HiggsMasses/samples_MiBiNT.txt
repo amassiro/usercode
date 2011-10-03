@@ -1,0 +1,257 @@
+# name_sample            xsection        name_human_readable
+
+### Mass 120 ###
+##     Xsection     BR HWW
+## ggh 16.63        1.43e-01
+## qqh 1.269        1.43e-01
+#
+### Mass 130 ###
+##     Xsection     BR HWW
+## ggH 14.12        3.05e-01
+## qqH 1.154        3.05e-01
+#
+### Mass 140 ###
+##     Xsection     BR HWW
+## ggH 12.13        5.04e-01
+## qqH 1.052         5.04e-01
+#
+### Mass 150 ###
+##     Xsection     BR HWW
+## ggH 10.50        6.99e-01
+## qqH 0.9617       6.99e-01
+#
+### Mass 160 ###
+##     Xsection     BR HWW
+## ggH 9.080        9.09e-01
+## qqH 0.8787       9.09e-01
+#
+### Mass 170 ###
+##     Xsection     BR HWW
+## ggH 7.729       9.65e-01
+## qqH 0.8173      9.65e-01
+#
+### Mass 180 ###
+##     Xsection     BR HWW
+## ggH 6.739        9.32e-01
+## qqH 0.7480       9.32e-01
+#
+### Mass 190 ###
+##     Xsection     BR HWW
+## ggH 5.896        7.86e-01
+## qqH 0.6925       7.86e-01
+#
+### Mass 200 ###
+##     Xsection     BR HWW
+## ggH 5.249        7.41e-01
+## qqH 0.6371       7.41e-01
+#
+### Mass 250 ###
+##     Xsection     BR HWW
+## ggH 3.312        7.01e-01
+## qqH 0.4304       7.01e-01
+#
+### Mass 300 ###
+##     Xsection     BR HWW
+## ggH 2.418        6.92e-01
+## qqH 0.3010       6.92e-01
+#
+### Mass 400 ###
+##     Xsection     BR HWW
+## ggH 2.035        5.82e-01 
+## qqH 0.1619 	    5.82e-01 
+#
+### Mass 600 ###
+##     Xsection     BR HWW
+## ggH 0.3275        5.58e-01
+## qqH 0.05763       5.58e-01
+#
+
+
+
+
+### Mass 120 ###
+##     Xsection     BR HWW
+## ggh 16.63        1.43e-01
+## qqh 1.269        1.43e-01
+#
+##              WW->ffff       BR WWffff
+##              TauNu - QQ      (0.1125)*(0.6770)*2
+##              LNu - QQ        (0.1075+0.1057)*(0.6770)*2
+##              TauNu - LNu     (0.1075+0.1057)*(0.1125)*2
+##              TauNu - TauNu   (0.1125)*(0.1125)
+##              LNu - LNu       (0.1075+0.1057)*(0.1075+0.1057)
+#   GluGluToHToWWToLNuTauNu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1  1.141e-01           ggH120
+#   GluGluToHToWWTo2Tau2Nu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1   3.010e-02           ggH120
+#   GluGluToHToWWTo2L2Nu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v2 	   1.081e-01           ggH120
+VBF_HToWWToLNuTauNu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   8.705e-03           qqH120
+VBF_HToWWTo2Tau2Nu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   2.297e-03           qqH120
+VBF_HToWWTo2L2Nu_M-120_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   8.2485e-03          qqH120
+
+
+
+### Mass 130 ###
+##     Xsection     BR HWW
+## ggH 14.12        3.05e-01
+## qqH 1.154        3.05e-01
+#
+##              WW->ffff       BR WWffff
+##              TauNu - LNu     (0.1075+0.1057)*(0.1125)*2
+##              TauNu - TauNu   (0.1125)*(0.1125)
+##              LNu - LNu       (0.1075+0.1057)*(0.1075+0.1057)
+
+#GluGluToHToWWToLNuTauNu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1  0.206588          ggH130
+#GluGluToHToWWTo2Tau2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1   0.0545054         ggH130
+#GluGluToHToWWTo2L2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.195753          ggH130
+#VBF_HToWWToLNuTauNu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.016884          qqH130
+#VBF_HToWWTo2Tau2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00445462        qqH130
+#VBF_HToWWTo2L2Nu_M-130_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.0159985         qqH130
+
+
+
+### Mass 140 ###
+##     Xsection     BR HWW
+## ggH 12.13        5.04e-01
+## qqH 1.052         5.04e-01
+#
+#GluGluToHToWWToLNuTauNu_M-140_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	0.293266          ggH140
+#GluGluToHToWWTo2Tau2Nu_M-140_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	0.0773742         ggH140
+#GluGluToHToWWTo2L2Nu_M-140_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	0.277885          ggH140
+#VBF_HToWWToLNuTauNu_M-140_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0254341         qqH140
+#VBF_HToWWTo2Tau2Nu_M-140_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0067104         qqH140
+#VBF_HToWWTo2L2Nu_M-140_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.024100          qqH140
+
+
+
+### Mass 150 ###
+##     Xsection     BR HWW
+## ggH 10.50        6.99e-01
+## qqH 0.9617       6.99e-01
+#
+#GluGluToHToWWToLNuTauNu_M-150_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	0.352076           ggH150
+#GluGluToHToWWTo2Tau2Nu_M-150_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	0.0928905          ggH150
+#GluGluToHToWWTo2L2Nu_M-150_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.333611           ggH150
+#VBF_HToWWToLNuTauNu_M-150_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0322468          qqH150
+#VBF_HToWWTo2Tau2Nu_M-150_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.00850789         qqH150
+#VBF_HToWWTo2L2Nu_M-150_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0305556          qqH150
+
+
+
+### Mass 160 ###
+##     Xsection     BR HWW
+## ggH 9.080        9.09e-01
+## qqH 0.8787       9.09e-01
+#
+#   GluGluToHToWWToLNuTauNu_M-160_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 0.395931           ggH160
+#   GluGluToHToWWTo2Tau2Nu_M-160_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1  0.104461           ggH160
+#   GluGluToHToWWTo2L2Nu_M-160_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	  0.375167           ggH160
+VBF_HToWWToLNuTauNu_M-160_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	  0.0383155          qqH160
+VBF_HToWWTo2Tau2Nu_M-160_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	  0.010109           qqH160
+VBF_HToWWTo2L2Nu_M-160_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	  0.036306           qqH160
+
+
+### Mass 170 ###
+##     Xsection     BR HWW
+## ggH 7.729       9.65e-01
+## qqH 0.8173      9.65e-01
+#
+
+#GluGluToHToWWToLNuTauNu_M-170_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 0.357784            ggH170
+#GluGluToHToWWTo2Tau2Nu_M-170_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1  0.0943965           ggH170
+#GluGluToHToWWTo2L2Nu_M-170_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	  0.33902             ggH170
+#VBF_HToWWToLNuTauNu_M-170_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	  0.0378337           qqH170
+#VBF_HToWWTo2Tau2Nu_M-170_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	  0.00998191          qqH170
+#VBF_HToWWTo2L2Nu_M-170_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	  0.0358495           qqH170
+
+
+### Mass 180 ###
+##     Xsection     BR HWW
+## ggH 6.739        9.32e-01
+## qqH 0.7480       9.32e-01
+#
+#GluGluToHToWWToLNuTauNu_M-180_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1  0.301287           ggH180
+#GluGluToHToWWTo2Tau2Nu_M-180_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1   0.0794907          ggH180
+#GluGluToHToWWTo2L2Nu_M-180_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.285487           ggH180
+#VBF_HToWWToLNuTauNu_M-180_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.0334416          qqH180
+#VBF_HToWWTo2Tau2Nu_M-180_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00882313         qqH180
+#VBF_HToWWTo2L2Nu_M-180_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.0316878          qqH180
+
+
+
+### Mass 190 ###
+##     Xsection     BR HWW
+## ggH 5.896        7.86e-01
+## qqH 0.6925       7.86e-01
+#
+#   GluGluToHToWWToLNuTauNu_M-190_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1  0.222305           ggH190
+#   GluGluToHToWWTo2Tau2Nu_M-190_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1   0.0586523          ggH190
+#   GluGluToHToWWTo2L2Nu_M-190_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.210647           ggH190
+VBF_HToWWToLNuTauNu_M-190_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.0261103          qqH190
+VBF_HToWWTo2Tau2Nu_M-190_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00688886         qqH190
+VBF_HToWWTo2L2Nu_M-190_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.024741           qqH190
+
+
+
+### Mass 200 ###
+##     Xsection     BR HWW
+## ggH 5.249        7.41e-01
+## qqH 0.6371       7.41e-01
+#
+#GluGluToHToWWToLNuTauNu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	0.18658           ggH200
+#GluGluToHToWWTo2Tau2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0492266         ggH200
+#GluGluToHToWWTo2L2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.176795          ggH200
+#VBF_HToWWToLNuTauNu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0226462         qqH200
+#VBF_HToWWTo2Tau2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0059749         qqH200
+#VBF_HToWWTo2L2Nu_M-200_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0214585         qqH200
+
+
+
+
+### Mass 250 ###
+##     Xsection     BR HWW
+## ggH 3.312        7.01e-01
+## qqH 0.4304       7.01e-01
+#
+#   GluGluToHToWWToLNuTauNu_M-250_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	0.111373           ggH250
+#   GluGluToHToWWTo2Tau2Nu_M-250_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0293842          ggH250
+#   GluGluToHToWWTo2L2Nu_M-250_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.105532           ggH250
+VBF_HToWWToLNuTauNu_M-250_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0145941          qqH250
+VBF_HToWWTo2Tau2Nu_M-250_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.00385046         qqH250
+VBF_HToWWTo2L2Nu_M-250_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0138287          qqH250
+
+
+
+### Mass 300 ###
+##     Xsection     BR HWW
+## ggH 2.418        6.92e-01
+## qqH 0.3010       6.92e-01
+#
+### Mass 400 ###
+##     Xsection     BR HWW
+## ggH 2.035        5.82e-01 
+## qqH 0.1619 	    5.82e-01 
+#
+#   GluGluToHToWWToLNuTauNu_M-400_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0568142           ggH400
+#   GluGluToHToWWTo2Tau2Nu_M-400_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0149897           ggH400
+#   GluGluToHToWWTo2L2Nu_M-400_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.0538346           ggH400
+VBF_HToWWToLNuTauNu_M-400_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.00452001          qqH400
+VBF_HToWWTo2Tau2Nu_M-400_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.00119255          qqH400
+VBF_HToWWTo2L2Nu_M-400_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	        0.00428296          qqH400
+
+
+
+
+### Mass 600 ###
+##     Xsection     BR HWW
+## ggH 0.3275        5.58e-01
+## qqH 0.05763       5.58e-01
+#
+#   GluGluToHToWWToLNuTauNu_M-600_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00876628           ggH600
+#   GluGluToHToWWTo2Tau2Nu_M-600_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00231287           ggH600
+#   GluGluToHToWWTo2L2Nu_M-600_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.00830654           ggH600
+VBF_HToWWToLNuTauNu_M-600_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1 	   0.0015426            qqH600
+VBF_HToWWTo2Tau2Nu_M-600_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1          0.000406994          qqH600
+VBF_HToWWTo2L2Nu_M-600_7TeV-powheg-pythia6_Spring11-PU_S1_START311_V1G1-v1            0.0014617            qqH600
+##
+
+
+
