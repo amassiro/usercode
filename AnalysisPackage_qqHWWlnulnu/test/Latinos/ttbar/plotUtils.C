@@ -192,7 +192,7 @@ TH1D* DynamicalRebinHisto ( TH1D * original_Histo, TH1D* rebinned_Histo, std::ve
     }
    while(binning.at(iBin+1) >= original_Histo->GetXaxis()->GetBinUpEdge(original_iBin+1) && original_iBin<=original_Histo->GetNbinsX())
    { 
-     Bin_Counts.at(iBin)=Bin_Counts.at(iBin)+original_Histo->GetBinContent(original_iBin+1);
+     Bin_Counts.at(iBin)=Bin_Counts.at(iBin)+fabs(original_Histo->GetBinContent(original_iBin+1));
      Bin_Errors.at(iBin)=sqrt(Bin_Errors.at(iBin)*Bin_Errors.at(iBin)+original_Histo->GetBinError(original_iBin+1)*original_Histo->GetBinError(original_iBin+1));
      original_iBin++;
     }
@@ -229,8 +229,8 @@ TH1D* DynamicalRebinHisto ( TH1D * original_Histo, TH1D* rebinned_Histo, std::ve
  if(!isDATA || (isDATA && isDivide))
  {  
   for(int iBin=0; iBin<edge.size()-1;iBin++)
-  {rebinned_Histo->SetBinContent(iBin+1,Bin_Counts.at(iBin));
-  rebinned_Histo->SetBinError(iBin+1,Bin_Errors.at(iBin));
+  {rebinned_Histo->SetBinContent(iBin+1,fabs(Bin_Counts.at(iBin)));
+  rebinned_Histo->SetBinError(iBin+1,fabs(Bin_Errors.at(iBin)));
   }
  }
  
