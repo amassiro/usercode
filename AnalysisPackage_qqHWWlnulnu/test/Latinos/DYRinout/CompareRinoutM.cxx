@@ -2547,6 +2547,410 @@ void CompareRinoutM(TString nameRootFile){
  ///======================
  
  
+ 
+ TGraphErrors* grDATA_MmumuA = new TGraphErrors(numPlotM,XM,DATA_MmumuA,errXM,DATA_errMmumuA);
+ grDATA_MmumuA->SetTitle("M#mu#mu DATA A");
+ grDATA_MmumuA->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grDATA_MmumuA->GetYaxis()->SetTitle("M#mu#mu A");
+ grDATA_MmumuA->SetMarkerColor(kBlack);
+ grDATA_MmumuA->SetFillColor(kWhite);
+ grDATA_MmumuA->SetLineColor(kBlack);
+ grDATA_MmumuA->SetMarkerStyle(25);
+ grDATA_MmumuA->SetMarkerSize(1);
+ grDATA_MmumuA->SetLineWidth(2);
+ 
+ TGraphErrors* grDATA_MeeA = new TGraphErrors(numPlotM,XM,DATA_MeeA,errXM,DATA_errMeeA);
+ grDATA_MeeA->SetTitle("Mee DATA A");
+ grDATA_MeeA->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grDATA_MeeA->GetYaxis()->SetTitle("Mee A");
+ grDATA_MeeA->SetMarkerColor(kBlack);
+ grDATA_MeeA->SetFillColor(kWhite);
+ grDATA_MeeA->SetLineColor(kBlack);
+ grDATA_MeeA->SetMarkerStyle(25);
+ grDATA_MeeA->SetMarkerSize(1);
+ grDATA_MeeA->SetLineWidth(2);
+ 
+ TGraphErrors* grDATA_MemuA = new TGraphErrors(numPlotM,XM,DATA_MemuA,errXM,DATA_errMemuA);
+ grDATA_MemuA->SetTitle("M#mu#mu DATA A");
+ grDATA_MemuA->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grDATA_MemuA->GetYaxis()->SetTitle("M#mu#mu A");
+ grDATA_MemuA->SetMarkerColor(kBlack);
+ grDATA_MemuA->SetFillColor(kWhite);
+ grDATA_MemuA->SetLineColor(kBlack);
+ grDATA_MemuA->SetMarkerStyle(25);
+ grDATA_MemuA->SetMarkerSize(1);
+ grDATA_MemuA->SetLineWidth(2);
+ 
+ TGraphErrors* grDATA_MmueA = new TGraphErrors(numPlotM,XM,DATA_MmueA,errXM,DATA_errMmueA);
+ grDATA_MmueA->SetTitle("M#mue DATA A");
+ grDATA_MmueA->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grDATA_MmueA->GetYaxis()->SetTitle("M#mue A");
+ grDATA_MmueA->SetMarkerColor(kBlack);
+ grDATA_MmueA->SetFillColor(kWhite);
+ grDATA_MmueA->SetLineColor(kBlack);
+ grDATA_MmueA->SetMarkerStyle(25);
+ grDATA_MmueA->SetMarkerSize(1);
+ grDATA_MmueA->SetLineWidth(2);
+ 
+ 
+ 
+ 
+ TGraphErrors* grother_MmumuA = new TGraphErrors(numPlotM,XM,other_MmumuA,errXM,other_errMmumuA);
+ grother_MmumuA->SetTitle("M#mu#mu other A");
+ grother_MmumuA->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grother_MmumuA->GetYaxis()->SetTitle("M#mu#mu A");
+ grother_MmumuA->SetMarkerColor(kBlue);
+ grother_MmumuA->SetFillColor(kWhite);
+ grother_MmumuA->SetLineColor(kBlue);
+ grother_MmumuA->SetMarkerStyle(25);
+ grother_MmumuA->SetMarkerSize(1);
+ grother_MmumuA->SetLineWidth(2);
+ 
+ TGraphErrors* grother_MeeA = new TGraphErrors(numPlotM,XM,other_MeeA,errXM,other_errMeeA);
+ grother_MeeA->SetTitle("Mee other A");
+ grother_MeeA->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grother_MeeA->GetYaxis()->SetTitle("Mee A");
+ grother_MeeA->SetMarkerColor(kBlue);
+ grother_MeeA->SetFillColor(kWhite);
+ grother_MeeA->SetLineColor(kBlue);
+ grother_MeeA->SetMarkerStyle(25);
+ grother_MeeA->SetMarkerSize(1);
+ grother_MeeA->SetLineWidth(2);
+ 
+ TGraphErrors* grother_MemuA = new TGraphErrors(numPlotM,XM,other_MemuA,errXM,other_errMemuA);
+ grother_MemuA->SetTitle("M#mu#mu other A");
+ grother_MemuA->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grother_MemuA->GetYaxis()->SetTitle("M#mu#mu A");
+ grother_MemuA->SetMarkerColor(kBlue);
+ grother_MemuA->SetFillColor(kWhite);
+ grother_MemuA->SetLineColor(kBlue);
+ grother_MemuA->SetMarkerStyle(25);
+ grother_MemuA->SetMarkerSize(1);
+ grother_MemuA->SetLineWidth(2);
+ 
+ TGraphErrors* grother_MmueA = new TGraphErrors(numPlotM,XM,other_MmueA,errXM,other_errMmueA);
+ grother_MmueA->SetTitle("M#mue other A");
+ grother_MmueA->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grother_MmueA->GetYaxis()->SetTitle("M#mue A");
+ grother_MmueA->SetMarkerColor(kBlue);
+ grother_MmueA->SetFillColor(kWhite);
+ grother_MmueA->SetLineColor(kBlue);
+ grother_MmueA->SetMarkerStyle(25);
+ grother_MmueA->SetMarkerSize(1);
+ grother_MmueA->SetLineWidth(2);
+ 
+ 
+ 
+ TGraphErrors* grall_MmumuA = new TGraphErrors(numPlotM,XM,all_MmumuA,errXM,all_errMmumuA);
+ grall_MmumuA->SetTitle("M#mu#mu all A");
+ grall_MmumuA->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grall_MmumuA->GetYaxis()->SetTitle("M#mu#mu A");
+ grall_MmumuA->SetMarkerColor(kRed);
+ grall_MmumuA->SetFillColor(kWhite);
+ grall_MmumuA->SetLineColor(kRed);
+ grall_MmumuA->SetMarkerStyle(25);
+ grall_MmumuA->SetMarkerSize(1);
+ grall_MmumuA->SetLineWidth(2);
+ 
+ TGraphErrors* grall_MeeA = new TGraphErrors(numPlotM,XM,all_MeeA,errXM,all_errMeeA);
+ grall_MeeA->SetTitle("Mee all A");
+ grall_MeeA->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grall_MeeA->GetYaxis()->SetTitle("Mee A");
+ grall_MeeA->SetMarkerColor(kRed);
+ grall_MeeA->SetFillColor(kWhite);
+ grall_MeeA->SetLineColor(kRed);
+ grall_MeeA->SetMarkerStyle(25);
+ grall_MeeA->SetMarkerSize(1);
+ grall_MeeA->SetLineWidth(2);
+ 
+ TGraphErrors* grall_MemuA = new TGraphErrors(numPlotM,XM,all_MemuA,errXM,all_errMemuA);
+ grall_MemuA->SetTitle("Me#mu all A");
+ grall_MemuA->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grall_MemuA->GetYaxis()->SetTitle("Me#mu A");
+ grall_MemuA->SetMarkerColor(kRed);
+ grall_MemuA->SetFillColor(kWhite);
+ grall_MemuA->SetLineColor(kRed);
+ grall_MemuA->SetMarkerStyle(25);
+ grall_MemuA->SetMarkerSize(1);
+ grall_MemuA->SetLineWidth(2);
+ 
+ TGraphErrors* grall_MmueA = new TGraphErrors(numPlotM,XM,all_MmueA,errXM,all_errMmueA);
+ grall_MmueA->SetTitle("M#mue all A");
+ grall_MmueA->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grall_MmueA->GetYaxis()->SetTitle("M#mue A");
+ grall_MmueA->SetMarkerColor(kRed);
+ grall_MmueA->SetFillColor(kWhite);
+ grall_MmueA->SetLineColor(kRed);
+ grall_MmueA->SetMarkerStyle(25);
+ grall_MmueA->SetMarkerSize(1);
+ grall_MmueA->SetLineWidth(2);
+ 
+ 
+ 
+ 
+ 
+ TCanvas* cMA = new TCanvas("cMA","cMA",800,800); 
+ cMA->Divide(2,2);
+ 
+ cMA->cd(1);
+ TMultiGraph* mgr_MeeA = new TMultiGraph(); 
+ mgr_MeeA->Add(grall_MeeA);
+ mgr_MeeA->Add(grother_MeeA);
+ mgr_MeeA->Add(grDATA_MeeA);
+ mgr_MeeA->Draw("AP");
+ mgr_MeeA->GetXaxis()->SetTitle("met > threshold (GeV)");
+ mgr_MeeA->GetYaxis()->SetTitle("M ee"); 
+ TLegend* leg = gPad->BuildLegend();
+ leg->SetFillColor(kWhite); 
+ gPad->SetGrid();
+ 
+ cMA->cd(2);
+ TMultiGraph* mgr_MmumuA = new TMultiGraph(); 
+ mgr_MmumuA->Add(grall_MmumuA);
+ mgr_MmumuA->Add(grother_MmumuA);
+ mgr_MmumuA->Add(grDATA_MmumuA);
+ mgr_MmumuA->Draw("AP");
+ mgr_MmumuA->GetXaxis()->SetTitle("met > threshold (GeV)");
+ mgr_MmumuA->GetYaxis()->SetTitle("M mumu"); 
+ TLegend* leg = gPad->BuildLegend();
+ leg->SetFillColor(kWhite); 
+ gPad->SetGrid();
+ 
+ cMA->cd(3);
+ TMultiGraph* mgr_MemuA = new TMultiGraph(); 
+ mgr_MemuA->Add(grall_MemuA);
+ mgr_MemuA->Add(grother_MemuA);
+ mgr_MemuA->Add(grDATA_MemuA);
+ mgr_MemuA->Draw("AP");
+ mgr_MemuA->GetXaxis()->SetTitle("met > threshold (GeV)");
+ mgr_MemuA->GetYaxis()->SetTitle("M emu"); 
+ TLegend* leg = gPad->BuildLegend();
+ leg->SetFillColor(kWhite); 
+ gPad->SetGrid();
+ 
+ cMA->cd(4);
+ TMultiGraph* mgr_MmueA = new TMultiGraph(); 
+ mgr_MmueA->Add(grall_MmueA);
+ mgr_MmueA->Add(grother_MmueA);
+ mgr_MmueA->Add(grDATA_MmueA);
+ mgr_MmueA->Draw("AP");
+ mgr_MmueA->GetXaxis()->SetTitle("met > threshold (GeV)");
+ mgr_MmueA->GetYaxis()->SetTitle("M mue"); 
+ TLegend* leg = gPad->BuildLegend();
+ leg->SetFillColor(kWhite); 
+ gPad->SetGrid();
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ TGraphErrors* grDATA_MmumuB = new TGraphErrors(numPlotM,XM,DATA_MmumuB,errXM,DATA_errMmumuB);
+ grDATA_MmumuB->SetTitle("M#mu#mu DATA B");
+ grDATA_MmumuB->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grDATA_MmumuB->GetYaxis()->SetTitle("M#mu#mu B");
+ grDATA_MmumuB->SetMarkerColor(kBlack);
+ grDATA_MmumuB->SetFillColor(kWhite);
+ grDATA_MmumuB->SetLineColor(kBlack);
+ grDATA_MmumuB->SetMarkerStyle(25);
+ grDATA_MmumuB->SetMarkerSize(1);
+ grDATA_MmumuB->SetLineWidth(2);
+ 
+ TGraphErrors* grDATA_MeeB = new TGraphErrors(numPlotM,XM,DATA_MeeB,errXM,DATA_errMeeB);
+ grDATA_MeeB->SetTitle("Mee DATA B");
+ grDATA_MeeB->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grDATA_MeeB->GetYaxis()->SetTitle("Mee B");
+ grDATA_MeeB->SetMarkerColor(kBlack);
+ grDATA_MeeB->SetFillColor(kWhite);
+ grDATA_MeeB->SetLineColor(kBlack);
+ grDATA_MeeB->SetMarkerStyle(25);
+ grDATA_MeeB->SetMarkerSize(1);
+ grDATA_MeeB->SetLineWidth(2);
+ 
+ TGraphErrors* grDATA_MemuB = new TGraphErrors(numPlotM,XM,DATA_MemuB,errXM,DATA_errMemuB);
+ grDATA_MemuB->SetTitle("Me#mu DATA B");
+ grDATA_MemuB->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grDATA_MemuB->GetYaxis()->SetTitle("Me#mu B");
+ grDATA_MemuB->SetMarkerColor(kBlack);
+ grDATA_MemuB->SetFillColor(kWhite);
+ grDATA_MemuB->SetLineColor(kBlack);
+ grDATA_MemuB->SetMarkerStyle(25);
+ grDATA_MemuB->SetMarkerSize(1);
+ grDATA_MemuB->SetLineWidth(2);
+ 
+ TGraphErrors* grDATA_MmueB = new TGraphErrors(numPlotM,XM,DATA_MmueB,errXM,DATA_errMmueB);
+ grDATA_MmueB->SetTitle("M#mue DATA B");
+ grDATA_MmueB->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grDATA_MmueB->GetYaxis()->SetTitle("M#mue B");
+ grDATA_MmueB->SetMarkerColor(kBlack);
+ grDATA_MmueB->SetFillColor(kWhite);
+ grDATA_MmueB->SetLineColor(kBlack);
+ grDATA_MmueB->SetMarkerStyle(25);
+ grDATA_MmueB->SetMarkerSize(1);
+ grDATA_MmueB->SetLineWidth(2);
+ 
+ 
+ 
+ 
+ TGraphErrors* grother_MmumuB = new TGraphErrors(numPlotM,XM,other_MmumuB,errXM,other_errMmumuB);
+ grother_MmumuB->SetTitle("M#mu#mu other B");
+ grother_MmumuB->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grother_MmumuB->GetYaxis()->SetTitle("M#mu#mu B");
+ grother_MmumuB->SetMarkerColor(kBlue);
+ grother_MmumuB->SetFillColor(kWhite);
+ grother_MmumuB->SetLineColor(kBlue);
+ grother_MmumuB->SetMarkerStyle(25);
+ grother_MmumuB->SetMarkerSize(1);
+ grother_MmumuB->SetLineWidth(2);
+ 
+ TGraphErrors* grother_MeeB = new TGraphErrors(numPlotM,XM,other_MeeB,errXM,other_errMeeB);
+ grother_MeeB->SetTitle("Mee other B");
+ grother_MeeB->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grother_MeeB->GetYaxis()->SetTitle("Mee B");
+ grother_MeeB->SetMarkerColor(kBlue);
+ grother_MeeB->SetFillColor(kWhite);
+ grother_MeeB->SetLineColor(kBlue);
+ grother_MeeB->SetMarkerStyle(25);
+ grother_MeeB->SetMarkerSize(1);
+ grother_MeeB->SetLineWidth(2);
+ 
+ TGraphErrors* grother_MemuB = new TGraphErrors(numPlotM,XM,other_MemuB,errXM,other_errMemuB);
+ grother_MemuB->SetTitle("M#mu#mu other B");
+ grother_MemuB->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grother_MemuB->GetYaxis()->SetTitle("M#mu#mu B");
+ grother_MemuB->SetMarkerColor(kBlue);
+ grother_MemuB->SetFillColor(kWhite);
+ grother_MemuB->SetLineColor(kBlue);
+ grother_MemuB->SetMarkerStyle(25);
+ grother_MemuB->SetMarkerSize(1);
+ grother_MemuB->SetLineWidth(2);
+ 
+ TGraphErrors* grother_MmueB = new TGraphErrors(numPlotM,XM,other_MmueB,errXM,other_errMmueB);
+ grother_MmueB->SetTitle("M#mue other B");
+ grother_MmueB->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grother_MmueB->GetYaxis()->SetTitle("M#mue B");
+ grother_MmueB->SetMarkerColor(kBlue);
+ grother_MmueB->SetFillColor(kWhite);
+ grother_MmueB->SetLineColor(kBlue);
+ grother_MmueB->SetMarkerStyle(25);
+ grother_MmueB->SetMarkerSize(1);
+ grother_MmueB->SetLineWidth(2);
+ 
+ 
+ 
+ TGraphErrors* grall_MmumuB = new TGraphErrors(numPlotM,XM,all_MmumuB,errXM,all_errMmumuB);
+ grall_MmumuB->SetTitle("M#mu#mu all B");
+ grall_MmumuB->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grall_MmumuB->GetYaxis()->SetTitle("M#mu#mu B");
+ grall_MmumuB->SetMarkerColor(kRed);
+ grall_MmumuB->SetFillColor(kWhite);
+ grall_MmumuB->SetLineColor(kRed);
+ grall_MmumuB->SetMarkerStyle(25);
+ grall_MmumuB->SetMarkerSize(1);
+ grall_MmumuB->SetLineWidth(2);
+ 
+ TGraphErrors* grall_MeeB = new TGraphErrors(numPlotM,XM,all_MeeB,errXM,all_errMeeB);
+ grall_MeeB->SetTitle("Mee all B");
+ grall_MeeB->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grall_MeeB->GetYaxis()->SetTitle("Mee B");
+ grall_MeeB->SetMarkerColor(kRed);
+ grall_MeeB->SetFillColor(kWhite);
+ grall_MeeB->SetLineColor(kRed);
+ grall_MeeB->SetMarkerStyle(25);
+ grall_MeeB->SetMarkerSize(1);
+ grall_MeeB->SetLineWidth(2);
+ 
+ TGraphErrors* grall_MemuB = new TGraphErrors(numPlotM,XM,all_MemuB,errXM,all_errMemuB);
+ grall_MemuB->SetTitle("M#mu#mu all B");
+ grall_MemuB->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grall_MemuB->GetYaxis()->SetTitle("M#mu#mu B");
+ grall_MemuB->SetMarkerColor(kRed);
+ grall_MemuB->SetFillColor(kWhite);
+ grall_MemuB->SetLineColor(kRed);
+ grall_MemuB->SetMarkerStyle(25);
+ grall_MemuB->SetMarkerSize(1);
+ grall_MemuB->SetLineWidth(2);
+ 
+ TGraphErrors* grall_MmueB = new TGraphErrors(numPlotM,XM,all_MmueB,errXM,all_errMmueB);
+ grall_MmueB->SetTitle("M#mue all B");
+ grall_MmueB->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grall_MmueB->GetYaxis()->SetTitle("M#mue B");
+ grall_MmueB->SetMarkerColor(kRed);
+ grall_MmueB->SetFillColor(kWhite);
+ grall_MmueB->SetLineColor(kRed);
+ grall_MmueB->SetMarkerStyle(25);
+ grall_MmueB->SetMarkerSize(1);
+ grall_MmueB->SetLineWidth(2);
+ 
+ 
+ 
+ 
+ 
+ TCanvas* cMA = new TCanvas("cMB","cMB",800,800); 
+ cMA->Divide(2,2);
+ 
+ cMA->cd(1);
+ TMultiGraph* mgr_MeeB = new TMultiGraph(); 
+ mgr_MeeB->Add(grall_MeeB);
+ mgr_MeeB->Add(grother_MeeB);
+ mgr_MeeB->Add(grDATA_MeeB);
+ mgr_MeeB->Draw("AP");
+ mgr_MeeB->GetXaxis()->SetTitle("met > threshold (GeV)");
+ mgr_MeeB->GetYaxis()->SetTitle("M ee"); 
+ TLegend* leg = gPad->BuildLegend();
+ leg->SetFillColor(kWhite); 
+ gPad->SetGrid();
+ 
+ cMA->cd(2);
+ TMultiGraph* mgr_MmumuB = new TMultiGraph(); 
+ mgr_MmumuB->Add(grall_MmumuB);
+ mgr_MmumuB->Add(grother_MmumuB);
+ mgr_MmumuB->Add(grDATA_MmumuB);
+ mgr_MmumuB->Draw("AP");
+ mgr_MmumuB->GetXaxis()->SetTitle("met > threshold (GeV)");
+ mgr_MmumuB->GetYaxis()->SetTitle("M mumu"); 
+ TLegend* leg = gPad->BuildLegend();
+ leg->SetFillColor(kWhite); 
+ gPad->SetGrid();
+ 
+ cMA->cd(3);
+ TMultiGraph* mgr_MemuB = new TMultiGraph(); 
+ mgr_MemuB->Add(grall_MemuB);
+ mgr_MemuB->Add(grother_MemuB);
+ mgr_MemuB->Add(grDATA_MemuB);
+ mgr_MemuB->Draw("AP");
+ mgr_MemuB->GetXaxis()->SetTitle("met > threshold (GeV)");
+ mgr_MemuB->GetYaxis()->SetTitle("M emu"); 
+ TLegend* leg = gPad->BuildLegend();
+ leg->SetFillColor(kWhite); 
+ gPad->SetGrid();
+ 
+ cMA->cd(4);
+ TMultiGraph* mgr_MmueB = new TMultiGraph(); 
+ mgr_MmueB->Add(grall_MmueB);
+ mgr_MmueB->Add(grother_MmueB);
+ mgr_MmueB->Add(grDATA_MmueB);
+ mgr_MmueB->Draw("AP");
+ mgr_MmueB->GetXaxis()->SetTitle("met > threshold (GeV)");
+ mgr_MmueB->GetYaxis()->SetTitle("M mue"); 
+ TLegend* leg = gPad->BuildLegend();
+ leg->SetFillColor(kWhite); 
+ gPad->SetGrid();
+ 
+ 
+ 
+ 
+ 
+ ///==== M_ijkm ==== 
  TGraphErrors* grDATA_MeeemuA = new TGraphErrors(numPlotM,XM,DATA_MeeemuA,errXM,DATA_errMeeemuA);
  grDATA_MeeemuA->SetTitle("Mee/e#mu DATA A");
  grDATA_MeeemuA->GetXaxis()->SetTitle("met > threshold (GeV)");
