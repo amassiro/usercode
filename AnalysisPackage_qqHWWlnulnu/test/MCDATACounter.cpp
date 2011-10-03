@@ -502,7 +502,7 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
       TString name_histoTot_temp = Form("%s_%d_Tot_temp",reduced_name_samples.at(iName).c_str(),iCut);
       TString name_HR_histoTot_temp = Form("cut %d",iCut);
       histo[iName][iCut] = new TH1F(name_histoTot_temp,name_HR_histoTot_temp,100,-10,10000000000);
-      histo[iName][iCut] -> Sumw2(); //---- cosÃ¬ mette l'errore giusto!
+      histo[iName][iCut] -> Sumw2(); //---- così mette l'errore giusto!
       reduced_name_samples_flag.at(iName) = 1;
      }
      histo[iName][iCut] -> Add(histo_temp[iSample][iCut]);
@@ -514,6 +514,8 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
   } ///==== end cicle on selections ====
  
  if (debug) std::cout << " >>> Reprocessing ... " << std::endl;
+ 
+ std::cout << std::endl;
  
  //  [iName]
  TH1F* hTrend[100];
@@ -532,6 +534,7 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
   hs.push_back(new THStack(nameStack,nameStack));
   
   for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+   
    histo[iName][iCut]->GetXaxis()->SetTitle("eventId");
    histo[iName][iCut]->SetMarkerColor(vColor[iName]);
    histo[iName][iCut]->SetLineColor(vColor[iName]);
@@ -565,15 +568,16 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
     }
    }
   }
-  
+   
   ///==== histo sum MC ====    
   ///==== Add systrematic error ====
-   AddError(hs.at(iCut),LumiSyst);
-   histoSumMC[iCut] = ((TH1F*)(hs.at(iCut)->GetStack()->Last()));
-
-   if (numDATA != -1) std::cout << " MC / DATA[" << iCut << "] = "<< histoSumMC[iCut]->Integral() << " / " << histo[numDATA][iCut]->Integral() << " = " << (histo[numDATA][iCut]->Integral() ? histoSumMC[iCut]->Integral()/ histo[numDATA][iCut]->Integral() : 0) << std::endl;
-
+  
  
+  AddError(hs.at(iCut),LumiSyst);
+  histoSumMC[iCut] = ((TH1F*)(hs.at(iCut)->GetStack()->Last()));
+
+  if (numDATA != -1) std::cout << " MC / DATA[" << iCut << "] = "<< histoSumMC[iCut]->Integral() << " / " << histo[numDATA][iCut]->Integral() << " = " << (histo[numDATA][iCut]->Integral() ? histoSumMC[iCut]->Integral()/ histo[numDATA][iCut]->Integral() : 0) << std::endl;
+
   ///==== legend ====
   if (!LegendBuilt){
    for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
@@ -725,7 +729,6 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
   std::cout << " [" << std::setw (10) <<  "XXX";
   std::cout << " ]";
  }
- std::cout << " pappappero!!!" << std::endl;
  std::cout << std::endl;
  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
   std::cout << std::setw (12) << reduced_name_samples.at(iName) ;
