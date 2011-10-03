@@ -1,9 +1,15 @@
 ### Name       Min   Max   NBin    NameHR
 #
-(l1_flavour==11&&l2_flavour==11)     0     2   2    ee
-(l1_flavour==13&&l2_flavour==13)     0     2   2    mumu
-(l1_flavour==11&&l2_flavour==13)     0     2   2    emu
-(l1_flavour==13&&l2_flavour==11)     0     2   2    mue
+channel==1      0     2   2    ee
+channel==0      0     2   2    mumu
+channel==2      0     2   2    emu
+channel==3      0     2   2    mue
+#
+#
+#      (l1_flavour==11&&l2_flavour==11)     0     2   2    ee
+#      (l1_flavour==13&&l2_flavour==13)     0     2   2    mumu
+#      (l1_flavour==11&&l2_flavour==13)     0     2   2    emu
+#      (l1_flavour==13&&l2_flavour==11)     0     2   2    mue
 #
 #  l1_flavour     1     21    20    flavour^{lepton-1}
 #  l2_flavour     1     21    20    flavour^{lepton-2}

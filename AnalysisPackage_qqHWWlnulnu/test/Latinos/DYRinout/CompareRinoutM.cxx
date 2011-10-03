@@ -10,7 +10,7 @@ void CompareRinoutM(TString nameRootFile){
 //  int numPointForRCalculation = 3;
  int numPointForRCalculation = 0;
 //  int numPointForDYCalculation = 21;
- int numPointForDYCalculation = 1;
+//  int numPointForDYCalculation = 1;
  
  int numPlot = 23;
 //  int numPlot = 23;
@@ -21,7 +21,7 @@ void CompareRinoutM(TString nameRootFile){
  double XShift[100] =    {0.2, 1.2.2, 5.2, 10.2, 12.2, 14.2, 16.2, 18.2, 20.2, 22.2, 24.2, 26.2, 28.2, 30.2, 32.2, 34.2, 35.2, 36.2, 37.2, 38.2, 39.2, 40.2, 45 };
  
 
- int numPointForMCalculation = 22;
+ int numPointForMCalculation; // = 22;
  int numPlotM = 26;
  int numM = 26;
  double XM[100] =    {0, 1, 5, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 35, 36, 37, 38, 39, 40, 45, 50, 55, 60 };
@@ -1590,7 +1590,7 @@ void CompareRinoutM(TString nameRootFile){
  grDYmad_NmumuA->SetMarkerColor(kGreen);
  grDYmad_NmumuA->SetFillColor(kWhite);
  grDYmad_NmumuA->SetLineColor(kGreen);
- grDYmad_NmumuA->SetMarkerStyle(21);
+ grDYmad_NmumuA->SetMarkerStyle(28);
  grDYmad_NmumuA->SetMarkerSize(1);
  grDYmad_NmumuA->SetLineWidth(2);
  
@@ -1663,7 +1663,7 @@ void CompareRinoutM(TString nameRootFile){
  grDYmad_NeeA->SetMarkerColor(kGreen);
  grDYmad_NeeA->SetFillColor(kWhite);
  grDYmad_NeeA->SetLineColor(kGreen);
- grDYmad_NeeA->SetMarkerStyle(21);
+ grDYmad_NeeA->SetMarkerStyle(28);
  grDYmad_NeeA->SetMarkerSize(1);
  grDYmad_NeeA->SetLineWidth(2);
  
@@ -1736,7 +1736,7 @@ void CompareRinoutM(TString nameRootFile){
  grDYmad_NemuA->SetMarkerColor(kGreen);
  grDYmad_NemuA->SetFillColor(kWhite);
  grDYmad_NemuA->SetLineColor(kGreen);
- grDYmad_NemuA->SetMarkerStyle(21);
+ grDYmad_NemuA->SetMarkerStyle(28);
  grDYmad_NemuA->SetMarkerSize(1);
  grDYmad_NemuA->SetLineWidth(2);
  
@@ -1809,7 +1809,7 @@ void CompareRinoutM(TString nameRootFile){
  grDYmad_NmueA->SetMarkerColor(kGreen);
  grDYmad_NmueA->SetFillColor(kWhite);
  grDYmad_NmueA->SetLineColor(kGreen);
- grDYmad_NmueA->SetMarkerStyle(21);
+ grDYmad_NmueA->SetMarkerStyle(28);
  grDYmad_NmueA->SetMarkerSize(1);
  grDYmad_NmueA->SetLineWidth(2);
  
@@ -1892,7 +1892,7 @@ void CompareRinoutM(TString nameRootFile){
  grDYmad_NmumuB->SetMarkerColor(kGreen);
  grDYmad_NmumuB->SetFillColor(kWhite);
  grDYmad_NmumuB->SetLineColor(kGreen);
- grDYmad_NmumuB->SetMarkerStyle(21);
+ grDYmad_NmumuB->SetMarkerStyle(28);
  grDYmad_NmumuB->SetMarkerSize(1);
  grDYmad_NmumuB->SetLineWidth(2);
  
@@ -1965,7 +1965,7 @@ void CompareRinoutM(TString nameRootFile){
  grDYmad_NeeB->SetMarkerColor(kGreen);
  grDYmad_NeeB->SetFillColor(kWhite);
  grDYmad_NeeB->SetLineColor(kGreen);
- grDYmad_NeeB->SetMarkerStyle(21);
+ grDYmad_NeeB->SetMarkerStyle(28);
  grDYmad_NeeB->SetMarkerSize(1);
  grDYmad_NeeB->SetLineWidth(2);
  
@@ -2038,7 +2038,7 @@ void CompareRinoutM(TString nameRootFile){
  grDYmad_NemuB->SetMarkerColor(kGreen);
  grDYmad_NemuB->SetFillColor(kWhite);
  grDYmad_NemuB->SetLineColor(kGreen);
- grDYmad_NemuB->SetMarkerStyle(21);
+ grDYmad_NemuB->SetMarkerStyle(28);
  grDYmad_NemuB->SetMarkerSize(1);
  grDYmad_NemuB->SetLineWidth(2);
  
@@ -2111,7 +2111,7 @@ void CompareRinoutM(TString nameRootFile){
  grDYmad_NmueB->SetMarkerColor(kGreen);
  grDYmad_NmueB->SetFillColor(kWhite);
  grDYmad_NmueB->SetLineColor(kGreen);
- grDYmad_NmueB->SetMarkerStyle(21);
+ grDYmad_NmueB->SetMarkerStyle(28);
  grDYmad_NmueB->SetMarkerSize(1);
  grDYmad_NmueB->SetLineWidth(2);
  
@@ -3085,6 +3085,200 @@ void CompareRinoutM(TString nameRootFile){
  TLegend* leg = gPad->BuildLegend();
  leg->SetFillColor(kWhite);
  gPad->SetGrid();
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ ///==== Correction coefficients as a function of met cut ====
+ 
+ 
+ double CorrectionFactor_ee_standardR[100];
+ double CorrectionFactor_mumu_standardR[100];
+ double CorrectionFactor_ee_R[100];
+ double CorrectionFactor_mumu_R[100];
+ double CorrectionFactor_ee_M[100];
+ double CorrectionFactor_mumu_M[100];
+ 
+ double errCorrectionFactor_ee_standardR[100];
+ double errCorrectionFactor_mumu_standardR[100];
+ double errCorrectionFactor_ee_R[100];
+ double errCorrectionFactor_mumu_R[100];
+ double errCorrectionFactor_ee_M[100];
+ double errCorrectionFactor_mumu_M[100];
+ 
+ for (int iPoint = 0; iPoint < numPlot; iPoint++) {
+  double _xU, _yU, _xD, _yD;
+  double _erryU, _erryD;
+  
+  //---- ee
+  grDATA_NeeA_Corrected_standardR->GetPoint(iPoint,_xU,_yU);
+  grDY_NeeA->GetPoint(iPoint,_xD,_yD);
+  _erryU = grDATA_NeeA_Corrected_standardR->GetErrorY(iPoint);
+  _erryD = grDY_NeeA->GetErrorY(iPoint);  
+  CorrectionFactor_ee_standardR[iPoint] = _yU / _yD;
+  errCorrectionFactor_ee_standardR[iPoint] = sqrt(_erryU / _yD * _erryU / _yD + _erryD / _yD / _yD * _yU * _erryD / _yD / _yD * _yU) ;
+  
+  grDATA_NeeA_Corrected_R->GetPoint(iPoint,_xU,_yU);
+  grDY_NeeA->GetPoint(iPoint,_xD,_yD);
+  _erryU = grDATA_NeeA_Corrected_R->GetErrorY(iPoint);
+  _erryD = grDY_NeeA->GetErrorY(iPoint);  
+  CorrectionFactor_ee_R[iPoint] = _yU / _yD;
+  errCorrectionFactor_ee_R[iPoint] = sqrt(_erryU / _yD * _erryU / _yD + _erryD / _yD / _yD * _yU * _erryD / _yD / _yD * _yU) ;
+  
+  grDATA_NeeA_Corrected_M->GetPoint(iPoint,_xU,_yU);
+  grDY_NeeA->GetPoint(iPoint,_xD,_yD);
+  _erryU = grDATA_NeeA_Corrected_M->GetErrorY(iPoint);
+  _erryD = grDY_NeeA->GetErrorY(iPoint);  
+  CorrectionFactor_ee_M[iPoint] = _yU / _yD;
+  errCorrectionFactor_ee_M[iPoint] = sqrt(_erryU / _yD * _erryU / _yD + _erryD / _yD / _yD * _yU * _erryD / _yD / _yD * _yU) ;
+  
+  
+  //---- mumu 
+  grDATA_NmumuA_Corrected_standardR->GetPoint(iPoint,_xU,_yU);
+  grDY_NmumuA->GetPoint(iPoint,_xD,_yD);
+  _erryU = grDATA_NmumuA_Corrected_standardR->GetErrorY(iPoint);
+  _erryD = grDY_NmumuA->GetErrorY(iPoint);  
+  CorrectionFactor_mumu_standardR[iPoint] = _yU / _yD;
+  errCorrectionFactor_mumu_standardR[iPoint] = sqrt(_erryU / _yD * _erryU / _yD + _erryD / _yD / _yD * _yU * _erryD / _yD / _yD * _yU) ;
+  
+  grDATA_NmumuA_Corrected_R->GetPoint(iPoint,_xU,_yU);
+  grDY_NmumuA->GetPoint(iPoint,_xD,_yD);
+  _erryU = grDATA_NmumuA_Corrected_R->GetErrorY(iPoint);
+  _erryD = grDY_NmumuA->GetErrorY(iPoint);  
+  CorrectionFactor_mumu_R[iPoint] = _yU / _yD;
+  errCorrectionFactor_mumu_R[iPoint] = sqrt(_erryU / _yD * _erryU / _yD + _erryD / _yD / _yD * _yU * _erryD / _yD / _yD * _yU) ;
+  
+  grDATA_NmumuA_Corrected_M->GetPoint(iPoint,_xU,_yU);
+  grDY_NmumuA->GetPoint(iPoint,_xD,_yD);
+  _erryU = grDATA_NmumuA_Corrected_M->GetErrorY(iPoint);
+  _erryD = grDY_NmumuA->GetErrorY(iPoint);  
+  CorrectionFactor_mumu_M[iPoint] = _yU / _yD;
+  errCorrectionFactor_mumu_M[iPoint] = sqrt(_erryU / _yD * _erryU / _yD + _erryD / _yD / _yD * _yU * _erryD / _yD / _yD * _yU) ;
+   
+ }
+ 
+ 
+ 
+ 
+ TCanvas* cCorrectionFactor_ee = new TCanvas("cCorrectionFactor_ee","cCorrectionFactor_ee",800,800); 
+ 
+ TGraphErrors* grCorrectionFactor_ee_standardR = new TGraphErrors(numPlot,X,CorrectionFactor_ee_standardR,errX,errCorrectionFactor_ee_standardR);
+ grCorrectionFactor_ee_standardR->SetTitle("Scale factor ee standardR");
+ grCorrectionFactor_ee_standardR->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grCorrectionFactor_ee_standardR->GetYaxis()->SetTitle("Scale ee");
+ grCorrectionFactor_ee_standardR->SetMarkerColor(kBlue);
+ grCorrectionFactor_ee_standardR->SetFillColor(kWhite);
+ grCorrectionFactor_ee_standardR->SetLineColor(kBlue);
+ grCorrectionFactor_ee_standardR->SetMarkerStyle(20);
+ grCorrectionFactor_ee_standardR->SetMarkerSize(1);
+ grCorrectionFactor_ee_standardR->SetLineWidth(2);
+ grCorrectionFactor_ee_standardR->SetLineStyle(2);
+ 
+ 
+ TGraphErrors* grCorrectionFactor_ee_R = new TGraphErrors(numPlot,X,CorrectionFactor_ee_R,errX,errCorrectionFactor_ee_R);
+ grCorrectionFactor_ee_R->SetTitle("Scale factor ee R");
+ grCorrectionFactor_ee_R->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grCorrectionFactor_ee_R->GetYaxis()->SetTitle("Scale ee");
+ grCorrectionFactor_ee_R->SetMarkerColor(kBlue);
+ grCorrectionFactor_ee_R->SetFillColor(kWhite);
+ grCorrectionFactor_ee_R->SetLineColor(kBlue);
+ grCorrectionFactor_ee_R->SetMarkerStyle(24);
+ grCorrectionFactor_ee_R->SetMarkerSize(1);
+ grCorrectionFactor_ee_R->SetLineWidth(2);
+ grCorrectionFactor_ee_R->SetLineStyle(2);
+ 
+ 
+ TGraphErrors* grCorrectionFactor_ee_M = new TGraphErrors(numPlot,X,CorrectionFactor_ee_M,errX,errCorrectionFactor_ee_M);
+ grCorrectionFactor_ee_M->SetTitle("Scale factor ee M");
+ grCorrectionFactor_ee_M->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grCorrectionFactor_ee_M->GetYaxis()->SetTitle("Scale ee");
+ grCorrectionFactor_ee_M->SetMarkerColor(kBlue);
+ grCorrectionFactor_ee_M->SetFillColor(kWhite);
+ grCorrectionFactor_ee_M->SetLineColor(kBlue);
+ grCorrectionFactor_ee_M->SetMarkerStyle(26);
+ grCorrectionFactor_ee_M->SetMarkerSize(1);
+ grCorrectionFactor_ee_M->SetLineWidth(2);
+ grCorrectionFactor_ee_M->SetLineStyle(2);
+ 
+ 
+ TMultiGraph* mgr_CorrectionFactor_ee = new TMultiGraph(); 
+ mgr_CorrectionFactor_ee->Add(grCorrectionFactor_ee_standardR);
+ mgr_CorrectionFactor_ee->Add(grCorrectionFactor_ee_R);
+ mgr_CorrectionFactor_ee->Add(grCorrectionFactor_ee_M);
+ mgr_CorrectionFactor_ee->Draw("AP");
+ mgr_CorrectionFactor_ee->GetXaxis()->SetTitle("met > threshold (GeV)");
+ mgr_CorrectionFactor_ee->GetYaxis()->SetTitle("Scale ee");
+ 
+ 
+ TLegend* leg = gPad->BuildLegend();
+ leg->SetFillColor(kWhite);
+ gPad->SetGrid();
+ 
+ 
+ 
+ 
+ TCanvas* cCorrectionFactor_mumu = new TCanvas("cCorrectionFactor_mumu","cCorrectionFactor_mumu",800,800); 
+ 
+ TGraphErrors* grCorrectionFactor_mumu_standardR = new TGraphErrors(numPlot,X,CorrectionFactor_mumu_standardR,errX,errCorrectionFactor_mumu_standardR);
+ grCorrectionFactor_mumu_standardR->SetTitle("Scale factor #mu#mu standardR");
+ grCorrectionFactor_mumu_standardR->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grCorrectionFactor_mumu_standardR->GetYaxis()->SetTitle("Scale #mu#mu");
+ grCorrectionFactor_mumu_standardR->SetMarkerColor(kBlue);
+ grCorrectionFactor_mumu_standardR->SetFillColor(kWhite);
+ grCorrectionFactor_mumu_standardR->SetLineColor(kBlue);
+ grCorrectionFactor_mumu_standardR->SetMarkerStyle(20);
+ grCorrectionFactor_mumu_standardR->SetMarkerSize(1);
+ grCorrectionFactor_mumu_standardR->SetLineWidth(2);
+ grCorrectionFactor_mumu_standardR->SetLineStyle(2);
+ 
+ 
+ TGraphErrors* grCorrectionFactor_mumu_R = new TGraphErrors(numPlot,X,CorrectionFactor_mumu_R,errX,errCorrectionFactor_mumu_R);
+ grCorrectionFactor_mumu_R->SetTitle("Scale factor #mu#mu R");
+ grCorrectionFactor_mumu_R->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grCorrectionFactor_mumu_R->GetYaxis()->SetTitle("Scale #mu#mu");
+ grCorrectionFactor_mumu_R->SetMarkerColor(kBlue);
+ grCorrectionFactor_mumu_R->SetFillColor(kWhite);
+ grCorrectionFactor_mumu_R->SetLineColor(kBlue);
+ grCorrectionFactor_mumu_R->SetMarkerStyle(24);
+ grCorrectionFactor_mumu_R->SetMarkerSize(1);
+ grCorrectionFactor_mumu_R->SetLineWidth(2);
+ grCorrectionFactor_mumu_R->SetLineStyle(2);
+ 
+ 
+ TGraphErrors* grCorrectionFactor_mumu_M = new TGraphErrors(numPlot,X,CorrectionFactor_mumu_M,errX,errCorrectionFactor_mumu_M);
+ grCorrectionFactor_mumu_M->SetTitle("Scale factor #mu#mu M");
+ grCorrectionFactor_mumu_M->GetXaxis()->SetTitle("met > threshold (GeV)");
+ grCorrectionFactor_mumu_M->GetYaxis()->SetTitle("Scale #mu#mu");
+ grCorrectionFactor_mumu_M->SetMarkerColor(kBlue);
+ grCorrectionFactor_mumu_M->SetFillColor(kWhite);
+ grCorrectionFactor_mumu_M->SetLineColor(kBlue);
+ grCorrectionFactor_mumu_M->SetMarkerStyle(26);
+ grCorrectionFactor_mumu_M->SetMarkerSize(1);
+ grCorrectionFactor_mumu_M->SetLineWidth(2);
+ grCorrectionFactor_mumu_M->SetLineStyle(2);
+ 
+ 
+ TMultiGraph* mgr_CorrectionFactor_mumu = new TMultiGraph(); 
+ mgr_CorrectionFactor_mumu->Add(grCorrectionFactor_mumu_standardR);
+ mgr_CorrectionFactor_mumu->Add(grCorrectionFactor_mumu_R);
+ mgr_CorrectionFactor_mumu->Add(grCorrectionFactor_mumu_M);
+ mgr_CorrectionFactor_mumu->Draw("AP");
+ mgr_CorrectionFactor_mumu->GetXaxis()->SetTitle("met > threshold (GeV)");
+ mgr_CorrectionFactor_mumu->GetYaxis()->SetTitle("Scale #mu#mu");
+ 
+ 
+ TLegend* leg = gPad->BuildLegend();
+ leg->SetFillColor(kWhite);
+ gPad->SetGrid();
+ 
+ 
+ 
+ 
+ 
  
  
  

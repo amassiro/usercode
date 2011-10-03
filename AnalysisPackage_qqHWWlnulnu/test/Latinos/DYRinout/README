@@ -5,6 +5,95 @@ Sideband method for DY estimation
 **** Rinout ****
 ****************
 
+
+///=====================================================================================================
+///==== to make plot for met selection independence of DY A/B composition ====
+
+1) run (it takes some time ... 15 min each)
+     ./bin/MCDATAComparisonPLOTTool.exe test/Latinos/DYRinout/testMCDATAComparisonPLOTTool_DYRinout.cfg
+     ./bin/MCDATAComparisonPLOTTool.exe test/Latinos/DYRinout/testMCDATAComparisonPLOTTool_DYRinout_MiBiNT.cfg
+
+both with 
+
+       [Selections]
+       CutFile   = test/Latinos/DYRinout/testCut-ForResult-Preselection.txt
+       [Output]
+       outFileName =  out_DYRinout_Latinos-preselection.root
+
+and
+
+       [Selections]
+       CutFile   = test/Latinos/DYRinout/testCut-ForResult.txt
+       [Output]
+       outFileName =  out_DYRinout_Latinos-final-selection.root
+
+
+2) run
+
+       r00t test/Latinos/DYRinout/CompareRinoutM.cxx\(\"out_DYRinout_Latinos-preselection.root\"\)
+       r00t test/Latinos/DYRinout/CompareRinoutM.cxx\(\"out_DYRinout_Latinos-final-selection.root\"\)
+
+       r00t test/Latinos/DYRinout/CompareRinoutM.cxx\(\"out_DYRinout_Latinos-preselection_MiBiNT.root\"\)
+       r00t test/Latinos/DYRinout/CompareRinoutM.cxx\(\"out_DYRinout_Latinos-final-selection_MiBiNT.root\"\)
+
+For Rmumu and Ree plot:
+       c_R_mumu
+       c_R_ee
+
+Ree Standard is = ee - 0.5 * sqrt(Nee/Nmumu*(Nemu+Nmue))
+Ree  is         = ee - sqrt(Nee/Nmumu*Nemu*Nmue)
+
+
+
+
+
+///==== to make final exstimation of DY contribution ====
+
+./bin/MCDATAComparisonPLOTTool.exe test/Latinos/DYRinout/testMCDATAComparisonPLOTTool_DYRinout_AllHiggsMassPoints.cfg
+
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_03Oct1800-ForResult.root\",1\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_03Oct1800-ForResult.root\",2\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_03Oct1800-ForResult.root\",3\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_03Oct1800-ForResult.root\",4\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_03Oct1800-ForResult.root\",5\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_03Oct1800-ForResult.root\",6\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_03Oct1800-ForResult.root\",7\)
+
+///=====================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ./bin/MCDATAComparisonPLOTTool.exe test/Latinos/DYRinout/testMCDATAComparisonPLOTTool_DYRinout_AllHiggsMassPoints.cfg
 
 
@@ -44,6 +133,27 @@ r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_
 
 
 
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_03Oct1800-ForResult.root\",1\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_03Oct1800-ForResult.root\",2\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_03Oct1800-ForResult.root\",3\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_03Oct1800-ForResult.root\",4\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_03Oct1800-ForResult.root\",5\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_03Oct1800-ForResult.root\",6\)
+r00t test/Latinos/DYRinout/GetDY-Result-forDataCard.cxx\(\"out_DYRinout_Latinos_03Oct1800-ForResult.root\",7\)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ./bin/Sideband1D.exe test/Latinos/DYRinout/testSideband1D.cfg   &> DYRinout-Results.txt
@@ -73,40 +183,6 @@ r00t test/Latinos/DYRinout/GetDYRinout.cxx\(\"out_DYRinout_Latinos_02Aug1400-fin
 r00t test/Latinos/DYRinout/GetDY-K-for-Rinout.cxx\(\"out_DYRinout_Latinos_02Aug1400-preselection.root\"\)
 r00t test/Latinos/DYRinout/GetDY-K-for-Rinout.cxx\(\"out_DYRinout_Latinos_02Aug1400-final-selection.root\"\)
 
-
-
-
-///==== to make plot for met selection independence of DY A/B composition ====
-
-1) run (it takes some time ... 15 min each)
-     ./bin/MCDATAComparisonPLOTTool.exe test/Latinos/DYRinout/testMCDATAComparisonPLOTTool_DYRinout.cfg
-
-both with 
-
-       [Selections]
-       CutFile   = test/Latinos/DYRinout/testCut-ForResult-Preselection.txt
-       [Output]
-       outFileName =  out_DYRinout_Latinos-preselection.root
-
-and
-
-       [Selections]
-       CutFile   = test/Latinos/DYRinout/testCut-ForResult.txt
-       [Output]
-       outFileName =  out_DYRinout_Latinos-final-selection.root
-
-
-2) run
-
-       r00t test/Latinos/DYRinout/CompareRinoutM.cxx\(\"out_DYRinout_Latinos-preselection.root\"\)
-       r00t test/Latinos/DYRinout/CompareRinoutM.cxx\(\"out_DYRinout_Latinos-final-selection.root\"\)
-
-For Rmumu and Ree plot:
-       c_R_mumu
-       c_R_ee
-
-Ree Standard is = ee - 0.5 * sqrt(Nee/Nmumu*(Nemu+Nmue))
-Ree  is         = ee - sqrt(Nee/Nmumu*Nemu*Nmue)
 
 
 

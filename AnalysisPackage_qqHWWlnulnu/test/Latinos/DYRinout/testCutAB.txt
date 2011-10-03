@@ -1,0 +1,12 @@
+#   ((l1_flavour==l2_flavour) && (M_ll<70 && M_ll>10))
+#   ((l1_flavour==l2_flavour) && ((M_ll>70 && M_ll<110) || M_ll<10))
+#   ((l1_flavour!=l2_flavour) && (M_ll<70 && M_ll>10))
+#   ((l1_flavour!=l2_flavour) && ((M_ll>70 && M_ll<110) || M_ll<10))
+#              (!(M_ll>80 && M_ll<100))
+#              (M_ll>80 && M_ll<100)
+#
+#
+(M_ll>106.1876 || M_ll<76.1876)
+(M_ll<106.1876 && M_ll>76.1876)
+#   (M_ll<75 || M_ll>105)
+#   (M_ll>75 && M_ll<105)

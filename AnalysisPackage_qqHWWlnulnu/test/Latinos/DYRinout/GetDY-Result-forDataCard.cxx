@@ -50,10 +50,66 @@ void GetDY_Result_forDataCard(TString nameInFileRoot, int WorkingPoint = 1){
  double errNmue_SR_A;
  double errNmue_SR_B;
  
+ 
+ double Nee_SR_A_DYee;
+ double Nmumu_SR_A_DYmumu;
+ 
+ double errNee_SR_A_DYee;
+ double errNmumu_SR_A_DYmumu;
+ 
+ double Nee_SR_A_DYtautau;
+ double Nmumu_SR_A_DYtautau;
+ double Nemu_SR_A_DYtautau;
+ 
+ double errNee_SR_A_DYtautau;
+ double errNmumu_SR_A_DYtautau;
+ double errNemu_SR_A_DYtautau;
+ 
+ 
  ///=====================
  
  TString nameHistoInRootFile;
  TH1F* h; 
+ 
+ ///==== MC ==== 
+ 
+ nameHistoInRootFile = Form("Data/DYee_%d_0_Tot_temp",2+(WorkingPoint-1)*4);
+ h = (TH1F*) fileIn->Get(nameHistoInRootFile);
+ Nee_SR_A_DYee    = h->GetBinContent(2);
+ errNee_SR_A_DYee = h->GetBinError(2);
+ 
+ nameHistoInRootFile = Form("Data/DYmumu_%d_1_Tot_temp",2+(WorkingPoint-1)*4);
+ h = (TH1F*) fileIn->Get(nameHistoInRootFile);
+ Nmumu_SR_A_DYmumu     = h->GetBinContent(2);
+ errNmumu_SR_A_DYmumu  = h->GetBinError(2);
+ 
+ nameHistoInRootFile = Form("Data/DYtautau_%d_0_Tot_temp",2+(WorkingPoint-1)*4);
+ h = (TH1F*) fileIn->Get(nameHistoInRootFile);
+ Nee_SR_A_DYtautau    = h->GetBinContent(2);
+ errNee_SR_A_DYtautau = h->GetBinError(2);
+ 
+ nameHistoInRootFile = Form("Data/DYtautau_%d_1_Tot_temp",2+(WorkingPoint-1)*4);
+ h = (TH1F*) fileIn->Get(nameHistoInRootFile);
+ Nmumu_SR_A_DYtautau     = h->GetBinContent(2);
+ errNmumu_SR_A_DYtautau  = h->GetBinError(2);
+ 
+ nameHistoInRootFile = Form("Data/DYtautau_%d_2_Tot_temp",2+(WorkingPoint-1)*4);
+ h = (TH1F*) fileIn->Get(nameHistoInRootFile);
+ Nemu_SR_A_DYtautau      = h->GetBinContent(2);
+ errNemu_SR_A_DYtautau   = h->GetBinError(2);
+ 
+ nameHistoInRootFile = Form("Data/DYtautau_%d_3_Tot_temp",2+(WorkingPoint-1)*4);
+ h = (TH1F*) fileIn->Get(nameHistoInRootFile);
+ Nemu_SR_A_DYtautau      += h->GetBinContent(2);
+ errNemu_SR_A_DYtautau   = sqrt (errNemu_SR_A_DYtautau*errNemu_SR_A_DYtautau + h->GetBinError(2) * h->GetBinError(2)); 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ ///==== DATA ====
  
  nameHistoInRootFile = Form("Data/DATA_%d_0_Tot_temp",0+(WorkingPoint-1)*4);
  h = (TH1F*) fileIn->Get(nameHistoInRootFile);
@@ -221,11 +277,29 @@ void GetDY_Result_forDataCard(TString nameInFileRoot, int WorkingPoint = 1){
  std::cout << " mumu = " << (Nmumu_SR_B - sqrt(Nmumu_SR_B / Nee_SR_B * Nemu_SR_B * Nmue_SR_B)) << std::endl; 
  
  std::cout << " >>> result <<< " << std::endl;
- std::cout << " Nee   = " << Nee_Result   << " +/- " << errNee_Result   << " ==> " << (!Nee_Result ? 0 : errNee_Result   / Nee_Result)   << std::endl;
- std::cout << " Nmumu = " << Nmumu_Result << " +/- " << errNmumu_Result << " ==> " << (!Nmumu_Result ? 0 : errNmumu_Result / Nmumu_Result )<< std::endl;
+ std::cout << " Nee   = " << Nee_Result   << " +/- " << errNee_Result   << " ==> " << (!Nee_Result ? 0 : errNee_Result   / Nee_Result) << " == datacard ==> " << 1 + (!Nee_Result ? 0 : errNee_Result   / Nee_Result)   << std::endl;
+ std::cout << " Nmumu = " << Nmumu_Result << " +/- " << errNmumu_Result << " ==> " << (!Nmumu_Result ? 0 : errNmumu_Result / Nmumu_Result ) << " == datacard ==> " << 1 + (!Nmumu_Result ? 0 : errNmumu_Result / Nmumu_Result ) << std::endl;
  std::cout << " >>> total <<< " << std::endl;
- std::cout << " N     = " << Nmumu_Result + Nee_Result << " +/- " << sqrt(errNmumu_Result*errNmumu_Result+errNee_Result*errNee_Result) << " ==> " << (!(Nmumu_Result + Nee_Result) ? 0 : sqrt(errNmumu_Result*errNmumu_Result+errNee_Result*errNee_Result) / (Nmumu_Result + Nee_Result) ) << std::endl; 
+ std::cout << " N     = " << Nmumu_Result + Nee_Result << " +/- " << sqrt(errNmumu_Result*errNmumu_Result+errNee_Result*errNee_Result) << " ==> " << (!(Nmumu_Result + Nee_Result) ? 0 : sqrt(errNmumu_Result*errNmumu_Result+errNee_Result*errNee_Result) / (Nmumu_Result + Nee_Result) ) << " == datacard ==> " << 1 + (!(Nmumu_Result + Nee_Result) ? 0 : sqrt(errNmumu_Result*errNmumu_Result+errNee_Result*errNee_Result) / (Nmumu_Result + Nee_Result) ) << std::endl; 
  std::cout << std::endl;
  std::cout << " WorkingPoint = " << WorkingPoint << std::endl;
  
+ std::cout << std::endl;
+ std::cout << " >>> MC <<< " << std::endl;
+ std::cout << " Nee_SR_A_DYee       = " << Nee_SR_A_DYee     << " +/- " << errNee_SR_A_DYee      << std::endl;
+ std::cout << " Nmumu_SR_A_DYmumu   = " << Nmumu_SR_A_DYmumu << " +/- " << errNmumu_SR_A_DYmumu  << std::endl;
+ std::cout << std::endl;
+ std::cout << " Nee_SR_A_DYtautau   = " << Nee_SR_A_DYtautau     << " +/- " << errNee_SR_A_DYtautau     << std::endl;
+ std::cout << " Nmumu_SR_A_DYtautau = " << Nmumu_SR_A_DYtautau   << " +/- " << errNmumu_SR_A_DYtautau   << std::endl;
+ std::cout << " Nemu_SR_A_DYtautau  = " << Nemu_SR_A_DYtautau    << " +/- " << errNemu_SR_A_DYtautau    << std::endl;
+ 
+ 
+ gApplication->Terminate(0);
+ 
 }
+
+
+
+
+
+

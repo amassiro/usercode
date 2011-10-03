@@ -146,17 +146,18 @@ model
  #### priors ####
  ################
 
- tempNtotAInit ~ dunif (1,100000)
- NtotAInit <- round (tempNtotAInit)
- tempOtherAInit ~ dunif (1,10000)
- OtherAInit <- round (tempOtherAInit)
- DYAInit <- NtotAInit - OtherAInit
 
- tempNtotBInit ~ dunif (1,100000)
- NtotBInit <- round (tempNtotBInit)
- tempOtherBInit ~ dunif (1,10000)
+ tempOtherAInit ~ dunif (1,100000)
+ OtherAInit <- round (tempOtherAInit)
+ tempDYAInit ~ dunif (1,100000)
+ DYAInit <- round (tempDYAInit)
+ NtotAInit <- OtherAInit + DYAInit
+
+ tempOtherBInit ~ dunif (1,100000)
  OtherBInit <- round (tempOtherBInit)
- DYBInit <- NtotBInit - OtherBInit
+ tempDYBInit ~ dunif (1,100000)
+ DYBInit <- round (tempDYBInit)
+ NtotBInit <- OtherBInit + DYBInit
 
  
  e1A  ~ dunif(0,1)

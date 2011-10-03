@@ -7,6 +7,7 @@ initialize
 
 update 1000
 
+
 monitor set peeB,   thin(10)
 monitor set pemuB,  thin(10)
 monitor set pmueB,  thin(10)
@@ -69,10 +70,12 @@ monitor set NAmumumetDYexact,   thin(10)
 monitor set NeeBmetDYOther,     thin(10)
 monitor set NmumuBmetDYOther,   thin(10)
 
+
 monitor set NDYeeA,     thin(10)
 monitor set NDYmumuA,   thin(10)
 monitor set NDYeeB,     thin(10)
 monitor set NDYmumuB,   thin(10)
+
 
 monitor set NeeAmet,     thin(10)
 monitor set NemuAmet,    thin(10)
@@ -92,7 +95,20 @@ monitor set NemuB,    thin(10)
 monitor set NmueB,    thin(10)
 monitor set NmumuB,   thin(10)
 
-monitor set totPAmet,   thin(10)
+
+monitor set e1BmetOther,     thin(10)
+monitor set e2BmetOther,     thin(10)
+monitor set mu1BmetOther,    thin(10)
+monitor set mu2BmetOther,   thin(10)
+
+monitor set e1BOther,     thin(10)
+monitor set e2BOther,     thin(10)
+monitor set mu1BOther,    thin(10)
+monitor set mu2BOther,   thin(10)
+
+monitor set ReeToUse,     thin(10)
+monitor set RmumuToUse,   thin(10)
+
 
 
 update 10000

@@ -1,7 +1,5 @@
 ##########################################################
 
-##########################################################
-
 var
    ########################
    #### Control region ####
@@ -125,6 +123,9 @@ data {
  NeeBmetTemp   <- NeeBmet
  NmumuBmetTemp <- NmumuBmet
 
+ NeeABmetTemp   <- NeeBmet + NeeAmet
+ NmumuABmetTemp <- NmumuBmet + NmumuAmet
+
 }
 
 ##########################################################
@@ -229,50 +230,91 @@ model
  #### priors ####
  ################
 
-# OtherAInit ~ dnorm (NotherMCA,1./errNotherMCA/errNotherMCA/20./20.)
-# DYAInit    ~ dnorm (NDYMCA,1./errNDYMCA/errNDYMCA/20./20.)
-# NtotAInit <- OtherAInit + DYAInit
+ fakeDYAInit    ~ dnorm (NDYMCA,1/errNDYMCA/errNDYMCA)
+ fakeOtherAInit ~ dnorm (NotherMCA/NDYMCA*DYAInit,1./errNotherMCA/errNotherMCA/fakeDYAInit/fakeDYAInit)  T (0,)
+ 
+ fakeDYBInit    ~ dnorm (NDYMCB,1/errNDYMCB/errNDYMCB)
+ fakeOtherBInit ~ dnorm (NotherMCB/NDYMCB*DYBInit,1./errNotherMCB/errNotherMCB/fakeDYBInit/fakeDYBInit)  T (0,)
 
-# OtherBInit ~ dnorm (NotherMCB,1./errNotherMCB/errNotherMCB/20./20.)
-# DYBInit    ~ dnorm (NDYMCB,1./errNDYMCB/errNDYMCB/20./20.)
-# NtotBInit <- OtherBInit + DYBInit
 
- OtherAInit ~ dunif (100, 100000000)
- DYAInit    ~ dunif (100, 1000000000)
+# DYAInit    ~ dunif (1, 4*NDYMCA)
+# OtherAInit ~ dnorm (NotherMCA/NDYMCA*DYAInit,1./errNotherMCA/errNotherMCA/DYAInit/DYAInit)  T (0,)
+ DYAInit    ~ dnorm (NDYMCA,1/errNDYMCA/errNDYMCA)
+ OtherAInit ~ dnorm (NotherMCA,1/errNotherMCA/errNotherMCA)
  NtotAInit <- OtherAInit + DYAInit
  
- OtherBInit ~ dunif (100, 100000000)
- DYBInit    ~ dunif (100, 1000000000)
+# DYBInit    ~ dunif (1, 4*NDYMCB)
+# OtherBInit ~ dnorm (NotherMCB/NDYMCB*DYBInit,1./errNotherMCB/errNotherMCB/DYBInit/DYBInit)  T (0,)
+ DYBInit    ~ dnorm (NDYMCB,1/errNDYMCB/errNDYMCB)
+ OtherBInit ~ dnorm (NotherMCB,1/errNotherMCB/errNotherMCB)
  NtotBInit <- OtherBInit + DYBInit
 
 
-
- e1A  ~ dunif(0,1)
- e2A  ~ dunif(0,1)
- mu1A ~ dunif(0,1)
- mu2A ~ dunif(0,1)
-
- e1AOther  ~ dunif(0,1)
- e2AOther  ~ dunif(0,1)
- mu1AOther <- e1AOther * mu1A / e1A
- mu2AOther <- e2AOther * mu2A / e2A
-
- e1B  ~ dunif(0,1)
- e2B  ~ dunif(0,1)
- mu1B ~ dunif(0,1)
- mu2B ~ dunif(0,1)
-
- e1BOther  ~ dunif(0,1)
- e2BOther  ~ dunif(0,1)
- mu1BOther <- e1BOther * mu1B / e1B
- mu2BOther <- e2BOther * mu2B / e2B
+#    OtherAInit ~ dunif (1, 10000000000)
+#    DYAInit    ~ dunif (1, 100000000000)
+#    NtotAInit <- OtherAInit + DYAInit
+ 
+#    OtherBInit ~ dunif (1, 10000000000)
+#    DYBInit    ~ dunif (1, 100000000000)
+#    NtotBInit <- OtherBInit + DYBInit
 
 
+ fakee1A  ~ dunif(0,100)
+ fakee2A  ~ dunif(0,100)
+ fakemu1A ~ dunif(0,100)
+ fakemu2A ~ dunif(0,100)
+
+ e1A  ~ dunif(0,100)
+ e2A  ~ dunif(0,100)
+ mu1A ~ dunif(0,100)
+ mu2A ~ dunif(0,100)
+
+#    e1AOther  ~ dunif(0,100)
+#    e2AOther  ~ dunif(0,100)
+#    mu1AOther <- e1AOther * mu1A / e1A
+#    mu2AOther <- e2AOther * mu2A / e2A
+
+ e1AOther   ~ dunif(0,100)
+ e2AOther   ~ dunif(0,100)
+ mu1AOther  ~ dunif(0,100)
+ mu2AOther  <- mu2A * mu1A / mu1AOther * e1AOther * e2AOther / e2A / e1A 
+
+ fakee1AOther   ~ dunif(0,100)
+ fakee2AOther   ~ dunif(0,100)
+ fakemu1AOther  ~ dunif(0,100)
+ fakemu2AOther  <- fakemu2A * fakemu1A / fakemu1AOther * fakee1AOther * fakee2AOther / fakee2A / fakee1A 
+
+ e1B  ~ dunif(0,100)
+ e2B  ~ dunif(0,100)
+ mu1B ~ dunif(0,100)
+ mu2B ~ dunif(0,100)
+
+ fakee1B  ~ dunif(0,100)
+ fakee2B  ~ dunif(0,100)
+ fakemu1B ~ dunif(0,100)
+ fakemu2B ~ dunif(0,100)
+
+#   e1BOther  ~ dunif(0,100)
+#   e2BOther  ~ dunif(0,100)
+#   mu1BOther <- e1BOther * mu1B / e1B
+#   mu2BOther <- e2BOther * mu2B / e2B
+
+ e1BOther   ~ dunif(0,100)
+ e2BOther   ~ dunif(0,100)
+ mu1BOther  ~ dunif(0,100)
+ mu2BOther  <- mu2B * mu1B / mu1BOther * e1BOther * e2BOther / e2B / e1B 
+
+ fakee1BOther   ~ dunif(0,100)
+ fakee2BOther   ~ dunif(0,100)
+ fakemu1BOther  ~ dunif(0,100)
+ fakemu2BOther  <- fakemu2B * fakemu1B / fakemu1BOther * fakee1BOther * fakee2BOther / fakee2B / fakee1B 
 
 
  #################################################################################################
  ##### add additional smearing to Ree and Rmumu due to dependence on MET (or other) selection ####
-
+ ########### here I put 03% uncertainty ###########################################################
+ #################################################################################################
+ 
  ReeToUse   ~ dnorm (Ree,1./ (0.03*0.03 * Ree * Ree))
  RmumuToUse ~ dnorm (Rmumu,1./ (0.03*0.03 * Rmumu * Rmumu))
 
@@ -293,6 +335,9 @@ model
  ################
  #### B zone ####
  ################
+
+#  controlla che con questa formula hai lo stesso risultato che con Nee * Nmumu e così via ...
+#  infatti è sbagliata! --> ora è corretta!
 
  peeBmet   <- (0.5 * DYBmetInit * e1Bmet * e2Bmet + 0.25 * OtherBmetInit * e1BmetOther * e2BmetOther) / NtotBmet
  pemuBmet  <- 0.25 * OtherBmetInit * e1BmetOther * mu2BmetOther / NtotBmet
@@ -316,11 +361,15 @@ model
  ############
  #### ee ####
 
- peeBmetFinal   <-        pBmet[1]
- peeAmetFinal   <- ReeToUse * (pBmet[1] * (0.5 * DYBmetInit * e1Bmet * e2Bmet) / (0.5 * DYBmetInit * e1Bmet * e2Bmet + 0.25 * OtherBmetInit * e1BmetOther * e2BmetOther))
- peeBFinal <- peeBmetFinal / (peeBmetFinal + peeAmetFinal)
+ peeBmetFinal   <-             1
+ peeAmetFinal   <- ReeToUse * (1 * (0.5 * DYBmetInit * e1Bmet * e2Bmet) / (0.5 * DYBmetInit * e1Bmet * e2Bmet + 0.25 * OtherBmetInit * e1BmetOther * e2BmetOther))
 
- NeeBmet ~ dbin ( peeBFinal, NtotABeemet)
+# peeBmetFinal   <-             pBmet[1]
+# peeAmetFinal   <- ReeToUse * (pBmet[1] * (0.5 * DYBmetInit * e1Bmet * e2Bmet) / (0.5 * DYBmetInit * e1Bmet * e2Bmet + 0.25 * OtherBmetInit * e1BmetOther * e2BmetOther))
+
+ peeBFinal      <- peeBmetFinal / (peeBmetFinal + peeAmetFinal)
+
+ NeeBmet ~ dbin ( peeBFinal, NtotABeemet)  ####   E' questo che fa sbarellare ... e il suo fratello più sotto!!!
 
  NAeemetDYexact  <-   NtotABeemet - NeeBmet
  NeeBmetDYOther  <-   NtotABeemet * peeBFinal / (0.5 * DYBmetInit * e1Bmet * e2Bmet) * (0.5 * DYBmetInit * e1Bmet * e2Bmet + 0.25 * OtherBmetInit * e1BmetOther * e2BmetOther)
@@ -334,9 +383,13 @@ model
  ##############
  #### mumu ####
 
- pmumuBmetFinal   <-          pBmet[4]
- pmumuAmetFinal   <- RmumuToUse * (pBmet[4] * (0.5 * DYBmetInit * mu1Bmet * mu2Bmet) / (0.5 * DYBmetInit * mu1Bmet * mu2Bmet + 0.25 * OtherBmetInit * mu1BmetOther * mu2BmetOther))
- pmumuBFinal <- pmumuBmetFinal / (pmumuBmetFinal + pmumuAmetFinal)
+ pmumuBmetFinal   <-               1
+ pmumuAmetFinal   <- RmumuToUse * (1 * (0.5 * DYBmetInit * mu1Bmet * mu2Bmet) / (0.5 * DYBmetInit * mu1Bmet * mu2Bmet + 0.25 * OtherBmetInit * mu1BmetOther * mu2BmetOther))
+
+# pmumuBmetFinal   <-               pBmet[4]
+# pmumuAmetFinal   <- RmumuToUse * (pBmet[4] * (0.5 * DYBmetInit * mu1Bmet * mu2Bmet) / (0.5 * DYBmetInit * mu1Bmet * mu2Bmet + 0.25 * OtherBmetInit * mu1BmetOther * mu2BmetOther))
+
+ pmumuBFinal      <- pmumuBmetFinal / (pmumuBmetFinal + pmumuAmetFinal)
 
  NmumuBmet ~ dbin ( pmumuBFinal, NtotABmumumet)
 
@@ -355,157 +408,79 @@ model
  #### priors ####
  ################
 
-## e1Bmet  ~ dunif(0,1)
-## e2Bmet  ~ dunif(0,1)
-## mu1Bmet ~ dunif(0,1)
-## mu2Bmet ~ dunif(0,1)
+# DYBmetInit    ~ dunif (1, 4*NDYMCBmet)
+# OtherBmetInit ~ dnorm (NotherMCBmet/NDYMCBmet*DYBmetInit,1./errNotherMCBmet/errNotherMCBmet/DYBmetInit/DYBmetInit)  T (0,)
+ DYBmetInit    ~ dnorm (NDYMCBmet,1/errNDYMCBmet/errNDYMCBmet)
+ OtherBmetInit ~ dnorm (NotherMCBmet,1./errNotherMCBmet/errNotherMCBmet)
+ NtotBmetInit <- OtherBmetInit + DYBmetInit
 
-####
-#### in this case I have to require also the two efficiencies in DY and Other to be the same! ####
-#### Nee = Nee - sqrt(Nee / Nmumu * Nemu * Nmue)
-####
-### but this is not a good approximation!!!  --> Ree and Rmumu SBALLA!!!
-# e1BmetOther  <- e1Bmet
-# e2BmetOther  <- e2Bmet
-# mu1BmetOther <- mu1Bmet
-# mu2BmetOther <- mu2Bmet
-##
-## then I make the hypothesis that the ratio between Other e1/mu1 and DY e1/mu1 efficiencies are the same 
-## in signal region and in control region
-##
-## (e1/mu1) DY / (e1/mu1) Other in Control = (e1/mu1) DY / (e1/mu1) Other in Signal
-## (e1B/mu1B) / (e1BOther/mu1BOther) =  (e1Bmet/mu1Bmet) / (e1BmetOther/mu1BmetOther)
-##
-## in addition to
-## 
-## (e1Bmet/mu1Bmet) = (e1BmetOther/mu1BmetOther)
-##
-## then
-##
-## (e1B/mu1B) / (e1BOther/mu1BOther) = 1
-## e1B <- mu1B * (e1BOther/mu1BOther)
-##
-## and the same stands also for "2"
-##
-## e2B <- mu2B * (e2BOther/mu2BOther)
-##
-## it is useless, since already assumed in control region!!!
-##
-##################################################################
-##
-## then I make another hypothesis: that the double ratio between Other e1/mu1 and DY e1/mu1 efficiencies and the same for "2" are the same 
-## in signal region and in control region
-##
-## [(e1/mu1) DY / (e1/mu1) Other]/ [(e2/mu2) DY / (e2/mu2) Other] in Control = [(e1/mu1) DY / (e1/mu1) Other]/ [(e2/mu2) DY / (e2/mu2) Other] in Signal
-##
-## [(e1B/mu1B) / (e1BOther/mu1BOther)]/ [(e2B/mu2B) / (e2BOther/mu2BOther)] = [(e1Bmet/mu1Bmet) / (e1BmetOther/mu1BmetOther)]/ [(e2Bmet/mu2Bmet) / (e2BmetOther/mu2BmetOther)]
-##
-## in addition to
-## 
-## (e1Bmet/mu1Bmet) = (e1BmetOther/mu1BmetOther)
-##
-## but this is automatically true! 
-##
-###################################################################
-##
-## with this you are not enough constrained !!!
-##
-#
-# e1BmetOther  ~ dunif(0,1)
-# e2BmetOther  ~ dunif(0,1)
-# mu1BmetOther <- e1BmetOther * mu1Bmet / e1Bmet
-# mu2BmetOther <- e2BmetOther * mu2Bmet / e2Bmet
-#
-##
-###
-### the number of events is the same of before!!!
-##
-#
-#
-OtherBmetInit <- OtherBInit
-DYBmetInit    <- DYBInit
-NtotBmetInit <- OtherBmetInit + DYBmetInit
-#
-#
-##
-###
-######
-#### and the efficiencies between electron and muon is the same as in control region
-######
-## (e1Bmet/mu1Bmet) = (e1B/mu1B)
-## (e2Bmet/mu2Bmet) = (e2B/mu2B)
-## (e1BmetOther/mu1BmetOther) = (e1BOther/mu1BOther)
-## (e2BmetOther/mu2BmetOther) = (e2BOther/mu2BOther)
-##
-## in addition to
-## 
-## (e1Bmet/mu1Bmet) = (e1BmetOther/mu1BmetOther)
-##
-#e1BmetOther  ~ dunif(0,1)
-#e2BmetOther  ~ dunif(0,1)
-#mu2BmetOther <- e2BmetOther * mu2Bmet / e2Bmet
-#mu1BmetOther <- e1BmetOther * (mu1BOther/e1BOther)
-#
-##
-###
-##
-#
-#  e1Bmet  <- mu1Bmet *(e1B/mu1B)
-#  e2Bmet  <- mu2Bmet *(e2B/mu2B)
-#  mu1Bmet ~ dunif(0,1)
-#  mu2Bmet ~ dunif(0,1)
-# 
-######
-###
-##
-#
-#
-# e1BmetOther  ~ dunif(0,e1BOther)
-# e2BmetOther  ~ dunif(0,e2BOther)
-e1BmetOther   ~ dunif(0,1)
-e2BmetOther   ~ dunif(0,1)
-#  mu1BmetOther  ~ dunif(0,1)
-#  mu2BmetOther  ~ dunif(0,1)
-mu1BmetOther <- e1BmetOther * (mu1Bmet / e1Bmet)
-mu2BmetOther <- e2BmetOther * (mu2Bmet / e2Bmet)
-#
-##
-###
-# e1Bmet  <- mu1Bmet *(e1B/mu1B)
-# e2Bmet  <- mu2Bmet *(e2B/mu2B)
-e1Bmet  ~ dunif(0,1)
-e2Bmet  ~ dunif(0,1)
-mu1Bmet ~ dunif(0,1)
-mu2Bmet ~ dunif(0,1)
-###
-##
-#
+ fakeDYBmetInit    ~ dnorm (NDYMCBmet,1/errNDYMCBmet/errNDYMCBmet)
+ fakeOtherBmetInit ~ dnorm (NotherMCBmet,1./errNotherMCBmet/errNotherMCBmet)
+
+#     OtherBmetInit ~ dunif (1, 100000000)
+#     DYBmetInit    ~ dunif (1, 100000000)
+#     NtotBmetInit <- OtherBmetInit + DYBmetInit
+
+# OtherBmetInit <- OtherBInit
+# DYBmetInit    <- DYBInit
+# NtotBmetInit  <- OtherBmetInit + DYBmetInit
+
+# e1Bmet  ~ dunif(0,e1B)
+# e2Bmet  <- e1Bmet
+# mu1Bmet ~ dunif(0,mu1B)
+# mu2Bmet <- mu1Bmet
+
+# e1Bmet  ~ dunif(0,e1B)
+# e2Bmet  ~ dunif(0,e2B)
+# mu1Bmet ~ dunif(0,mu1B)
+# mu2Bmet ~ dunif(0,mu2B)
+
+ e1Bmet  ~ dunif(0,100)
+ e2Bmet  ~ dunif(0,100)
+ mu1Bmet ~ dunif(0,100)
+ mu2Bmet ~ dunif(0,100)
+
+ e1BmetOther   ~ dunif(0,100)
+ e2BmetOther   ~ dunif(0,100)
+ mu1BmetOther  ~ dunif(0,100)
+ mu2BmetOther  <- mu2Bmet * mu1Bmet / mu1BmetOther * e1BmetOther * e2BmetOther / e2Bmet / e1Bmet 
 
 
-# meanNtotABeemet   ~ dunif (0,100)
-# meanNtotABmumumet ~ dunif (0,100)
+ fakee1Bmet  ~ dunif(0,100)
+ fakee2Bmet  ~ dunif(0,100)
+ fakemu1Bmet ~ dunif(0,100)
+ fakemu2Bmet ~ dunif(0,100)
 
-# NtotABeemet   ~ dpois (meanNtotABeemet)
-# NtotABmumumet ~ dpois (meanNtotABmumumet)
-
-# OtherBmetInit ~ dunif (100, 100000000)
-# DYBmetInit    ~ dunif (100, 100000000)
-# NtotBmetInit <- OtherBmetInit + DYBmetInit
-
-
-# OtherBmetInit ~ dnorm (NotherMCBmet,1./errNotherMCBmet/errNotherMCBmet/20./20.)
-# DYBmetInit    ~ dnorm (NDYMCBmet,1./errNDYMCBmet/errNDYMCBmet/20./20.)
-# NtotBmetInit <- OtherBmetInit + DYBmetInit
-
-## tempOtherBmetInit ~ dunif (1,10000)
-## OtherBmetInit <- round (tempOtherBmetInit)
-## tempDYBmetInit ~ dunif (1,100000)
-## DYBmetInit <- round (tempDYBmetInit)
-## NtotBmetInit <- OtherBmetInit + DYBmetInit
+ fakee1BmetOther   ~ dunif(0,100)
+ fakee2BmetOther   ~ dunif(0,100)
+ fakemu1BmetOther  ~ dunif(0,100)
+ fakemu2BmetOther  <- fakemu2Bmet * fakemu1Bmet / fakemu1BmetOther * fakee1BmetOther * fakee2BmetOther / fakee2Bmet / fakee1Bmet 
 
 
- tempNtotABeemet   ~ dunif (NeeBmetTemp,100000)
- tempNtotABmumumet ~ dunif (NmumuBmetTemp,100000)
+
+#   e1BmetOther   ~ dunif(0,e1BOther)
+#    e2BmetOther   <- e1BmetOther
+#    mu1BmetOther <- e1BmetOther * (mu1Bmet / e1Bmet) 
+#    mu2BmetOther <- e2BmetOther * (mu2Bmet / e2Bmet) 
+
+## e1BmetOther   ~ dunif(0,e1BOther)
+## e2BmetOther   ~ dunif(0,e2BOther)
+## mu1BmetOther <- e1BmetOther * (mu1Bmet / e1Bmet) 
+## mu2BmetOther <- e2BmetOther * (mu2Bmet / e2Bmet) 
+
+
+# tempNtotABeemet   ~ dunif (NeeBmetTemp,2*NeeBmetTemp)
+# tempNtotABmumumet ~ dunif (NmumuBmetTemp,2*NmumuBmetTemp)
+# tempNtotABeemet   ~ dunif (NeeBmetTemp,3*NeeBmetTemp)
+# tempNtotABmumumet ~ dunif (NmumuBmetTemp,3*NmumuBmetTemp)
+
+
+# tempNtotABeemet   ~ dunif (0,100*NeeBmetTemp)
+# tempNtotABmumumet ~ dunif (0,100*NmumuBmetTemp)
+
+ tempNtotABeemet   ~ dunif (NeeBmetTemp,10*NeeABmetTemp)
+ tempNtotABmumumet ~ dunif (NmumuBmetTemp,10*NmumuABmetTemp)
+
 
  NtotABeemet   <- round (tempNtotABeemet)
  NtotABmumumet <- round (tempNtotABmumumet)
@@ -515,10 +490,10 @@ mu2Bmet ~ dunif(0,1)
  #### M method inference : A-> A ####
  ####################################
 
-
  peeAmet   <- (0.5 * DYAmetInit * e1Amet * e2Amet + 0.25 * OtherAmetInit * e1AmetOther * e2AmetOther) / NtotAmet
- pemuAmet  <- 0.25 * OtherAmetInit * e1Amet * mu2Amet / NtotAmet
- pmueAmet  <- 0.25 * OtherAmetInit * mu1Amet * e2Amet / NtotAmet
+ pemuAmet  <- 0.25 * OtherAmetInit * e1AmetOther * mu2AmetOther / NtotAmet
+# pmueAmet  <- 0.25 * OtherAmetInit * mu1AmetOther * e2AmetOther / NtotAmet
+ pmueAmet  <- pemuAmet * mu1AmetOther * e2AmetOther / e1AmetOther / mu2AmetOther
  pmumuAmet <- (0.5 * DYAmetInit * mu1Amet * mu2Amet + 0.25 * OtherAmetInit * mu1AmetOther * mu2AmetOther) / NtotAmet
 
  totPAmet <- peeAmet + pemuAmet + pmueAmet + pmumuAmet
@@ -527,8 +502,12 @@ mu2Bmet ~ dunif(0,1)
  pAmet[2] <- pemuAmet  / totPAmet
  pAmet[3] <- pmueAmet  / totPAmet
  pAmet[4] <- pmumuAmet / totPAmet
+ 
 
  NAmet ~ dmulti (pAmet, NtotAmet)
+
+ NDYmumuADYM <-  (0.5 * DYAmetInit * mu1Amet * mu2Amet) / NtotAmet
+ NDYeeADYM   <-  (0.5 * DYAmetInit *  e1Amet *  e2Amet) / NtotAmet
 
  NAeemetDYM   <- (0.5 * DYAmetInit * e1Amet * e2Amet)   / (0.5 * DYAmetInit * e1Amet * e2Amet + 0.25 * OtherAmetInit * e1AmetOther * e2AmetOther)     * pAmet[1] * NtotAmet   
  NAmumumetDYM <- (0.5 * DYAmetInit * mu1Amet * mu2Amet) / (0.5 * DYAmetInit * mu1Amet * mu2Amet + 0.25 * OtherAmetInit * mu1AmetOther * mu2AmetOther) * pAmet[4] * NtotAmet   
@@ -541,28 +520,54 @@ mu2Bmet ~ dunif(0,1)
  ################
 
 
- e1Amet  ~ dunif(0,1)
- e2Amet  ~ dunif(0,1)
- mu1Amet ~ dunif(0,1)
- mu2Amet ~ dunif(0,1)
-
- e1AmetOther  ~ dunif(0,1)
- e2AmetOther  ~ dunif(0,1)
- mu1AmetOther <- e1AmetOther * mu1Amet / e1Amet
- mu2AmetOther <- e2AmetOther * mu2Amet / e2Amet
+ e1Amet  ~ dunif(0,100)
+ e2Amet  ~ dunif(0,100)
+ mu1Amet ~ dunif(0,100)
+ mu2Amet ~ dunif(0,100)
 
 
+ e1AmetOther   ~ dunif(0,100)
+ e2AmetOther   ~ dunif(0,100)
+ mu1AmetOther  ~ dunif(0,100)
+ mu2AmetOther  <- mu2Amet * mu1Amet / mu1AmetOther * e1AmetOther * e2AmetOther / e2Amet / e1Amet 
 
- OtherAmetInit ~ dunif (100, 100000000)
- DYAmetInit    ~ dunif (100, 1000000000)
+
+ fakee1Amet  ~ dunif(0,100)
+ fakee2Amet  ~ dunif(0,100)
+ fakemu1Amet ~ dunif(0,100)
+ fakemu2Amet ~ dunif(0,100)
+
+
+ fakee1AmetOther   ~ dunif(0,100)
+ fakee2AmetOther   ~ dunif(0,100)
+ fakemu1AmetOther  ~ dunif(0,100)
+ fakemu2AmetOther  <- fakemu2Amet * fakemu1Amet / fakemu1AmetOther * fakee1AmetOther * fakee2AmetOther / fakee2Amet / fakee1Amet 
+
+
+# e1AmetOther  ~ dunif(0,100)
+# e2AmetOther  ~ dunif(0,100)
+# mu1AmetOther <- e1AmetOther * mu1Amet / e1Amet
+# mu2AmetOther <- e2AmetOther * mu2Amet / e2Amet
+
+
+
+ DYAmetInit    ~ dnorm (NDYMCAmet,1/errNDYMCAmet/errNDYMCAmet)
+ OtherAmetInit ~ dnorm (NotherMCAmet,1/errNotherMCAmet/errNotherMCAmet)
+# OtherAmetInit ~ dnorm (NotherMCAmet/NDYMCAmet*DYAmetInit,1./errNotherMCAmet/errNotherMCAmet/DYAmetInit/DYAmetInit) T (0,)
  NtotAmetInit <- OtherAmetInit + DYAmetInit
- 
-# OtherAmetInit ~ dnorm (NotherMCAmet,1./errNotherMCAmet/errNotherMCAmet/20./20.)
-# DYAmetInit    ~ dnorm (NDYMCAmet,1./errNDYMCAmet/errNDYMCAmet/20./20.)
-# NtotAmetInit <- OtherAmetInit + DYAmetInit
 
-# meanNtotAmumueemet ~ dunif (0,100)
-# NtotAmumueemet ~ dpois (meanNtotAmumueemet)
+ fakeDYAmetInit    ~ dnorm (NDYMCAmet,1/errNDYMCAmet/errNDYMCAmet)
+ fakeOtherAmetInit ~ dnorm (NotherMCAmet,1/errNotherMCAmet/errNotherMCAmet)
+# fakeOtherAmetInit ~ dnorm (NotherMCAmet/NDYMCAmet*fakeDYAmetInit,1./errNotherMCAmet/errNotherMCAmet/fakeDYAmetInit/fakeDYAmetInit) T (0,)
+
+ 
+#     OtherAmetInit ~ dunif (1, 1000)
+#     DYAmetInit    ~ dunif (1, 1000)
+#     NtotAmetInit <- OtherAmetInit + DYAmetInit
+
+# OtherAmetInit <- OtherAInit
+# DYAmetInit    <- DYAInit
+# NtotAmetInit  <- OtherAmetInit + DYAmetInit
 
 }
 
