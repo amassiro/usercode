@@ -57,6 +57,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
  TFile * Input_File = TFile::Open(input.Data());
  
  std::vector<std::string> nameSample;
+ std::vector<std::string> nameSampleToJoin;
  std::vector<std::string> Cuts;
  std::vector<std::pair<std::string,int> > Variable;
  std::vector<std::string> nameHumanVariable;
@@ -87,26 +88,26 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
  {
   getline(inFile,buffer);
   std::stringstream line( buffer );
-  if(buffer =="[SampleName]") continue;
-  if (buffer=="[Cut]") flag=1;
-  if(buffer=="[Variables]") flag=2;
-  if(buffer=="[Number_Closure_Test]") flag=3;
+  if (buffer == "[SampleNameToJoin]") continue;
+  if (buffer == "[Cut]") flag = 1;
+  if (buffer == "[Variables]") flag = 2;
+  if (buffer == "[Number_Closure_Test]") flag = 3;
   
-  if(flag==0 && buffer !="" && buffer!="[SampleName]")
+  if(flag==0 && buffer !="" && buffer!="[SampleNameToJoin]")
   {
    if (buffer.at(0)!='#')
    {
     line>>sample_temp;
-    std::cout<<"Sample:"<<"   "<<sample_temp<<std::endl;
-    nameSample.push_back(sample_temp); ///== vector with samples name according to the standard of MCDATAComparisonPLOTTool.cpp
+    std::cout<< "Sample:" << "   " <<sample_temp<< std::endl;
+    nameSampleToJoin.push_back(sample_temp); ///== vector with samples name according to the standard of MCDATAComparisonPLOTTool.cpp
    }
   }
   
   if(flag==1 && buffer!="" && buffer!="[Cut]")
   {
-   if (buffer.at(0)!='#') {line>>sample_temp;
-       Cuts.push_back(sample_temp); ///== Vector with the ID name for each cut applied
-       
+   if (buffer.at(0)!='#') {
+    line>>sample_temp;
+    Cuts.push_back(sample_temp); ///== Vector with the ID name for each cut applied   
    }
   }
   
@@ -127,7 +128,8 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
      else{
       float f =(float) atof(strtemp.c_str()); 
       row.push_back(f);
-      strtemp.clear();}
+      strtemp.clear();
+     }
     } 
    }
    
@@ -149,14 +151,14 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
     {
      if(buffer.at(iBuf)!=' ')
      {
-      sample_temp=sample_temp+buffer.at(iBuf);
+      sample_temp = sample_temp + buffer.at(iBuf);
      }
      else{
-      if(k==0)
-      { temp.first=sample_temp;
-      temp.second=iPoint;
-      k++;
-      sample_temp.clear();
+      if(k==0){
+       temp.first=sample_temp;
+       temp.second=iPoint;
+       k++;
+       sample_temp.clear();
       }
      }
     }
@@ -165,10 +167,10 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
     
     nameHumanVariable.push_back(sample_temp);
     
-    std::cout<<"Variable Used:"<<"      "<<temp.first<<"    "<<"Name Human Variable:"<<"  "<<sample_temp<<std::endl;
+    std::cout<< "Variable Used:" << "      " <<temp.first<< "    " << "Name Human Variable:" << "  " <<sample_temp<< std::endl;
     
     iPoint++;
-    flag2=1;
+    flag2 = 1;
     continue;
    }
   }
@@ -178,7 +180,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
    if (buffer.at(0)!='#')
    {
     line>>sample_temp;
-    std::cout<<"Number Closure Test :"<<"    "<<sample_temp<<std::endl;
+    std::cout<< "Number Closure Test :" << "    " <<sample_temp<< std::endl;
     Closure_Number=(int) atoi(sample_temp.c_str());
    }
   }
@@ -192,23 +194,29 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
  THStack* stack[100][100];
  TCanvas* canvas[100][100];
  
- for(int iCut=0; iCut<Cuts.size();iCut++)
- {  
-  for(int iVar=0; iVar<Variable.size();iVar++)
-  {
-   for(int iSample=0; iSample<nameSample.size(); iSample++)
-   {    
-    TString histo_name =Form("Data/%s_%d_%d_Tot_temp", nameSample.at(iSample).c_str(), iCut, iVar);
+ for(int iCut=0; iCut<Cuts.size();iCut++) {  
+  for(int iVar=0; iVar<Variable.size();iVar++) {   
+   TString stack_name = Form ("Data/%d_%d_stack", iCut, iVar);
+   stack[iCut][iVar] = (THStack*) Input_File->Get(stack_name);
+   
+   if (iCut == 0 && iVar == 0) {
+    FillListOfName (*stack[iCut][iVar], &nameSample);
+    nameSample.push_back("DATA");
+   }
+   
+   TString Canvas_name = Form ("All/Var/%d_%d_Canvas", iCut, iVar);
+   canvas[iCut][iVar] = (TCanvas*) Input_File->Get(Canvas_name);
+   for(int iSample = 0; iSample < nameSample.size(); iSample++) {    
+    TString histo_name = Form ("Data/%s_%d_%d_Tot_temp", nameSample.at(iSample).c_str(), iCut, iVar);
     histo[iCut][iVar][iSample] = (TH1D*) Input_File->Get(histo_name);
    }
-   TString stack_name= Form("Data/%d_%d_stack", iCut, iVar);
-   stack[iCut][iVar]= (THStack*)Input_File->Get(stack_name);
-   TString Canvas_name= Form("All/Var/%d_%d_Canvas", iCut, iVar);
-   canvas[iCut][iVar]=(TCanvas*) Input_File->Get(Canvas_name);
-   
   }
- } 
+ }
  
+ 
+ for (int iNameToJoin = 0; iNameToJoin < nameSampleToJoin.size(); iNameToJoin++){
+  std::cout << " [" << iNameToJoin << "][" << nameSampleToJoin.size() << "] = " << nameSampleToJoin.at(iNameToJoin) << std::endl;
+ }
  
  
  ///=== Efficiency Evaluation
@@ -221,13 +229,13 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
  
  
  for(int iVar=0; iVar< Variable.size(); iVar++) { 
-//   std::cout << " ciao! " << " iVar = " << iVar << std::endl;
   
-  ///====== Variable selection
+  ///==== Variable selection ====
   
-  if( Variable.at(iVar).first!="(abs(q1_Eta)<abs(q2_Eta))*(abs(q1_Eta))+(abs(q1_Eta)>=abs(q2_Eta))*(abs(q2_Eta))" && 
-      Variable.at(iVar).first!="(abs(q1_Eta)<abs(q2_Eta))*(q1_pT)+(abs(q1_Eta)>=abs(q2_Eta))*(q2_pT)")
-   continue;
+//   if( Variable.at(iVar).first!="(abs(q1_Eta)<abs(q2_Eta))*(abs(q1_Eta))+(abs(q1_Eta)>=abs(q2_Eta))*(abs(q2_Eta))" && 
+//       Variable.at(iVar).first!="(abs(q1_Eta)<abs(q2_Eta))*(q1_pT)+(abs(q1_Eta)>=abs(q2_Eta))*(q2_pT)")
+//    continue;
+  ///============================
   
   output_Plott.cd();
   TDirectory* cdAll = (TDirectory*) output_Plott.mkdir(nameHumanVariable.at(iVar).c_str());
@@ -241,18 +249,16 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
   output_Plott.cd(way);
   
   for(int iCut=0; iCut<Cuts.size(); iCut++) {  
-   bool isDATA =false;
-   bool isDivide =true;
+   bool isDATA = false;
+   bool isDivide = true;
    
    ///==== Efficiency analysis in the control region 
    
    if(Cuts.at(iCut) == "Efficiency_Zone" && Cuts.at(iCut+1) == "Efficiency_Zone_Btag") {
     /// Check for the right pair of cuts
     TH1D * num = (TH1D*) stack[iCut+1][iVar]->GetStack()->Last();
-//     std::cout << " num = " << num << std::endl;
     TH1D * num_Rebinned; 
     num_Rebinned = DynamicalRebinHisto(num,num_Rebinned,Bin_Extremes[iVar],isDATA, isDivide); ///== Dynamical Rebin of the Histogram with the new binning defined in Bin_Extremes[iVar],
-//     std::cout << " num_Rebinned = " << num_Rebinned << std::endl;
     num_Rebinned->SetFillStyle(3335);
     num_Rebinned->SetFillColor(kBlack);
     ///=== isData is a bool variable that indicates if we work on data sample, isDivide if we want to divide the bin content for the bin width
@@ -283,59 +289,58 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
     TH1D * num_ttbar_Rebinned, * den_ttbar_Rebinned,* num_top_Rebinned, * den_top_Rebinned, * num_DATA_Rebinned, * den_DATA_Rebinned;
     
     
-    for(int iSample=0;iSample<nameSample.size(); iSample++) {
-     
-     if(nameSample.at(iSample)!="ttbar" && nameSample.at(iSample)!="top" && nameSample.at(iSample)!="DATA") continue;
-     
-     if(nameSample.at(iSample)=="ttbar") { 
-      num_ttbar = (TH1D*) histo[iCut+1][iVar][iSample]->Clone("num_ttbar");
-     num_ttbar_Rebinned = DynamicalRebinHisto(num_ttbar,num_ttbar_Rebinned,Bin_Extremes[iVar],isDATA, isDivide);
-     
-     den_ttbar = (TH1D*) histo[iCut][iVar][iSample]->Clone("den_ttbar");
-     den_ttbar_Rebinned = DynamicalRebinHisto(den_ttbar,den_ttbar_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+    for(int iSample=0; iSample<nameSample.size(); iSample++) {     
+     for (int iNameToJoin = 0; iNameToJoin < nameSampleToJoin.size(); iNameToJoin++){
+      if (nameSample.at(iSample) == nameSampleToJoin.at(iNameToJoin)) { 
+       if (!num_ttbar) {
+	num_ttbar = (TH1D*) histo[iCut+1][iVar][iSample]->Clone("num_ttbar");
+	num_ttbar_Rebinned = DynamicalRebinHisto(num_ttbar,num_ttbar_Rebinned,Bin_Extremes[iVar],isDATA, isDivide);
+	
+	den_ttbar = (TH1D*) histo[iCut][iVar][iSample]->Clone("den_ttbar");
+	den_ttbar_Rebinned = DynamicalRebinHisto(den_ttbar,den_ttbar_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);	
+       } 
+       else {
+	num_top = (TH1D*)histo[iCut+1][iVar][iSample]->Clone("num_top");
+	num_top_Rebinned = DynamicalRebinHisto(num_top,num_top_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+	
+	den_top = (TH1D*) histo[iCut][iVar][iSample]->Clone("den_top");
+	den_top_Rebinned = DynamicalRebinHisto(den_top,den_top_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+	
+	num_ttbar_Rebinned->Add(num_top_Rebinned);
+	den_ttbar_Rebinned->Add(den_top_Rebinned);
+       }
+      }
      }
      
-     if(nameSample.at(iSample)=="top") {
-      num_top = (TH1D*)histo[iCut+1][iVar][iSample]->Clone("num_top");
-      num_top_Rebinned = DynamicalRebinHisto(num_top,num_top_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
-      
-      den_top = (TH1D*) histo[iCut][iVar][iSample]->Clone("den_top");
-      den_top_Rebinned = DynamicalRebinHisto(den_top,den_top_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
-     }
-     
-     if(nameSample.at(iSample)=="DATA") { 
+     if(nameSample.at(iSample) == "DATA") { 
       isDATA = true;
       
       num_DATA = (TH1D*) histo[iCut+1][iVar][iSample]->Clone("num_DATA");
-     num_DATA_Rebinned = DynamicalRebinHisto(num_DATA,num_DATA_Rebinned,Bin_Extremes[iVar],isDATA, isDivide);
-     
-     den_DATA = (TH1D*) histo[iCut][iVar][iSample]->Clone("den_DATA");
-     den_DATA_Rebinned = DynamicalRebinHisto(den_DATA,den_DATA_Rebinned,Bin_Extremes[iVar],isDATA, isDivide);
-     
-     num_DATA_Rebinned->SetMarkerColor(kBlack);
-     num_DATA_Rebinned->SetLineColor(kBlack);
-     num_DATA_Rebinned->SetFillColor(kWhite);
-     num_DATA_Rebinned->SetMarkerStyle(20);
-     den_DATA_Rebinned->SetMarkerColor(kBlack);
-     den_DATA_Rebinned->SetFillColor(kWhite);
-     den_DATA_Rebinned->SetLineColor(kBlack);
-     den_DATA_Rebinned->SetMarkerStyle(20);
-     
-     isDATA = false;
+      num_DATA_Rebinned = DynamicalRebinHisto(num_DATA,num_DATA_Rebinned,Bin_Extremes[iVar],isDATA, isDivide);
+      
+      den_DATA = (TH1D*) histo[iCut][iVar][iSample]->Clone("den_DATA");
+      den_DATA_Rebinned = DynamicalRebinHisto(den_DATA,den_DATA_Rebinned,Bin_Extremes[iVar],isDATA, isDivide);
+      
+      num_DATA_Rebinned->SetMarkerColor(kBlack);
+      num_DATA_Rebinned->SetLineColor(kBlack);
+      num_DATA_Rebinned->SetFillColor(kWhite);
+      num_DATA_Rebinned->SetMarkerStyle(20);
+      den_DATA_Rebinned->SetMarkerColor(kBlack);
+      den_DATA_Rebinned->SetFillColor(kWhite);
+      den_DATA_Rebinned->SetLineColor(kBlack);
+      den_DATA_Rebinned->SetMarkerStyle(20);
+      
+      isDATA = false;
      }
     }
-    
     /// top background Effciency
     
-    EfficiencyHisto_ttbar[iCut][iVar] = (TH1D*) num_ttbar_Rebinned->Clone("EfficiencyHisto_ttbar");
-    EfficiencyHisto_ttbar[iCut][iVar]->Add(num_top_Rebinned);
-    den_ttbar_Rebinned->Add(den_top_Rebinned);
-    EfficiencyHisto_ttbar[iCut][iVar]->Divide(den_ttbar_Rebinned);
+    EfficiencyHisto_ttbar[iCut][iVar] = (TH1D*) num_ttbar_Rebinned->Clone("EfficiencyHisto_ttbar");	
+    EfficiencyHisto_ttbar[iCut][iVar] -> Divide(den_ttbar_Rebinned);
     
-    ///==== Purtity Distribution in the total and Btag Efficiency Zone
+    ///==== Purity Distribution in the total and Btag Efficiency Zone
     
     PurityHisto[iCut+1][iVar] = (TH1D*) num_ttbar_Rebinned->Clone("PurityHisto");
-    PurityHisto[iCut+1][iVar] -> Add(num_top_Rebinned);
     PurityHisto[iCut+1][iVar] -> Divide(num_Rebinned);
     
     PurityHisto[iCut][iVar] = (TH1D*) den_ttbar_Rebinned->Clone("PurityHisto");
@@ -381,18 +386,18 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
     gPad->SetGrid();
     c1.Write();
     
-    num_DATA_Rebinned=DynamicalRebinHisto(num_DATA,num_DATA_Rebinned,Bin_Extremes[iVar],true,false);
-    den_DATA_Rebinned=DynamicalRebinHisto(den_DATA,den_DATA_Rebinned,Bin_Extremes[iVar],true,false);
+    num_DATA_Rebinned = DynamicalRebinHisto(num_DATA,num_DATA_Rebinned,Bin_Extremes[iVar],true,false);
+    den_DATA_Rebinned = DynamicalRebinHisto(den_DATA,den_DATA_Rebinned,Bin_Extremes[iVar],true,false);
     
-    eff_DATA[iCut][iVar]= new TEfficiency(*num_DATA_Rebinned,*den_DATA_Rebinned);
+    eff_DATA[iCut][iVar] = new TEfficiency(*num_DATA_Rebinned,*den_DATA_Rebinned);
     eff_DATA[iCut][iVar]->Bayesian(den_DATA->GetEntries(),num_DATA->GetEntries(),0.68,1,1,false,true);
     eff_DATA[iCut][iVar]->SetMarkerColor(kBlack);
     eff_DATA[iCut][iVar]->SetLineColor(kBlack);
     eff_DATA[iCut][iVar]->SetLineWidth(2);
-    eff_DATA[iCut][iVar]->SetMarkerStyle(20);
+//     eff_DATA[iCut][iVar]->SetMarkerStyle(20);
     eff_DATA[iCut][iVar]->Draw("AP");
     
-    Title=Form("efficiency_DATA_%s_%s/%s",nameHumanVariable.at(iVar).c_str(),Cuts.at(iCut+1).c_str(),Cuts.at(iCut).c_str());
+    Title = Form("efficiency_DATA_%s_%s/%s",nameHumanVariable.at(iVar).c_str(),Cuts.at(iCut+1).c_str(),Cuts.at(iCut).c_str());
     c1.SetName(Title);
     gPad->SetGrid();
     c1.Write();
@@ -448,9 +453,11 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
     
    }
    
-   if(Cuts.at(iCut)=="Efficiency_Zone_noBtag") {
-    ///=== no btag part of the efficiency region       	
-    TH1D * num_Sig = (TH1D*)stack[iCut][iVar]->GetStack()->Last();
+   std::cerr << " >> Cuts.at(" << iCut << ") = " << Cuts.at(iCut) << std::endl;
+   
+   if(Cuts.at(iCut) == "Efficiency_Zone_noBtag") {
+    ///=== no btag part of the efficiency region               
+    TH1D * num_Sig = (TH1D*) stack[iCut][iVar]->GetStack()->Last();
     TH1D * num_Sig_Rebinned;
     
     num_Sig_Rebinned = DynamicalRebinHisto(num_Sig,num_Sig_Rebinned,Bin_Extremes[iVar],isDATA, isDivide);
@@ -466,39 +473,38 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
     TH1D* num_ttbar_Sig,*num_ttbar_Sig_Rebinned, *num_top_Sig, *num_top_Sig_Rebinned;
     
     for(int iSample=0;iSample<nameSample.size(); iSample++) {
-     if(nameSample.at(iSample)!="ttbar" && nameSample.at(iSample)!="top" && nameSample.at(iSample)!="DATA") continue;
-     if (nameSample.at(iSample)=="ttbar")
-     { 
-      num_ttbar_Sig = (TH1D*) histo[iCut][iVar][iSample]->Clone("num_ttbar_Sig");
-      num_ttbar_Sig_Rebinned = DynamicalRebinHisto(num_ttbar_Sig,num_ttbar_Sig_Rebinned,Bin_Extremes[iVar],isDATA, isDivide);
-     }
      
-     if(nameSample.at(iSample)=="top")
-     {
-      num_top_Sig = (TH1D*) histo[iCut][iVar][iSample]->Clone("num_top_Sig");
-      num_top_Sig_Rebinned = DynamicalRebinHisto(num_top_Sig,num_top_Sig_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+     for (int iNameToJoin = 0; iNameToJoin < nameSampleToJoin.size(); iNameToJoin++){
+      if (nameSample.at(iSample) == nameSampleToJoin.at(iNameToJoin)) { 
+       if (!num_ttbar_Sig) {
+	num_ttbar_Sig = (TH1D*) histo[iCut][iVar][iSample]->Clone("num_ttbar_Sig");
+	num_ttbar_Sig_Rebinned = DynamicalRebinHisto(num_ttbar_Sig,num_ttbar_Sig_Rebinned,Bin_Extremes[iVar],isDATA, isDivide);
+       } 
+       else {
+	num_top_Sig = (TH1D*) histo[iCut][iVar][iSample]->Clone("num_top_Sig");
+	num_top_Sig_Rebinned = DynamicalRebinHisto(num_top_Sig,num_top_Sig_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+	num_ttbar_Sig_Rebinned->Add(num_top_Sig_Rebinned);
+       }
+      }
      }
-     
-     
-     if(nameSample.at(iSample)=="DATA")
-     { 
-      isDATA=true;
+       
+       if(nameSample.at(iSample)=="DATA") { 
+	isDATA = true;
+	
+	num_DATA_Sig = (TH1D*) histo[iCut][iVar][iSample]->Clone("num_DATA_Sig");
+	num_DATA_Sig_Rebinned = DynamicalRebinHisto(num_DATA_Sig,num_DATA_Sig_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+	
+	num_DATA_Sig_Rebinned->SetMarkerColor(kBlack);
+	num_DATA_Sig_Rebinned->SetLineColor(kBlack);
+	num_DATA_Sig_Rebinned->SetFillColor(kWhite);
+	num_DATA_Sig_Rebinned->SetMarkerStyle(20);
+	
+	isDATA = false;
+       }
+      }
       
-      num_DATA_Sig = (TH1D*) histo[iCut][iVar][iSample]->Clone("num_DATA_Sig");
-      num_DATA_Sig_Rebinned = DynamicalRebinHisto(num_DATA_Sig,num_DATA_Sig_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
-      
-      num_DATA_Sig_Rebinned->SetMarkerColor(kBlack);
-      num_DATA_Sig_Rebinned->SetLineColor(kBlack);
-      num_DATA_Sig_Rebinned->SetFillColor(kWhite);
-      num_DATA_Sig_Rebinned->SetMarkerStyle(20);
-      
-      isDATA=false;
-     }
-    }
-    
-    ///==== Purtity Even
+    ///==== Purity Even
     PurityHisto[iCut][iVar] = (TH1D*) num_ttbar_Sig_Rebinned->Clone("PurityHisto");
-    PurityHisto[iCut][iVar]->Add(num_top_Sig_Rebinned);
     PurityHisto[iCut][iVar]->Divide(num_Sig_Rebinned);
     
     ///==== Plot in different Canvas  
@@ -541,28 +547,25 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
     gPad->SetGrid();
     s1.Write();
     
-    
    }
-   
-   
+      
    ///=== Efficiency and purity after VBF selections 
-   
-   if(Cuts.at(iCut)=="VBF_Zone" && Cuts.at(iCut+1)=="VBF_Zone_Btag")
-   {
+    
+   if(Cuts.at(iCut) == "VBF_Zone" && Cuts.at(iCut+1)=="VBF_Zone_Btag") {
     
     TString waySR = Form("%s/Efficiency_Study/SR",nameHumanVariable.at(iVar).c_str());
     output_Plott.cd(waySR);
     
     TH1D * num_VBF = (TH1D*) stack[iCut+1][iVar]->GetStack()->Last();
     TH1D * num_VBF_Rebinned;
-    num_VBF_Rebinned=DynamicalRebinHisto(num_VBF,num_VBF_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+    num_VBF_Rebinned = DynamicalRebinHisto(num_VBF,num_VBF_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
     
     num_VBF_Rebinned->SetFillStyle(3335);
     num_VBF_Rebinned->SetFillColor(kBlack);
     
     TH1D * den_VBF = (TH1D*) stack[iCut][iVar]->GetStack()->Last();
     TH1D * den_VBF_Rebinned;
-    den_VBF_Rebinned=DynamicalRebinHisto(den_VBF,den_VBF_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+    den_VBF_Rebinned = DynamicalRebinHisto(den_VBF,den_VBF_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
     
     den_VBF_Rebinned->SetFillStyle(3335);
     den_VBF_Rebinned->SetFillColor(kBlack);
@@ -579,33 +582,31 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
     TH1D* num_ttbar_VBF, *den_ttbar_VBF, *den_top_VBF, *num_top_VBF,* num_DATA_VBF, *den_DATA_VBF;
     TH1D * num_ttbar_VBF_Rebinned, * den_ttbar_VBF_Rebinned, * num_top_VBF_Rebinned, * den_top_VBF_Rebinned, * num_DATA_VBF_Rebinned, * den_DATA_VBF_Rebinned;
     
-    
     for(int iSample=0;iSample<nameSample.size(); iSample++) {
-     if(nameSample.at(iSample)!="ttbar" && nameSample.at(iSample)!="top" && nameSample.at(iSample)!="DATA") continue;
      
-     if(nameSample.at(iSample)=="ttbar")
-     {
-      
-      num_ttbar_VBF = (TH1D*) histo[iCut+1][iVar][iSample]->Clone("num_ttbar_VBF");
-      num_ttbar_VBF_Rebinned=DynamicalRebinHisto(num_ttbar_VBF,num_ttbar_VBF_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
-      
-      den_ttbar_VBF = (TH1D*) histo[iCut][iVar][iSample]->Clone("den_ttbar_VBF");
-      den_ttbar_VBF_Rebinned=DynamicalRebinHisto(den_ttbar_VBF,den_ttbar_VBF_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
-      
+     for (int iNameToJoin = 0; iNameToJoin < nameSampleToJoin.size(); iNameToJoin++){
+      if (nameSample.at(iSample) == nameSampleToJoin.at(iNameToJoin)) { 
+       if (!num_ttbar_VBF) {
+	num_ttbar_VBF = (TH1D*) histo[iCut+1][iVar][iSample]->Clone("num_ttbar_VBF");
+	num_ttbar_VBF_Rebinned = DynamicalRebinHisto(num_ttbar_VBF,num_ttbar_VBF_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+	
+	den_ttbar_VBF = (TH1D*) histo[iCut][iVar][iSample]->Clone("den_ttbar_VBF");
+	den_ttbar_VBF_Rebinned = DynamicalRebinHisto(den_ttbar_VBF,den_ttbar_VBF_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+       } 
+       else {
+	num_top_VBF = (TH1D*)histo[iCut+1][iVar][iSample]->Clone("num_top_VBF");
+	num_top_VBF_Rebinned = DynamicalRebinHisto(num_top_VBF,num_top_VBF_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+	
+	den_top_VBF = (TH1D*) histo[iCut][iVar][iSample]->Clone("den_top");
+	den_top_VBF_Rebinned = DynamicalRebinHisto(den_top_VBF,den_top_VBF_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+	
+	num_ttbar_VBF_Rebinned->Add(num_top_VBF_Rebinned);
+	den_ttbar_VBF_Rebinned->Add(den_top_VBF_Rebinned);
+       }
+      }
      }
      
-     
-     if(nameSample.at(iSample)=="top")
-     {
-      num_top_VBF = (TH1D*)histo[iCut+1][iVar][iSample]->Clone("num_top_VBF");
-     num_top_VBF_Rebinned = DynamicalRebinHisto(num_top_VBF,num_top_VBF_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
-     
-     den_top_VBF = (TH1D*) histo[iCut][iVar][iSample]->Clone("den_top");
-     den_top_VBF_Rebinned = DynamicalRebinHisto(den_top_VBF,den_top_VBF_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
-     }
-     
-     if(nameSample.at(iSample)=="DATA")
-     { 
+     if(nameSample.at(iSample) == "DATA") { 
       isDATA=true;
       
       num_DATA_VBF = (TH1D*)histo[iCut+1][iVar][iSample]->Clone("num_DATA_VBF");
@@ -632,14 +633,11 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
     ///=== Effciency top background VBF Region
     
     EfficiencyHisto_ttbar[iCut][iVar]= (TH1D*) num_ttbar_VBF_Rebinned->Clone("EfficiencyHisto_ttbar_VBF");
-    EfficiencyHisto_ttbar[iCut][iVar]->Add(num_top_VBF_Rebinned);
-    den_ttbar_VBF_Rebinned->Add(den_top_VBF_Rebinned);
     EfficiencyHisto_ttbar[iCut][iVar]->Divide(den_ttbar_VBF_Rebinned);
     
     ///=== Purity Distributions
     
     PurityHisto[iCut+1][iVar]= (TH1D*) num_ttbar_VBF_Rebinned->Clone("PurityHisto");
-    PurityHisto[iCut+1][iVar]->Add(num_top_VBF_Rebinned);
     PurityHisto[iCut+1][iVar]->Divide(num_VBF_Rebinned);
     
     PurityHisto[iCut][iVar]= (TH1D*) den_ttbar_VBF_Rebinned->Clone("PurityHisto");
@@ -757,40 +755,43 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
     
    }
    
-   if(Cuts.at(iCut)=="VBF_Zone_Signal")
+   if(Cuts.at(iCut) == "VBF_Zone_Signal")
    {
     TH1D * num_VBF_Sig= (TH1D*)stack[iCut][iVar]->GetStack()->Last();
     TH1D * num_VBF_Sig_Rebinned;
-    num_VBF_Sig_Rebinned=DynamicalRebinHisto(num_VBF_Sig,num_VBF_Sig_Rebinned,Bin_Extremes[iVar],isDATA,isDivide);
+    num_VBF_Sig_Rebinned = DynamicalRebinHisto(num_VBF_Sig,num_VBF_Sig_Rebinned,Bin_Extremes[iVar],isDATA,isDivide);
     
     num_VBF_Sig_Rebinned->SetFillStyle(3335);
     num_VBF_Sig_Rebinned->SetFillColor(kBlack);
     
     TLegend * legend= makeLegend(*stack[iCut][iVar],nameSample);
     
-    stack_Rebinned[iCut][iVar]=DynamicalRebinStack(stack[iCut][iVar],stack_Rebinned[iCut][iVar],Bin_Extremes[iVar],isDATA,isDivide);
+    stack_Rebinned[iCut][iVar] = DynamicalRebinStack(stack[iCut][iVar],stack_Rebinned[iCut][iVar],Bin_Extremes[iVar],isDATA,isDivide);
     
     TH1D* num_DATA_VBF_Sig, *num_DATA_VBF_Sig_Rebinned, * num_ttbar_Sig,*num_ttbar_Sig_Rebinned,*num_top_Sig,*num_top_Sig_Rebinned;
     
-    for(int iSample=0;iSample<nameSample.size(); iSample++)
-    {
-     if(nameSample.at(iSample)!="ttbar" && nameSample.at(iSample)!="top" && nameSample.at(iSample)!="DATA") continue;
+    for(int iSample=0;iSample<nameSample.size(); iSample++) {
      
-     if(nameSample.at(iSample)=="ttbar")
-     { 
-      num_ttbar_Sig = (TH1D*) histo[iCut][iVar][iSample]->Clone("num_ttbar_Sig");
-      num_ttbar_Sig_Rebinned=DynamicalRebinHisto(num_ttbar_Sig,num_ttbar_Sig_Rebinned,Bin_Extremes[iVar],isDATA, isDivide);
+     for (int iNameToJoin = 0; iNameToJoin < nameSampleToJoin.size(); iNameToJoin++){
+      if (nameSample.at(iSample) == nameSampleToJoin.at(iNameToJoin)) { 
+       if (!num_ttbar_Sig) {
+	num_ttbar_Sig = (TH1D*) histo[iCut][iVar][iSample]->Clone("num_ttbar_Sig");
+	num_ttbar_Sig_Rebinned = DynamicalRebinHisto(num_ttbar_Sig,num_ttbar_Sig_Rebinned,Bin_Extremes[iVar],isDATA, isDivide);
+       } 
+       else {
+	num_top_Sig = (TH1D*)histo[iCut][iVar][iSample]->Clone("num_top_Sig");
+	num_top_Sig_Rebinned = DynamicalRebinHisto(num_top_Sig,num_top_Sig_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+	
+	den_top_VBF = (TH1D*) histo[iCut][iVar][iSample]->Clone("den_top");
+	den_top_VBF_Rebinned = DynamicalRebinHisto(den_top_VBF,den_top_VBF_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+	
+	num_ttbar_Sig_Rebinned->Add(num_top_Sig_Rebinned);
+       }
+      }
      }
-     
-     if(nameSample.at(iSample)=="top")
-     {
-      num_top_Sig = (TH1D*)histo[iCut][iVar][iSample]->Clone("num_top_Sig");
-      num_top_Sig_Rebinned=DynamicalRebinHisto(num_top_Sig,num_top_Sig_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
-     }
-     
-     if(nameSample.at(iSample)=="DATA")
-     {
-      isDATA=true;
+          
+     if(nameSample.at(iSample)=="DATA") {
+      isDATA = true;
       
       num_DATA_VBF_Sig = (TH1D*) histo[iCut][iVar][iSample]->Clone("num_DATA_VBF_Sig");
       num_DATA_VBF_Sig_Rebinned=DynamicalRebinHisto(num_DATA_VBF_Sig,num_DATA_VBF_Sig_Rebinned,Bin_Extremes[iVar],isDATA,isDivide);
@@ -800,15 +801,14 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
       num_DATA_VBF_Sig_Rebinned->SetFillColor(kWhite);
       num_DATA_VBF_Sig_Rebinned->SetMarkerStyle(20);
       
-      isDATA=false;
+      isDATA = false;
       
      }
     }
     
-    ///==== Purtity Distribution
+    ///==== Purity Distribution
     
     PurityHisto[iCut][iVar]= (TH1D*) num_ttbar_Sig_Rebinned->Clone("PurityHisto");
-    PurityHisto[iCut][iVar]->Add(num_top_Sig_Rebinned);
     PurityHisto[iCut][iVar]->Divide(num_VBF_Sig_Rebinned);
     
     ///==== Plot in different Canvas  
@@ -855,6 +855,8 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
   }
  }
  
+ std::cerr << " *** Final *** " << std::endl;
+ 
  ///===== Final Plot for Efficiency Comparison and DATA Driven Estimation
  
  TEfficiency* Efficiency_Control_Zone[100];
@@ -863,11 +865,10 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
  TGraphAsymmErrors* VBF_Sig_Zone_Estimation[100];
  
  
- for(int iVar=0; iVar<Variable.size(); iVar++)
- {
-  if(Variable.at(iVar).first!="(abs(q1_Eta)<abs(q2_Eta))*(abs(q1_Eta))+(abs(q1_Eta)>=abs(q2_Eta))*(abs(q2_Eta))" && 
-   Variable.at(iVar).first!="(abs(q1_Eta)<abs(q2_Eta))*(q1_pT)+(abs(q1_Eta)>=abs(q2_Eta))*(q2_pT)")
-   continue;
+ for(int iVar=0; iVar<Variable.size(); iVar++) {
+//   if(Variable.at(iVar).first!="(abs(q1_Eta)<abs(q2_Eta))*(abs(q1_Eta))+(abs(q1_Eta)>=abs(q2_Eta))*(abs(q2_Eta))" && 
+//    Variable.at(iVar).first!="(abs(q1_Eta)<abs(q2_Eta))*(q1_pT)+(abs(q1_Eta)>=abs(q2_Eta))*(q2_pT)")
+//    continue;
   
   TString way=Form("%s/Efficiency_Study",nameHumanVariable.at(iVar).c_str());
   output_Plott.cd(way);
@@ -876,7 +877,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
   TLegend * leg =new TLegend(0.75,0.7,0.98,0.9);
   TLegend * leg2 =new TLegend(0.75,0.7,0.98,0.9);
   
-  bool isDivide=true;
+  bool isDivide = true;
   
   for(int iCut=0; iCut<Cuts.size(); iCut++)
   {
@@ -884,6 +885,11 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
    {
     ///==== Efficiency on DATA in the Efficiency region
     Efficiency_Control_Zone[iVar]= (TEfficiency*) eff_DATA[iCut][iVar]->Clone("Efficiency_Control_Zone");
+    Efficiency_Control_Zone[iVar]->SetMarkerColor(kBlack);
+    Efficiency_Control_Zone[iVar]->SetLineColor(kBlack);
+//     Efficiency_Control_Zone[iVar]->SetMarkerStyle(1);
+//     Efficiency_Control_Zone[iVar]->SetMarkerSize(0.2);
+//     Efficiency_Control_Zone[iVar]->SetLineWidth(2);
     
     EfficiencyHisto_ttbar[iCut][iVar]->SetFillColor(kRed);
     EfficiencyHisto_ttbar[iCut][iVar]->SetMarkerColor(kRed);
@@ -940,7 +946,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
     EfficiencyHisto_ttbar[iCut][iVar]->Draw("E1");
    }
    
-   if(Cuts.at(iCut)=="VBF_Zone")
+   if(Cuts.at(iCut) == "VBF_Zone")
    {
     EfficiencyHisto_ttbar[iCut][iVar]->SetMarkerColor(kRed);
     EfficiencyHisto_ttbar[iCut][iVar]->SetFillColor(kRed);
@@ -964,16 +970,16 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
    
    ///===== Distribution of data in the Btag Zone (Control Region)  after the VBF selections
    
-   if(Cuts.at(iCut)=="VBF_Zone_Btag")
+   if(Cuts.at(iCut) == "VBF_Zone_Btag")
    {
     for(int iSample=0; iSample<nameSample.size(); iSample++)
     {
      if(nameSample.at(iSample)!="DATA")continue;
      
      TH1D* Temp;
-     Temp=(TH1D*) histo[iCut][iVar][iSample]->Clone("Temp");
+     Temp = (TH1D*) histo[iCut][iVar][iSample]->Clone("Temp");
      
-     VBF_Btag_Zone[iVar]=DynamicalRebinHisto(Temp,VBF_Btag_Zone[iVar],Bin_Extremes.at(iVar), true, isDivide);
+     VBF_Btag_Zone[iVar] = DynamicalRebinHisto(Temp,VBF_Btag_Zone[iVar],Bin_Extremes.at(iVar), true, isDivide);
      Temp->Delete();
      
     }
@@ -987,11 +993,11 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
     for(int iSample=0; iSample<nameSample.size(); iSample++)
     {
      if(nameSample.at(iSample)!="DATA")continue;
-	
-	TH1D* Temp;
+        
+        TH1D* Temp;
      Temp=(TH1D*) histo[iCut][iVar][iSample]->Clone("Temp"); 
      
-     VBF_DATA_Sig_Zone[iVar]=DynamicalRebinHisto(Temp,VBF_DATA_Sig_Zone[iVar],Bin_Extremes.at(iVar), true,isDivide);
+     VBF_DATA_Sig_Zone[iVar] = DynamicalRebinHisto(Temp,VBF_DATA_Sig_Zone[iVar],Bin_Extremes.at(iVar), true,isDivide);
      Temp->Delete();
     }
     
@@ -1000,8 +1006,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
   
   ///==== Final Data driven estimation in the signal region for each Variable
   
-  if(VBF_DATA_Sig_Zone[iVar]!=0 && VBF_Btag_Zone[iVar]!=0 && Efficiency_Control_Zone[iVar]!=0)
-  { 
+  if(VBF_DATA_Sig_Zone[iVar]!=0 && VBF_Btag_Zone[iVar]!=0 && Efficiency_Control_Zone[iVar]!=0) { 
    
    VBF_Sig_Zone_Estimation[iVar]=new TGraphAsymmErrors(VBF_DATA_Sig_Zone[iVar]);
    
@@ -1013,11 +1018,11 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
        
        if(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))-abs((1/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*sqrt(((Efficiency_Control_Zone[iVar]->GetEfficiencyErrorLow(iBin+1))*(Efficiency_Control_Zone[iVar]->GetEfficiencyErrorLow(iBin+1))*((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*VBF_Btag_Zone[iVar]->GetBinContent(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)*Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))+VBF_Btag_Zone[iVar]->GetBinError(iBin+1)*VBF_Btag_Zone[iVar]->GetBinError(iBin+1)*(1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))*(1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))))>=0)
        { 
-	///=== Errors are evaluated through the propagation formula
-	VBF_Sig_Zone_Estimation[iVar]->SetPointError(iBin,VBF_DATA_Sig_Zone[iVar]->GetBinWidth(iBin+1)/2,VBF_DATA_Sig_Zone[iVar]->GetBinWidth(iBin+1)/2,(1/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*sqrt(((Efficiency_Control_Zone[iVar]->GetEfficiencyErrorLow(iBin+1))*(Efficiency_Control_Zone[iVar]->GetEfficiencyErrorLow(iBin+1))*((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*VBF_Btag_Zone[iVar]->GetBinContent(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)*Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))+VBF_Btag_Zone[iVar]->GetBinError(iBin+1)*VBF_Btag_Zone[iVar]->GetBinError(iBin+1)*(1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))*(1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))),(1/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*sqrt(((Efficiency_Control_Zone[iVar]->GetEfficiencyErrorUp(iBin+1))*(Efficiency_Control_Zone[iVar]->GetEfficiencyErrorUp(iBin+1))*((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*VBF_Btag_Zone[iVar]->GetBinContent(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)*Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))+VBF_Btag_Zone[iVar]->GetBinError(iBin+1)*VBF_Btag_Zone[iVar]->GetBinError(iBin+1)*(1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))*(1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))));
+        ///=== Errors are evaluated through the propagation formula
+        VBF_Sig_Zone_Estimation[iVar]->SetPointError(iBin,VBF_DATA_Sig_Zone[iVar]->GetBinWidth(iBin+1)/2,VBF_DATA_Sig_Zone[iVar]->GetBinWidth(iBin+1)/2,(1/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*sqrt(((Efficiency_Control_Zone[iVar]->GetEfficiencyErrorLow(iBin+1))*(Efficiency_Control_Zone[iVar]->GetEfficiencyErrorLow(iBin+1))*((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*VBF_Btag_Zone[iVar]->GetBinContent(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)*Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))+VBF_Btag_Zone[iVar]->GetBinError(iBin+1)*VBF_Btag_Zone[iVar]->GetBinError(iBin+1)*(1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))*(1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))),(1/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*sqrt(((Efficiency_Control_Zone[iVar]->GetEfficiencyErrorUp(iBin+1))*(Efficiency_Control_Zone[iVar]->GetEfficiencyErrorUp(iBin+1))*((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*VBF_Btag_Zone[iVar]->GetBinContent(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)*Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))+VBF_Btag_Zone[iVar]->GetBinError(iBin+1)*VBF_Btag_Zone[iVar]->GetBinError(iBin+1)*(1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))*(1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))));
        }
        else{
-	VBF_Sig_Zone_Estimation[iVar]->SetPointError(iBin,VBF_DATA_Sig_Zone[iVar]->GetBinWidth(iBin+1)/2,VBF_DATA_Sig_Zone[iVar]->GetBinWidth(iBin+1)/2,VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))),(1/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*sqrt(((Efficiency_Control_Zone[iVar]->GetEfficiencyErrorUp(iBin+1))*(Efficiency_Control_Zone[iVar]->GetEfficiencyErrorUp(iBin+1))*((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*VBF_Btag_Zone[iVar]->GetBinContent(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)*Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))+VBF_Btag_Zone[iVar]->GetBinError(iBin+1)*VBF_Btag_Zone[iVar]->GetBinError(iBin+1)*(1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))*(1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))));
+        VBF_Sig_Zone_Estimation[iVar]->SetPointError(iBin,VBF_DATA_Sig_Zone[iVar]->GetBinWidth(iBin+1)/2,VBF_DATA_Sig_Zone[iVar]->GetBinWidth(iBin+1)/2,VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))),(1/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*sqrt(((Efficiency_Control_Zone[iVar]->GetEfficiencyErrorUp(iBin+1))*(Efficiency_Control_Zone[iVar]->GetEfficiencyErrorUp(iBin+1))*((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*VBF_Btag_Zone[iVar]->GetBinContent(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)*Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))+VBF_Btag_Zone[iVar]->GetBinError(iBin+1)*VBF_Btag_Zone[iVar]->GetBinError(iBin+1)*(1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))*(1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))));
        }
        
       }
@@ -1071,17 +1076,16 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
  std::string edge;
  std::string error;
  
- for(int iVar=0; iVar<Variable.size(); iVar++)
- {
-  if(Variable.at(iVar).first!="(abs(q1_Eta)<abs(q2_Eta))*(abs(q1_Eta))+(abs(q1_Eta)>=abs(q2_Eta))*(abs(q2_Eta))" && 
-   Variable.at(iVar).first!="(abs(q1_Eta)<abs(q2_Eta))*(q1_pT)+(abs(q1_Eta)>=abs(q2_Eta))*(q2_pT)")continue;
+ for(int iVar=0; iVar<Variable.size(); iVar++) {
+//   if(Variable.at(iVar).first!="(abs(q1_Eta)<abs(q2_Eta))*(abs(q1_Eta))+(abs(q1_Eta)>=abs(q2_Eta))*(abs(q2_Eta))" && 
+//    Variable.at(iVar).first!="(abs(q1_Eta)<abs(q2_Eta))*(q1_pT)+(abs(q1_Eta)>=abs(q2_Eta))*(q2_pT)")continue;
   
-  bool isDATA=false;
-  bool isDivide=false;
+  bool isDATA = false;
+  bool isDivide = false;
   
-  outFile<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"<<std::endl;
-  outFile<<"#"<< nameHumanVariable.at(iVar)<<std::endl;
-  outFile<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"<<std::endl;
+  outFile << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+  outFile << "#" << nameHumanVariable.at(iVar) << std::endl;
+  outFile << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
   
   
   double alfa=0, beta=0;
@@ -1096,17 +1100,17 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
   for(int iBin=0; iBin<Bin_Extremes[iVar].size(); iBin++)
   {
    std::ostringstream ss;
-   ss<<Bin_Extremes[iVar].at(iBin);
-   edge=edge+' '+' '+(ss.str());
+   ss <<Bin_Extremes[iVar].at(iBin);
+   edge = edge + ' ' + ' ' + (ss.str());
    
   }
   
-  outFile<<"################  "<<std::endl;
-  outFile<<"# Binning edge "<<std::endl;
-  outFile<<"################  "<<std::endl;
-  outFile<<edge<<std::endl;
-  outFile<<"#--------------------------"<<std::endl;
-  outFile<<"#--------------------------"<<std::endl;
+  outFile << "################  " << std::endl;
+  outFile << "# Binning edge " << std::endl;
+  outFile << "################  " << std::endl;
+  outFile << edge << std::endl;
+  outFile << "#--------------------------" << std::endl;
+  outFile << "#--------------------------" << std::endl;
   
   for(int iCut=0; iCut<Cuts.size(); iCut++)
   {
@@ -1123,158 +1127,153 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
     TH1D* num_DATA,*num_DATA_Rebinned, *num_ttbar, *num_ttbar_Rebinned, *num_top, *num_top_Rebinned;
     TH1D  *den_DATA,*den_DATA_Rebinned, *den_ttbar, *den_ttbar_Rebinned, *den_top, *den_top_Rebinned;
     
-    for(int iSample=0; iSample<nameSample.size(); iSample++)
-    {
-     if(nameSample.at(iSample)!="DATA" && nameSample.at(iSample)!="ttbar" && nameSample.at(iSample)!="top")continue;
+    for(int iSample=0; iSample<nameSample.size(); iSample++) {
+     
+     
+     for (int iNameToJoin = 0; iNameToJoin < nameSampleToJoin.size(); iNameToJoin++){
+      if (nameSample.at(iSample) == nameSampleToJoin.at(iNameToJoin)) { 
+       if (!num_ttbar) {
+	num_ttbar = (TH1D*) histo[iCut+1][iVar][iSample]->Clone("num_ttbar");
+	num_ttbar_Rebinned = DynamicalRebinHisto(num_ttbar,num_ttbar_Rebinned,Bin_Extremes[iVar],isDATA,isDivide);
 	
-	if(nameSample.at(iSample)=="DATA")
-	{
-	 isDATA=true;
-	 num_DATA = (TH1D*) histo[iCut+1][iVar][iSample]->Clone("num_DATA");
-	 num_DATA_Rebinned=DynamicalRebinHisto(num_DATA,num_DATA_Rebinned,Bin_Extremes[iVar],isDATA,isDivide);
-	 
-	 den_DATA = (TH1D*) histo[iCut][iVar][iSample]->Clone("den_DATA");
-	 den_DATA_Rebinned=DynamicalRebinHisto(den_DATA,den_DATA_Rebinned,Bin_Extremes[iVar],isDATA,isDivide);
-	 isDATA=false;
-	}
+	den_ttbar = (TH1D*) histo[iCut][iVar][iSample]->Clone("den_ttbar");
+	den_ttbar_Rebinned = DynamicalRebinHisto(den_ttbar,den_ttbar_Rebinned,Bin_Extremes[iVar],isDATA,isDivide);
+       } 
+       else {
+	num_top = (TH1D*) histo[iCut+1][iVar][iSample]->Clone("num_top");
+	num_top_Rebinned = DynamicalRebinHisto(num_top,num_top_Rebinned,Bin_Extremes[iVar],isDATA,isDivide);
 	
-	if(nameSample.at(iSample)=="ttbar")
-	{
-	 num_ttbar = (TH1D*) histo[iCut+1][iVar][iSample]->Clone("num_ttbar");
-	 num_ttbar_Rebinned=DynamicalRebinHisto(num_ttbar,num_ttbar_Rebinned,Bin_Extremes[iVar],isDATA,isDivide);
-	 
-	 den_ttbar = (TH1D*) histo[iCut][iVar][iSample]->Clone("den_ttbar");
-	 den_ttbar_Rebinned=DynamicalRebinHisto(den_ttbar,den_ttbar_Rebinned,Bin_Extremes[iVar],isDATA,isDivide);
-	}
+	den_top = (TH1D*) histo[iCut][iVar][iSample]->Clone("den_top");
+	den_top_Rebinned = DynamicalRebinHisto(den_top,den_top_Rebinned,Bin_Extremes[iVar],isDATA,isDivide);
 	
-	if(nameSample.at(iSample)=="top")
-	{
-	 num_top = (TH1D*) histo[iCut+1][iVar][iSample]->Clone("num_top");
-	 num_top_Rebinned=DynamicalRebinHisto(num_top,num_top_Rebinned,Bin_Extremes[iVar],isDATA,isDivide);
-	 
-	 den_top = (TH1D*) histo[iCut][iVar][iSample]->Clone("den_top");
-	 den_top_Rebinned=DynamicalRebinHisto(den_top,den_top_Rebinned,Bin_Extremes[iVar],isDATA,isDivide);
-	}
+	num_ttbar_Rebinned->Add(num_top_Rebinned);
+	den_ttbar_Rebinned->Add(den_top_Rebinned);
+       }
+      }
+     }
+     
+     
+     if(nameSample.at(iSample)=="DATA") {
+      isDATA=true;
+      num_DATA = (TH1D*) histo[iCut+1][iVar][iSample]->Clone("num_DATA");
+      num_DATA_Rebinned = DynamicalRebinHisto(num_DATA,num_DATA_Rebinned,Bin_Extremes[iVar],isDATA,isDivide);
+      
+      den_DATA = (TH1D*) histo[iCut][iVar][iSample]->Clone("den_DATA");
+      den_DATA_Rebinned = DynamicalRebinHisto(den_DATA,den_DATA_Rebinned,Bin_Extremes[iVar],isDATA,isDivide);
+      isDATA=false;
     }
     
-    num_ttbar_Rebinned->Add(num_top_Rebinned);
-    den_ttbar_Rebinned->Add(den_top_Rebinned);
+   }
+   
     
     ///====================================================
-    outFile<<"*******************************"<<std::endl;
-    outFile<<"Events after Efficiency Region Cuts "<<std::endl;
-    outFile<<"*******************************"<<std::endl;
+    outFile << "*******************************" << std::endl;
+    outFile << "Events after Efficiency Region Cuts " << std::endl;
+    outFile << "*******************************" << std::endl;
     
     edge.clear();
     
-    for(int iBin=0; iBin<den_Rebinned->GetNbinsX(); iBin++)
-    {     
+    for(int iBin=0; iBin<den_Rebinned->GetNbinsX(); iBin++) {     
      std::ostringstream ss,se;
-     ss<<den_Rebinned->GetBinContent(iBin+1);
-     edge=edge+' '+' '+(ss.str());
-	 se<<den_Rebinned->GetBinError(iBin+1);
-	 error=error+' '+' '+(se.str());
+     ss << den_Rebinned->GetBinContent(iBin+1);
+     edge = edge + ' ' + ' ' + (ss.str());
+     se << den_Rebinned->GetBinError(iBin+1);
+     error = error + ' ' + ' ' + (se.str());
     }
     
-    outFile<<"################  "<<std::endl;
-    outFile<<"#    MC Events in Efficiency Region Total     "<<std::endl;
-    outFile<<"################  "<<std::endl;
-    outFile<<edge<<std::endl;
-    outFile<<error<<std::endl;          
-    edge.clear();
-    error.clear();
-    
-    for(int iBin=0; iBin<den_DATA_Rebinned->GetNbinsX(); iBin++)
-    {     
-     std::ostringstream ss,se;
-     ss<<den_DATA_Rebinned->GetBinContent(iBin+1);
-     edge=edge+' '+' '+(ss.str());
-     se<<den_DATA_Rebinned->GetBinError(iBin+1);
-     error=error+' '+' '+(se.str());
-    }
-    
-    outFile<<"###############  "<<std::endl;
-    outFile<<"#   DATA Events in Efficiency Region Total     "<<std::endl;
-    outFile<<"###############  "<<std::endl;
-    outFile<<edge<<std::endl;
-    outFile<<error<<std::endl;          
+    outFile << "################  " << std::endl;
+    outFile << "#    MC Events in Efficiency Region Total     " << std::endl;
+    outFile << "################  " << std::endl;
+    outFile << edge << std::endl;
+    outFile << error << std::endl;          
     edge.clear();
     error.clear();
     
-    for(int iBin=0; iBin<num_Rebinned->GetNbinsX(); iBin++)
-    {     
+    for(int iBin=0; iBin<den_DATA_Rebinned->GetNbinsX(); iBin++) {     
      std::ostringstream ss,se;
-     ss<<den_ttbar_Rebinned->GetBinContent(iBin+1);
-     edge=edge+' '+' '+(ss.str());
-     se<<den_ttbar_Rebinned->GetBinError(iBin+1);
-     error=error+' '+' '+(se.str());
+     ss << den_DATA_Rebinned->GetBinContent(iBin+1);
+     edge = edge + ' ' + ' ' + (ss.str());
+     se << den_DATA_Rebinned->GetBinError(iBin+1);
+     error = error + ' ' + ' ' + (se.str());
     }
     
-    outFile<<"################  "<<std::endl;
-    outFile<<"#   Top Background Events in Efficiency Region     "<<std::endl;
-    outFile<<"################  "<<std::endl;
-    outFile<<edge<<std::endl;
-    outFile<<error<<std::endl;          
+    outFile << "###############  " << std::endl;
+    outFile << "#   DATA Events in Efficiency Region Total     " << std::endl;
+    outFile << "###############  " << std::endl;
+    outFile << edge << std::endl;
+    outFile << error << std::endl;          
+    edge.clear();
+    error.clear();
+    
+    for(int iBin=0; iBin<num_Rebinned->GetNbinsX(); iBin++){     
+     std::ostringstream ss,se;
+     ss << den_ttbar_Rebinned->GetBinContent(iBin+1);
+     edge = edge + ' ' + ' ' + (ss.str());
+     se << den_ttbar_Rebinned->GetBinError(iBin+1);
+     error = error + ' ' + ' ' + (se.str());
+    }
+    
+    outFile << "################  " << std::endl;
+    outFile << "#   Top Background Events in Efficiency Region     " << std::endl;
+    outFile << "################  " << std::endl;
+    outFile << edge << std::endl;
+    outFile << error << std::endl;          
     edge.clear();
     error.clear();
     
     
-    for(int iBin=0; iBin<num_Rebinned->GetNbinsX(); iBin++)
-    {     
+    for(int iBin=0; iBin<num_Rebinned->GetNbinsX(); iBin++) {     
      std::ostringstream ss,se;
-     ss<<num_Rebinned->GetBinContent(iBin+1);
-     edge=edge+' '+' '+(ss.str());
-	se<<num_Rebinned->GetBinError(iBin+1);
-	error=error+' '+' '+(se.str());
+     ss << num_Rebinned->GetBinContent(iBin+1);
+     edge = edge + ' ' + ' ' + (ss.str());
+     se << num_Rebinned->GetBinError(iBin+1);
+     error = error + ' ' + ' ' + (se.str());
     }
     
-    outFile<<"############## "<<std::endl;
-    outFile<<"#   MC Events in Efficiency Btag Region     "<<std::endl;
-    outFile<<"##############  "<<std::endl;
-    outFile<<edge<<std::endl;
-    outFile<<error<<std::endl;          
+    outFile << "############## " << std::endl;
+    outFile << "#   MC Events in Efficiency Btag Region     " << std::endl;
+    outFile << "##############  " << std::endl;
+    outFile << edge << std::endl;
+    outFile << error << std::endl;          
     edge.clear();
     error.clear();
     
-    for(int iBin=0; iBin<num_DATA_Rebinned->GetNbinsX(); iBin++)
-    {     
+    for(int iBin=0; iBin<num_DATA_Rebinned->GetNbinsX(); iBin++) {     
      std::ostringstream ss, se;
-     ss<<num_DATA_Rebinned->GetBinContent(iBin+1);
-     edge=edge+' '+' '+(ss.str());
-	 se<<num_DATA_Rebinned->GetBinError(iBin+1);
-	 error=error+' '+' '+(se.str());
+     ss << num_DATA_Rebinned->GetBinContent(iBin+1);
+     edge = edge + ' ' + ' ' + (ss.str());
+     se << num_DATA_Rebinned->GetBinError(iBin+1);
+     error = error + ' ' + ' ' + (se.str());
     }
     
-    outFile<<"################  "<<std::endl;
-    outFile<<"#   DATA Events in Efficiency Btag Region    "<<std::endl;
-    outFile<<"################  "<<std::endl;
-    outFile<<edge<<std::endl;
-    outFile<<error<<std::endl;          
+    outFile << "################  " << std::endl;
+    outFile << "#   DATA Events in Efficiency Btag Region    " << std::endl;
+    outFile << "################  " << std::endl;
+    outFile << edge << std::endl;
+    outFile << error << std::endl;          
     edge.clear();
     error.clear();
     
-    for(int iBin=0; iBin<num_DATA_Rebinned->GetNbinsX(); iBin++)
-    {     
+    for(int iBin=0; iBin<num_DATA_Rebinned->GetNbinsX(); iBin++){     
      std::ostringstream ss, se;
-     ss<<num_ttbar_Rebinned->GetBinContent(iBin+1);
-     edge=edge+' '+' '+(ss.str());
-     se<<num_ttbar_Rebinned->GetBinError(iBin+1);
-     error=error+' '+' '+(se.str());
+     ss << num_ttbar_Rebinned->GetBinContent(iBin+1);
+     edge = edge + ' ' + ' ' + (ss.str());
+     se << num_ttbar_Rebinned->GetBinError(iBin+1);
+     error = error + ' ' + ' ' + (se.str());
     }
     
-    outFile<<"##################  "<<std::endl;
-    outFile<<"#  Top Background Events in Efficiency Btag Region  "<<std::endl;
-    outFile<<"##################  "<<std::endl;
-    outFile<<edge<<std::endl;
-    outFile<<error<<std::endl;          
+    outFile << "##################  " << std::endl;
+    outFile << "#  Top Background Events in Efficiency Btag Region  " << std::endl;
+    outFile << "##################  " << std::endl;
+    outFile << edge << std::endl;
+    outFile << error << std::endl;          
     edge.clear();
     error.clear();
     
     
    }
    
-   if(Cuts.at(iCut)=="Efficiency_Zone_noBtag")
-   {
+   if(Cuts.at(iCut) == "Efficiency_Zone_noBtag") {
     TH1D * num_Sig= (TH1D*)stack[iCut][iVar]->GetStack()->Last();
     TH1D * num_Sig_Rebinned;
     num_Sig_Rebinned=DynamicalRebinHisto(num_Sig,num_Sig_Rebinned,Bin_Extremes[iVar],isDATA, isDivide);
@@ -1287,44 +1286,43 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
      { 
       isDATA=true;
       num_DATA_Sig = (TH1D*) histo[iCut][iVar][iSample]->Clone("num_DATA_Sig");
-      num_DATA_Sig_Rebinned=DynamicalRebinHisto(num_DATA_Sig,num_DATA_Sig_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+      num_DATA_Sig_Rebinned = DynamicalRebinHisto(num_DATA_Sig,num_DATA_Sig_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
       isDATA=false;
      }
     }
     
     edge.clear();     
     
-    for(int iBin=0; iBin<num_Sig_Rebinned->GetNbinsX(); iBin++)
-    {     
+    for(int iBin=0; iBin<num_Sig_Rebinned->GetNbinsX(); iBin++) {     
      std::ostringstream ss,se;
-     ss<<num_Sig_Rebinned->GetBinContent(iBin+1);
-     edge=edge+' '+' '+(ss.str());
-     se<<num_Sig_Rebinned->GetBinError(iBin+1);
-     error=error+' '+' '+(se.str());
+     ss << num_Sig_Rebinned->GetBinContent(iBin+1);
+     edge = edge + ' ' + ' ' + (ss.str());
+     se << num_Sig_Rebinned->GetBinError(iBin+1);
+     error = error + ' ' + ' ' + (se.str());
     }
     
-    outFile<<"###############  "<<std::endl;
-    outFile<<"#   MC Events in Efficiency Region noBtag  "<<std::endl;
-    outFile<<"###############  "<<std::endl;
-    outFile<<edge<<std::endl;
-    outFile<<error<<std::endl;          
+    outFile << "###############  " << std::endl;
+    outFile << "#   MC Events in Efficiency Region noBtag  " << std::endl;
+    outFile << "###############  " << std::endl;
+    outFile << edge << std::endl;
+    outFile << error << std::endl;          
     edge.clear();
     error.clear();
     
     for(int iBin=0; iBin<num_DATA_Sig_Rebinned->GetNbinsX(); iBin++)
     {     
      std::ostringstream ss, se;
-     ss<<num_DATA_Sig_Rebinned->GetBinContent(iBin+1);
-     edge=edge+' '+' '+(ss.str());
-     se<<num_DATA_Sig_Rebinned->GetBinError(iBin+1);
-     error=error+' '+' '+(se.str());
+     ss << num_DATA_Sig_Rebinned->GetBinContent(iBin+1);
+     edge = edge + ' ' + ' ' + (ss.str());
+     se << num_DATA_Sig_Rebinned->GetBinError(iBin+1);
+     error = error + ' ' + ' ' + (se.str());
     }
     
-    outFile<<"#################  "<<std::endl;
-    outFile<<"#    DATA Events in Efficiency Region noBtag   "<<std::endl;
-    outFile<<"#################  "<<std::endl;
-    outFile<<edge<<std::endl;
-    outFile<<error<<std::endl;          
+    outFile << "#################  " << std::endl;
+    outFile << "#    DATA Events in Efficiency Region noBtag   " << std::endl;
+    outFile << "#################  " << std::endl;
+    outFile << edge << std::endl;
+    outFile << error << std::endl;          
     edge.clear();
     error.clear();
    }
@@ -1349,84 +1347,84 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
      {
       isDATA=true; 
       num_DATA_VBF = (TH1D*) histo[iCut+1][iVar][iSample]->Clone("num_DATA_VBF");
-      num_DATA_VBF_Rebinned=DynamicalRebinHisto(num_DATA_VBF,num_DATA_VBF_Rebinned,Bin_Extremes[iVar],isDATA,isDivide);
+      num_DATA_VBF_Rebinned = DynamicalRebinHisto(num_DATA_VBF,num_DATA_VBF_Rebinned,Bin_Extremes[iVar],isDATA,isDivide);
       
       den_DATA_VBF = (TH1D*) histo[iCut][iVar][iSample]->Clone("den_DATA_VBF");
-      den_DATA_VBF_Rebinned=DynamicalRebinHisto(den_DATA_VBF,den_DATA_VBF_Rebinned,Bin_Extremes[iVar],isDATA,isDivide);	    
+      den_DATA_VBF_Rebinned = DynamicalRebinHisto(den_DATA_VBF,den_DATA_VBF_Rebinned,Bin_Extremes[iVar],isDATA,isDivide);            
       isDATA=false;
      }
     }
     
-    outFile<<"************************************  "<<std::endl;
-    outFile<<" Events after VBF Cuts  "<<std::endl;
-    outFile<<"************************************  "<<std::endl;
+    outFile << "************************************  " << std::endl;
+    outFile << " Events after VBF Cuts  " << std::endl;
+    outFile << "************************************  " << std::endl;
     edge.clear();
     
     for(int iBin=0; iBin<den_VBF_Rebinned->GetNbinsX(); iBin++)
     {     
      std::ostringstream ss,se;
-     ss<<den_VBF_Rebinned->GetBinContent(iBin+1);
-     edge=edge+' '+' '+(ss.str());
-     se<<den_VBF_Rebinned->GetBinError(iBin+1);
-     error=error+' '+' '+(se.str());
+     ss << den_VBF_Rebinned->GetBinContent(iBin+1);
+     edge = edge + ' ' + ' ' + (ss.str());
+     se << den_VBF_Rebinned->GetBinError(iBin+1);
+     error = error + ' ' + ' ' + (se.str());
     }
     
-    outFile<<"##################  "<<std::endl;
-    outFile<<"#   MC Events in VBF Region    "<<std::endl;
-    outFile<<"##################  "<<std::endl;
-    outFile<<edge<<std::endl;
-    outFile<<error<<std::endl;          
+    outFile << "##################  " << std::endl;
+    outFile << "#   MC Events in VBF Region    " << std::endl;
+    outFile << "##################  " << std::endl;
+    outFile << edge << std::endl;
+    outFile << error << std::endl;          
     edge.clear();
     error.clear();
     
     for(int iBin=0; iBin<den_DATA_VBF_Rebinned->GetNbinsX(); iBin++)
     {     
      std::ostringstream ss,se;
-     ss<<den_DATA_VBF_Rebinned->GetBinContent(iBin+1);
-     edge=edge+' '+' '+(ss.str());
-     se<<den_DATA_VBF_Rebinned->GetBinError(iBin+1);
-     error=error+' '+' '+(se.str());
+     ss << den_DATA_VBF_Rebinned->GetBinContent(iBin+1);
+     edge = edge + ' ' + ' ' + (ss.str());
+     se << den_DATA_VBF_Rebinned->GetBinError(iBin+1);
+     error = error + ' ' + ' ' + (se.str());
     }
     
-    outFile<<"##################  "<<std::endl;
-    outFile<<"#    DATA Events in VBF Region   "<<std::endl;
-    outFile<<"##################  "<<std::endl;
-    outFile<<edge<<std::endl;
-    outFile<<error<<std::endl;          
+    outFile << "##################  " << std::endl;
+    outFile << "#    DATA Events in VBF Region   " << std::endl;
+    outFile << "##################  " << std::endl;
+    outFile << edge << std::endl;
+    outFile << error << std::endl;          
     edge.clear();
     error.clear();
     
     for(int iBin=0; iBin<num_VBF_Rebinned->GetNbinsX(); iBin++)
     {     
      std::ostringstream ss,se;
-     ss<<num_VBF_Rebinned->GetBinContent(iBin+1);
-     edge=edge+' '+' '+(ss.str());
-     se<<num_VBF_Rebinned->GetBinError(iBin+1);
-     error=error+' '+' '+(se.str());
+     ss << num_VBF_Rebinned->GetBinContent(iBin+1);
+     edge = edge + ' ' + ' ' + (ss.str());
+     se << num_VBF_Rebinned->GetBinError(iBin+1);
+     error = error + ' ' + ' ' + (se.str());
     }
     
-    outFile<<"#################  "<<std::endl;
-    outFile<<"#   MC Events in VBF Control Region    "<<std::endl;
-    outFile<<"#################  "<<std::endl;
-    outFile<<edge<<std::endl;
-    outFile<<error<<std::endl;          
+    outFile << "#################  " << std::endl;
+    outFile << "#   MC Events in VBF Control Region    " << std::endl;
+    outFile << "#################  " << std::endl;
+    outFile << edge << std::endl;
+    outFile << error << std::endl;          
     edge.clear();
     error.clear();
     
     for(int iBin=0; iBin<num_DATA_VBF_Rebinned->GetNbinsX(); iBin++)
     {     
      std::ostringstream ss,se;
-     ss<<num_DATA_VBF_Rebinned->GetBinContent(iBin+1);
-     edge=edge+' '+' '+(ss.str());
-     se<<num_DATA_VBF_Rebinned->GetBinError(iBin+1);
-     error=error+' '+' '+(se.str());
+     ss << num_DATA_VBF_Rebinned->GetBinContent(iBin+1);
+     edge = edge + ' ' + ' ' + (ss.str());
+     se << num_DATA_VBF_Rebinned->GetBinError(iBin+1);
+     error = error + ' ' + ' ' + (se.str());
     }
     
-    outFile<<"##################  "<<std::endl;
-    outFile<<"#    DATA Events in VBF Control Region     "<<std::endl;
-    outFile<<"##################  "<<std::endl;
-    outFile<<edge<<std::endl;
-    outFile<<error<<std::endl;          
+    outFile << "##################  " << std::endl;
+    outFile << "#    DATA Events in VBF Control Region     " << std::endl;
+    outFile << "##################  " << std::endl;
+    outFile << edge << std::endl;
+    outFile << error << std::endl;          
     edge.clear();
     error.clear();
    }
@@ -1441,100 +1439,98 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
     TH1D* num_top_VBF_Sig, *num_top_VBF_Sig_Rebinned;
     TH1D *num_DATA_VBF_Sig_Divide_Rebinned;
     
-    for(int iSample=0;iSample<nameSample.size(); iSample++)
-    {
-     if(nameSample.at(iSample)!="DATA" && nameSample.at(iSample)!="ttbar" && nameSample.at(iSample)!="top")continue;
-      
-      if( nameSample.at(iSample)=="ttbar")
-      {  
-       num_ttbar_VBF_Sig = (TH1D*) histo[iCut][iVar][iSample]->Clone("num_ttbar_VBF_Sig");
-      num_ttbar_VBF_Sig_Rebinned=DynamicalRebinHisto(num_ttbar_VBF_Sig,num_ttbar_VBF_Sig_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+    for(int iSample=0;iSample<nameSample.size(); iSample++) {
+     
+     for (int iNameToJoin = 0; iNameToJoin < nameSampleToJoin.size(); iNameToJoin++){
+      if (nameSample.at(iSample) == nameSampleToJoin.at(iNameToJoin)) { 
+       if (!num_ttbar_VBF_Sig) {
+	num_ttbar_VBF_Sig = (TH1D*) histo[iCut][iVar][iSample]->Clone("num_ttbar_VBF_Sig");
+	num_ttbar_VBF_Sig_Rebinned = DynamicalRebinHisto(num_ttbar_VBF_Sig,num_ttbar_VBF_Sig_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+       } 
+       else {
+	num_top_VBF_Sig = (TH1D*) histo[iCut][iVar][iSample]->Clone("num_top_VBF_Sig");
+	num_top_VBF_Sig_Rebinned = DynamicalRebinHisto(num_top_VBF_Sig,num_top_VBF_Sig_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+	
+	num_ttbar_VBF_Sig_Rebinned->Add(num_top_VBF_Sig_Rebinned);
+	
+       }
       }
-      
-      if( nameSample.at(iSample)=="top")
-      {  
-       num_top_VBF_Sig = (TH1D*) histo[iCut][iVar][iSample]->Clone("num_top_VBF_Sig");
-      num_top_VBF_Sig_Rebinned=DynamicalRebinHisto(num_top_VBF_Sig,num_top_VBF_Sig_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
-      }
-      
-      if(nameSample.at(iSample)=="DATA")
-      { 
-       isDATA=true;
-       num_DATA_VBF_Sig = (TH1D*) histo[iCut][iVar][iSample]->Clone("num_DATA_VBF_Sig_Rebinned");
+     }
+     
+     
+     if(nameSample.at(iSample)=="DATA") { 
+      isDATA = true;
+      num_DATA_VBF_Sig = (TH1D*) histo[iCut][iVar][iSample]->Clone("num_DATA_VBF_Sig_Rebinned");
       num_DATA_VBF_Sig_Rebinned=DynamicalRebinHisto(num_DATA_VBF_Sig,num_DATA_VBF_Sig_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
       
-      isDivide=true;
+      isDivide = true;
       num_DATA_VBF_Sig_Divide_Rebinned=DynamicalRebinHisto(num_DATA_VBF_Sig,num_DATA_VBF_Sig_Divide_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);   
       
-      isDivide=false;
-      isDATA=false;
+      isDivide = false;
+      isDATA = false;
       
-      }
+     }
     }
     
-    num_ttbar_VBF_Sig_Rebinned->Add(num_top_VBF_Sig_Rebinned);
-    
-    
-    for(int iBin=0; iBin<num_VBF_Sig_Rebinned->GetNbinsX(); iBin++)
-    {     
+    for(int iBin=0; iBin<num_VBF_Sig_Rebinned->GetNbinsX(); iBin++) {     
      std::ostringstream ss,se;
-     ss<<num_VBF_Sig_Rebinned->GetBinContent(iBin+1);
-     edge=edge+' '+' '+(ss.str());
-     se<<num_VBF_Sig_Rebinned->GetBinError(iBin+1);
-     error=error+' '+' '+(se.str());
+     ss << num_VBF_Sig_Rebinned->GetBinContent(iBin+1);
+     edge = edge + ' ' + ' ' + (ss.str());
+     se << num_VBF_Sig_Rebinned->GetBinError(iBin+1);
+     error = error + ' ' + ' ' + (se.str());
      
-     if(nameHumanVariable.at(iVar)=="|#eta|^{CJet}" && num_ttbar_VBF_Sig_Rebinned->GetBinCenter(iBin+1)<2.5)
+     if(nameHumanVariable.at(iVar) == "|#eta|^{CJet}" && num_ttbar_VBF_Sig_Rebinned->GetBinCenter(iBin+1)<2.5)
      {
-      alfa=alfa+num_ttbar_VBF_Sig_Rebinned->GetBinContent(iBin+1);
-      err_alfa=sqrt(err_alfa*err_alfa+num_ttbar_VBF_Sig_Rebinned->GetBinError(iBin+1)*num_ttbar_VBF_Sig_Rebinned->GetBinError(iBin+1));
+      alfa = alfa + num_ttbar_VBF_Sig_Rebinned->GetBinContent(iBin+1);
+      err_alfa = sqrt(err_alfa*err_alfa+num_ttbar_VBF_Sig_Rebinned->GetBinError(iBin+1)*num_ttbar_VBF_Sig_Rebinned->GetBinError(iBin+1));
      }
      
-     if(nameHumanVariable.at(iVar)=="|#eta|^{CJet}" && num_ttbar_VBF_Sig_Rebinned->GetBinCenter(iBin+1)>=2.5)
+     if(nameHumanVariable.at(iVar) == "|#eta|^{CJet}" && num_ttbar_VBF_Sig_Rebinned->GetBinCenter(iBin+1)>=2.5)
      {
-      beta=beta+num_ttbar_VBF_Sig_Rebinned->GetBinContent(iBin+1);
-      err_beta=sqrt(err_beta*err_beta+num_ttbar_VBF_Sig_Rebinned->GetBinError(iBin+1)*num_ttbar_VBF_Sig_Rebinned->GetBinError(iBin+1));
+      beta = beta + num_ttbar_VBF_Sig_Rebinned->GetBinContent(iBin+1);
+      err_beta = sqrt(err_beta*err_beta+num_ttbar_VBF_Sig_Rebinned->GetBinError(iBin+1)*num_ttbar_VBF_Sig_Rebinned->GetBinError(iBin+1));
      }
     }
     
-    outFile<<"#################  "<<std::endl;
-    outFile<<"#    MC Events in VBF Signal Region     "<<std::endl;
-    outFile<<"#################  "<<std::endl;
-    outFile<<edge<<std::endl;
-    outFile<<error<<std::endl;          
+    outFile << "#################  " << std::endl;
+    outFile << "#    MC Events in VBF Signal Region     " << std::endl;
+    outFile << "#################  " << std::endl;
+    outFile << edge << std::endl;
+    outFile << error << std::endl;          
     edge.clear();
     error.clear();
     
     for(int iBin=0; iBin<num_DATA_VBF_Sig_Rebinned->GetNbinsX(); iBin++)
     {      
      std::ostringstream ss,se;
-     ss<<num_DATA_VBF_Sig_Rebinned->GetBinContent(iBin+1);
-     edge=edge+' '+' '+(ss.str());
-     se<<num_DATA_VBF_Sig_Rebinned->GetBinError(iBin+1);
-     error=error+' '+' '+(se.str());
+     ss << num_DATA_VBF_Sig_Rebinned->GetBinContent(iBin+1);
+     edge = edge + ' ' + ' ' + (ss.str());
+     se << num_DATA_VBF_Sig_Rebinned->GetBinError(iBin+1);
+     error = error + ' ' + ' ' + (se.str());
     }
     
-    outFile<<"###################  "<<std::endl;
-    outFile<<"#   DATA Events in VBF Signal Region     "<<std::endl;
-    outFile<<"####################  "<<std::endl;
-    outFile<<edge<<std::endl;
-    outFile<<error<<std::endl;          
+    outFile << "###################  " << std::endl;
+    outFile << "#   DATA Events in VBF Signal Region     " << std::endl;
+    outFile << "####################  " << std::endl;
+    outFile << edge << std::endl;
+    outFile << error << std::endl;          
     edge.clear();
     error.clear();
     
     for(int iBin=0; iBin<num_DATA_VBF_Sig_Divide_Rebinned->GetNbinsX(); iBin++)
     {     
      std::ostringstream ss,se;
-     ss<<num_DATA_VBF_Sig_Divide_Rebinned->GetBinContent(iBin+1);
-     edge=edge+' '+' '+(ss.str());
-     se<<num_DATA_VBF_Sig_Divide_Rebinned->GetBinError(iBin+1);
-     error=error+' '+' '+(se.str());
+     ss << num_DATA_VBF_Sig_Divide_Rebinned->GetBinContent(iBin+1);
+     edge = edge + ' ' + ' ' + (ss.str());
+     se << num_DATA_VBF_Sig_Divide_Rebinned->GetBinError(iBin+1);
+     error = error + ' ' + ' ' + (se.str());
     }
     
-    outFile<<"######################  "<<std::endl;
-    outFile<<"#   DATA Events in VBF Signal Region (Bin Width Divided)    "<<std::endl;
-    outFile<<"#####  "<<std::endl;
-    outFile<<edge<<std::endl;
-    outFile<<error<<std::endl;          
+    outFile << "######################  " << std::endl;
+    outFile << "#   DATA Events in VBF Signal Region (Bin Width Divided)    " << std::endl;
+    outFile << "#####  " << std::endl;
+    outFile << edge << std::endl;
+    outFile << error << std::endl;          
     edge.clear();
     error.clear();
     
@@ -1544,100 +1540,95 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
   for(int iBin=0; iBin<Efficiency_Control_Zone[iVar]->GetTotalHistogram()->GetNbinsX(); iBin++)
   {     
    std::ostringstream ss,se,sf;
-   ss<<Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1);
-   edge=edge+' '+' '+(ss.str());
-   se<<Efficiency_Control_Zone[iVar]->GetEfficiencyErrorUp(iBin+1);
-   sf<<Efficiency_Control_Zone[iVar]->GetEfficiencyErrorLow(iBin+1);
-   error=error+' '+'+'+(se.str())+' '+'-'+(sf.str());
-	 
+   ss << Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1);
+   edge = edge + ' ' + ' ' + (ss.str());
+   se << Efficiency_Control_Zone[iVar]->GetEfficiencyErrorUp(iBin+1);
+   sf << Efficiency_Control_Zone[iVar]->GetEfficiencyErrorLow(iBin+1);
+   error = error + ' ' + '+' + (se.str()) + ' ' + '-' + (sf.str());
+         
   }
   
-  outFile<<"#-#-#-#-#-#-#-#-#-#-#-#-#-#   "<<std::endl;
-  outFile<<"# Efficiency measured in the Efficiency Region   "<<std::endl;
-  outFile<<"#-#-#-#-#-#-#-#-#-#-#-#-#-#   "<<std::endl;
-  outFile<<edge<<std::endl;
-  outFile<<error<<std::endl;          
+  outFile << "#-#-#-#-#-#-#-#-#-#-#-#-#-#   " << std::endl;
+  outFile << "# Efficiency measured in the Efficiency Region   " << std::endl;
+  outFile << "#-#-#-#-#-#-#-#-#-#-#-#-#-#   " << std::endl;
+  outFile << edge << std::endl;
+  outFile << error << std::endl;          
   edge.clear();
   error.clear();
   
-  for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++)
-  {
+  for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++) {
    std::ostringstream ss,se,sf;
    if(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)!=0)
    {  
-    ss<<((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
-    edge=edge+' '+' '+(ss.str());
-	 se<<sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)))*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))));
-	 sf<<sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)))*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))));
-	 error=error+' '+'+'+(se.str())+' '+'-'+(sf.str());
+    ss << ((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
+    edge = edge + ' ' + ' ' + (ss.str());
+    se << sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)))*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))));
+    sf << sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)))*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))));
+    error = error + ' ' + '+' + (se.str()) + ' ' + '-' + (sf.str());
    }
    
    else{
-    edge=edge+' '+' '+'0';
-   error=error+' '+'+'+'0'+' '+'-'+'0';
+    edge = edge + ' ' + ' ' + '0';
+    error = error + ' ' + '+' + '0' + ' ' + '-' + '0';
    }
   }
   
-  outFile<<"#-------------------   "<<std::endl;
-  outFile<<"# Data driven events in the signal region ( no correction factor)"<<std::endl;
-  outFile<<"#-------------------   "<<std::endl;
-  outFile<<edge<<std::endl;
-  outFile<<error<<std::endl;          
+  outFile << "#-------------------   " << std::endl;
+  outFile << "# Data driven events in the signal region ( no correction factor)" << std::endl;
+  outFile << "#-------------------   " << std::endl;
+  outFile << edge << std::endl;
+  outFile << error << std::endl;          
   edge.clear();
   error.clear();
   
-  for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++)
-  {
+  for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++) {
    std::ostringstream ss,se,sf;
    if(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)!=0)
    {  
-    ss<<((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))));
-    edge=edge+' '+' '+(ss.str());
-   se<<sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin))*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)));
-   sf<<sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)));
-   error=error+' '+'+'+(se.str())+' '+'-'+(sf.str());
-  
+    ss << ((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))));
+    edge = edge + ' ' + ' ' + (ss.str());
+    se << sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin))*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)));
+    sf << sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)));
+    error = error + ' ' + '+' + (se.str()) + ' ' + '-' + (sf.str());
+    
    }
    else{
-    edge=edge+' '+' '+'0';
-   error=error+' '+'+'+'0'+' '+'-'+'0';
-   
+    edge = edge + ' ' + ' ' + '0';
+    error = error + ' ' + '+' + '0' + ' ' + '-' + '0';
+    
    }
   }
   
-  outFile<<"#-------------------   "<<std::endl;
-  outFile<<"### Data driven events in the signal region divide Bin Width (no correction factor)"<<std::endl;
-  outFile<<"#-------------------   "<<std::endl;
-  outFile<<edge<<std::endl;
-  outFile<<error<<std::endl;          
+  outFile << "#-------------------   " << std::endl;
+  outFile << "### Data driven events in the signal region divide Bin Width (no correction factor)" << std::endl;
+  outFile << "#-------------------   " << std::endl;
+  outFile << edge << std::endl;
+  outFile << error << std::endl;          
   edge.clear();
   error.clear(); 
   
-  for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++)
-  {
+  for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++) {
    if(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)!=0)
    {     
-    tt_Events=tt_Events+VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin));
-    tt_Events_Error=sqrt(tt_Events_Error*tt_Events_Error+((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
+    tt_Events = tt_Events+VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin));
+    tt_Events_Error = sqrt(tt_Events_Error*tt_Events_Error+((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
    }
-   
-   
   }
   
-  Final_Error=1+tt_Events_Error/(tt_Events); ///=== 1 + Relative Error
+  Final_Error = 1 + tt_Events_Error / (tt_Events); ///=== 1 + Relative Error
   
-  outFile<<"#-------------------   "<<std::endl;
-  outFile<<"### Data driven Final Result (no correction factor)"<<std::endl;
-  outFile<<"#-------------------   "<<std::endl;
-  outFile<<"  tt Events   "<< tt_Events<<"  error  "<<Final_Error<<"  sys   "<<err_ratio<<std::endl;
-  outFile<<error<<std::endl;          
+  outFile << "#-------------------   " << std::endl;
+  outFile << "### Data driven Final Result (no correction factor)" << std::endl;
+  outFile << "#-------------------   " << std::endl;
+  outFile << "  tt Events   " << tt_Events<< "  error  " <<Final_Error<< "  sys   " <<err_ratio<< std::endl;
+  outFile << error << std::endl;          
   edge.clear();
   error.clear();
   
   
-  tt_Events=0;
-  tt_Events_Error=0;
-  Final_Error=0;
+  tt_Events = 0;
+  tt_Events_Error = 0;
+  Final_Error = 0;
   
   for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++)
   {
@@ -1650,100 +1641,98 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
    }
   }
   
-  Final_Error=1+tt_Events_Error/(tt_Events);
+  Final_Error = 1 + tt_Events_Error / (tt_Events);
   
-  outFile<<"#-------------------   "<<std::endl;
-  outFile<<"### Data driven Final Result divided by Bin Width (no correction factor) "<<std::endl;
-  outFile<<"#-------------------   "<<std::endl;
-  outFile<<"  tt Events   "<< tt_Events<<"  error  "<<Final_Error<<"  sys   "<<err_ratio<<std::endl;
-  outFile<<error<<std::endl;          
+  outFile << "#-------------------   " << std::endl;
+  outFile << "### Data driven Final Result divided by Bin Width (no correction factor) " << std::endl;
+  outFile << "#-------------------   " << std::endl;
+  outFile << "  tt Events   " << tt_Events<< "  error  " <<Final_Error<< "  sys   " <<err_ratio<< std::endl;
+  outFile << error << std::endl;          
   edge.clear();
   error.clear();
   
-  tt_Events=0;
-  tt_Events_Error=0;
-  Final_Error=0;
+  tt_Events = 0;
+  tt_Events_Error = 0;
+  Final_Error = 0;
   
-  if(nameHumanVariable.at(iVar)=="|#eta|^{CJet}")
+  if(nameHumanVariable.at(iVar) == "|#eta|^{CJet}")
   {
-   outFile<<"###############  "<<std::endl;
-   outFile<<"#    (alfa+beta)/alfa     "<<std::endl;
-   outFile<<"###############  "<<std::endl;
-   ratio=(alfa+beta)/(alfa);
-   err_ratio=sqrt((1/(alfa*alfa))*(err_beta*err_beta)+(beta/(alfa*alfa))*(beta/(alfa*alfa))*(err_alfa*err_alfa));
-   outFile<<alfa<<"   "<<err_alfa<<std::endl;
-   outFile<<beta<<"   "<<err_beta<<std::endl;
-   outFile<<ratio<<"   "<<err_ratio<<std::endl;
+   outFile << "###############  " << std::endl;
+   outFile << "#    (alfa+beta)/alfa     " << std::endl;
+   outFile << "###############  " << std::endl;
+   ratio = (alfa+beta) / (alfa);
+   err_ratio = sqrt((1/(alfa*alfa))*(err_beta*err_beta)+(beta/(alfa*alfa))*(beta/(alfa*alfa))*(err_alfa*err_alfa));
+   outFile << alfa << "   " << err_alfa << std::endl;
+   outFile << beta << "   " << err_beta << std::endl;
+   outFile << ratio << "   " << err_ratio << std::endl;
   }
   
-  for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++)
-  {
+  for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++) {
    std::ostringstream ss,se,sf;
    if(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)!=0)
    {  
     if(ratio!=0)
     {
-     ss<<((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*ratio*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
-     edge=edge+' '+' '+(ss.str());
-  se<<sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*ratio)*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*ratio)+err_ratio*err_ratio*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))));
-  sf<<sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*ratio)*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*ratio)+err_ratio*err_ratio*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))));
-  error=error+' '+'+'+(se.str())+' '+'-'+(sf.str());
+     ss << ((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*ratio*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
+     edge = edge + ' ' + ' ' + (ss.str());
+     se << sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*ratio)*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*ratio)+err_ratio*err_ratio*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))));
+     sf << sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*ratio)*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*ratio)+err_ratio*err_ratio*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))));
+     error = error + ' ' + '+' + (se.str()) + ' ' + '-' + (sf.str());
     }
     else{
-     ss<<(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))));
-     edge=edge+' '+' '+(ss.str());
-     se<<VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin);
-     sf<<VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin);
-     error=error+' '+'+'+(se.str())+' '+'-'+(sf.str());
+     ss <<(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))));
+     edge = edge + ' ' + ' ' + (ss.str());
+     se << VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin);
+     sf << VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin);
+     error = error + ' ' + '+' + (se.str()) + ' ' + '-' + (sf.str());
     }
     
    }
    else{
-    edge=edge+' '+' '+'0';
-   error=error+' '+'+'+'0'+' '+'-'+'0';
+    edge = edge + ' ' + ' ' + '0';
+   error = error + ' ' + '+' + '0' + ' ' + '-' + '0';
    }
   }
   
-  outFile<<"#-------------------   "<<std::endl;
-  outFile<<"### Data driven events in the signal region (corrected)"<<std::endl;
-  outFile<<"#-------------------   "<<std::endl;
-  outFile<<edge<<std::endl;
-  outFile<<error<<std::endl;          
+  outFile << "#-------------------   " << std::endl;
+  outFile << "### Data driven events in the signal region (corrected)" << std::endl;
+  outFile << "#-------------------   " << std::endl;
+  outFile << edge << std::endl;
+  outFile << error << std::endl;          
   edge.clear();
   error.clear();
   
-  for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++)
-  {
+  for(int iBin=0; iBin<VBF_Sig_Zone_Estimation[iVar]->GetMaxSize(); iBin++) {
    std::ostringstream ss,se,sf;
    if(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)!=0)
    {  
     if(ratio!=0)
     {  
-     ss<<((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*ratio);
-     edge=edge+' '+' '+(ss.str());
-   se<<sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)*ratio)*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)*ratio)+err_ratio*err_ratio*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))));
-   sf<<sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)*ratio)*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)*ratio)+err_ratio*err_ratio*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))));
-   error=error+' '+'+'+(se.str())+' '+'-'+(sf.str());
+     ss << ((VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*ratio);
+     edge = edge + ' ' + ' ' + (ss.str());
+     se << sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)*ratio)*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)*ratio)+err_ratio*err_ratio*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))));
+     sf << sqrt((VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)*ratio)*(VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin)*ratio)+err_ratio*err_ratio*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))))*(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))));
+     error = error + ' ' + '+' + (se.str()) + ' ' + '-' + (sf.str());
     }
     else{
-     ss<<(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))));
-     edge=edge+' '+' '+(ss.str());
-   se<<VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin);
-   sf<<VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin);
-   error=error+' '+'+'+(se.str())+' '+'-'+(sf.str());
+     ss <<(VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))));
+     edge = edge + ' ' + ' ' + (ss.str());
+     se << VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin);
+     sf << VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin);
+     error = error + ' ' + '+' + (se.str()) + ' ' + '-' + (sf.str());
     }
    }
    else{
-    edge=edge+' '+' '+'0';
-   error=error+' '+'+'+'0'+' '+'-'+'0';
+    edge = edge + ' ' + ' ' + '0';
+   error = error + ' ' + '+' + '0' + ' ' + '-' + '0';
    }
   }
   
-  outFile<<"#-------------------   "<<std::endl;
-  outFile<<"### Data driven events in the signal region divide Bin Width (corrected)"<<std::endl;
-  outFile<<"#-------------------   "<<std::endl;
-  outFile<<edge<<std::endl;
-  outFile<<error<<std::endl;          
+  outFile << "#-------------------   " << std::endl;
+  outFile << "### Data driven events in the signal region divide Bin Width (corrected)" << std::endl;
+  outFile << "#-------------------   " << std::endl;
+  outFile << edge << std::endl;
+  outFile << error << std::endl;          
   edge.clear();
   error.clear(); 
   
@@ -1753,24 +1742,24 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
    {  
     if(ratio!=0)
     {  
-     tt_Events=tt_Events+VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*ratio*((Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
-     tt_Events_Error=sqrt(tt_Events_Error*tt_Events_Error+((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*ratio*ratio+err_ratio*err_ratio*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))));  
+     tt_Events = tt_Events + VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*ratio*((Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
+     tt_Events_Error = sqrt(tt_Events_Error*tt_Events_Error+((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*ratio*ratio+err_ratio*err_ratio*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))));  
     }
     else{
-     tt_Events=tt_Events+VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*((Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
-     tt_Events_Error=sqrt(tt_Events_Error*tt_Events_Error+((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
+     tt_Events = tt_Events + VBF_Btag_Zone[iVar]->GetBinContent(iBin+1)*((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*((Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
+     tt_Events_Error = sqrt(tt_Events_Error*tt_Events_Error+((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
     }
     
    }  
   }
   
-  Final_Error=1+tt_Events_Error/(tt_Events);
+  Final_Error = 1 + tt_Events_Error / (tt_Events);
   
-  outFile<<"#-------------------   "<<std::endl;
-  outFile<<"### Data driven Final Result (corrected)"<<std::endl;
-  outFile<<"#-------------------   "<<std::endl;
-  outFile<<"  tt Events   "<< tt_Events<<"  error  "<<Final_Error<<"  sys   "<<err_ratio<<std::endl;
-  outFile<<error<<std::endl;          
+  outFile << "#-------------------   " << std::endl;
+  outFile << "### Data driven Final Result (corrected)" << std::endl;
+  outFile << "#-------------------   " << std::endl;
+  outFile << "  tt Events   " << tt_Events<< "  error  " <<Final_Error<< "  sys   " <<err_ratio<< std::endl;
+  outFile << error << std::endl;          
   edge.clear();
   error.clear();
   
@@ -1797,11 +1786,11 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
   
   Final_Error=1+tt_Events_Error/(tt_Events);
   
-  outFile<<"#-------------------   "<<std::endl;
-  outFile<<"### Data driven Final Result divided by Bin Width (corrected) "<<std::endl;
-  outFile<<"#-------------------   "<<std::endl;
-  outFile<<"  tt Events   "<< tt_Events<<"  error  "<<Final_Error<<"  sys   "<<err_ratio<<std::endl;
-  outFile<<error<<std::endl;          
+  outFile << "#-------------------   " << std::endl;
+  outFile << "### Data driven Final Result divided by Bin Width (corrected) " << std::endl;
+  outFile << "#-------------------   " << std::endl;
+  outFile << "  tt Events   " << tt_Events<< "  error  " <<Final_Error<< "  sys   " <<err_ratio<< std::endl;
+  outFile << error << std::endl;          
   edge.clear();
   error.clear();
   
@@ -1811,14 +1800,13 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
  
  TH1D* Sig_Estimation_Final;
  
- for(int iVar=0; iVar<Variable.size(); iVar++)
- {
-  if(Variable.at(iVar).first!="(abs(q1_Eta)<abs(q2_Eta))*(abs(q1_Eta))+(abs(q1_Eta)>=abs(q2_Eta))*(abs(q2_Eta))" && 
-   Variable.at(iVar).first!="(abs(q1_Eta)<abs(q2_Eta))*(q1_pT)+(abs(q1_Eta)>=abs(q2_Eta))*(q2_pT)" )
-   continue;
+ for(int iVar=0; iVar<Variable.size(); iVar++) {
+//   if(Variable.at(iVar).first!="(abs(q1_Eta)<abs(q2_Eta))*(abs(q1_Eta))+(abs(q1_Eta)>=abs(q2_Eta))*(abs(q2_Eta))" && 
+//    Variable.at(iVar).first!="(abs(q1_Eta)<abs(q2_Eta))*(q1_pT)+(abs(q1_Eta)>=abs(q2_Eta))*(q2_pT)" )
+//    continue;
   
-  bool isDATA=false;
-  bool isDivide=false;
+  bool isDATA = false;
+  bool isDivide = false;
   
   
   TH1D* Closure_Efficiency[1000];
@@ -1829,8 +1817,9 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
   TString way=Form("%s/Closure_Test",nameHumanVariable.at(iVar).c_str());
   output_Plott.cd(way);
   
-  for(int iNum=0; iNum<Closure_Number; iNum++)
-  { 
+  for(int iNum=0; iNum<Closure_Number; iNum++) { 
+   
+   if (!(iNum%5)) std::cout << " Closure:: " << iNum << ":" << Closure_Number << std::endl;
    
    TRandom3* num_eff= new TRandom3();
    TRandom3* den_eff= new TRandom3();
@@ -1841,137 +1830,130 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
    num_btag->SetSeed(0);
    
    for(int iCut=0; iCut<Cuts.size(); iCut++) {
-    if(Cuts.at(iCut)=="Efficiency_Zone" && Cuts.at(iCut+1)=="Efficiency_Zone_Btag") {  
+    if(Cuts.at(iCut) == "Efficiency_Zone" && Cuts.at(iCut+1) == "Efficiency_Zone_Btag") {  
      
      TString name=Form("Closure_Efficiency_%s_%d",Variable[iVar].first.c_str(),iNum);
      
      bool SkipEfficiency;
      
      TObjArray* histo_num_stack = stack_Rebinned[iCut+1][iVar]->GetStack() ;
-     TObjArray* histo_den_stack = stack_Rebinned[iCut][iVar]->GetStack() ;
+     TObjArray* histo_den_stack = stack_Rebinned[iCut][iVar]  ->GetStack() ;
      
      do {
       
-      TH1D* num_total=(TH1D*) stack_Rebinned[iCut+1][iVar]->GetStack()->Last()->Clone("num_total");
-      TH1D* den_total=(TH1D*) stack_Rebinned[iCut][iVar]->GetStack()->Last()->Clone("den_total");
+      TH1D* num_total = (TH1D*) stack_Rebinned[iCut+1][iVar]->GetStack()->Last()->Clone("num_total");
+      TH1D* den_total = (TH1D*) stack_Rebinned[iCut][iVar]  ->GetStack()->Last()->Clone("den_total");
       
       num_total->Reset("ICEMS");
       den_total->Reset("ICEMS");
       
-      SkipEfficiency=false;
+      SkipEfficiency = false;
       
       for(int iHisto=0; iHisto<histo_num_stack->GetEntries(); iHisto++) {  
-       if(iHisto==0) {
-	TH1D* Histo_num_1 = (TH1D*) histo_num_stack->At(iHisto);
-	TH1D* Histo_den_1 = (TH1D*) histo_den_stack->At(iHisto);
-	TH1D* Histo_num_temp_1=(TH1D*) Histo_num_1->Clone("Histo_num_temp_1");
-	TH1D* Histo_den_temp_1=(TH1D*) Histo_den_1->Clone("Histo_den_temp_1");
-	
-	for(int iBin=0; iBin<Histo_num_1->GetNbinsX(); iBin++) { 
-	 Histo_num_temp_1->SetBinContent(iBin+1,num_eff->Poisson(Histo_num_1->GetBinContent(iBin+1)));
-	 Histo_den_temp_1->SetBinContent(iBin+1,den_eff->Poisson(Histo_den_1->GetBinContent(iBin+1)));
-	}
-	num_total->Add(Histo_num_temp_1);
-	den_total->Add(Histo_den_temp_1);
+       if (iHisto==0) {
+        TH1D* Histo_num_1 = (TH1D*) histo_num_stack->At(iHisto);
+        TH1D* Histo_den_1 = (TH1D*) histo_den_stack->At(iHisto);
+        TH1D* Histo_num_temp_1=(TH1D*) Histo_num_1->Clone("Histo_num_temp_1");
+        TH1D* Histo_den_temp_1=(TH1D*) Histo_den_1->Clone("Histo_den_temp_1");
+        
+        for(int iBin=0; iBin<Histo_num_1->GetNbinsX(); iBin++) { 
+         Histo_num_temp_1->SetBinContent(iBin+1,num_eff->Poisson(Histo_num_1->GetBinContent(iBin+1)));
+         Histo_den_temp_1->SetBinContent(iBin+1,den_eff->Poisson(Histo_den_1->GetBinContent(iBin+1)));
+        }
+        num_total->Add(Histo_num_temp_1);
+        den_total->Add(Histo_den_temp_1);
        }
-       else{  
-	TH1D* Histo_num_1 = (TH1D*) histo_num_stack->At(iHisto-1);
-	TH1D* Histo_num_2 = (TH1D*) histo_num_stack->At(iHisto);
-	TH1D* Histo_den_1 = (TH1D*) histo_den_stack->At(iHisto-1);
-	TH1D* Histo_den_2 = (TH1D*) histo_den_stack->At(iHisto);
-	
-	TH1D* Histo_num_temp_1=(TH1D*) Histo_num_1->Clone("Histo_num_temp_1");
-	TH1D* Histo_num_temp_2=(TH1D*) Histo_num_2->Clone("Histo_num_temp_2");
-	TH1D* Histo_den_temp_1=(TH1D*) Histo_den_1->Clone("Histo_den_temp_1");
-	TH1D* Histo_den_temp_2=(TH1D*) Histo_den_2->Clone("Histo_den_temp_2");
-	
-	Histo_num_temp_2->Add(Histo_num_temp_1,-1);
-	Histo_den_temp_2->Add(Histo_den_temp_1,-1);
-	
-	for(int iBin=0;  iBin<Histo_num_2->GetNbinsX(); iBin++)
-	{ 
-	 Histo_num_temp_2->SetBinContent(iBin+1,num_eff->Poisson(Histo_num_temp_2->GetBinContent(iBin+1)));
-	 Histo_den_temp_2->SetBinContent(iBin+1,den_eff->Poisson(Histo_den_temp_2->GetBinContent(iBin+1)));
-	 
-	}
-	
-	num_total->Add(Histo_num_temp_2);
-	den_total->Add(Histo_den_temp_2);
+       else {  
+        TH1D* Histo_num_1 = (TH1D*) histo_num_stack->At(iHisto-1);
+        TH1D* Histo_num_2 = (TH1D*) histo_num_stack->At(iHisto);
+        TH1D* Histo_den_1 = (TH1D*) histo_den_stack->At(iHisto-1);
+        TH1D* Histo_den_2 = (TH1D*) histo_den_stack->At(iHisto);
+        
+        TH1D* Histo_num_temp_1 = (TH1D*) Histo_num_1->Clone("Histo_num_temp_1");
+        TH1D* Histo_num_temp_2 = (TH1D*) Histo_num_2->Clone("Histo_num_temp_2");
+        TH1D* Histo_den_temp_1 = (TH1D*) Histo_den_1->Clone("Histo_den_temp_1");
+        TH1D* Histo_den_temp_2 = (TH1D*) Histo_den_2->Clone("Histo_den_temp_2");
+        
+        Histo_num_temp_2->Add(Histo_num_temp_1,-1);
+        Histo_den_temp_2->Add(Histo_den_temp_1,-1);
+        
+        for(int iBin=0;  iBin<Histo_num_2->GetNbinsX(); iBin++) { 
+         Histo_num_temp_2->SetBinContent(iBin+1,num_eff->Poisson(Histo_num_temp_2->GetBinContent(iBin+1)));
+         Histo_den_temp_2->SetBinContent(iBin+1,den_eff->Poisson(Histo_den_temp_2->GetBinContent(iBin+1)));
+        }
+        
+        num_total->Add(Histo_num_temp_2);
+        den_total->Add(Histo_den_temp_2);
        } 
       }
       
-      Closure_Efficiency[iNum]=(TH1D*) num_total->Clone("Closure_Efficiency");
+      Closure_Efficiency[iNum] = (TH1D*) num_total->Clone("Closure_Efficiency");
       Closure_Efficiency[iNum]->SetName(name);
       Closure_Efficiency[iNum]->Divide(den_total);
       
-      for(int iBin=0; iBin<Closure_Efficiency[iNum]->GetNbinsX(); iBin++)
-      {
+      for(int iBin=0; iBin<Closure_Efficiency[iNum]->GetNbinsX(); iBin++){
        if(Closure_Efficiency[iNum]->GetBinContent(iBin+1)>1)
-	SkipEfficiency=true;
+        SkipEfficiency = true;
       }
       
      } while(SkipEfficiency);
      
     }
     
-    if(Cuts.at(iCut)=="VBF_Zone_Btag" && Cuts.at(iCut+1)=="VBF_Zone_Signal") {
-     
+    if(Cuts.at(iCut) == "VBF_Zone_Btag" && Cuts.at(iCut+1) == "VBF_Zone_Signal") {
      
      TH1D* Sig_VBF = (TH1D*)stack[iCut+1][iVar]->GetStack()->Last();
      Sig_VBF->Reset("ICEMS");
      
      for(int iSample=0; iSample<nameSample.size(); iSample++) {
-      if(nameSample.at(iSample)!="top" && nameSample.at(iSample)!="ttbar")continue;
       
-      if(nameSample.at(iSample)=="ttbar")
-       Sig_VBF->Add(histo[iCut+1][iVar][iSample]);
-      
-      if(nameSample.at(iSample)=="top")
-       Sig_VBF->Add(histo[iCut+1][iVar][iSample]);
-      
+      for (int iNameToJoin = 0; iNameToJoin < nameSampleToJoin.size(); iNameToJoin++){
+       if (nameSample.at(iSample) == nameSampleToJoin.at(iNameToJoin)) { 
+	Sig_VBF->Add(histo[iCut+1][iVar][iSample]);
+       }
+      }
      }
-     
-     if (iNum==0) Sig_VBF_Rebinned[iVar] = DynamicalRebinHisto(Sig_VBF,Sig_VBF_Rebinned[iVar],Bin_Extremes[iVar],isDATA,isDivide);
+      
+     if (iNum == 0) Sig_VBF_Rebinned[iVar] = DynamicalRebinHisto(Sig_VBF,Sig_VBF_Rebinned[iVar],Bin_Extremes[iVar],isDATA,isDivide);
      
      THStack* stack_rebin;
      stack_rebin = DynamicalRebinStack(stack[iCut][iVar],stack_rebin,Bin_Extremes[iVar],isDATA,isDivide);
      
-    TObjArray* histo_stack = stack_rebin->GetStack() ;
-    
-    TString name=Form("BTag_VBF_%s_%d",Variable[iVar].first.c_str(),iCut);
-						       BTag_VBF[iNum]=(TH1D*)Sig_VBF_Rebinned[iVar]->Clone("BTag_VBF");
+     TObjArray* histo_stack = stack_rebin->GetStack() ;
+     
+     TString name=Form("BTag_VBF_%s_%d",Variable[iVar].first.c_str(),iCut);
+     BTag_VBF[iNum]=(TH1D*)Sig_VBF_Rebinned[iVar]->Clone("BTag_VBF");
      BTag_VBF[iNum]->SetName(name);
      BTag_VBF[iNum]->Reset("ICEMS");
      
-     for(int iHisto=0; iHisto<histo_stack->GetEntries(); iHisto++)
-     {  
+     for(int iHisto=0; iHisto<histo_stack->GetEntries(); iHisto++) {  
       if(iHisto==0)
       {  
        TH1D* Histo1 = (TH1D*) histo_stack->At(iHisto);
        TH1D* Histo_temp_1= (TH1D*) Histo1->Clone("Histo_temp_1");
        
        for(int iBin=0; iBin<Histo1->GetNbinsX(); iBin++)
-       {	
-	Histo_temp_1->SetBinContent(iBin+1,num_btag->PoissonD(Histo1->GetBinContent(iBin+1)));
+       {        
+        Histo_temp_1->SetBinContent(iBin+1,num_btag->PoissonD(Histo1->GetBinContent(iBin+1)));
        }
        
        BTag_VBF[iNum]->Add(Histo_temp_1);
       }
-      else{  
+      else {  
        TH1D* Histo1 = (TH1D*) histo_stack->At(iHisto-1);
        TH1D* Histo2 = (TH1D*) histo_stack->At(iHisto);
        
        TH1D* Histo_temp_1= (TH1D*) Histo1->Clone("Histo_temp_1");
-     TH1D* Histo_temp_2= (TH1D*) Histo2->Clone("Histo_temp_2");
-     
-     Histo_temp_2->Add(Histo_temp_1,-1);
-     
-     for(int iBin=0;  iBin<Histo1->GetNbinsX(); iBin++)
-     { 
-      Histo_temp_2->SetBinContent(iBin+1,num_btag->PoissonD(Histo_temp_2->GetBinContent(iBin+1)));
-     }
-     
-     BTag_VBF[iNum]->Add(Histo_temp_2);
+       TH1D* Histo_temp_2= (TH1D*) Histo2->Clone("Histo_temp_2");
+       
+       Histo_temp_2->Add(Histo_temp_1,-1);
+       
+       for(int iBin=0;  iBin<Histo1->GetNbinsX(); iBin++)
+       { 
+        Histo_temp_2->SetBinContent(iBin+1,num_btag->PoissonD(Histo_temp_2->GetBinContent(iBin+1)));
+       }
+       
+       BTag_VBF[iNum]->Add(Histo_temp_2);
       } 
      }
      
@@ -1983,19 +1965,19 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
       
       for(int iBin=0; iBin<BTag_VBF[iNum]->GetNbinsX(); iBin++)
       { 
-       // 	       BTag_VBF[iNum]->SetBinError(iBin+1,sqrt(BTag_VBF[iNum]->GetBinContent(iBin+1))); ///== in this way i use Total MC in the control region as they were DATA
+       //                BTag_VBF[iNum]->SetBinError(iBin+1,sqrt(BTag_VBF[iNum]->GetBinContent(iBin+1))); ///== in this way i use Total MC in the control region as they were DATA
        
-       if(Closure_Efficiency[iNum]->GetBinContent(iBin+1)!=0)
+       if(Closure_Efficiency[iNum]->GetBinContent(iBin+1) != 0)
        { 
-	Sig_Estimation[iNum]->SetBinContent(iBin+1,BTag_VBF[iNum]->GetBinContent(iBin+1)*((1-Closure_Efficiency[iNum]->GetBinContent(iBin+1))/(Closure_Efficiency[iNum]->GetBinContent(iBin+1))));
-	Sig_Estimation[iNum]->SetBinError(iBin+1,(1/(Closure_Efficiency[iNum]->GetBinContent(iBin+1)))*sqrt(((Closure_Efficiency[iNum]->GetBinError(iBin+1))*(Closure_Efficiency[iNum]->GetBinError(iBin+1))*((BTag_VBF[iNum]->GetBinContent(iBin+1)*BTag_VBF[iNum]->GetBinContent(iBin+1))/(Closure_Efficiency[iNum]->GetBinContent(iBin+1)*Closure_Efficiency[iNum]->GetBinContent(iBin+1)))+BTag_VBF[iNum]->GetBinError(iBin+1)*BTag_VBF[iNum]->GetBinError(iBin+1)*(1-Closure_Efficiency[iNum]->GetBinContent(iBin+1))*(1-Closure_Efficiency[iNum]->GetBinContent(iBin+1)))));       
-	
-// 	std::cout<<"[Test Number]:   "<<iNum<<"   [Bin Selected]:  "<<iBin<<"  [Simuated Efficiency]:   "<<Closure_Efficiency[iNum]->GetBinContent(iBin+1)<<"  [Simulated BTag Events]:   "<<BTag_VBF[iNum]->GetBinContent(iBin+1)<<"  [Data Driven Result]:   "<<Sig_Estimation[iNum]->GetBinContent(iBin+1)<<std::endl;
-	
+        Sig_Estimation[iNum]->SetBinContent(iBin+1,BTag_VBF[iNum]->GetBinContent(iBin+1)*((1-Closure_Efficiency[iNum]->GetBinContent(iBin+1))/(Closure_Efficiency[iNum]->GetBinContent(iBin+1))));
+        Sig_Estimation[iNum]->SetBinError(iBin+1,(1./(Closure_Efficiency[iNum]->GetBinContent(iBin+1)))*sqrt(((Closure_Efficiency[iNum]->GetBinError(iBin+1))*(Closure_Efficiency[iNum]->GetBinError(iBin+1))*((BTag_VBF[iNum]->GetBinContent(iBin+1)*BTag_VBF[iNum]->GetBinContent(iBin+1))/(Closure_Efficiency[iNum]->GetBinContent(iBin+1)*Closure_Efficiency[iNum]->GetBinContent(iBin+1)))+BTag_VBF[iNum]->GetBinError(iBin+1)*BTag_VBF[iNum]->GetBinError(iBin+1)*(1-Closure_Efficiency[iNum]->GetBinContent(iBin+1))*(1-Closure_Efficiency[iNum]->GetBinContent(iBin+1)))));       
+        
+//         std::cout<< "[Test Number]:   " <<iNum<< "   [Bin Selected]:  " <<iBin<< "  [Simuated Efficiency]:   " <<Closure_Efficiency[iNum]->GetBinContent(iBin+1)<< "  [Simulated BTag Events]:   " <<BTag_VBF[iNum]->GetBinContent(iBin+1)<< "  [Data Driven Result]:   " <<Sig_Estimation[iNum]->GetBinContent(iBin+1)<< std::endl;
+        
        }
        else{
-	Sig_Estimation[iNum]->SetBinContent(iBin+1,0);
-	Sig_Estimation[iNum]->SetBinError(iBin+1,0);
+        Sig_Estimation[iNum]->SetBinContent(iBin+1,0);
+        Sig_Estimation[iNum]->SetBinError(iBin+1,0);
        }
        
        
@@ -2012,7 +1994,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
    Sig_Estimation[iNum]->SetLineWidth(2);
    Sig_Estimation[iNum]->SetFillColor(kBlue);
    Sig_Estimation[iNum]->SetFillStyle(3002);
-   TString Title=Form("Closure Test %s",nameHumanVariable.at(iVar).c_str());
+   TString Title = Form("Closure Test %s",nameHumanVariable.at(iVar).c_str());
    Sig_Estimation[iNum]->SetTitle(Title);
    Sig_Estimation[iNum]->GetXaxis()->SetTitle(nameHumanVariable.at(iVar).c_str());
    Sig_Estimation[iNum]->GetYaxis()->SetTitle("Events");
@@ -2041,16 +2023,14 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
     */
   }
   
-  Sig_Estimation_Final=(TH1D*) Sig_Estimation[0]->Clone("Sig_Estimation_Final");
+  Sig_Estimation_Final = (TH1D*) Sig_Estimation[0]->Clone("Sig_Estimation_Final");
   Sig_Estimation_Final->Reset("ICEM");
   
-  for(int iBin=0; iBin<Sig_Estimation_Final->GetNbinsX(); iBin++)
-  {
-   TString mean_Title=Form("mean-Distribution_%.1f < %s < %.1f",Bin_Extremes[iVar].at(iBin),nameHumanVariable.at(iVar).c_str(),Bin_Extremes[iVar].at(iBin+1));
-   TH1D* mean_Distribution=new TH1D(mean_Title,mean_Title,100,0,15);
+  for(int iBin=0; iBin<Sig_Estimation_Final->GetNbinsX(); iBin++) {
+   TString mean_Title = Form("mean-Distribution_%.1f < %s < %.1f",Bin_Extremes[iVar].at(iBin),nameHumanVariable.at(iVar).c_str(),Bin_Extremes[iVar].at(iBin+1));
+   TH1D* mean_Distribution = new TH1D(mean_Title,mean_Title,100,0,15);
    
-   for(int iNum=0; iNum<Closure_Number; iNum++)
-   {
+   for(int iNum=0; iNum < Closure_Number; iNum++) {
     mean_Distribution->Fill(Sig_Estimation[iNum]->GetBinContent(iBin+1));
    }
    
@@ -2059,7 +2039,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
    Sig_Estimation_Final->SetBinContent(iBin+1,mean_Distribution->GetMean());
    Sig_Estimation_Final->SetBinError(iBin+1,mean_Distribution->GetRMS());
    
-   std::cout<<"[Final Result]  "<<"  [Bin Number]:  "<<iBin<<"  [Bin Content]:  "<<mean_Distribution->GetMean()<<std::endl;
+   std::cout<< "[Final Result]  " << "  [Bin Number]:  " <<iBin<< "  [Bin Content]:  " <<mean_Distribution->GetMean()<< std::endl;
    
    mean_Distribution->GetXaxis()->SetTitle("Reconstructed Events");
    mean_Distribution->GetXaxis()->SetTitle("Bin Entries");
@@ -2067,7 +2047,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper)
    
    // gPad->SetGrid();
    
-   TString Title=Form("Mean_Distribution_%s_%d",nameHumanVariable.at(iVar).c_str(),iBin);
+   TString Title = Form("Mean_Distribution_%s_%d",nameHumanVariable.at(iVar).c_str(),iBin);
    c5.SetName(Title);
    c5.Write();
    
