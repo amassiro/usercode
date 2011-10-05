@@ -169,40 +169,35 @@ TH1D* DynamicalRebinHisto ( TH1D * original_Histo, TH1D* rebinned_Histo, std::ve
  std::vector<float> Bin_Errors;
  std::vector<float> edge;
  
- if (binning.size()>990)
- {
-  std::cerr<<"Error: Invalid Number of Bins"<<std::endl;
+ if (binning.size()>990) {
+  std::cerr << "Error: Invalid Number of Bins" << std::endl;
   return(0);
   
  }
+ 
  Float_t Bin_size[1000];
  
  edge.push_back(original_Histo->GetXaxis()->GetBinLowEdge(1));
- binning.at(0)=original_Histo->GetXaxis()->GetBinLowEdge(1);
+ binning.at(0) = original_Histo->GetXaxis()->GetBinLowEdge(1);
  
- if (binning.at(binning.size()-1) > original_Histo->GetXaxis()->GetBinUpEdge(original_Histo->GetNbinsX()))
- {
-  std::cerr<<"Error: Invalid Max Bin"<<std::endl;
+ if (binning.at(binning.size()-1) > original_Histo->GetXaxis()->GetBinUpEdge(original_Histo->GetNbinsX())) {
+  std::cerr << "Error: Invalid Max Bin" << std::endl;
   return(0);
  }
  
- if (binning.at(binning.size()-1) != original_Histo->GetXaxis()->GetBinUpEdge(original_Histo->GetNbinsX()))
- {
+ if (binning.at(binning.size()-1) != original_Histo->GetXaxis()->GetBinUpEdge(original_Histo->GetNbinsX())) {
   binning.push_back(original_Histo->GetXaxis()->GetBinUpEdge(original_Histo->GetNbinsX()));
  }
  
  
- for(int iBin=0; iBin<binning.size()-1; iBin++)
- {
+ for(int iBin=0; iBin<binning.size()-1; iBin++) {
   Bin_Counts.push_back(0);
   Bin_Errors.push_back(0);
-  if (fabs(binning.at(iBin+1)-binning.at(iBin))< original_Histo->GetXaxis()->GetBinWidth(original_iBin+1))
-  { 
-   std::cerr<<"Error: Invalid Bin Width"<<std::endl;
+  if (fabs(binning.at(iBin+1)-binning.at(iBin)) < original_Histo->GetXaxis()->GetBinWidth(original_iBin+1)) { 
+   std::cerr << "Error: Invalid Bin Width:: iBin = " << iBin << " ==> " << fabs(binning.at(iBin+1)-binning.at(iBin)) << " < " << original_Histo->GetXaxis()->GetBinWidth(original_iBin+1) << std::endl;
    return(0);
   }
-  while(binning.at(iBin+1) >= original_Histo->GetXaxis()->GetBinUpEdge(original_iBin+1) && original_iBin<=original_Histo->GetNbinsX())
-  { 
+  while(binning.at(iBin+1) >= original_Histo->GetXaxis()->GetBinUpEdge(original_iBin+1) && original_iBin <= original_Histo->GetNbinsX()) {
    Bin_Counts.at(iBin)=Bin_Counts.at(iBin)+fabs(original_Histo->GetBinContent(original_iBin+1));
    Bin_Errors.at(iBin)=sqrt(Bin_Errors.at(iBin)*Bin_Errors.at(iBin)+original_Histo->GetBinError(original_iBin+1)*original_Histo->GetBinError(original_iBin+1));
    original_iBin++;
@@ -235,7 +230,7 @@ TH1D* DynamicalRebinHisto ( TH1D * original_Histo, TH1D* rebinned_Histo, std::ve
   binning.push_back(edge.at(iBin)); 
  }
  
- rebinned_Histo= new TH1D(nameHisto,original_Histo->GetTitle(),edge.size()-1,Bin_size);
+ rebinned_Histo = new TH1D(nameHisto,original_Histo->GetTitle(),edge.size()-1,Bin_size);
  
  if(!isDATA || (isDATA && isDivide))
  {  
@@ -266,12 +261,19 @@ TH1D* DynamicalRebinHisto ( TH1D * original_Histo, TH1D* rebinned_Histo, std::ve
 }  
 
 
-TH1D* DynamicalRebinHisto ( TH1D * original_Histo, TH1D* rebinned_Histo, std::vector<float>  binning, bool isDATA, bool isDivide) {
- TRandom3* index= new TRandom3();
- index->SetSeed(0);
- TString name =Form("%s_Rebinned_%d",original_Histo->GetName(),int(index->Uniform(0,1000000)));
- rebinned_Histo=DynamicalRebinHisto(original_Histo,rebinned_Histo,binning,name, isDATA, isDivide); 
- return(rebinned_Histo);
+TH1D* DynamicalRebinHisto ( TH1D* original_Histo, TH1D* rebinned_Histo, std::vector<float>  binning, bool isDATA, bool isDivide) {
+//  TRandom3* index = new TRandom3();
+//  index -> SetSeed(0);
+ TString name;
+ 
+ do {
+  name = Form("%s_Rebinned_%d_%d",original_Histo->GetName(),int (gRandom->Uniform(0,100000)), int (gRandom->Uniform(0,100000)));
+//   std::cout << " name = " << name.Data() << std::endl;
+ } 
+ while (gROOT->FindObject(name));
+  
+ rebinned_Histo = DynamicalRebinHisto(original_Histo,rebinned_Histo,binning,name, isDATA, isDivide); 
+ return (rebinned_Histo);
 }
 
 
@@ -291,8 +293,8 @@ THStack* DynamicalRebinStack ( THStack * original_Stack,THStack* rebinned_Stack,
   {  
    TH1D* original_Histo1 = (TH1D*) histos->At(iHisto);
    TH1D* rebinned_Histo1;
-   name=name+Form("_%d",iHisto);
-   rebinned_Histo1=DynamicalRebinHisto(original_Histo1,rebinned_Histo1,binning,name, isDATA, isDivide);
+   name = name + Form("_%d",iHisto);
+   rebinned_Histo1 = DynamicalRebinHisto(original_Histo1,rebinned_Histo1,binning,name, isDATA, isDivide);
    rebinned_Stack->Add(rebinned_Histo1);
   }
   
@@ -301,10 +303,10 @@ THStack* DynamicalRebinStack ( THStack * original_Stack,THStack* rebinned_Stack,
    TH1D* original_Histo2 = (TH1D*) histos->At(iHisto);
    TH1D* rebinned_Histo1;
    TH1D* rebinned_Histo2;
-   TString name1=name+Form("_%d",iHisto);
-   TString name2=name+Form("_%d_%d",iHisto,iHisto);
-   rebinned_Histo1=DynamicalRebinHisto(original_Histo1,rebinned_Histo1,binning,name1, isDATA, isDivide);
-   rebinned_Histo2=DynamicalRebinHisto(original_Histo2,rebinned_Histo2,binning,name2, isDATA, isDivide);
+   TString name1 = name + Form("_%d",iHisto);
+   TString name2 = name + Form("_%d_%d",iHisto,iHisto);
+   rebinned_Histo1 = DynamicalRebinHisto(original_Histo1,rebinned_Histo1,binning,name1, isDATA, isDivide);
+   rebinned_Histo2 = DynamicalRebinHisto(original_Histo2,rebinned_Histo2,binning,name2, isDATA, isDivide);
    rebinned_Histo2->Add(rebinned_Histo1,-1);
    rebinned_Stack->Add(rebinned_Histo2);
   }

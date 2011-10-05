@@ -26,7 +26,6 @@ MiBiNT
                                                           * Number of Closure Test
 
    Run:   * root -l test/Latinos/ttbar/Btag_Efficiency.cxx\(\"input.root\",\"output.root\",\"out_Dumper.txt\"\)  [Single Working Point]
-          
           * ls output/out_ComparisonPLOTT_H*.root | grep -v MiBiNT | tr "_" " "  | awk '{ print "root -l test/Latinos/ttbar/BTag_Efficiency.cxx#(\\\@output/out_ComparisonPLOTT_"$3"\\\@,\\\@test/Latinos/ttbar/output/Efficiency_Plott_"$3"\\\@,\\\@test/Latinos/ttbar/output/Event_Dumper_"$3".txt\\\@#)"}' | tr "@" "\"" | tr "#" "\\" | /bin/sh                
   
 MiBiNT
@@ -46,7 +45,7 @@ Study of Btag Efficiency vs Selection from Effciency Region to Signal one
    ---> Cut File Example is reported in test/Latinos/ttbar/Efficiency_vs_CutH160.txt ---> 3 Cut for each step from the Efficiency
         region to the signal one (All, BTag and BVeto)
 
-   Run: * ls test/Latinos/ttbar/Eff_Cut_H*.cfg | awk '{printf "./bin/MCDATAComparisonPLOTTool.exe "$1" \n"}' | /bin/sh   ---> All Working Point
+   Run: * ls test/Latinos/ttbar/Eff_Cut_H*.cfg | grep -v MiBiNT | awk '{printf "./bin/MCDATAComparisonPLOTTool.exe "$1" \n"}' | /bin/sh   ---> All Working Point
         * ./bin/MCDATAComparisonPLOTTool.exe test/Latinos/ttbar/Eff_Cut_H160.cfg   ----> Single working Point
 
 MiBiNT
@@ -62,9 +61,30 @@ MiBiNT
    
    Run:   * root -l test/Latinos/ttbar/Efficiency_vs_Cut.cxx\(\"input.root\",\"output.root\"\)  [Single Working Point]
           
-          * ls output/out_ComparisonPLOTT_Efficiency_vs_Cut_*.root| tr "_" " "  | awk '{ print "root -l test/Latinos/ttbar/Efficiency_vs_Cut.cxx#(\\\@output/out_ComparisonPLOTT_Efficiency_vs_Cut_"$6"\\\@,\\\@test/Latinos/ttbar/output/Efficiency_Plott_"$6"\\\@#)"}' | tr "@" "\"" | tr "#" "\\" | /bin/sh  
-            
+          * ls output/out_ComparisonPLOTT_Efficiency_vs_Cut_*.root | grep -v MiBiNT | tr "_" " "  | awk '{ print "root -l test/Latinos/ttbar/Efficiency_vs_Cut.cxx#(\\\@output/out_ComparisonPLOTT_Efficiency_vs_Cut_"$6"\\\@,\\\@test/Latinos/ttbar/output/Efficiency_Plot_vs_cut_"$6"\\\@,\\\@test/Latinos/ttbar/Efficiency_vs_Cut.txt\\\@#)"}' | tr "@" "\"" | tr "#" "\\" | /bin/sh  
+ 
+MiBiNT
+          * ls output/out_ComparisonPLOTT_Efficiency_vs_Cut_*.root | grep MiBiNT | tr "_" " "  | awk '{ print "root -l test/Latinos/ttbar/Efficiency_vs_Cut.cxx#(\\\@output/out_ComparisonPLOTT_Efficiency_vs_Cut_"$6"_MiBiNT.root\\\@,\\\@test/Latinos/ttbar/output/Efficiency_Plot_vs_cut_"$6"_MiBiNT.root\\\@,\\\@test/Latinos/ttbar/Efficiency_vs_Cut_MiBiNT.txt\\\@#)"}' | tr "@" "\"" | tr "#" "\\" | /bin/sh  
+           
           [All working Point]
 
                                                           
  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

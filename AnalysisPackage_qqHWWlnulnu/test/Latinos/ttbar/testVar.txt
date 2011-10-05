@@ -4,6 +4,6 @@
 #### standard ####
 #
 #
-(abs(jeteta1)<abs(jeteta2))*(abs(jeteta1))+(abs(jeteta1)>=abs(jeteta2))*(abs(jeteta2)) 0 5 200 |#eta|^{CJet}
+(abs(jeteta1)<abs(jeteta2))*(abs(jeteta1))+(abs(jeteta1)>=abs(jeteta2))*(abs(jeteta2))     0     5     200     |#eta|^{CJet}
 #
 #
