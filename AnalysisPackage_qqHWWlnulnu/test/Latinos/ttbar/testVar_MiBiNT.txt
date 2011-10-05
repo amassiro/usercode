@@ -1,0 +1,9 @@
+### Name       Min   Max   NBin    NameHR
+
+
+#### standard ####
+#
+#
+(abs(q1_Eta)<abs(q2_Eta))*(abs(q1_Eta))+(abs(q1_Eta)>=abs(q2_Eta))*(abs(q2_Eta)) 0 5 20 |#eta|^{CJet}
+#
+#

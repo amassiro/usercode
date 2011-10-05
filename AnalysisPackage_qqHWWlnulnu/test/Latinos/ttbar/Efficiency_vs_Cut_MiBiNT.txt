@@ -1,0 +1,46 @@
+#[SampleName]  
+qqH
+ggH
+W-jet
+ggWW
+VV
+top
+ttbar
+DY
+DATA
+[Cut]
+VBF_noBtag_0  C.R.
+VBF_Btag_0    C.R.
+VBF_Sig_0  C.R.
+VBF_noBtag_1  All_Flav.
+VBF_Btag_1    All_Flav.
+VBF_Sig_1     All_Flav.
+VBF_noBtag_2  Z_Veto
+VBF_Btag_2    Z_Veto
+VBF_Sig_2     Z_Veto
+VBF_noBtag_3  M_ll<90
+VBF_Btag_3    M_ll<90
+VBF_Sig_3     M_ll<90
+VBF_noBtag_4  DEta_jj>1.0
+VBF_Btag_4    DEta_jj>1.0
+VBF_Sig_4     DEta_jj>1.0
+VBF_noBtag_5  DEta_jj>2.0
+VBF_Btag_5    DEta_jj>2.0
+VBF_Sig_5     DEta_jj>2.0
+VBF_noBtag_6  DEta_jj>2.5
+VBF_Btag_6    DEta_jj>2.5 
+VBF_Sig_6     DEta_jj>2.5
+VBF_noBtag_7  M_qq>100
+VBF_Btag_7    M_qq>100
+VBF_Sig_7     M_qq>100
+VBF_noBtag_8  M_qq>200
+VBF_Btag_8    M_qq>200
+VBF_Sig_8     M_qq>200
+VBF_noBtag_9  M_qq>300
+VBF_Btag_9    M_qq>300
+VBF_Sig_9     M_qq>300
+[Variables]
+(abs(q1_Eta)<abs(q2_Eta))*(abs(q1_Eta))+(abs(q1_Eta)>=abs(q2_Eta))*(abs(q2_Eta)) |#eta|^{CJet}
+0 0.25 0.5 0.75 1 1.25 1.5 2 2.5 3 5 
+#(abs(q1_Eta)<abs(q2_Eta))*(q1_pT)+(abs(q1_Eta)>=abs(q2_Eta))*(q2_pT) p_{T}^{CJet}
+#0 60 90 120 150 210 300 
