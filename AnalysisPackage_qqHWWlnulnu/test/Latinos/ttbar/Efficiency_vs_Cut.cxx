@@ -364,18 +364,18 @@ int Efficiency_vs_Cut(TString input, TString output, TString selectionsFile)
      
      
      if (den_ttbar_Rebinned->GetBinContent(iBin+1)!=0) {    
-      std::cerr << " Eff[" << iCutBin << "] = " << num_ttbar_Rebinned->GetBinContent(iBin+1) << " / " << den_ttbar_Rebinned->GetBinContent(iBin+1) << " = " << num_ttbar_Rebinned->GetBinContent(iBin+1)/den_ttbar_Rebinned->GetBinContent(iBin+1) << std::endl;
+//       std::cerr << " Eff[" << iCutBin << "] = " << num_ttbar_Rebinned->GetBinContent(iBin+1) << " / " << den_ttbar_Rebinned->GetBinContent(iBin+1) << " = " << num_ttbar_Rebinned->GetBinContent(iBin+1)/den_ttbar_Rebinned->GetBinContent(iBin+1) << std::endl;
       EfficiencyHisto_ttbar[iBin][iVar]->SetBinContent(iCutBin, num_ttbar_Rebinned->GetBinContent(iBin+1)/den_ttbar_Rebinned->GetBinContent(iBin+1));
       EfficiencyHisto_ttbar[iBin][iVar]->SetBinError (iCutBin, 1. / (den_ttbar_Rebinned->GetBinContent(iBin+1)) * sqrt( num_ttbar_Rebinned->GetBinError(iBin+1) * num_ttbar_Rebinned->GetBinError(iBin+1) + num_ttbar_Rebinned->GetBinContent(iBin+1) * num_ttbar_Rebinned->GetBinContent(iBin+1) / (den_ttbar_Rebinned->GetBinContent(iBin+1) * den_ttbar_Rebinned->GetBinContent(iBin+1)) * (den_ttbar_Rebinned->GetBinError(iBin+1) * den_ttbar_Rebinned->GetBinError(iBin+1))));
      }
      else {
-      std::cerr << " Eff[" << iCutBin << "] = " << num_ttbar_Rebinned->GetBinContent(iBin+1) << " / " << den_ttbar_Rebinned->GetBinContent(iBin+1) << " = " << -1 << std::endl;      
+//       std::cerr << " Eff[" << iCutBin << "] = " << num_ttbar_Rebinned->GetBinContent(iBin+1) << " / " << den_ttbar_Rebinned->GetBinContent(iBin+1) << " = " << -1 << std::endl;      
       EfficiencyHisto_ttbar[iBin][iVar]->SetBinContent(iCutBin, -1);
       EfficiencyHisto_ttbar[iBin][iVar]->SetBinError (iCutBin, 0);
      }
      
      if (den_Rebinned->GetBinContent(iBin+1) != 0) {
-      std::cerr << " Pur[" << iCutBin << "] = " << den_ttbar_Rebinned->GetBinContent(iBin+1) << " / " << den_Rebinned->GetBinContent(iBin+1) << " = " << den_ttbar_Rebinned->GetBinContent(iBin+1)/den_Rebinned->GetBinContent(iBin+1) << std::endl;
+//       std::cerr << " Pur[" << iCutBin << "] = " << den_ttbar_Rebinned->GetBinContent(iBin+1) << " / " << den_Rebinned->GetBinContent(iBin+1) << " = " << den_ttbar_Rebinned->GetBinContent(iBin+1)/den_Rebinned->GetBinContent(iBin+1) << std::endl;
       PurityHisto_All[iBin][iVar]->SetBinContent(iCutBin,den_ttbar_Rebinned->GetBinContent(iBin+1)/den_Rebinned->GetBinContent(iBin+1));
       PurityHisto_All[iBin][iVar]->SetBinError(iCutBin,(1./(den_Rebinned->GetBinContent(iBin+1)))*sqrt(den_ttbar_Rebinned->GetBinError(iBin+1)*den_ttbar_Rebinned->GetBinError(iBin+1)+(den_ttbar_Rebinned->GetBinContent(iBin+1)*den_ttbar_Rebinned->GetBinContent(iBin+1))/(den_Rebinned->GetBinContent(iBin+1)*den_Rebinned->GetBinContent(iBin+1))*(den_Rebinned->GetBinError(iBin+1)*den_Rebinned->GetBinError(iBin+1))));
 
@@ -391,13 +391,13 @@ int Efficiency_vs_Cut(TString input, TString output, TString selectionsFile)
       
      }
      else {
-      std::cerr << " Pur[" << iCutBin << "] = " << den_ttbar_Rebinned->GetBinContent(iBin+1) << " / " << den_Rebinned->GetBinContent(iBin+1) << " = " << -1 << std::endl;
+//       std::cerr << " Pur[" << iCutBin << "] = " << den_ttbar_Rebinned->GetBinContent(iBin+1) << " / " << den_Rebinned->GetBinContent(iBin+1) << " = " << -1 << std::endl;
       PurityHisto_All[iBin][iVar]->SetBinContent(iCutBin,-1);
       PurityHisto_All[iBin][iVar]->SetBinError(iCutBin,0);
      }
      
      if (num_Rebinned->GetBinContent(iBin+1) != 0) {
-      std::cerr << " Pur[" << iCutBin << "] = " << num_ttbar_Rebinned->GetBinContent(iBin+1) << " / " << num_Rebinned->GetBinContent(iBin+1) << " = " << num_ttbar_Rebinned->GetBinContent(iBin+1)/num_Rebinned->GetBinContent(iBin+1) << std::endl;     
+//       std::cerr << " Pur[" << iCutBin << "] = " << num_ttbar_Rebinned->GetBinContent(iBin+1) << " / " << num_Rebinned->GetBinContent(iBin+1) << " = " << num_ttbar_Rebinned->GetBinContent(iBin+1)/num_Rebinned->GetBinContent(iBin+1) << std::endl;     
       PurityHisto_BTag[iBin][iVar]->SetBinContent(iCutBin,num_ttbar_Rebinned->GetBinContent(iBin+1)/num_Rebinned->GetBinContent(iBin+1));
       PurityHisto_BTag[iBin][iVar]->SetBinError(iCutBin,(1./(num_Rebinned->GetBinContent(iBin+1)))*sqrt(num_ttbar_Rebinned->GetBinError(iBin+1)*num_ttbar_Rebinned->GetBinError(iBin+1)+(num_ttbar_Rebinned->GetBinContent(iBin+1)*num_ttbar_Rebinned->GetBinContent(iBin+1))/(num_Rebinned->GetBinContent(iBin+1)*num_Rebinned->GetBinContent(iBin+1))*(num_Rebinned->GetBinError(iBin+1)*num_Rebinned->GetBinError(iBin+1)))); 
       
@@ -410,7 +410,7 @@ int Efficiency_vs_Cut(TString input, TString output, TString selectionsFile)
       
      }
      else {
-      std::cerr << " Pur[" << iCutBin << "] = " << num_ttbar_Rebinned->GetBinContent(iBin+1) << " / " << num_Rebinned->GetBinContent(iBin+1) << " = " << -1 << std::endl;     
+//       std::cerr << " Pur[" << iCutBin << "] = " << num_ttbar_Rebinned->GetBinContent(iBin+1) << " / " << num_Rebinned->GetBinContent(iBin+1) << " = " << -1 << std::endl;     
       PurityHisto_BTag[iBin][iVar]->SetBinContent(iCutBin,-1);
       PurityHisto_BTag[iBin][iVar]->SetBinError(iCutBin,0); 
      }
@@ -549,13 +549,28 @@ int Efficiency_vs_Cut(TString input, TString output, TString selectionsFile)
    c1.Write();
    
    
-   CompositionHisto_All [iBin][iVar] -> Draw();
-   Title = Form("Composition_All_%s_%.1f-%.1f",nameHumanVariable.at(iVar).c_str(),Bin_Extremes[iVar].at(iBin),Bin_Extremes[iVar].at(iBin+1));
+   CompositionHisto_BTag [iBin][iVar] -> Draw();
+   Title = Form("c Composition_BTag_%s_%.2f-%.2f",nameHumanVariable.at(iVar).c_str(),Bin_Extremes[iVar].at(iBin),Bin_Extremes[iVar].at(iBin+1));
    c1.SetName(Title);
    c1.Write();
-
-   CompositionHisto_BTag [iBin][iVar] -> Draw();
-   Title = Form("Composition_BTag_%s_%.1f-%.1f",nameHumanVariable.at(iVar).c_str(),Bin_Extremes[iVar].at(iBin),Bin_Extremes[iVar].at(iBin+1));
+   
+   CompositionHisto_All [iBin][iVar] -> Draw();
+   Title = Form("c Composition_All_%s_%.2f-%.2f",nameHumanVariable.at(iVar).c_str(),Bin_Extremes[iVar].at(iBin),Bin_Extremes[iVar].at(iBin+1));
+   c1.SetName(Title);
+   c1.Write();
+   
+   
+   EfficiencyHisto_ttbar[iBin][iVar]->Draw("E3");
+   eff_DATA[iBin][iVar]->Draw("Psame");
+   
+   TLegend * leg = new TLegend(0.75,0.7,0.98,0.9);
+   leg->Clear();
+   leg->AddEntry(EfficiencyHisto_ttbar[iBin][iVar],"eff on MC tt");
+   leg->AddEntry(eff_DATA[iBin][iVar],"eff on DATA");
+   leg->SetFillColor(kWhite);
+   leg->Draw();
+   
+   Title = Form("c efficiency_MC_DATA_%s_%.2f-%.2f",nameHumanVariable.at(iVar).c_str(),Bin_Extremes[iVar].at(iBin),Bin_Extremes[iVar].at(iBin+1));
    c1.SetName(Title);
    c1.Write();
    
@@ -611,8 +626,10 @@ int Efficiency_vs_Cut(TString input, TString output, TString selectionsFile)
      isDATA=false;
     }
     
-    double Kolmogorov_Probability = num_DATA_Rebinned->KolmogorovTest(num_Rebinned,"D");
-    double Chi_Probability = num_DATA_Rebinned->Chi2Test(num_Rebinned,"UWP");
+    double Kolmogorov_Probability;
+    //     Kolmogorov_Probability = num_DATA_Rebinned->KolmogorovTest(num_Rebinned,"D"); --> Speed up!
+    double Chi_Probability; 
+    //     Chi_Probability = num_DATA_Rebinned->Chi2Test(num_Rebinned,"UWP"); --> Speed up!
     
     Kolmogorov_Distribution->SetBinContent(iCutBin,Kolmogorov_Probability);
     Chi_Distribution->SetBinContent(iCutBin,Chi_Probability);
@@ -672,6 +689,8 @@ int Efficiency_vs_Cut(TString input, TString output, TString selectionsFile)
    
   }
   
+  
+  cdVar->cd();
   
   TCanvas c2;
   

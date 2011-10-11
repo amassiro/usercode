@@ -197,9 +197,9 @@ TH1D* DynamicalRebinHisto ( TH1D * original_Histo, TH1D* rebinned_Histo, std::ve
    std::cerr << "Error: Invalid Bin Width:: iBin = " << iBin << " ==> " << fabs(binning.at(iBin+1)-binning.at(iBin)) << " < " << original_Histo->GetXaxis()->GetBinWidth(original_iBin+1) << std::endl;
    return(0);
   }
-  while(binning.at(iBin+1) >= original_Histo->GetXaxis()->GetBinUpEdge(original_iBin+1) && original_iBin <= original_Histo->GetNbinsX()) {
-   Bin_Counts.at(iBin)=Bin_Counts.at(iBin)+fabs(original_Histo->GetBinContent(original_iBin+1));
-   Bin_Errors.at(iBin)=sqrt(Bin_Errors.at(iBin)*Bin_Errors.at(iBin)+original_Histo->GetBinError(original_iBin+1)*original_Histo->GetBinError(original_iBin+1));
+  while (binning.at(iBin+1) >= original_Histo->GetXaxis()->GetBinUpEdge(original_iBin+1) && original_iBin <= original_Histo->GetNbinsX()) {
+   Bin_Counts.at(iBin) = Bin_Counts.at(iBin)+fabs(original_Histo->GetBinContent(original_iBin+1));
+   Bin_Errors.at(iBin) = sqrt(Bin_Errors.at(iBin)*Bin_Errors.at(iBin)+original_Histo->GetBinError(original_iBin+1)*original_Histo->GetBinError(original_iBin+1));
    original_iBin++;
   }
   
@@ -210,12 +210,11 @@ TH1D* DynamicalRebinHisto ( TH1D * original_Histo, TH1D* rebinned_Histo, std::ve
   if (original_iBin == original_Histo->GetNbinsX())
    edge.push_back(original_Histo->GetXaxis()->GetBinUpEdge(original_iBin));
   
-  if (isDivide)
-  {  
+  if (isDivide) {  
    Bin_Counts.at(iBin) = Bin_Counts.at(iBin)/(fabs(edge.at(iBin+1)-edge.at(iBin)));
    Bin_Errors.at(iBin) = Bin_Errors.at(iBin)/(fabs(edge.at(iBin+1)-edge.at(iBin)));
   }
-  else{
+  else {
    Bin_Counts.at(iBin) = Bin_Counts.at(iBin);
    Bin_Errors.at(iBin) = Bin_Errors.at(iBin);
   }
@@ -224,28 +223,23 @@ TH1D* DynamicalRebinHisto ( TH1D * original_Histo, TH1D* rebinned_Histo, std::ve
  
  binning.clear();
  
- for(int iBin=0; iBin<edge.size();iBin++)
- {
+ for(int iBin=0; iBin<edge.size();iBin++) {
   Bin_size[iBin]=edge.at(iBin);
   binning.push_back(edge.at(iBin)); 
  }
  
  rebinned_Histo = new TH1D(nameHisto,original_Histo->GetTitle(),edge.size()-1,Bin_size);
  
- if(!isDATA || (isDATA && isDivide))
- {  
-  for(int iBin=0; iBin<edge.size()-1;iBin++)
-  {rebinned_Histo->SetBinContent(iBin+1,fabs(Bin_Counts.at(iBin)));
-  rebinned_Histo->SetBinError(iBin+1,fabs(Bin_Errors.at(iBin)));
+ if(!isDATA || (isDATA && isDivide)) {  
+  for(int iBin=0; iBin<edge.size()-1;iBin++) {
+   rebinned_Histo->SetBinContent(iBin+1,fabs(Bin_Counts.at(iBin)));
+   rebinned_Histo->SetBinError(iBin+1,fabs(Bin_Errors.at(iBin)));
   }
  }
  
- if(isDATA && !isDivide)
- {
-  for( int iBin=0; iBin<edge.size()-1; iBin++)
-  { 
-   for(int iTime=0; iTime<Bin_Counts.at(iBin); iTime++)
-   {
+ if(isDATA && !isDivide) {
+  for( int iBin=0; iBin<edge.size()-1; iBin++) { 
+   for(int iTime=0; iTime<Bin_Counts.at(iBin); iTime++) {
     rebinned_Histo->Fill(rebinned_Histo->GetBinCenter(iBin+1));
    }
   }

@@ -27,48 +27,57 @@ VBF_noBtag_3  CJV
 VBF_Btag_3    CJV
 VBF_Sig_3     CJV
 #
-VBF_noBtag_4  mll<90
-VBF_Btag_4    mll<90
-VBF_Sig_4     mll<90
+VBF_noBtag_4  dphi<1.5
+VBF_Btag_4    dphi<1.5
+VBF_Sig_4     dphi<1.5
 #
-VBF_noBtag_5  dphi<1.5
-VBF_Btag_5    dphi<1.5
-VBF_Sig_5     dphi<1.5
+VBF_noBtag_5  mll<90
+VBF_Btag_5    mll<90
+VBF_Sig_5     mll<90
 #
 VBF_noBtag_6  detajj>1.0
 VBF_Btag_6    detajj>1.0
 VBF_Sig_6     detajj>1.0
 #
-VBF_noBtag_7  detajj>2.0
-VBF_Btag_7    detajj>2.0
-VBF_Sig_7     detajj>2.0
+VBF_noBtag_7  detajj>1.5
+VBF_Btag_7    detajj>1.5
+VBF_Sig_7     detajj>1.5
 #
-VBF_noBtag_8  detajj>2.5
-VBF_Btag_8    detajj>2.5
-VBF_Sig_8     detajj>2.5
+VBF_noBtag_8  detajj>2.0
+VBF_Btag_8    detajj>2.0
+VBF_Sig_8     detajj>2.0
 #
-VBF_noBtag_9  mjj>200
-VBF_Btag_9    mjj>200
-VBF_Sig_9     mjj>200
+VBF_noBtag_9  detajj>2.5
+VBF_Btag_9    detajj>2.5
+VBF_Sig_9     detajj>2.5
 #
-VBF_noBtag_10 mjj>350
-VBF_Btag_10   mjj>350
-VBF_Sig_10    mjj>350
+VBF_noBtag_10 mjj>200
+VBF_Btag_10   mjj>200
+VBF_Sig_10    mjj>200
 #
-VBF_noBtag_11 mjj>450
-VBF_Btag_11   mjj>450
-VBF_Sig_11    mjj>450
+VBF_noBtag_11 mjj>350
+VBF_Btag_11   mjj>350
+VBF_Sig_11    mjj>350
 #
-VBF_noBtag_12 detajj>3.5
-VBF_Btag_12   detajj>3.5
-VBF_Sig_12    detajj>3.5
+VBF_noBtag_12 mjj>450
+VBF_Btag_12   mjj>450
+VBF_Sig_12    mjj>450
+#
+VBF_noBtag_13 detajj>3.5
+VBF_Btag_13   detajj>3.5
+VBF_Sig_13    detajj>3.5
+#
+VBF_noBtag_14 mll<80&lep#eta
+VBF_Btag_14   mll<80&lep#eta
+VBF_Sig_14    mll<80&lep#eta
 #     
 #     
 #     
 [Variables]
 #
 (abs(q1_Eta)<abs(q2_Eta))*(abs(q1_Eta))+(abs(q1_Eta)>=abs(q2_Eta))*(abs(q2_Eta)) |#eta|^{CJet}
-0 0.75 1.5 2.0 2.5 3.5 5 
+0 0.5 1.0 1.75 2.5 3 5 
+# 0 0.75 1.5 2.0 2.5 3.5 5 
 # 0 0.25 0.5 1.0 1.5 2.0 2.5 3.5 5 
 #
 #     (abs(jeteta1)<abs(jeteta2))*(abs(jeteta1))+(abs(jeteta1)>=abs(jeteta2))*(abs(jeteta2)) |#eta|^{CJet}
