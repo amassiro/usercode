@@ -1,0 +1,1 @@
+(mll<106.1876 && mll>76.1876)  &&  pfmet > 20   &&    njet >= 2 &&  mll>12   && jetpt1>30 && jetpt2>30 && ch1*ch2==-1  && nextra==0 && njetvbf == 0 && mjj>450 && detajj>3.5  && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5   && jettche2<2.1 && jettche1<2.1  && bveto_ip && bveto_mu == 1    

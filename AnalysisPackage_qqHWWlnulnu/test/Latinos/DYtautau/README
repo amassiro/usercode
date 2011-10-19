@@ -1,0 +1,36 @@
+Sideband method for DYtautau estimation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+void DYTauTauDD(TString nameSample, TString nameTree, TString globalCut, double mpmet_threshold_sameFlav, double mpmet_threshold_diffFlav, double pt_ele1_threshold, double pt_ele2_threshold, double pt_mu1_threshold, double pt_mu2_threshold)
+r00t test/Latinos/DYtautau/DYTauTauDD.cxx\(\"output_Latinos_tree/latino_DATA.root\",\"latino\",40,20,20,15,20,10\)
+
+
+r00t test/Latinos/DYtautau/DYTauTauDD.cxx\(\"output_Latinos_tree/latino_DATA.root\",\"latino\",\"test/Latinos/DYtautau/testCut.txt\",40,20,20,15,20,10\)
+
+r00t test/Latinos/DYtautau/DYTauTauDD.cxx\(\"output_Latinos_tree/latino_DATA.root\",\"latino\",\"test/Latinos/DYtautau/testCut.txt\",10,20,20,15,20,10\)
+r00t test/Latinos/DYtautau/DYTauTauDD.cxx\(\"output_Latinos_tree/latino_DATA.root\",\"latino\",\"test/Latinos/DYtautau/testCut.txt\",20,20,20,15,20,10\)
+r00t test/Latinos/DYtautau/DYTauTauDD.cxx\(\"output_Latinos_tree/latino_DATA.root\",\"latino\",\"test/Latinos/DYtautau/testCut.txt\",25,20,20,15,20,10\)
+r00t test/Latinos/DYtautau/DYTauTauDD.cxx\(\"output_Latinos_tree/latino_DATA.root\",\"latino\",\"test/Latinos/DYtautau/testCut.txt\",30,20,20,15,20,10\)
+r00t test/Latinos/DYtautau/DYTauTauDD.cxx\(\"output_Latinos_tree/latino_DATA.root\",\"latino\",\"test/Latinos/DYtautau/testCut.txt\",35,20,20,15,20,10\)
+r00t test/Latinos/DYtautau/DYTauTauDD.cxx\(\"output_Latinos_tree/latino_DATA.root\",\"latino\",\"test/Latinos/DYtautau/testCut.txt\",40,20,20,15,20,10\)
+
+
+
+void DYTauTauDD_Scan(int WP, double Rmumuinout, double Reeinout, double numDYmumuBDD,  double numDYeeBDD, double errnumDYmumuBDD,  double errnumDYeeBDD, TString nameSample, TString nameTree, TString globalCutFile, double mpmet_threshold_sameFlav_min, int numScan, double DeltaMpmet, double mpmet_threshold_diffFlav, double pt_ele1_threshold, double pt_ele2_threshold, double pt_mu1_threshold, double pt_mu2_threshold)
+r00t test/Latinos/DYtautau/DYTauTauDD_Scan.cxx\(30,0.145837,0.106169,6.848,1.895,2.646,1.4142,\"output_Latinos_tree/latino_DATA.root\",\"latino\",\"test/Latinos/DYtautau/testCut.txt\",10,32,1,20,20,15,20,10\)
+r00t test/Latinos/DYtautau/DYTauTauDD_Scan.cxx\(30,0.154169,0.19033,6.848,1.895,2.646,1.4142,\"output_Latinos_tree/latino_DATA.root\",\"latino\",\"test/Latinos/DYtautau/testCut.txt\",10,32,1,20,20,15,20,10\)
+
+Low Higgs mass
+ N (DY DD B) ee     = 1.89505 +/- 1.41421
+ N (DY DD B) mumu     = 6.84758 +/- 2.64575
+ Ree    = 0.106169
+ Rmumu  = 0.145837
+ 
+
+High Higgs mass
+ N (DY DD B) ee     = 1.89505 +/- 1.41421
+ N (DY DD B) mumu     = 6.84758 +/- 2.64575
+ Ree    = 0.19033
+ Rmumu  = 0.154169
+ 
