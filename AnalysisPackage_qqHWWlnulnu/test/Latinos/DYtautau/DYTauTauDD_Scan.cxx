@@ -72,7 +72,6 @@ void DYTauTauDD_Scan(int WP, double Rmumuinout, double Reeinout, double numDYmum
  for (int iCut = 0; iCut < nCut; iCut++) {
   std::cout << " vCut[" << iCut << "] = " << vCut.at(iCut) << std::endl;
  }
-//  TString globalCut = "njet==2 && detajj>3.5 && ((!sameflav && mpmet > 20) || (sameflav && mpmet > 40))";
 
  TString globalCut = vCut.at(0).c_str();
  
@@ -211,7 +210,6 @@ void DYTauTauDD_Scan(int WP, double Rmumuinout, double Reeinout, double numDYmum
    new_lepton1.SetPtEtaPhiE(El*sin(theta), - TMath::Log (TMath::Tan (theta/2.)), phi, El);
    
    TVector3 boost;
-//    boost.SetPtEtaPhi(pt1, eta1, phi1);
    boost = old_lepton1.BoostVector(); 
    
    //---- now boost
@@ -229,19 +227,11 @@ void DYTauTauDD_Scan(int WP, double Rmumuinout, double Reeinout, double numDYmum
    
    TLorentzVector new_lepton2;
    new_lepton2.SetPtEtaPhiE(El*sin(theta), - TMath::Log (TMath::Tan (theta/2.)), phi, El);
-   
-//    std::cout << "  pt2 = " << pt2 << " eta2 = " << eta2 << " phi2 = " << phi2 << std::endl;
-   
+      
    boost = old_lepton2.BoostVector(); 
-   
-//    boost.SetPtEtaPhi(pt2, eta2, phi2);
-
-//    boost.Print();
-   //    new_lepton2.Print();tau
    //---- now boost
    new_lepton2.Boost(boost);
    //---- now the "new_lepton2" is boosted!
-//    new_lepton2.Print();
 
    
    new_mll[iToy+iEntry*nToy] = ( new_lepton2 + new_lepton1 ).Mag();
