@@ -1,0 +1,14 @@
+########################################
+####  List of datadriven estimation ####
+########################################
+#
+#
+#
+CMS_ww_Top2j        test/Latinos/ttbar/result-value.txt           top          
+CMS_ww_DY2j         test/Latinos/DYRinout/result-value.txt        DY           
+#    CMS_ww_DYtt2j       test/Latinos/DYtautau/result-value.txt        DY-tautau    
+#
+#
+#
+#
+#

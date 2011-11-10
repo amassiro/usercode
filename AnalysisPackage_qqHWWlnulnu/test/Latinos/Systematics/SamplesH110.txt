@@ -1,0 +1,61 @@
+# name_sample            xsection        name_human_readable
+DATA                               -1                 DATA
+# # 120_SingleElectron2011Av6          -1.              DATA
+# # 121_SingleMuon2011Av6              -1.              DATA
+# # 122_DoubleElectron2011Av6          -1.              DATA
+# # 123_DoubleMuon2011Av6              -1.              DATA
+# # 124_MuEG2011Av6                    -1.              DATA
+# 130_SingleElectron2011Av6v2        -1.              DATA
+# 131_SingleMuon2011Av6v2            -1.              DATA
+# 132_DoubleElectron2011Av6v2        -1.              DATA
+# 133_DoubleMuon2011Av6v2            -1.              DATA
+# 134_MuEG2011Av6v2                  -1.              DATA
+# 150_SingleElectron2011AMay10       -1.              DATA
+# 151_SingleMuon2011AMay10           -1.              DATA
+# 152_DoubleMuon2011AMay10           -1.              DATA
+# 153_DoubleElectron2011AMay10       -1.              DATA
+# 154_MuEG2011AMay10                 -1.              DATA
+# 160_SingleElectron2011AAug05       -1.              DATA
+# 161_SingleMuon2011AAug05           -1.              DATA
+# 162_DoubleElectron2011AAug05       -1.              DATA
+# 163_DoubleMuon2011AAug05           -1.              DATA
+# 164_MuEG2011AAug05                 -1.              DATA
+#
+#
+#
+#    030_DYtoElEl                       0.0567686049     DY
+#    033_DY10toElEl                     1.6292217438     DY    DY-low
+#    031_DYtoMuMu                       0.0565481502     DY
+#    034_DY10toMuMu                     1.5767956975     DY    DY-low
+#
+#    032_DYtoTauTau                     0.0835612165     DY-tautau DY
+#    035_DY10toTauTau                   1.5713636364     DY-tautau DY    DY-low 
+#
+#     010_TTJetsMad                      0.0432460989     top ttbar
+019_TTTo2L2Nu2B                    0.0015977756     top ttbar
+#
+011_TtWFullDR                      0.0096636747     top
+012_TbartWFullDR                   0.0097162413     top
+013_TtFull                         0.0107482467     top
+014_TbartFull                      0.0116462861     top
+015_TsFull                         0.0122705994     top
+016_TbarsFull                      0.0104362951     top
+#
+074_WZJetsMad                      0.0005041117     VV
+075_ZZJetsMad                      0.0002712239     VV
+#
+#   070_WZFull                         0.0042670488     VV    WZ/ZZ    WZ
+#   071_ZZFull                         0.0018314734     VV    WZ/ZZ    ZZ
+# 072_GluGluZZ2L2L                   0.0000173000     VV    WZ/ZZ    ZZ
+# 073_GluGluZZ4L                     0.0000123014     VV    WZ/ZZ    ZZ
+#
+000_WWJets2LMad                    0.0037693105     VV    WW
+001_GluGluToWWTo4L                 0.0013910103     ggWW  WW
+#
+#   080_WJetsToLNuMad                  0.3849171055     W+jets   W
+#   081_VGamma                         0.1545118876     W+jets   Vg
+#
+9110_ggToH110toWWTo2LAndTau2Nu     0.0003604647     ggH
+8110_vbfToH110toWWTo2LAndTau2Nu    0.0001353976     qqH
+#
+#

@@ -1,0 +1,58 @@
+##############################
+####  List of systematics ####
+##############################
+#
+CMS_eff_l           test/Latinos/Systematics/leptonEfficiency/result.txt                 lnN           lepton efficiency
+#
+CMS_p_scale_j       test/Latinos/Systematics/jetEnergyScale/result.txt                   lnN           jet energy scale
+#
+CMS_p_scale_e       test/Latinos/Systematics/electronScale/result.txt                    lnN           electron scale
+CMS_p_scale_m       test/Latinos/Systematics/muonScale/result.txt                        lnN           muon scale
+#
+#
+CMS_p_rel_e         test/Latinos/Systematics/electronResolution/result.txt               lnN           electron resolution
+#
+CMS_met             test/Latinos/Systematics/metResolution/result.txt                    lnN           met resolution
+#
+lumi                test/Latinos/Systematics/lumi/result.txt                             lnN           luminosity
+#
+pdf_gg              test/Latinos/Systematics/pdf_gg/result.txt                           lnN           pdf_gg
+pdf_qqbar           test/Latinos/Systematics/pdf_qqbar/result.txt                        lnN           pdf_qqbar 
+#
+#
+MC_statistics       test/Latinos/Systematics/MC_statistics/result.txt                    lnN           MC_statistics
+#
+QCDscale_ggH        test/Latinos/Systematics/QCDscale_ggH/result.txt                     lnN           QCDscale_ggH
+QCDscale_ggH1in     test/Latinos/Systematics/QCDscale_ggH1in/result.txt                  lnN           QCDscale_ggH1in
+QCDscale_ggVV       test/Latinos/Systematics/QCDscale_ggVV/result.txt                    lnN           QCDscale_ggVV
+#
+#
+CMS_ww_Top2j        test/Latinos/ttbar/result-syst.txt                               lnN           top data driven
+CMS_ww_DY2j         test/Latinos/DYRinout/result-syst.txt                            lnN           DY data driven
+#   CMS_ww_DYtt2j       test/Latinos/DYtautau/result-syst.txt                            lnN           DY tautau data driven
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#         myfile << "CMS_eff_e                    lnN       1.020    1.020    1.020      1.020     1.020      -            -        -      " << std::endl; //               electron efficiency      " << std::endl;
+#         myfile << "CMS_eff_m                    lnN       1.040    1.040    1.040      1.040     1.040      -            -        -      " << std::endl; //               muon efficiency          " << std::endl;
+#         
+#         myfile << "PU                           lnN       1.03     1.03       -        1.04      1.04       -            -        -      " << std::endl; //               Pile Up +/- 1" << std::endl;
+#         
+#         
+#         myfile << "CMS_ww_Top2j                 lnN         -        -        -          -         -      1.1            -       -     " << std::endl; //              TTbar data driven" << std::endl;
+#         myfile << "CMS_ww_DY2j                  lnN         -        -        -          -         -        -            -      1.1     " << std::endl; //              DY data driven   " << std::endl;
+#         myfile << "CMS_ww_DYtt2j                lnN         -        -        -          -         -        -           1.1      -     " << std::endl; //              DY data driven   " << std::endl;
+#
+#
+#
+#
+#
+#

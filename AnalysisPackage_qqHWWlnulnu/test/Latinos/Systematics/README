@@ -1,0 +1,17 @@
+Add all systematics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Once all systematics estimations are available,
+create a file with the list of systematics:
+
+
+listSystematics.txt
+ 
+>> 
+>>  name systematic       file.txt
+>>  name systematic       file.txt
+>>  name systematic       file.txt
+>>
+
+
+
