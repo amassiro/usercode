@@ -1,5 +1,6 @@
 #include "Variables_Gen.h"
 
+
 void InitializeTree(Variables_Gen& vars, const std::string& outputRootFileName)
 {
  
@@ -39,6 +40,7 @@ void InitializeTree(Variables_Gen& vars, const std::string& outputRootFileName)
  
  vars.m_reducedTree -> Branch("l1_charge",  &vars.l1_charge,   "l1_charge/D");
  vars.m_reducedTree -> Branch("l1_flavour", &vars.l1_flavour, "l1_flavour/I");
+ 
  vars.m_reducedTree -> Branch("l2_pX",  &vars.l2_pX,   "l2_pX/D");
  vars.m_reducedTree -> Branch("l2_pY",  &vars.l2_pY,   "l2_pY/D");
  vars.m_reducedTree -> Branch("l2_pZ",  &vars.l2_pZ,   "l2_pZ/D");
@@ -71,12 +73,12 @@ void InitializeTree(Variables_Gen& vars, const std::string& outputRootFileName)
  vars.m_reducedTree-> Branch("met_Y",    &vars.met_Y,       "met_Y/D");
  vars.m_reducedTree-> Branch("met",        &vars.met,           "met/D");
  vars.m_reducedTree-> Branch("pmet",      &vars.pmet,         "pmet/D");
- vars.m_reducedTree-> Branch("chmet",    &vars.chmet,       "chmet/D");
+ /*vars.m_reducedTree-> Branch("chmet",    &vars.chmet,       "chmet/D");
  vars.m_reducedTree-> Branch("chmet_X",    &vars.chmet_X,       "chmet_X/D");
  vars.m_reducedTree-> Branch("chmet_Y",    &vars.chmet_Y,       "chmet_Y/D");
  vars.m_reducedTree-> Branch("pchmet", &vars.pchmet,    "pchmet/D");
  vars.m_reducedTree-> Branch("minMet", &vars.minMet,   "minMet/D");
-  
+ */ 
 ///---- jetdeau [jd] variables: met and jet corrections
 /* vars.m_reducedTree-> Branch("jd_dphi1",    &vars.jd_dphi1,       "jd_dphi1/D");
  vars.m_reducedTree-> Branch("jd_dphi2",    &vars.jd_dphi2,       "jd_dphi2/D");
@@ -113,7 +115,7 @@ void InitializeTree(Variables_Gen& vars, const std::string& outputRootFileName)
 
  ///~~ additional variables 
  vars.m_reducedTree -> Branch("mT", &vars.mT, "mT/D");
- vars.m_reducedTree -> Branch("DPhiJet_ll", &vars.DPhiJet_ll, "DPhiJet_ll/D");
+//  vars.m_reducedTree -> Branch("DPhiJet_ll", &vars.DPhiJet_ll, "DPhiJet_ll/D");
  vars.m_reducedTree -> Branch("maxDPhiJet_ll", &vars.maxDPhiJet_ll, "maxDPhiJet_ll/D");
  vars.m_reducedTree -> Branch("DPhiSingleJet_ll",    &vars.DPhiSingleJet_ll,    "DPhiSingleJet_ll/D");
  vars.m_reducedTree -> Branch("DPhiDoubleJet_ll", &vars.DPhiDoubleJet_ll, "DPhiDoubleJet_ll/D");
@@ -135,6 +137,14 @@ void InitializeTree(Variables_Gen& vars, const std::string& outputRootFileName)
  vars.m_reducedTree -> Branch("q2_E", &vars.q2_E, "q2_E/D"); 
  vars.m_reducedTree -> Branch("q2_Eta", &vars.q2_Eta, "q2_Eta/D"); 
  vars.m_reducedTree -> Branch("q2_Phi", &vars.q2_Phi, "q2_Phi/D"); 
+ vars.m_reducedTree -> Branch("q3_pX", &vars.q3_pX, "q3_pX/D"); 
+ vars.m_reducedTree -> Branch("q3_pY", &vars.q3_pY, "q3_pY/D"); 
+ vars.m_reducedTree -> Branch("q3_pZ", &vars.q3_pZ, "q3_pZ/D"); 
+ vars.m_reducedTree -> Branch("q3_pT", &vars.q3_pT, "q3_pT/D"); 
+ vars.m_reducedTree -> Branch("q3_E", &vars.q3_E, "q3_E/D"); 
+ vars.m_reducedTree -> Branch("q3_Eta", &vars.q3_Eta, "q3_Eta/D"); 
+ vars.m_reducedTree -> Branch("q3_Phi", &vars.q3_Phi, "q3_Phi/D"); 
+ 
  
  vars.m_reducedTree -> Branch("M_qq", &vars.M_qq, "M_qq/D"); 
  vars.m_reducedTree -> Branch("DEta_qq", &vars.DEta_qq, "DEta_qq/D"); 
@@ -992,6 +1002,55 @@ void SetJDVariables(Variables_Gen& vars, treeReader& reader, const int& iLep1, c
 //  }
 }
  
+///====== Find third jet of the event
+
+void FindAddJet (treeReader& reader,const int& q1,const int& q2, const std::vector<int>* blacklistJet_forCJV,
+		 std::vector<ROOT::Math::XYZTVector> & Jet_Candidate, const double& EtMin)
+{
+  
+  
+  
+  for(int iJet=0; iJet<reader.Get4V("mcJet")->size() ; iJet ++)
+  {
+      if (iJet==q1 || iJet==q2) continue;
+      
+      if (reader.Get4V("mcJet")->at(iJet).Et() < EtMin) continue;
+       
+      bool skipJet=false;
+ 
+     if(blacklistJet_forCJV)
+     {
+      for(unsigned int kk = 0; kk < blacklistJet_forCJV->size(); ++kk){
+        if(blacklistJet_forCJV->at(kk) == static_cast<int>(iJet)) skipJet = true;
+       } 
+     }
+    
+    if(skipJet) continue;
+ 
+    Jet_Candidate.push_back(reader.Get4V("mcJet")->at(iJet));
+    
+  }
+  
+  if(Jet_Candidate.size()!=0)
+  sort(Jet_Candidate.begin(),Jet_Candidate.end(),pT_sort());
+}
+      
+///======================= Set Third Jet variables
 
 
+void SetThirdJetVariables(Variables_Gen& vars, std::vector<ROOT::Math::XYZTVector> & Jet_Candidate)
+{
+
+ if(Jet_Candidate.size()!=0)
+ {
+  vars.q3_pX = Jet_Candidate.at(0).X();
+  vars.q3_pY = Jet_Candidate.at(0).Y();
+  vars.q3_pZ = Jet_Candidate.at(0).Z();
+  vars.q3_pT = Jet_Candidate.at(0).pt();
+  vars.q3_E = Jet_Candidate.at(0).E();
+  vars.q3_Eta = Jet_Candidate.at(0).Eta();
+  vars.q3_Phi = Jet_Candidate.at(0).Phi();
+ }
+  
+}
 

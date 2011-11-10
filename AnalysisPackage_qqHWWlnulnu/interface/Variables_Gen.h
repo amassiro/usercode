@@ -11,6 +11,8 @@
 #include "TTree.h"
 
 #include "qqHWWlnulnuUtils.h"
+#include <vector>
+#include "Math/GenVector/VectorUtil.h"
 
 struct Variables_Gen
 {
@@ -143,6 +145,15 @@ struct Variables_Gen
  double q2_E;
  double q2_Eta;
  double q2_Phi;
+ 
+ double q3_pX ;
+ double q3_pY ;
+ double q3_pZ ;
+ double q3_pT ;
+ double q3_E ;
+ double q3_Eta;
+ double q3_Phi;
+
  
  double M_qq;
  double DEta_qq;
@@ -287,7 +298,6 @@ struct Variables_Gen
 };
 
 
-
 void InitializeTree(Variables_Gen&, const std::string& );
 
 void FillTree(Variables_Gen& vars);
@@ -310,4 +320,16 @@ void SetDPhiJetll(Variables_Gen& vars, treeReader& reader, const int& iLep1, con
 
 void SetJDVariables(Variables_Gen& vars, treeReader& reader, const int& iLep1, const int& iLep2, const int& FlavourLep1, const int& FlavourLep2, const int& q1, const int& q2);
 
+void FindAddJet (treeReader& reader,const int& q1,const int& q2, const std::vector<int>* blacklistJet_forCJV,std::vector<ROOT::Math::XYZTVector> & Jet_Candidate, const double& EtMin);
+void SetThirdJetVariables(Variables_Gen& vars, std::vector<ROOT::Math::XYZTVector> & Jet_Candidate);
+
 void SaveTree(Variables_Gen& vars);
+
+struct pT_sort:
+public std::binary_function< ROOT::Math::XYZTVector, ROOT::Math::XYZTVector, bool >
+{
+  bool operator() (ROOT::Math::XYZTVector x, ROOT::Math::XYZTVector y)
+  {
+    return x.pt() < y.pt();
+  }
+};

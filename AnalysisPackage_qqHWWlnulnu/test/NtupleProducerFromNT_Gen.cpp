@@ -332,8 +332,18 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
     whitelistJet.at(iJet) = 0;
    }
   }
-
+ 
+ /// Set information on leading jets
  SetQJetVariables(vars, reader, q1, q2, blacklistJet_forCJV);
+ 
+ 
+ ///=== Third jet search and information setting
+ 
+ std::vector<ROOT::Math::XYZTVector> Jet_Candidate;
+ FindAddJet (reader,q1,q2,&blacklistJet_forCJV,Jet_Candidate,0);
+ 
+ SetThirdJetVariables(vars,Jet_Candidate);
+
 
   ///********************************
   ///**** STEP 4 - Lepton ID ****
@@ -396,7 +406,7 @@ if (debug) std::cerr << " q1 = " << q1 << " : q2 = " << q2 << std::endl;
   if (debug) std::cerr << ">> MT Higgs variables set" << std::endl;
    
   ///--- Dphi leptons and jet(s) ----
-  SetDPhiJetll(vars, reader, leptonILep.at(l1),leptonILep.at(l2),leptonFlavours.at(l1), leptonFlavours.at(l2), blacklistJet);
+  SetDPhiJetll(vars,reader, leptonILep.at(l1), leptonILep.at(l2), leptonFlavours.at(l1),leptonFlavours.at(l2),q1,q2);
   if (debug) std::cerr << ">> DPhi Jet-leptons variables set" << std::endl;
    
       
