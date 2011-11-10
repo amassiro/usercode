@@ -1,0 +1,34 @@
+Uncertanty due to Muon Scale
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+./bin/MCDATACounter_Systematic.exe test/Latinos/Systematics/muonScale/Systematic_Minus.cfg
+./bin/MCDATACounter_Systematic.exe test/Latinos/Systematics/muonScale/Systematic_Plus.cfg
+
+
+
+r00t test/Latinos/Systematics/Diff.cxx\(\"dataCard.Syst.muonScale.Plus.110.txt\",\"dataCard.Syst.muonScale.Minus.110.txt\",\"test/Latinos/Systematics/muonScale/result.txt\"\)
+
+
+
+
+diff  dataCard.Syst.muonScale.Minus.110.txt   dataCard.Syst.muonScale.Plus.110.txt
+
+
+then take half difference.
+Result
+
+<   rate                   0.304292   0.0364096    0.216934     1.10824     2.83725  
+---
+>   rate                   0.306638   0.0364336    0.216934     1.10113     2.79142 
+
+
+
+
+
+
+head -1  dataCard.Syst.muonScale.Plus.110.txt >  tmp.txt
+tail -1  dataCard.Syst.muonScale.Plus.110.txt >>  tmp.txt
+tail -1 dataCard.Syst.muonScale.Minus.110.txt   >> tmp.txt
+r00t test/Latinos/Systematics/Diff.cxx\(\"tmp.txt\",\"test/Latinos/Systematics/muonScale/result.txt\"\)
+
+

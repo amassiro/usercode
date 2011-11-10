@@ -1,0 +1,34 @@
+Uncertanty due to Electron Scale
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+./bin/MCDATACounter_Systematic.exe test/Latinos/Systematics/electronScale/Systematic_Minus.cfg
+./bin/MCDATACounter_Systematic.exe test/Latinos/Systematics/electronScale/Systematic_Plus.cfg
+
+
+
+r00t test/Latinos/Systematics/Diff.cxx\(\"dataCard.Syst.electronScale.Plus.110.txt\",\"dataCard.Syst.electronScale.Minus.110.txt\",\"test/Latinos/Systematics/electronScale/result.txt\"\)
+
+
+diff  dataCard.Syst.electronScale.Minus.110.txt   dataCard.Syst.electronScale.Plus.110.txt
+
+
+then take half difference.
+Result
+
+
+<   rate                    0.29865   0.0364096    0.216187     1.09871     2.84491  
+---
+>   rate                   0.312634   0.0364336     0.21006     1.09716     2.80323  
+
+
+
+
+
+
+
+head -1  dataCard.Syst.electronScale.Plus.110.txt >  tmp.txt
+tail -1  dataCard.Syst.electronScale.Plus.110.txt >>  tmp.txt
+tail -1 dataCard.Syst.electronScale.Minus.110.txt   >> tmp.txt
+r00t test/Latinos/Systematics/Diff.cxx\(\"tmp.txt\",\"test/Latinos/Systematics/electronScale/result.txt\"\)
+
+

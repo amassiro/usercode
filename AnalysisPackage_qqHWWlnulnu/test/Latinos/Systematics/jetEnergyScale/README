@@ -1,0 +1,29 @@
+Uncertanty due to Jet Energy Scale
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+./bin/MCDATACounter_Systematic.exe test/Latinos/Systematics/jetEnergyScale/Systematic_Minus.cfg
+./bin/MCDATACounter_Systematic.exe test/Latinos/Systematics/jetEnergyScale/Systematic_Plus.cfg
+
+r00t test/Latinos/Systematics/Diff.cxx\(\"dataCard.Syst.jetEnergyScale.Plus.110.txt\",\"dataCard.Syst.jetEnergyScale.Minus.110.txt\",\"test/Latinos/Systematics/jetEnergyScale/result.txt\"\)
+
+
+
+
+diff  dataCard.Syst.jetEnergyScale.Minus.110.txt   dataCard.Syst.jetEnergyScale.Plus.110.txt
+
+
+then take half difference.
+Result
+
+<   rate                   0.282436   0.0264441    0.170859    0.905268     2.45108  
+---
+>   rate                   0.324157   0.0415098    0.261852     1.46819     3.38619 
+
+
+
+head -1  dataCard.Syst.jetEnergyScale.Plus.110.txt >  tmp.txt
+tail -1  dataCard.Syst.jetEnergyScale.Plus.110.txt >>  tmp.txt
+tail -1 dataCard.Syst.jetEnergyScale.Minus.110.txt   >> tmp.txt
+r00t test/Latinos/Systematics/Diff.cxx\(\"tmp.txt\",\"test/Latinos/Systematics/jetEnergyScale/result.txt\"\)
+
+

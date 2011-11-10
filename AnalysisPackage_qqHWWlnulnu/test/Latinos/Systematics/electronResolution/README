@@ -1,0 +1,32 @@
+Uncertanty due to Electron Resolution
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+./bin/MCDATACounter_Systematic.exe test/Latinos/Systematics/electronResolution/Systematic_Modified.cfg
+./bin/MCDATACounter_Systematic.exe test/Latinos/Systematics/electronResolution/Systematic_Normal.cfg
+
+r00t test/Latinos/Systematics/Diff.cxx\(\"dataCard.Syst.electronResolution.Normal.110.txt\",\"dataCard.Syst.electronResolution.Modified.110.txt\",\"test/Latinos/Systematics/electronResolution/result.txt\"\)
+
+
+
+
+diff  dataCard.Syst.electronResolution.Modified.110.txt   dataCard.Syst.electronResolution.Normal.110.txt
+
+
+
+
+then take half difference.
+Result
+
+<   rate                   0.306539   0.0364336    0.210774     1.11117     2.80495  
+---
+>   rate                   0.302736   0.0365266    0.207659     1.14316     2.90463 
+
+
+
+
+head -1  dataCard.Syst.electronResolution.Normal.110.txt >  tmp.txt
+tail -1  dataCard.Syst.electronResolution.Normal.110.txt >>  tmp.txt
+tail -1 dataCard.Syst.electronResolution.Modified.110.txt   >> tmp.txt
+r00t test/Latinos/Systematics/Diff.cxx\(\"tmp.txt\",\"test/Latinos/Systematics/electronResolution/result.txt\"\)
+
+

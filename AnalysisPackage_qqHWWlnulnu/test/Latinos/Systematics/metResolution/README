@@ -1,0 +1,31 @@
+Uncertanty due to met Resolution
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+./bin/MCDATACounter_Systematic.exe test/Latinos/Systematics/metResolution/Systematic_Modified.cfg
+./bin/MCDATACounter_Systematic.exe test/Latinos/Systematics/metResolution/Systematic_Normal.cfg
+
+
+
+r00t test/Latinos/Systematics/Diff.cxx\(\"dataCard.Syst.metResolution.Normal.110.txt\",\"dataCard.Syst.metResolution.Modified.110.txt\",\"test/Latinos/Systematics/metResolution/result.txt\"\)
+
+
+diff  dataCard.Syst.metResolution.Modified.110.txt   dataCard.Syst.metResolution.Normal.110.txt
+
+
+then take half difference.
+Result
+
+<   rate                   0.304905    0.036539    0.216934     1.10445     2.80808  
+---
+>   rate                   0.302736   0.0365266    0.207659     1.14316     2.90463  
+
+
+
+
+head -1  dataCard.Syst.metResolution.Normal.110.txt >  tmp.txt
+tail -1  dataCard.Syst.metResolution.Normal.110.txt >>  tmp.txt
+tail -1 dataCard.Syst.metResolution.Modified.110.txt   >> tmp.txt
+r00t test/Latinos/Systematics/Diff.cxx\(\"tmp.txt\",\"test/Latinos/Systematics/metResolution/result.txt\"\)
+
+
+
