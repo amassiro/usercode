@@ -1,9 +1,42 @@
+///****   From Latinos tree   ****///
+
+./bin/JoinData.exe test/Latinos/testJoinData.cfg
+
+hadd output_Latinos_tree/latino_DATA-B.root output_Latinos_tree/l*2011B* 
+hadd output_Latinos_tree/latino_DATA-A.root output_Latinos_tree/l*2011A* 
+hadd output_Latinos_tree/latino_DATA.root output_Latinos_tree/l*2011* 
+
+
+
+
+./bin/MCDATAComparisonPLOTTool.exe test/Latinos/testMCDATAComparisonPLOTTool_ForNote.cfg
+
+///-> correct with data driven results <-
+r00t test/Latinos/ModifyTrendPlot.cxx\(\"cTrend\",\"test/Latinos/sample_change.txt\",\"DY\",\"out_test_Latinos_6Oct.root\",\"test/Latinos/DYRinout/DDResult.txt\",\"out.root\"\)
+r00t test/Latinos/ModifyTrendPlot.cxx\(\"cTrend\",\"test/Latinos/sample_change.txt\",\"DY\",\"out_test_Latinos_6Oct_test.root\",\"test/Latinos/DYRinout/DDResult.txt\",\"out.root\"\)
+r00t test/Latinos/ModifyPlotAll.cxx\(\"1_0\",\"test/Latinos/DDList.txt\",\"out_test_Latinos_10Oct_ForMassLikeVariable.root\",4\)
+r00t test/Latinos/ModifyPlotAll.cxx\(\"1_1\",\"test/Latinos/DDList.txt\",\"out_test_Latinos_10Oct_ForMassLikeVariable.root\",4\)
+
+
+///-> comparison Madgraph and Powheg DY sample <-
+
+./bin/MCDATAComparisonPLOTTool.exe test/Latinos/testMCDATAComparisonPLOTTool_DYMad.cfg
+./bin/MCDATAComparisonPLOTTool.exe test/Latinos/testMCDATAComparisonPLOTTool_DYPow.cfg
+
+
+
+
+
+
+
+
+
 ///****   From Latinos PAT   ****///
 
 
 ./bin/MCDATAComparisonPLOTTool.exe test/Latinos/testMCDATAComparisonPLOTTool.cfg
 
-./bin/MCDATAComparisonPLOTTool.exe test/Latinos/testMCDATAComparisonPLOTTool_ForNote.cfg
+./bin/MCDATAComparisonPLOTTool.exe test/Latinos/testMCDATAComparisonPLOTTool_ForNote_MiBiNT.cfg
 
 
 ./bin/MCDATAComparisonPLOTTool.exe test/Latinos/testMCDATAComparisonPLOTTool_ForJD.cfg
