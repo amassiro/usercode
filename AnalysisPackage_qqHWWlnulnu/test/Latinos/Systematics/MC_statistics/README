@@ -1,0 +1,14 @@
+Uncertanty due to MC statistics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+./bin/MCDATACounter_Systematic.exe test/Latinos/Systematics/MC_statistics/Systematic.cfg
+
+numWP=`cat dataCard.Syst.MC_statistics.110.txt | wc -l | bc`
+numWP=`echo "($numWP-1)/2" | bc`
+head -1  dataCard.Syst.MC_statistics.110.txt >  tmp.txt
+tail -$numWP  dataCard.Syst.MC_statistics.110.txt >>  tmp.txt
+mv tmp.txt test/Latinos/Systematics/MC_statistics/result.txt
+
+
+
+
