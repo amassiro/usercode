@@ -1,0 +1,19 @@
+###################################
+#### Cut for Analysis workflow ####
+###################################
+#################################
+# ttbar pure selections #
+#################################
+(!sameflav) && trigger && pfmet > 20   &&    njet >= 2 &&  mll > (12 + 8*sameflav) &&   (dphilljetjet<2.879793266 || !sameflav) &&   zveto  && (pt2 > 15||!sameflav) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet > (20+(17+nvtx/2.)*sameflav) && nextra==0  && njetvbf >= 0 && bveto_ip && bveto_mu == 0 && ptll > 45 && abs(jeteta1)<4.5 && abs(jeteta2)<4.5  &&       (((abs(jeteta1)<abs(jeteta2))  && (jettche2<2.10)) || ((abs(jeteta1)>=abs(jeteta2)) && (jettche1<2.10)))
+(!sameflav) && trigger && pfmet > 20   &&    njet >= 2 &&  mll > (12 + 8*sameflav) &&   (dphilljetjet<2.879793266 || !sameflav) &&   zveto  && (pt2 > 15||!sameflav) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet > (20+(17+nvtx/2.)*sameflav) && nextra==0  && njetvbf >= 0 && bveto_ip && bveto_mu == 0 && ptll > 45 && abs(jeteta1)<4.5 && abs(jeteta2)<4.5  &&       (((abs(jeteta1)<abs(jeteta2))  && (jettche2<2.10)) || ((abs(jeteta1)>=abs(jeteta2)) && (jettche1<2.10))) &&    (((abs(jeteta1)<abs(jeteta2)) && (jettche1>2.10)) || ((abs(jeteta1)>=abs(jeteta2)) && (jettche2>2.10))) 
+(!sameflav) && trigger && pfmet > 20   &&    njet >= 2 &&  mll > (12 + 8*sameflav) &&   (dphilljetjet<2.879793266 || !sameflav) &&   zveto  && (pt2 > 15||!sameflav) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet > (20+(17+nvtx/2.)*sameflav) && nextra==0  && njetvbf >= 0 && bveto_ip && bveto_mu == 0 && ptll > 45 && abs(jeteta1)<4.5 && abs(jeteta2)<4.5  &&       (((abs(jeteta1)<abs(jeteta2))  && (jettche2<2.10)) || ((abs(jeteta1)>=abs(jeteta2)) && (jettche1<2.10))) &&  (!(((abs(jeteta1)<abs(jeteta2)) && (jettche1>2.10)) || ((abs(jeteta1)>=abs(jeteta2)) && (jettche2>2.10)))) 
+################################
+# VBF Selection #
+################################
+#
+trigger && pfmet > 20    &&      bveto_ip && bveto_mu == 1 &&  mll > (12 + 8*sameflav) &&   (dphilljetjet<2.879793266 || !sameflav) &&   zveto && njet >= 2  && (pt2 > 15||!sameflav) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet > (20+(17+nvtx/2.)*sameflav) && njetvbf == 0 && mjj>450 && detajj>3.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5   && ptll > 45 && abs(jeteta1)<4.5 && abs(jeteta2)<4.5       && mll<100 &&       (((abs(jeteta1)<abs(jeteta2))  && (jettche2<2.10)) || ((abs(jeteta1)>=abs(jeteta2)) && (jettche1<2.10)))
+trigger && pfmet > 20    &&      bveto_ip && bveto_mu == 1 &&  mll > (12 + 8*sameflav) &&   (dphilljetjet<2.879793266 || !sameflav) &&   zveto && njet >= 2  && (pt2 > 15||!sameflav) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet > (20+(17+nvtx/2.)*sameflav) && njetvbf == 0 && mjj>450 && detajj>3.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5   && ptll > 45 && abs(jeteta1)<4.5 && abs(jeteta2)<4.5       && mll<100 &&       (((abs(jeteta1)<abs(jeteta2))  && (jettche2<2.10)) || ((abs(jeteta1)>=abs(jeteta2)) && (jettche1<2.10))) &&    (((abs(jeteta1)<abs(jeteta2)) && (jettche1>2.10)) || ((abs(jeteta1)>=abs(jeteta2)) && (jettche2>2.10))) 
+trigger && pfmet > 20    &&      bveto_ip && bveto_mu == 1 &&  mll > (12 + 8*sameflav) &&   (dphilljetjet<2.879793266 || !sameflav) &&   zveto && njet >= 2  && (pt2 > 15||!sameflav) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet > (20+(17+nvtx/2.)*sameflav) && njetvbf == 0 && mjj>450 && detajj>3.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5   && ptll > 45 && abs(jeteta1)<4.5 && abs(jeteta2)<4.5       && mll<100 &&       (((abs(jeteta1)<abs(jeteta2))  && (jettche2<2.10)) || ((abs(jeteta1)>=abs(jeteta2)) && (jettche1<2.10))) &&  (!(((abs(jeteta1)<abs(jeteta2)) && (jettche1>2.10)) || ((abs(jeteta1)>=abs(jeteta2)) && (jettche2>2.10)))) 
+#
+#
+#
