@@ -13,8 +13,10 @@ void InitializeTree(Variables_Gen& vars, const std::string& outputRootFileName)
  vars.m_efficiencyTree = new TTree("outTreeSelections", "outTreeSelections");
  vars.m_efficiencyTree -> SetDirectory(vars.m_outputRootFile);
  
- vars.m_efficiencyTree -> Branch("numEntriesBefore",     &vars.numEntriesBefore,         "numEntriesBefore/I");
- vars.m_efficiencyTree -> Branch("preselection_efficiency",     &vars.preselection_efficiency,         "preselection_efficiency/D");
+ 
+ vars.m_efficiencyTree -> Branch("XSection", &vars.XSection, "XSection/D");
+ vars.m_efficiencyTree -> Branch("numEntriesBefore", &vars.numEntriesBefore, "numEntriesBefore/I");
+ vars.m_efficiencyTree -> Branch("preselection_efficiency", &vars.preselection_efficiency, "preselection_efficiency/D");
  
  
  

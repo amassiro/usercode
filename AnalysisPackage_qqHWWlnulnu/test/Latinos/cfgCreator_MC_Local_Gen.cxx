@@ -57,6 +57,7 @@
   myfile << std::endl;
   
   myfile << "[Options]" << std::endl;
+  myfile << "XSection = "<<xsection[iSample]<< std::endl;
   myfile << std::endl;
   
   myfile <<  "[Selection]" << std::endl;

@@ -28,6 +28,7 @@ struct Variables_Gen
  int eventId; 
  int numEntriesBefore;
  double preselection_efficiency;
+ double XSection;
  
  ///____ lepton variables
  

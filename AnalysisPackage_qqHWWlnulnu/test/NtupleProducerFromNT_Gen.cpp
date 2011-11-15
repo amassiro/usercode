@@ -1,3 +1,8 @@
+
+///============== Ntuple Producer at Gen particle level 
+///======== lunch with 
+///== ls test/Latinos/dir_cfg_skimmed_MC_GenLevel/ | grep NtupleProducerNT | awk '{ print" ./bin/NtupleProducerFromNT_Gen.exe test/Latinos/dir_cfg_skimmed_MC_GenLevel/"$1" \n "}' | /bin/sh
+
 #include "treeReader.h"
 #include "hFactory.h"
 #include "hFunctions.h"
@@ -44,8 +49,18 @@ int main(int argc, char** argv)
  /// --------- tree name, input file acquisition ------ 
  
  std::string treeName  = gConfigParser -> readStringOption("Input::treeName");
- std::string inputFile = gConfigParser -> readStringOption("Input::inputFile");
+ std::string inputFile = gConfigParser -> readStringOption("Input::inputFile"); 
+
+ ///----- Cross section + efficeincy variables
  
+ double XSection = gConfigParser -> readDoubleOption("Options::XSection");
+ 
+ std::string histoNameEvents      = gConfigParser -> readStringOption("Input::histoNameEvents"); 
+ 
+ std::cout << ">>>>> Input::inputFile                 " << inputFile  << std::endl;  
+ std::cout << ">>>>> Input::histoNameEvents      " << histoNameEvents  << std::endl;  
+ std::cout<<">>>>> Options::XSection  " << XSection << std::endl;
+
  int entryMAX = gConfigParser -> readIntOption("Input::entryMAX");
  int entryMIN = gConfigParser -> readIntOption("Input::entryMIN");
  int entryMOD = gConfigParser -> readIntOption("Input::entryMOD");
@@ -73,6 +88,11 @@ int main(int argc, char** argv)
  chain->Add(inputFile.c_str());
  treeReader reader((TTree*)(chain));
  
+ // Open ntples
+ TFile File(inputFile.c_str()) ; 
+ TH1F* histoEvents = (TH1F*) File.Get(TString(histoNameEvents.c_str()));
+
+ 
  /// ---- Acquisition of debug variable ---
  bool  debug = false; 
  try {
@@ -87,22 +107,27 @@ int main(int argc, char** argv)
  std::string outFileName    = gConfigParser -> readStringOption("Output::outFileName");
  std::cout << ">>>>> Output::outFileName  " << outFileName  << std::endl;  
  
- 
- 
- 
+  
  /// ----- Definition of gen Variable container 
 
  int numEntriesBefore;
+ double preselection_efficiency = 1.;
+
  
  Variables_Gen vars;
  InitializeTree(vars, outFileName);
-
+ 
  if (entryMAX == -1) entryMAX = reader.GetEntries();
  else if (reader.GetEntries() < entryMAX) entryMAX = reader.GetEntries();
  numEntriesBefore = entryMAX - entryMIN;
+ 
+ if (histoEvents) preselection_efficiency = numEntriesBefore / (1. * histoEvents->GetBinContent(1));
+ else preselection_efficiency = 1;
+
   
+ vars.XSection = XSection;
  vars.numEntriesBefore = numEntriesBefore;
- vars.preselection_efficiency = 1;
+ vars.preselection_efficiency = preselection_efficiency;
  
  FillEfficiencyTree(vars);
  
