@@ -4,7 +4,7 @@
 ###
 ##
 #
-trigger &&     mll<500       && zveto && pfmet > 20 && mll > (12 + 8*sameflav)  && mpmet > (20+(17+nvtx/2.)*sameflav)   && njet == 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5          && jettche1<2.1 && jettche2<2.1   
+trigger &&     mll<500       && zveto && pfmet > 20 && mll > (12 + 8*sameflav)  && mpmet > (20+(17+nvtx/2.)*sameflav)   && njet >= 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5          && jettche1<2.1 && jettche2<2.1   
 #
 # trigger && pfmet > 20 && mll > (12 + 8*sameflav) && zveto && mpmet > (20+(17+nvtx/2.)*sameflav) && njet >= 2 && (dphilljetjet<2.879793266 || ! sameflav) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!sameflav) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5
 #
