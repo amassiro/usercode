@@ -28,29 +28,6 @@
 
 int BTag_Efficiency(TString input, TString output, TString dumper) {
  
- ///===== Vector of Color used in the Plot, taken from test/MCDATAComparisonPLOTTool.cpp
- 
- EColor vColor[1000] = {
-  kGreen,
-  //kMagenta,(EColor) (kMagenta+1),(EColor) (kMagenta+2),
-  kTeal,//(EColor) (kTeal+1),
-  kRed,
-  kGray,
-  kOrange,(EColor) (kOrange+1),
-  kBlue,//(EColor)(kBlue+1),(EColor) (kBlue+2),
-  (EColor) (kPink+2),//(EColor) (kPink+1),(EColor) (kPink+2),
-  kViolet,
-  //   kAzure,
-  //   kWhite,
-  kTeal,
-  kYellow,
-  kGreen,
-  (EColor) (kTeal+1),
-  (EColor) (kOrange+2),
-  (EColor) (kGreen+2),
-  kGray,(EColor) (kGray+1),(EColor) (kViolet),(EColor) (kYellow),(EColor) (kGray)
- };
- 
  ///=== Open the input ROOT File from test/MCDATAComparisonPLOTTool.cpp
  
  TFile * Input_File = TFile::Open(input.Data());
@@ -73,7 +50,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
  
  std::ofstream outFile(dumper.Data(),std::ios::out);
  
- ///===== Acuisition info from txt file: Name of the samples, Cut applied and Variables of Plot and their binning
+ ///===== Acquisition info from txt file: Name of the samples, Cut applied and Variables of Plot and their binning
  
  std::ifstream inFile("test/Latinos/ttbar/BTag_Efficiency.txt",ios::binary);
  std::string buffer;
@@ -260,7 +237,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
    
    ///==== Efficiency analysis in the control region 
    
-   if(Cuts.at(iCut) == "Efficiency_Zone" && Cuts.at(iCut+1) == "Efficiency_Zone_Btag") {
+   if(Cuts.at(iCut) == "Control_Region" && Cuts.at(iCut+1) == "Control_Region_Btag") {
     /// Check for the right pair of cuts
     TH1D * num = (TH1D*) stack[iCut+1][iVar]->GetStack()->Last();
     TH1D * num_Rebinned; 
@@ -345,7 +322,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     EfficiencyHisto_ttbar[iCut][iVar] = (TH1D*) num_ttbar_Rebinned->Clone("EfficiencyHisto_ttbar");	
     EfficiencyHisto_ttbar[iCut][iVar] -> Divide(den_ttbar_Rebinned);
     
-    ///==== Purity Distribution in the total and Btag Efficiency Zone
+    ///==== Purity Distribution in the total and Btag Control Region
     
     PurityHisto[iCut+1][iVar] = (TH1D*) num_ttbar_Rebinned->Clone("PurityHisto");
     PurityHisto[iCut+1][iVar] -> Divide(num_Rebinned);
@@ -360,7 +337,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     TCanvas c1 ; 
     
     num_Rebinned->GetYaxis()->SetRangeUser(0,num_DATA_Rebinned->GetMaximum()+1.1*num_DATA_Rebinned->GetBinError(num_DATA_Rebinned->GetMaximumBin()));
-    num_Rebinned->SetTitle(" Efficiency Region B-Tag ");
+    num_Rebinned->SetTitle(" Control Region B-Tag ");
     num_Rebinned->GetXaxis()->SetTitle(nameHumanVariable.at(iVar).c_str());
     num_Rebinned->GetYaxis()->SetTitle("Events/BinWidth");
     
@@ -373,12 +350,13 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     legend->Draw();
     
     TString Title = Form("num_%s_%s",nameHumanVariable.at(iVar).c_str(),Cuts.at(iCut+1).c_str()); 
+    TString Title = Form("num_%d_%s",iVar,Cuts.at(iCut+1).c_str()); 
     c1.SetName(Title);
     gPad->SetGrid();
     c1.Write();
     
     den_Rebinned->GetYaxis()->SetRangeUser(0,den_DATA_Rebinned->GetMaximum()+1.1*den_DATA_Rebinned->GetBinError(den_DATA_Rebinned->GetMaximumBin()));
-    den_Rebinned->SetTitle(" Efficiency Region ");
+    den_Rebinned->SetTitle(" Control Region ");
     den_Rebinned->GetXaxis()->SetTitle(nameHumanVariable.at(iVar).c_str());
     den_Rebinned->GetYaxis()->SetTitle("Events/BinWidth");
     
@@ -388,7 +366,8 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     den_DATA_Rebinned->Draw("Esame");
     
     legend->Draw();
-    Title = Form("den_%s_%s",nameHumanVariable.at(iVar).c_str(),Cuts.at(iCut).c_str());  
+//     Title = Form("den_%s_%s",nameHumanVariable.at(iVar).c_str(),Cuts.at(iCut).c_str());  
+    Title = Form("den_%d_%s",iVar,Cuts.at(iCut).c_str());  
     c1.SetName(Title);
     gPad->SetGrid();
     c1.Write();
@@ -425,26 +404,28 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     
     
     PurityHisto[iCut][iVar]->GetYaxis()->SetRangeUser(0,PurityHisto[iCut+1][iVar]->GetMaximum()+0.5);
-    PurityHisto[iCut][iVar]->SetTitle("Purity in the Efficiency Region");
-    PurityHisto[iCut][iVar]->SetLineColor(kBlack);
+    PurityHisto[iCut][iVar]->SetTitle("Purity in the Control Region");
     PurityHisto[iCut][iVar]->SetMarkerColor(kRed);
+    PurityHisto[iCut][iVar]->SetLineColor(kRed);
     PurityHisto[iCut][iVar]->SetMarkerStyle(20);
-    PurityHisto[iCut][iVar]->SetLineWidth(2);
+    PurityHisto[iCut][iVar]->SetLineWidth(3);
     PurityHisto[iCut][iVar]->GetXaxis()->SetTitle(nameHumanVariable.at(iVar).c_str());
     PurityHisto[iCut][iVar]->GetYaxis()->SetTitle("Purity");
     PurityHisto[iCut][iVar]->GetYaxis()->SetRangeUser(0.0,1.0);
     PurityHisto[iCut][iVar]->Draw("E");
     gPad->SetGrid();
     
-    Title = Form("Purity_%s_%s",nameHumanVariable.at(iVar).c_str(),Cuts.at(iCut).c_str());
+//     Title = Form("Purity_%s_%s",nameHumanVariable.at(iVar).c_str(),Cuts.at(iCut).c_str());
+    Title = Form("Purity_%d_%s",iVar,Cuts.at(iCut).c_str());
     c1.SetName(Title);
     gPad->SetGrid();
     c1.Write();
     
     PurityHisto[iCut+1][iVar]->GetYaxis()->SetRangeUser(0,PurityHisto[iCut][iVar]->GetMaximum()+0.5);
-    PurityHisto[iCut+1][iVar]->SetTitle("Purity in the B-Tag Efficiency Region ");
-    PurityHisto[iCut+1][iVar]->SetLineColor(kBlack);
+    PurityHisto[iCut+1][iVar]->SetTitle("Purity in the B-Tag Control Region ");
+    PurityHisto[iCut+1][iVar]->SetLineColor(kRed);
     PurityHisto[iCut+1][iVar]->SetMarkerColor(kRed);
+    PurityHisto[iCut+1][iVar]->SetLineColor(kRed);
     PurityHisto[iCut+1][iVar]->SetMarkerStyle(20);
     PurityHisto[iCut+1][iVar]->SetLineWidth(2);
     PurityHisto[iCut+1][iVar]->GetXaxis()->SetTitle(nameHumanVariable.at(iVar).c_str());
@@ -453,7 +434,8 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     PurityHisto[iCut+1][iVar]->Draw("E");
     gPad->SetGrid();
     
-    Title = Form("Purity_%s_%s",nameHumanVariable.at(iVar).c_str(),Cuts.at(iCut+1).c_str());
+//     Title = Form("Purity_%s_%s",nameHumanVariable.at(iVar).c_str(),Cuts.at(iCut+1).c_str());
+    Title = Form("Purity_%d_%s",iVar,Cuts.at(iCut+1).c_str());
     c1.SetName(Title);
     gPad->SetGrid();
     c1.Write();
@@ -462,7 +444,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
    
    std::cerr << " >> Cuts.at(" << iCut << ") = " << Cuts.at(iCut) << std::endl;
    
-   if(Cuts.at(iCut) == "Efficiency_Zone_noBtag") {
+   if(Cuts.at(iCut) == "Control_Region_noBtag") {
     ///=== no btag part of the efficiency region               
     TH1D * num_Sig = (TH1D*) stack[iCut][iVar]->GetStack()->Last();
     TH1D * num_Sig_Rebinned;
@@ -520,7 +502,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     TCanvas s1 ;   
     
     num_Sig_Rebinned->GetYaxis()->SetRangeUser(0,num_DATA_Sig_Rebinned->GetMaximum()+1.1*num_DATA_Sig_Rebinned->GetBinError(num_DATA_Sig_Rebinned->GetMaximumBin()));
-    num_Sig_Rebinned->SetTitle(" Efficiency Region no B-Tag ");
+    num_Sig_Rebinned->SetTitle(" Control Region no B-Tag ");
     num_Sig_Rebinned->GetXaxis()->SetTitle(nameHumanVariable.at(iVar).c_str());
     num_Sig_Rebinned->GetYaxis()->SetTitle("Events/BinWidth");
     
@@ -541,17 +523,18 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     
     PurityHisto[iCut][iVar]->GetYaxis()->SetRangeUser(0,PurityHisto[iCut][iVar]->GetMaximum()+0.5);
     PurityHisto[iCut][iVar]->SetTitle("Purity in the no B-Tag Efficiency");
-    PurityHisto[iCut][iVar]->SetLineColor(kBlack);
     PurityHisto[iCut][iVar]->SetMarkerColor(kRed);
+    PurityHisto[iCut][iVar]->SetLineColor(kRed);
     PurityHisto[iCut][iVar]->SetMarkerStyle(20);
-    PurityHisto[iCut][iVar]->SetLineWidth(2);
+    PurityHisto[iCut][iVar]->SetLineWidth(3);
     PurityHisto[iCut][iVar]->GetXaxis()->SetTitle(nameHumanVariable.at(iVar).c_str());
     PurityHisto[iCut][iVar]->GetYaxis()->SetTitle("Purity");
     PurityHisto[iCut][iVar]->GetYaxis()->SetRangeUser(0.0,1.0);
     PurityHisto[iCut][iVar]->Draw("E");
     
     gPad->SetGrid();
-    Title = Form("Purity_%s_%s",nameHumanVariable.at(iVar).c_str(),Cuts.at(iCut).c_str());
+//     Title = Form("Purity_%s_%s",nameHumanVariable.at(iVar).c_str(),Cuts.at(iCut).c_str());
+    Title = Form("Purity_%d_%s",iVar,Cuts.at(iCut).c_str());
     s1.SetName(Title);
     gPad->SetGrid();
     s1.Write();
@@ -560,7 +543,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
       
    ///=== Efficiency and purity after VBF selections 
     
-   if(Cuts.at(iCut) == "VBF_Zone" && Cuts.at(iCut+1)=="VBF_Zone_Btag") {
+   if(Cuts.at(iCut) == "Signal_Region" && Cuts.at(iCut+1)=="Signal_Region_Btag") {
     
     TString waySR = Form("%s/Efficiency_Study/SR",nameHumanVariable.at(iVar).c_str());
     output_Plott.cd(waySR);
@@ -671,7 +654,8 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     
     // gPad->SetGrid();
     
-    TString Title = Form("num_VBF_%s_%s",nameHumanVariable.at(iVar).c_str(),Cuts.at(iCut+1).c_str()); 
+//     TString Title = Form("num_VBF_%s_%s",nameHumanVariable.at(iVar).c_str(),Cuts.at(iCut+1).c_str()); 
+    TString Title = Form("num_%d_%s",iVar,Cuts.at(iCut+1).c_str()); 
     c2.SetName(Title);
     gPad->SetGrid();
     c2.Write();
@@ -687,8 +671,9 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     
     legend->Draw();
     // gPad->SetGrid();
-    
-    Title = Form("den_VBF_%s_%s",nameHumanVariable.at(iVar).c_str(),Cuts.at(iCut).c_str()); 
+        
+//     Title = Form("den_VBF_%s_%s",nameHumanVariable.at(iVar).c_str(),Cuts.at(iCut).c_str()); 
+    Title = Form("den_%d_%s",iVar,Cuts.at(iCut).c_str()); 
     c2.SetName(Title);
     gPad->SetGrid();
     c2.Write();
@@ -732,24 +717,25 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     
     PurityHisto[iCut][iVar]->GetYaxis()->SetRangeUser(0,PurityHisto[iCut+1][iVar]->GetMaximum()+0.5);
     PurityHisto[iCut][iVar]->SetTitle("Purity in the VBF Region");
-    PurityHisto[iCut][iVar]->SetLineColor(kBlack);
     PurityHisto[iCut][iVar]->SetMarkerColor(kRed);
+    PurityHisto[iCut][iVar]->SetLineColor(kRed);
     PurityHisto[iCut][iVar]->SetMarkerStyle(20);
-    PurityHisto[iCut][iVar]->SetLineWidth(2);
+    PurityHisto[iCut][iVar]->SetLineWidth(3);
     PurityHisto[iCut][iVar]->GetXaxis()->SetTitle(nameHumanVariable.at(iVar).c_str());
     PurityHisto[iCut][iVar]->GetYaxis()->SetTitle("Purity");
     PurityHisto[iCut][iVar]->GetYaxis()->SetRangeUser(0.0,1.0);
     PurityHisto[iCut][iVar]->Draw("E");
     gPad->SetGrid();
     
-    Title = Form("Purity_VBF_%s_%s",nameHumanVariable.at(iVar).c_str(), Cuts.at(iCut).c_str());
+//     Title = Form("Purity_VBF_%s_%s",nameHumanVariable.at(iVar).c_str(), Cuts.at(iCut).c_str());
+    Title = Form("Purity_%d_%s",iVar, Cuts.at(iCut).c_str());
     c2.SetName(Title);
     gPad->SetGrid();
     c2.Write();
     
     PurityHisto[iCut+1][iVar]->GetYaxis()->SetRangeUser(0,PurityHisto[iCut+1][iVar]->GetMaximum()+0.5);
     PurityHisto[iCut+1][iVar]->SetTitle("Purity in the VBF Control Region");
-    PurityHisto[iCut+1][iVar]->SetLineColor(kBlack);
+    PurityHisto[iCut+1][iVar]->SetLineColor(kRed);
     PurityHisto[iCut+1][iVar]->SetMarkerColor(kRed);
     PurityHisto[iCut+1][iVar]->SetMarkerStyle(20);
     PurityHisto[iCut+1][iVar]->SetLineWidth(2);
@@ -759,14 +745,15 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     PurityHisto[iCut+1][iVar]->Draw("E");
     gPad->SetGrid();
     
-    Title = Form("Purity_VBF_%s_%s",nameHumanVariable.at(iVar).c_str(),Cuts.at(iCut+1).c_str());
+//     Title = Form("Purity_VBF_%s_%s",nameHumanVariable.at(iVar).c_str(),Cuts.at(iCut+1).c_str());
+    Title = Form("Purity_%d_%s",iVar,Cuts.at(iCut+1).c_str());
     c2.SetName(Title);
     gPad->SetGrid();
     c2.Write();
     
    }
    
-   if(Cuts.at(iCut) == "VBF_Zone_Signal") {
+   if(Cuts.at(iCut) == "Signal_Region_Signal") {
     
     TH1D * num_VBF_Sig = (TH1D*)stack[iCut][iVar]->GetStack()->Last();
     TH1D * num_VBF_Sig_Rebinned;
@@ -891,17 +878,18 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     
     PurityHisto[iCut][iVar]->GetYaxis()->SetRangeUser(0,PurityHisto[iCut][iVar]->GetMaximum()+0.5);
     PurityHisto[iCut][iVar]->SetTitle("Purity in the Signal Region");
-    PurityHisto[iCut][iVar]->SetLineColor(kBlack);
     PurityHisto[iCut][iVar]->SetMarkerColor(kRed);
+    PurityHisto[iCut][iVar]->SetLineColor(kRed);
     PurityHisto[iCut][iVar]->SetMarkerStyle(20);
-    PurityHisto[iCut][iVar]->SetLineWidth(2);
+    PurityHisto[iCut][iVar]->SetLineWidth(3);
     PurityHisto[iCut][iVar]->GetXaxis()->SetTitle(nameHumanVariable.at(iVar).c_str());
     PurityHisto[iCut][iVar]->GetYaxis()->SetTitle("Purity");
     PurityHisto[iCut][iVar]->GetYaxis()->SetRangeUser(0.0,1.0);
     PurityHisto[iCut][iVar]->Draw("E");
     gPad->SetGrid();
     
-    Title = Form("Purity_%s_%s",nameHumanVariable.at(iVar).c_str(),Cuts.at(iCut).c_str());
+//     Title = Form("Purity_%s_%s",nameHumanVariable.at(iVar).c_str(),Cuts.at(iCut).c_str());
+    Title = Form("Purity_%d_%s",iVar,Cuts.at(iCut).c_str());
     s2.SetName(Title);
     gPad->SetGrid();
     s2.Write();
@@ -941,7 +929,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
   bool isDivide = true;
   
   for(int iCut=0; iCut<Cuts.size(); iCut++) {
-   if(Cuts.at(iCut) == "Efficiency_Zone" && Cuts.at(iCut+1) == "Efficiency_Zone_Btag" ) {
+   if(Cuts.at(iCut) == "Control_Region" && Cuts.at(iCut+1) == "Control_Region_Btag" ) {
     ///==== Efficiency on DATA in the Efficiency region
     Efficiency_Control_Zone[iVar] = (TEfficiency*) eff_DATA[iCut][iVar]->Clone("Efficiency_Control_Zone");
     Efficiency_Control_Zone[iVar] -> SetMarkerColor(kBlack);
@@ -960,7 +948,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     EfficiencyHisto_ttbar[iCut][iVar]->GetYaxis()->SetTitle("Efficiency");
     EfficiencyHisto_ttbar[iCut][iVar]->GetYaxis()->SetRangeUser(0.0,1.0);
     EfficiencyHisto_ttbar[iCut][iVar]->GetXaxis()->SetTitle(nameHumanVariable.at(iVar).c_str());
-    EfficiencyHisto_ttbar[iCut][iVar]->SetTitle(" Efficiency in the Efficiency Zone");
+    EfficiencyHisto_ttbar[iCut][iVar]->SetTitle(" Efficiency in the Control Region");
     
     EfficiencyHisto[iCut][iVar]->SetFillColor(kBlue);
     EfficiencyHisto[iCut][iVar]->SetMarkerColor(kBlue);
@@ -972,7 +960,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     EfficiencyHisto[iCut][iVar]->GetYaxis()->SetTitle("Efficiency");
     EfficiencyHisto[iCut][iVar]->GetYaxis()->SetRangeUser(0.0,1.0);
     EfficiencyHisto[iCut][iVar]->GetXaxis()->SetTitle(nameHumanVariable.at(iVar).c_str());
-    EfficiencyHisto[iCut][iVar]->SetTitle(" Efficiency in the Efficiency Zone");
+    EfficiencyHisto[iCut][iVar]->SetTitle(" Efficiency in the Control Region");
     
     EfficiencyHisto[iCut][iVar]->Draw("E2");
     EfficiencyHisto_ttbar[iCut][iVar]->Draw("E2same");
@@ -983,14 +971,15 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     leg->AddEntry(EfficiencyHisto[iCut][iVar], "eff on tot (MC) ","pl");
     leg->AddEntry(eff_DATA[iCut][iVar]," eff on DATA ","pl");
     
-    TString Title = Form("Efficiency_Control_Zone_%s",nameHumanVariable.at(iVar).c_str());
+//     TString Title = Form("Efficiency_Control_Zone_%s",nameHumanVariable.at(iVar).c_str());
+    TString Title = Form("Efficiency_Control_Zone_%d",iVar);
     leg->Draw();
     c3.SetName(Title);
     gPad->SetGrid();
     c3.Write();
     
     leg->Clear();
-    leg->AddEntry(EfficiencyHisto_ttbar[iCut][iVar], "eff on tt (MC) ","pl");
+    leg->AddEntry(EfficiencyHisto_ttbar[iCut][iVar], "eff on tt (MC), CR ","pl");
     
     EfficiencyHisto_ttbar[iCut][iVar]->GetYaxis()->SetRangeUser(0,1);
     EfficiencyHisto_ttbar[iCut][iVar]->GetYaxis()->SetTitle("Efficiency");
@@ -1005,7 +994,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     EfficiencyHisto_ttbar[iCut][iVar]->Draw("E1");
    }
    
-   if(Cuts.at(iCut) == "VBF_Zone")
+   if(Cuts.at(iCut) == "Signal_Region")
    {
     EfficiencyHisto_ttbar[iCut][iVar]->SetMarkerColor(kRed);
     EfficiencyHisto_ttbar[iCut][iVar]->SetFillColor(kRed);
@@ -1015,10 +1004,11 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     EfficiencyHisto_ttbar[iCut][iVar]->SetMarkerStyle(20);
     
     EfficiencyHisto_ttbar[iCut][iVar]->Draw("E1same");
-    leg->AddEntry(EfficiencyHisto_ttbar[iCut][iVar],"eff on tt (MC), VBF","pl");
+    leg->AddEntry(EfficiencyHisto_ttbar[iCut][iVar],"eff on tt (MC), SR","pl");
     // gPad->SetGrid();
     
-    TString Title = Form("Efficiency_Comparison_CZ/SZ_%s",nameHumanVariable.at(iVar).c_str());
+//     TString Title = Form("Efficiency_Comparison_CZ/SZ_%s",nameHumanVariable.at(iVar).c_str());
+    TString Title = Form("Efficiency_Comparison_CZSZ_%d",iVar);
     leg->Draw();
     
     c3.SetName(Title);
@@ -1029,7 +1019,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
    
    ///===== Distribution of data in the Btag Zone (Control Region)  after the VBF selections
    
-   if (Cuts.at(iCut) == "VBF_Zone_Btag") {
+   if (Cuts.at(iCut) == "Signal_Region_Btag") {
     for(int iSample=0; iSample<nameSample.size(); iSample++) {
      if(nameSample.at(iSample)!="DATA")continue;
      
@@ -1044,7 +1034,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
    
    ///==== Distribution fo DATA in the VBF Signal Region  
    
-   if (Cuts.at(iCut) == "VBF_Zone_Signal") {
+   if (Cuts.at(iCut) == "Signal_Region_Signal") {
     for(int iSample=0; iSample<nameSample.size(); iSample++) {
      if(nameSample.at(iSample)!="DATA")continue;
         
@@ -1135,9 +1125,17 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
 	///---- correction for negative values!
 // 	if (value_mean - error_low < 0 ) error_low = value_mean;
 	
-	VBF_Sig_Zone_Estimation[iVar] -> SetPoint(iBin,VBF_DATA_Sig_Zone[iVar]->GetBinCenter(iBin+1),value_mean);
-	double half_binWidth = VBF_DATA_Sig_Zone[iVar]->GetBinWidth(iBin+1)/2.;
-	VBF_Sig_Zone_Estimation[iVar] -> SetPointError(iBin,half_binWidth,half_binWidth,error_low,error_up);     
+	
+// 	if (VBF_DATA_Sig_Zone[iVar]->GetBinCenter(iBin+1) < 2.5) { 
+	 VBF_Sig_Zone_Estimation[iVar] -> SetPoint(iBin,VBF_DATA_Sig_Zone[iVar]->GetBinCenter(iBin+1),value_mean);
+	 double half_binWidth = VBF_DATA_Sig_Zone[iVar]->GetBinWidth(iBin+1)/2.;
+	 VBF_Sig_Zone_Estimation[iVar] -> SetPointError(iBin,half_binWidth,half_binWidth,error_low,error_up);     
+// 	}
+// 	else {
+	 VBF_Sig_Zone_Estimation[iVar] -> SetPoint(iBin,VBF_DATA_Sig_Zone[iVar]->GetBinCenter(iBin+1),0);
+	 double half_binWidth = VBF_DATA_Sig_Zone[iVar]->GetBinWidth(iBin+1)/2.;
+	 VBF_Sig_Zone_Estimation[iVar] -> SetPointError(iBin,half_binWidth,half_binWidth,0,0);     
+// 	}
 	
 	std::cout << " value_mean = " << value_mean << " === error_low = " << error_low << " === error_up = " << error_up <<  std::endl;
    }
@@ -1170,7 +1168,8 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
    leg->Draw(); 
    // gPad->SetGrid();
    
-   TString Title = Form("Data_Driven_Result_Signal_DATA_%s",nameHumanVariable.at(iVar).c_str());
+//    TString Title = Form("Data_Driven_Result_Signal_DATA_%s",nameHumanVariable.at(iVar).c_str());
+   TString Title = Form("Data_Driven_Result_Signal_DATA_%d",iVar);
    c3.SetName(Title);
    gPad->SetGrid();
    c3.Write();
@@ -1305,14 +1304,14 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
   outFile << "#--------------------------" << std::endl;
   
   for(int iCut=0; iCut<Cuts.size(); iCut++) {
-   if(Cuts.at(iCut)=="Efficiency_Zone" && Cuts.at(iCut+1)=="Efficiency_Zone_Btag") {
+   if(Cuts.at(iCut)=="Control_Region" && Cuts.at(iCut+1)=="Control_Region_Btag") {
     TH1D * num = (TH1D*) stack[iCut+1][iVar]->GetStack()->Last();
     TH1D * num_Rebinned;
-    num_Rebinned=DynamicalRebinHisto(num,num_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+    num_Rebinned = DynamicalRebinHisto(num,num_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
     
     TH1D * den = (TH1D*) stack[iCut][iVar]->GetStack()->Last();
     TH1D * den_Rebinned;
-    den_Rebinned=DynamicalRebinHisto(den,den_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
+    den_Rebinned = DynamicalRebinHisto(den,den_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
     
     TH1D* num_DATA,*num_DATA_Rebinned, *num_ttbar, *num_ttbar_Rebinned, *num_top, *num_top_Rebinned;
     TH1D  *den_DATA,*den_DATA_Rebinned, *den_ttbar, *den_ttbar_Rebinned, *den_top, *den_top_Rebinned;
@@ -1359,7 +1358,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     
     ///====================================================
     outFile << "*******************************" << std::endl;
-    outFile << "Events after Efficiency Region Cuts " << std::endl;
+    outFile << "Events after Control Region Cuts " << std::endl;
     outFile << "*******************************" << std::endl;
     
     edge.clear();
@@ -1373,7 +1372,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     }
     
     outFile << "################  " << std::endl;
-    outFile << "#    MC Events in Efficiency Region Total     " << std::endl;
+    outFile << "#    MC Events in Control Region Total     " << std::endl;
     outFile << "################  " << std::endl;
     outFile << edge << std::endl;
     outFile << error << std::endl;          
@@ -1389,7 +1388,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     }
     
     outFile << "###############  " << std::endl;
-    outFile << "#   DATA Events in Efficiency Region Total     " << std::endl;
+    outFile << "#   DATA Events in Control Region Total     " << std::endl;
     outFile << "###############  " << std::endl;
     outFile << edge << std::endl;
     outFile << error << std::endl;          
@@ -1405,7 +1404,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     }
     
     outFile << "################  " << std::endl;
-    outFile << "#   Top Background Events in Efficiency Region     " << std::endl;
+    outFile << "#   Top Background Events in Control Region     " << std::endl;
     outFile << "################  " << std::endl;
     outFile << edge << std::endl;
     outFile << error << std::endl;          
@@ -1464,7 +1463,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     
    }
    
-   if(Cuts.at(iCut) == "Efficiency_Zone_noBtag") {
+   if(Cuts.at(iCut) == "Control_Region_noBtag") {
     TH1D * num_Sig= (TH1D*)stack[iCut][iVar]->GetStack()->Last();
     TH1D * num_Sig_Rebinned;
     num_Sig_Rebinned=DynamicalRebinHisto(num_Sig,num_Sig_Rebinned,Bin_Extremes[iVar],isDATA, isDivide);
@@ -1491,7 +1490,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     }
     
     outFile << "###############  " << std::endl;
-    outFile << "#   MC Events in Efficiency Region noBtag  " << std::endl;
+    outFile << "#   MC Events in Control Region noBtag  " << std::endl;
     outFile << "###############  " << std::endl;
     outFile << edge << std::endl;
     outFile << error << std::endl;          
@@ -1507,7 +1506,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     }
     
     outFile << "#################  " << std::endl;
-    outFile << "#    DATA Events in Efficiency Region noBtag   " << std::endl;
+    outFile << "#    DATA Events in Control Region noBtag   " << std::endl;
     outFile << "#################  " << std::endl;
     outFile << edge << std::endl;
     outFile << error << std::endl;          
@@ -1516,7 +1515,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
    }
    ///=================================================
    
-   if(Cuts.at(iCut)=="VBF_Zone" && Cuts.at(iCut+1)=="VBF_Zone_Btag") {
+   if(Cuts.at(iCut)=="Signal_Region" && Cuts.at(iCut+1)=="Signal_Region_Btag") {
     TH1D * num_VBF = (TH1D*) stack[iCut+1][iVar]->GetStack()->Last();
     TH1D * num_VBF_Rebinned;
     num_VBF_Rebinned=DynamicalRebinHisto(num_VBF,num_VBF_Rebinned,Bin_Extremes[iVar], isDATA, isDivide);
@@ -1612,7 +1611,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
     error.clear();
    }
    
-   if(Cuts.at(iCut)=="VBF_Zone_Signal") {
+   if(Cuts.at(iCut)=="Signal_Region_Signal") {
     TH1D * num_VBF_Sig= (TH1D*)stack[iCut][iVar]->GetStack()->Last();
     TH1D * num_VBF_Sig_Rebinned;
     num_VBF_Sig_Rebinned=DynamicalRebinHisto(num_VBF_Sig,num_VBF_Sig_Rebinned,Bin_Extremes[iVar],isDATA, isDivide);
@@ -1733,7 +1732,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
   }
   
   outFile << "#-#-#-#-#-#-#-#-#-#-#-#-#-#   " << std::endl;
-  outFile << "# Efficiency measured in the Efficiency Region   " << std::endl;
+  outFile << "# Efficiency measured in the Control Region   " << std::endl;
   outFile << "#-#-#-#-#-#-#-#-#-#-#-#-#-#   " << std::endl;
   outFile << edge << std::endl;
   outFile << error << std::endl;          
@@ -1791,7 +1790,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
    if (Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)!=0) {     
     tt_Events = tt_Events + VBF_Btag_Zone[iVar]->GetBinContent(iBin+1) * ((1-Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1))/(Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin));
     tt_Events_Error = sqrt( tt_Events_Error * tt_Events_Error + ((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*((VBF_Sig_Zone_Estimation[iVar]->GetErrorYhigh(iBin)+VBF_Sig_Zone_Estimation[iVar]->GetErrorYlow(iBin))/2)*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin))*(Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin)));
-    tt_Events_MC = tt_Events_MC + VBF_Sig_Zone_tt[iVar]->GetBinContent(iBin+1);
+    tt_Events_MC = tt_Events_MC + VBF_Sig_Zone_tt[iVar]->GetBinContent(iBin+1) * (Bin_Extremes[iVar].at(iBin+1)-Bin_Extremes[iVar].at(iBin));
     }
     
     if (Efficiency_Control_Zone[iVar]->GetEfficiency(iBin+1)!=0) {     
@@ -1965,79 +1964,97 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
   
   Final_Error=1+tt_Events_Error/(tt_Events);
   
-  outFile << "#-------------------   " << std::endl;
-  outFile << "### Data driven Final Result divided by Bin Width (corrected) " << std::endl;
-  outFile << "#-------------------   " << std::endl;
-  outFile << "  tt Events   " << tt_Events<< "  error  " <<Final_Error<< "  sys   " <<err_ratio<< std::endl;
-  outFile << error << std::endl;          
-  edge.clear();
-  error.clear();
   
-  
-  
-  
-  
-  std::cout << std::endl;
-  std::cout << std::endl;
-  std::cout << std::endl;
-  std::cout << std::endl;
-  std::cout << std::endl;
-  std::cout << "*******************************************************" << std::endl;
-  std::cout << "*******************************************************" << std::endl;
-  std::cout << "*******************************************************" << std::endl;  
-  std::cout << " >>> input <<< " << std::endl;
-  std::cout << " WorkingPoint = " << input << std::endl;
-  std::cout << std::endl;
-  std::cout << " >>> result <<< " << std::endl;
-  std::cout << " N       = " << tt_Events_DD_mean << " +/- " << (tt_Events_DD_up - tt_Events_DD_down) / 2.  << " -->  " << 1. + (tt_Events_DD_up - tt_Events_DD_down) / tt_Events_DD_mean << std::endl; 
-  std::cout << " N (ave) = " << (tt_Events_DD_up + tt_Events_DD_down) / 2. << " +/- " << (tt_Events_DD_up - tt_Events_DD_down) / 2.  << " -->  " << 1. + (tt_Events_DD_up - tt_Events_DD_down) / (tt_Events_DD_up + tt_Events_DD_down) << std::endl; 
-  std::cout << " N       [" << tt_Events_DD_down << " :: " << tt_Events_DD_up << "] " << std::endl; 
-//   std::cout << " N (dc)  = " << (tt_Events_DD_up + tt_Events_DD_down) / 2. << " -->  " << 1. + (tt_Events_DD_up - tt_Events_DD_down) / (tt_Events_DD_up + tt_Events_DD_down) << std::endl; 
-  if (tt_Events_DD_down < 0) {
-   std::cout << "***************************************************************************" << std::endl;
-   std::cout << "****************** corrected for negative values **************************" << std::endl;  
-   std::cout << " N (ave) = " << (tt_Events_DD_up + 0) / 2. << " +/- " << (tt_Events_DD_up - 0) / 2.  << " -->  " << 1. + (tt_Events_DD_up - 0) / (tt_Events_DD_up + 0) << std::endl; 
-   std::cout << " N       [" << 0 << " :: " << tt_Events_DD_up << "] " << std::endl; 
-  }
-  std::cout << "***********************************************************" << std::endl;
-  std::cout << "****************** MC prediction **************************" << std::endl;  
-  std::cout << "  N (MC)  = " << tt_Events_MC << " --> Scale factor = " << tt_Events_DD_mean / tt_Events_MC << std::endl;
-  std::cout << "  N (MC)  = " << tt_Events_MC << " --> Scale factor = " << (tt_Events_DD_up + tt_Events_DD_down)/2. / tt_Events_MC << std::endl;
-  if (tt_Events_DD_down < 0) { 
-   std::cout << "  N (MC)  = " << tt_Events_MC << " --> Scale factor = " << (tt_Events_DD_up + 0.)/2. / tt_Events_MC << std::endl;
-  }
-  std::cout << "*******************************************************" << std::endl;
-  std::cout << "*******************************************************" << std::endl;
-  std::cout << "*******************************************************" << std::endl;  
-  std::cout << "  alpha  = " << alfa  << " +/- " << err_alfa  << std::endl;
-  std::cout << "  beta   = " << beta  << " +/- " << err_beta  << std::endl;
-  std::cout << "  ratio  = " << ratio << " +/- " << err_ratio << std::endl;  
-  std::cout << "*******************************************************" << std::endl;
-  std::cout << "*******************************************************" << std::endl;
-  std::cout << "*******************************************************" << std::endl;  
-  std::cout << " >>> result <<< " << std::endl;
-  std::cout << " N       = " << ratio * tt_Events_DD_mean << " +/- " << ratio * (tt_Events_DD_up - tt_Events_DD_down) / 2.  << " -->  " << 1. + (tt_Events_DD_up - tt_Events_DD_down) / 2. / tt_Events_DD_mean << std::endl; 
-  std::cout << " N (ave) = " << ratio * (tt_Events_DD_up + tt_Events_DD_down) / 2. << " +/- " << ratio * (tt_Events_DD_up - tt_Events_DD_down) / 2.  << " -->  " << 1. + (tt_Events_DD_up - tt_Events_DD_down) / (tt_Events_DD_up + tt_Events_DD_down) << std::endl; 
-  std::cout << " N       [" << ratio * tt_Events_DD_down << " :: " << ratio * tt_Events_DD_up << "] " << std::endl; 
-//   std::cout << " N (dc)  = " << ratio * (tt_Events_DD_up + tt_Events_DD_down) / 2. << " -->  " << 1. + (tt_Events_DD_up - tt_Events_DD_down) / (tt_Events_DD_up + tt_Events_DD_down) << std::endl; 
-  if (tt_Events_DD_down < 0) {
-   std::cout << "***************************************************************************" << std::endl;
-   std::cout << "****************** corrected for negative values **************************" << std::endl;  
-   std::cout << " N (ave) = " << ratio * (tt_Events_DD_up + 0) / 2. << " +/- " << ratio * (tt_Events_DD_up - 0) / 2.  << " -->  " << 1. + (tt_Events_DD_up - 0) / (tt_Events_DD_up + 0) << std::endl;  
-   std::cout << " N       [" << 0 << " :: " << ratio * tt_Events_DD_up << "] " << std::endl; 
-  }
-  std::cout << "***********************************************************" << std::endl;
-  std::cout << "****************** MC prediction **************************" << std::endl;  
-  std::cout << "  N (MC)  = " << tt_Events_MC << " --> Scale factor       = " << ratio * tt_Events_DD_mean / tt_Events_MC  << " +/- " << ratio * (tt_Events_DD_up - tt_Events_DD_down) / 2. / tt_Events_MC << std::endl;
-  std::cout << "  N (MC)  = " << tt_Events_MC << " --> Scale factor (ave) = " << ratio * (tt_Events_DD_up + tt_Events_DD_down)/2. / tt_Events_MC  << " +/- " << ratio * (tt_Events_DD_up - tt_Events_DD_down) / 2. / tt_Events_MC << std::endl;
-  if (tt_Events_DD_down < 0) { 
-   std::cout << "  N (MC)  = " << tt_Events_MC << " --> Scale factor (<0)  = " << ratio * (tt_Events_DD_up + 0.)/2. / tt_Events_MC << " +/- " << ratio * (tt_Events_DD_up - 0) / 2. / tt_Events_MC << std::endl;
-  }
-  std::cout << "*******************************************************" << std::endl;
-  std::cout << "*******************************************************" << std::endl;
-  std::cout << "*******************************************************" << std::endl;  
-  std::cout << std::endl;
+//   outFile << "#-------------------   " << std::endl;
+//   outFile << "### Data driven Final Result divided by Bin Width (corrected) " << std::endl;
+//   outFile << "#-------------------   " << std::endl;
+//   outFile << "  tt Events   " << tt_Events<< "  error  " <<Final_Error<< "  sys   " <<err_ratio<< std::endl;
+//   outFile << error << std::endl;          
+//   edge.clear();
+//   error.clear();
+//   
+//   
+//   
+//   
+//   
+//   std::cout << std::endl;
+//   std::cout << std::endl;
+//   std::cout << std::endl;
+//   std::cout << std::endl;
+//   std::cout << std::endl;
+//   std::cout << "*******************************************************" << std::endl;
+//   std::cout << "*******************************************************" << std::endl;
+//   std::cout << "*******************************************************" << std::endl;  
+//   std::cout << " >>> input <<< " << std::endl;
+//   std::cout << " WorkingPoint = " << input << std::endl;
+//   std::cout << std::endl;
+//   std::cout << " >>> result <<< " << std::endl;
+//   std::cout << " N       = " << tt_Events_DD_mean << " +/- " << (tt_Events_DD_up - tt_Events_DD_down) / 2.  << " -->  " << 1. + (tt_Events_DD_up - tt_Events_DD_down) / tt_Events_DD_mean << std::endl; 
+//   std::cout << " N (ave) = " << (tt_Events_DD_up + tt_Events_DD_down) / 2. << " +/- " << (tt_Events_DD_up - tt_Events_DD_down) / 2.  << " -->  " << 1. + (tt_Events_DD_up - tt_Events_DD_down) / (tt_Events_DD_up + tt_Events_DD_down) << std::endl; 
+//   std::cout << " N       [" << tt_Events_DD_down << " :: " << tt_Events_DD_up << "] " << std::endl; 
+// //   std::cout << " N (dc)  = " << (tt_Events_DD_up + tt_Events_DD_down) / 2. << " -->  " << 1. + (tt_Events_DD_up - tt_Events_DD_down) / (tt_Events_DD_up + tt_Events_DD_down) << std::endl; 
+//   if (tt_Events_DD_down < 0) {
+//    std::cout << "***************************************************************************" << std::endl;
+//    std::cout << "****************** corrected for negative values **************************" << std::endl;  
+//    std::cout << " N (ave) = " << (tt_Events_DD_up + 0) / 2. << " +/- " << (tt_Events_DD_up - 0) / 2.  << " -->  " << 1. + (tt_Events_DD_up - 0) / (tt_Events_DD_up + 0) << std::endl; 
+//    std::cout << " N       [" << 0 << " :: " << tt_Events_DD_up << "] " << std::endl; 
+//   }
+//   std::cout << "***********************************************************" << std::endl;
+//   std::cout << "****************** MC prediction **************************" << std::endl;  
+//   std::cout << "  N (MC)  = " << tt_Events_MC << " --> Scale factor = " << tt_Events_DD_mean / tt_Events_MC << std::endl;
+//   std::cout << "  N (MC)  = " << tt_Events_MC << " --> Scale factor = " << (tt_Events_DD_up + tt_Events_DD_down)/2. / tt_Events_MC << std::endl;
+//   if (tt_Events_DD_down < 0) { 
+//    std::cout << "  N (MC)  = " << tt_Events_MC << " --> Scale factor = " << (tt_Events_DD_up + 0.)/2. / tt_Events_MC << std::endl;
+//   }
+//   std::cout << "*******************************************************" << std::endl;
+//   std::cout << "*******************************************************" << std::endl;
+//   std::cout << "*******************************************************" << std::endl;  
+//   std::cout << "  alpha  = " << alfa  << " +/- " << err_alfa  << std::endl;
+//   std::cout << "  beta   = " << beta  << " +/- " << err_beta  << std::endl;
+//   std::cout << "  ratio  = " << ratio << " +/- " << err_ratio << std::endl;  
+//   std::cout << "*******************************************************" << std::endl;
+//   std::cout << "*******************************************************" << std::endl;
+//   std::cout << "*******************************************************" << std::endl;  
+//   std::cout << " >>> result <<< " << std::endl;
+//   std::cout << " N       = " << ratio * tt_Events_DD_mean << " +/- " << ratio * (tt_Events_DD_up - tt_Events_DD_down) / 2.  << " -->  " << 1. + (tt_Events_DD_up - tt_Events_DD_down) / 2. / tt_Events_DD_mean << std::endl; 
+//   std::cout << " N (ave) = " << ratio * (tt_Events_DD_up + tt_Events_DD_down) / 2. << " +/- " << ratio * (tt_Events_DD_up - tt_Events_DD_down) / 2.  << " -->  " << 1. + (tt_Events_DD_up - tt_Events_DD_down) / (tt_Events_DD_up + tt_Events_DD_down) << std::endl; 
+//   std::cout << " N       [" << ratio * tt_Events_DD_down << " :: " << ratio * tt_Events_DD_up << "] " << std::endl; 
+// //   std::cout << " N (dc)  = " << ratio * (tt_Events_DD_up + tt_Events_DD_down) / 2. << " -->  " << 1. + (tt_Events_DD_up - tt_Events_DD_down) / (tt_Events_DD_up + tt_Events_DD_down) << std::endl; 
+//   if (tt_Events_DD_down < 0) {
+//    std::cout << "***************************************************************************" << std::endl;
+//    std::cout << "****************** corrected for negative values **************************" << std::endl;  
+//    std::cout << " N (ave) = " << ratio * (tt_Events_DD_up + 0) / 2. << " +/- " << ratio * (tt_Events_DD_up - 0) / 2.  << " -->  " << 1. + (tt_Events_DD_up - 0) / (tt_Events_DD_up + 0) << std::endl;  
+//    std::cout << " N       [" << 0 << " :: " << ratio * tt_Events_DD_up << "] " << std::endl; 
+//   }
+//   std::cout << "***********************************************************" << std::endl;
+//   std::cout << "****************** MC prediction **************************" << std::endl;  
+//   std::cout << "  N (MC)  = " << tt_Events_MC << " --> Scale factor       = " << ratio * tt_Events_DD_mean / tt_Events_MC  << " +/- " << ratio * (tt_Events_DD_up - tt_Events_DD_down) / 2. / tt_Events_MC << std::endl;
+//   std::cout << "  N (MC)  = " << tt_Events_MC << " --> Scale factor (ave) = " << ratio * (tt_Events_DD_up + tt_Events_DD_down)/2. / tt_Events_MC  << " +/- " << ratio * (tt_Events_DD_up - tt_Events_DD_down) / 2. / tt_Events_MC << std::endl;
+//   if (tt_Events_DD_down < 0) { 
+//    std::cout << "  N (MC)  = " << tt_Events_MC << " --> Scale factor (<0)  = " << ratio * (tt_Events_DD_up + 0.)/2. / tt_Events_MC << " +/- " << ratio * (tt_Events_DD_up - 0) / 2. / tt_Events_MC << std::endl;
+//   }
+//   std::cout << "*******************************************************" << std::endl;
+//   std::cout << "*******************************************************" << std::endl;
+//   std::cout << "*******************************************************" << std::endl;  
+//   std::cout << std::endl;
  
+  
+  ///---- save for datacard ----///
+  
+//   std::ofstream myfileValue; 
+//   myfileValue.open ("test/Latinos/ttbar/result-value.txt",std::fstream::app);
+//   myfileValue << (ratio * tt_Events_DD_mean) << std::endl;
+//   myfileValue.close();
+//   
+//   std::ofstream myfileSyst; 
+//   myfileSyst.open ("test/Latinos/ttbar/result-syst.txt",std::fstream::app);
+//   myfileSyst << (1. + (tt_Events_DD_up - tt_Events_DD_down) / 2. / tt_Events_DD_mean) << std::endl;
+//   myfileSyst.close();
+  
+  
+  
+  
+  
  }
  
  ///================================================================
@@ -2076,7 +2093,7 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
    
    
    for(int iCut=0; iCut<Cuts.size(); iCut++) {
-    if(Cuts.at(iCut) == "Efficiency_Zone" && Cuts.at(iCut+1) == "Efficiency_Zone_Btag") {  
+    if(Cuts.at(iCut) == "Control_Region" && Cuts.at(iCut+1) == "Control_Region_Btag") {  
      
      TString name=Form("Closure_Efficiency_%s_%d",Variable[iVar].first.c_str(),iNum);
      
@@ -2138,15 +2155,16 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
       Closure_Efficiency[iNum]->Divide(den_total);
       
       for(int iBin=0; iBin<Closure_Efficiency[iNum]->GetNbinsX(); iBin++){
-       if(Closure_Efficiency[iNum]->GetBinContent(iBin+1)>1)
-        SkipEfficiency = true;
+       if(Closure_Efficiency[iNum]->GetBinContent(iBin+1)>1) {
+	SkipEfficiency = true;
+       }
       }
       
      } while(SkipEfficiency);
      
     }
     
-    if(Cuts.at(iCut) == "VBF_Zone_Btag" && Cuts.at(iCut+1) == "VBF_Zone_Signal") {
+    if(Cuts.at(iCut) == "Signal_Region_Btag" && Cuts.at(iCut+1) == "Signal_Region_Signal") {
      
      TH1D* Sig_VBF = (TH1D*)stack[iCut+1][iVar]->GetStack()->Last();
      Sig_VBF->Reset("ICEMS");
@@ -2321,7 +2339,8 @@ int BTag_Efficiency(TString input, TString output, TString dumper) {
   Sig_Estimation_Final->Draw("E2");
   Sig_VBF_Rebinned[iVar]->Draw("Esame");
   leg->Draw();
-  Title = Form("Result_Closure_Test_%s",nameHumanVariable.at(iVar).c_str());
+//   Title = Form("Result_Closure_Test_%s",nameHumanVariable.at(iVar).c_str());
+  Title = Form("Result_Closure_Test_%d",iVar);
   c5.SetName(Title);
   c5.Write();
     
