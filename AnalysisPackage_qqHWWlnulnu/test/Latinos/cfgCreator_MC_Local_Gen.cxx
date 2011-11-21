@@ -24,15 +24,13 @@
  toDoShell= Form ("mkdir test/Latinos/dir_cfg_skimmed_MC_GenLevel");
  system (toDoShell.Data());
   
+ toDoShell = Form ("mkdir %s", outputDirectory);
+ system (toDoShell.Data());
+ 
  for (int iSample = 0; iSample < numberOfSamples; iSample++){
    std::string name_samples = nameHumanReadable[iSample];
   if (name_samples  == "DATA") continue;
   
- 
-  toDoShell = Form ("mkdir %s", outputDirectory);
-  system (toDoShell.Data());
-  
-
   std::ofstream myfile;
   char nameFile[1000];
   sprintf(nameFile,"test/Latinos/dir_cfg_skimmed_MC_GenLevel/NtupleProducerNT_Gen_%s.cfg",nameSample[iSample]);
@@ -53,7 +51,7 @@
   myfile << "entryMIN = 0 " << std::endl;
   myfile << "entryMAX = -1 " << std::endl;
   myfile << "entryMOD = 1000 " << std::endl;
-  myfile << "nStepToDo = 5 " << std::endl;
+  myfile << "nStepToDo = 6 " << std::endl;
   myfile << std::endl;
   
   myfile << "[Options]" << std::endl;

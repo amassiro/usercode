@@ -134,9 +134,6 @@ int main(int argc, char** argv)
  
  double LUMI = gConfigParser -> readDoubleOption("Input::Lumi");
   
- double Discovery = gConfigParser -> readDoubleOption("Input::Discovery");
- 
- 
 
  ///=== acuisition from sample file ---> parsing through the cfg
  
@@ -167,16 +164,6 @@ int main(int argc, char** argv)
  TFile outFile(OutFileName.c_str(),"RECREATE");
  outFile.cd();
  
- 
- ///==== Latinos flag ==== 
- bool  Latinos = false; 
- try {
-  Latinos = gConfigParser -> readBoolOption("Input::Latinos");
- }
- catch (char const* exceptionString){
-  std::cerr << " exception = " << exceptionString << std::endl;
- }
- std::cout << ">>>>> input::Latinos  " << Latinos  << std::endl;  
  
  
  ///==== pT Higgs reweight (begin) ====
@@ -317,8 +304,13 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
    treeEffVect[iSample]->SetBranchAddress("preselection_efficiency",&preselection_efficiency);  
    treeEffVect[iSample]->GetEntry(0);
   }
-  std::cout << " Xsection = " << XSection << " ~~~> " << xsection[iSample] << std::endl;
-  XSection = xsection[iSample];
+  if(XSection == 1)
+  {
+    std::cout << " Xsection = " << XSection << " ~~~> " << xsection[iSample] << std::endl;
+    XSection = xsection[iSample];
+    
+  }
+  
   if (numEntriesBefore != 0) {
    Normalization[iSample] = LUMI * XSection * preselection_efficiency / numEntriesBefore;
   }
@@ -326,7 +318,6 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
    Normalization[iSample] = 0; 
   }    
   
-  if (Latinos) Normalization[iSample] = XSection * LUMI / 1000.;
   
  }
 
@@ -354,7 +345,7 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
  TH1F* histo_temp_Plot[100][103][43];
  TH1F* histo_temp_Normalized_Plot[100][103][43];
  
- 
+/* 
  ///==== cicle on selections ====
  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
   TString Cut = Form ("%s",vCut.at(iCut).c_str());
@@ -406,7 +397,7 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
  std::cout << std::endl; 
  
  
- 
+ */
  
  ///========================================================================================================
  ///==================================== Efficiency Calculation ============================================
@@ -416,7 +407,8 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
  TH1F* histo_temp[100][20];
  TH1F* histo[100][20];
  TH1F* histo_Normalized[100][20];
-
+ double XSection_reduced[100][20];
+ int numEntriesBefore_reduced[100][20];
  
  ///==== cicle on selections ====
  for (unsigned int iCut =0; iCut<vCut.size(); iCut++){
@@ -451,13 +443,32 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
 	
    }
     
-    treeJetLepVect[iSample]->Draw(toDraw,CutExtended,""); /// selections applied through Draw method of TTree
+   treeJetLepVect[iSample]->Draw(toDraw,CutExtended); /// selections applied through Draw method of TTree
+   
    if (Normalization[iSample]>0) { 
     
     TString Name_Normalized = Form("%s_Normalized",name_histo_temp.Data());
     histo_temp_Normalized[iSample][iCut]= (TH1F*) histo_temp[iSample][iCut]->Clone(Name_Normalized);
     histo_temp_Normalized[iSample][iCut] -> Scale(Normalization[iSample]); 
    }
+   
+   
+  double XSection;
+  int numEntriesBefore;
+  double preselection_efficiency;
+  
+  if (treeEffVect[iSample] != 0) {   
+   treeEffVect[iSample]->SetBranchAddress("XSection",&XSection); // indentify the branch of the tree with a plain variable
+   treeEffVect[iSample]->SetBranchAddress("numEntriesBefore",&numEntriesBefore);
+   treeEffVect[iSample]->SetBranchAddress("preselection_efficiency",&preselection_efficiency);  
+   treeEffVect[iSample]->GetEntry(0);  
+  }
+  
+  if(XSection == 1)
+   {
+     XSection= xsection[iSample];  
+   }
+  
     
    for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
   
@@ -473,10 +484,12 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
       name_HR_histoTot_temp = Form("cut %d",iCut);
       histo_Normalized[iName][iCut] = new TH1F(name_histoTot_temp,name_HR_histoTot_temp,100,-10,10000000000);
       histo_Normalized[iName][iCut] -> Sumw2(); //---- così mette l'errore giusto!
-      
       reduced_name_samples_flag.at(iName) = 1;
+      
+      XSection_reduced[iName][iCut] = XSection ;     
      }
      histo[iName][iCut] -> Add(histo_temp[iSample][iCut]);
+     numEntriesBefore_reduced[iName][iCut] = numEntriesBefore_reduced[iName][iCut]+numEntriesBefore;
      histo_Normalized[iName][iCut] -> Add(histo_temp_Normalized[iSample][iCut]);
     
     }
@@ -513,7 +526,7 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
   hTrend[iName]->SetFillColor(vColor[iName]);
   hTrend[iName]->SetLineWidth(2);
   hTrend[iName]->SetFillStyle(3001);
-  
+  int numEntriesBefore;
   
   for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
   
@@ -524,40 +537,58 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
 
    TString nameBin = Form("%d",iCut);
    hTrend[iName]->GetXaxis()->SetBinLabel(iCut+1,nameBin);
+   
+   if(treeEffVect[iName]!=0)
+   {
+    treeEffVect[iName]->SetBranchAddress("numEntriesBefore",&numEntriesBefore);
+    treeEffVect[iName]->GetEntry(0);
+   }
  
    
    std::cout << ">>>  numEvents[" << iName << "," << reduced_name_samples.at(iName) << "][" << iCut << "] = " << numEvents[iName][iCut] <<
    " , " << histo[iName][iCut]->GetEntries() << " , " << histo[iName][iCut]->GetEffectiveEntries()<<" , "
    <<" error: "<<sqrt(numEvents[iName][iCut])<<std::endl;
-   if(iCut!=0) std::cout<<  ">>> CutEfficiency[" << iName << "," <<  reduced_name_samples.at(iName) 
-    << "][" << iCut << "] = " << numEvents[iName][iCut]/(numEvents[iName][iCut-1]) << " , " 
-    << histo[iName][iCut]->GetEntries()/(histo[iName][iCut-1]->GetEntries()) << " , "
-    << histo[iName][iCut]->GetEffectiveEntries()/(histo[iName][iCut-1]->GetEffectiveEntries()) 
-    << " error: " << sqrt(numEvents[iName][iCut])/(numEvents[iName][iCut-1]) << std::endl; 
-  }
+   std::cout<<">>> Total Efficiency["<<iName << "," <<reduced_name_samples.at(iName) 
+   << "][" << iCut << "] = " << numEvents[iName][iCut]/(numEntriesBefore_reduced[iName][iCut]) << " , " 
+   << histo[iName][iCut]->GetEntries()/(numEntriesBefore_reduced[iName][iCut]) << " , "
+   << histo[iName][iCut]->GetEffectiveEntries()/(numEntriesBefore_reduced[iName][iCut]) 
+   << " error: " << sqrt(numEvents[iName][iCut])/(numEntriesBefore_reduced[iName][iCut]) << std::endl;
+   std::cout<< ">>>  Cross Section [" << iName << "," << reduced_name_samples.at(iName) << "][" << iCut << "] = " <<XSection_reduced[iName][iCut] <<
+      " Efficiency * Cross Section = " << XSection_reduced[iName][iCut]*numEvents[iName][iCut]/(numEntriesBefore_reduced[iName][iCut])<<std::endl;
+       //    if(iCut!=0) std::cout<<  ">>> CutEfficiency[" << iName << "," <<  reduced_name_samples.at(iName) 
+//     << "][" << iCut << "] = " << numEvents[iName][iCut]/(numEvents[iName][iCut-1]) << " , " 
+//     << histo[iName][iCut]->GetEntries()/(histo[iName][iCut-1]->GetEntries()) << " , "
+//     << histo[iName][iCut]->GetEffectiveEntries()/(histo[iName][iCut-1]->GetEffectiveEntries()) 
+//     << " error: " << sqrt(numEvents[iName][iCut])/(numEvents[iName][iCut-1]) << std::endl; 
+       
+       
+    }
   
  }
  
+ if(LUMI!=1)
+ {  
  
- std::cout<<" ############################################################################# "<<std::endl;
- std::cout<<"                        Monte Carlo Events Scaled to Lumi                      "<<std::endl;
- std::cout<<" ############################################################################# "<<std::endl;
+  std::cout<<" ############################################################################# "<<std::endl;
+  std::cout<<"                        Monte Carlo Events Scaled to Lumi                      "<<std::endl;
+  std::cout<<" ############################################################################# "<<std::endl;
    
  
- for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
  
-  TString nameTHTrend = Form("%s_Trend_Normalized",reduced_name_samples.at(iName).c_str());
-  hTrend_Normalized[iName] = new TH1F (nameTHTrend,nameTHTrend,vCut.size()+1,0,vCut.size()+1);
-  hTrend_Normalized[iName]->GetXaxis()->SetTitle("Selections");
+  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+ 
+   TString nameTHTrend = Form("%s_Trend_Normalized",reduced_name_samples.at(iName).c_str());
+   hTrend_Normalized[iName] = new TH1F (nameTHTrend,nameTHTrend,vCut.size()+1,0,vCut.size()+1);
+   hTrend_Normalized[iName]->GetXaxis()->SetTitle("Selections");
 
-  hTrend_Normalized[iName]->SetMarkerColor(vColor[iName]);
-  hTrend_Normalized[iName]->SetLineColor(vColor[iName]);
-  hTrend_Normalized[iName]->SetFillColor(vColor[iName]);
-  hTrend_Normalized[iName]->SetLineWidth(2);
-  hTrend_Normalized[iName]->SetFillStyle(3001);
+   hTrend_Normalized[iName]->SetMarkerColor(vColor[iName]);
+   hTrend_Normalized[iName]->SetLineColor(vColor[iName]);
+   hTrend_Normalized[iName]->SetFillColor(vColor[iName]);
+   hTrend_Normalized[iName]->SetLineWidth(2);
+   hTrend_Normalized[iName]->SetFillStyle(3001);
+   int numEntriesBefore;
   
-  
-  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+   for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
   
    double error = 0;
  
@@ -567,22 +598,81 @@ for (int iSample=0; iSample<numberOfSamples; iSample++){
 
    TString nameBin = Form("%d",iCut);
    hTrend_Normalized[iName]->GetXaxis()->SetBinLabel(iCut+1,nameBin);
- 
-      
-   std::cout << ">>>  numEvents[" << iName << "," << reduced_name_samples.at(iName) << "][" << iCut << "] = " << numEvents_Normalized[iName][iCut] <<
+   if(treeEffVect[iName]!=0)
+   { treeEffVect[iName]->SetBranchAddress("numEntriesBefore",&numEntriesBefore);
+     treeEffVect[iName]->GetEntry(0);
+   }
+    std::cout << ">>>  numEvents[" << iName << "," << reduced_name_samples.at(iName) << "][" << iCut << "] = " << numEvents_Normalized[iName][iCut] <<
    " , " << histo_Normalized[iName][iCut]->GetEntries() << " , " << histo_Normalized[iName][iCut]->GetEffectiveEntries()<<" , "
-   <<" error: "<<sqrt(numEvents[iName][iCut])<<std::endl;
-   if(iCut!=0) std::cout<<  ">>> CutEfficiency[" << iName << "," <<  reduced_name_samples.at(iName) 
-    << "][" << iCut << "] = " << numEvents_Normalized[iName][iCut]/(numEvents_Normalized[iName][iCut-1]) << " , " 
-    << histo_Normalized[iName][iCut]->GetEntries()/(histo_Normalized[iName][iCut-1]->GetEntries()) << " , "
-    << histo_Normalized[iName][iCut]->GetEffectiveEntries()/(histo_Normalized[iName][iCut-1]->GetEffectiveEntries()) 
-    << " error: " << sqrt(numEvents_Normalized[iName][iCut])/(numEvents_Normalized[iName][iCut-1]) << std::endl; 
-  
+   <<" error: "<<sqrt(numEvents_Normalized[iName][iCut])<<std::endl;
+     
+    if(iCut!=0) std::cout<<  ">>> CutEfficiency[" << iName << "," <<  reduced_name_samples.at(iName) 
+     << "][" << iCut << "] = " << numEvents_Normalized[iName][iCut]/(numEvents_Normalized[iName][iCut-1]) << " , " 
+     << histo_Normalized[iName][iCut]->GetEntries()/(histo_Normalized[iName][iCut-1]->GetEntries()) << " , "
+     << histo_Normalized[iName][iCut]->GetEffectiveEntries()/(histo_Normalized[iName][iCut-1]->GetEffectiveEntries()) 
+     << " error: " << sqrt(numEvents_Normalized[iName][iCut])/(numEvents_Normalized[iName][iCut-1]) << std::endl; 
+   
    
   }
   
  }
+ }
  
+ std::cout << " ****************************************************************************** " << std::endl;
+ std::cout << " *************************** Table Like Output ******************************** " << std::endl;
+ std::cout << " ****************************************************************************** " << std::endl;
+ 
+ std::string nameOutDataCard = "Table_Result.txt";
+ 
+ std::string mass = "160";
+ try {
+  mass = gConfigParser -> readStringOption("Input::mass");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ std::cout << ">>>>> input::mass  " << mass << std::endl;  
+ 
+ 
+ ///==== output - txt file name ====
+ try {
+  nameOutDataCard = gConfigParser -> readStringOption("Output::TableResult");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ 
+ std::ofstream myfile;
+ myfile.open (nameOutDataCard.c_str(),std::ios::app);
+ std::cout << "Writing to: " << nameOutDataCard << std::endl;
+ std::cout << std::endl;
+
+ 
+ for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+    
+ myfile<< " ***********  Sample identifier ***********  " <<  reduced_name_samples.at(iName) << " ****************   " << std::endl; 
+
+ 
+ for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+   
+  myfile<<std::endl; 
+  myfile<<std::endl;
+  myfile<<" >>>>>>> Cut String Applied <<<<<<<  "<<std::endl;
+  myfile<<vCut.at(iCut) << std::endl;
+  myfile<<std::endl;
+  myfile<<" mass =  " << mass << std::endl;
+  myfile<<" Cross Section " << XSection_reduced[iName][iCut]<<std::endl;
+  myfile<<" Total Efficiency  " << numEvents[iName][iCut]/(numEntriesBefore_reduced[iName][iCut]) <<std::endl;
+  myfile<<
+    " Cross Section * Efficiency  " <<  XSection_reduced[iName][iCut] * numEvents[iName][iCut]/(numEntriesBefore_reduced[iName][iCut]) <<std::endl;
+  myfile<<std::endl;
+ }
+ 
+   
+}
+  
+
+    
  std::cerr << " ******************************************* end *******************************************" << std::endl;
  end = clock();
  std::cout <<"Time = " <<  ((double) (end - start)) << " (a.u.)" << std::endl;  

@@ -1,4 +1,3 @@
-
 ///============== Ntuple Producer at Gen particle level 
 ///======== lunch with 
 ///== ls test/Latinos/dir_cfg_skimmed_MC_GenLevel/ | grep NtupleProducerNT | awk '{ print" ./bin/NtupleProducerFromNT_Gen.exe test/Latinos/dir_cfg_skimmed_MC_GenLevel/"$1" \n "}' | /bin/sh
