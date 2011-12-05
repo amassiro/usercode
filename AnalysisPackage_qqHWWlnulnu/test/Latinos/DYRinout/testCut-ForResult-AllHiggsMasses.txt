@@ -11,10 +11,10 @@
 # 1-A-SR
 # 1-B-SR
 #
-(!(mll<106.1876 && mll>76.1876))  &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && mll<70 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(mll<106.1876 && mll>76.1876)     &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(!(mll<106.1876 && mll>76.1876))  &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && mll<70 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(mll<106.1876 && mll>76.1876)     &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (!(mll<106.1876 && mll>76.1876))  &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && mll<70 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (mll<106.1876 && mll>76.1876)     &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (!(mll<106.1876 && mll>76.1876))  &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && mll<70 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (mll<106.1876 && mll>76.1876)     &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
 #
 ########################################
 #
@@ -25,10 +25,10 @@
 # 2-A-SR
 # 2-B-SR
 #
-(!(mll<106.1876 && mll>76.1876))  &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && mll<80 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(mll<106.1876 && mll>76.1876)     &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(!(mll<106.1876 && mll>76.1876))  &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && mll<80 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(mll<106.1876 && mll>76.1876)     &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (!(mll<106.1876 && mll>76.1876))  &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && mll<80 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (mll<106.1876 && mll>76.1876)     &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (!(mll<106.1876 && mll>76.1876))  &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && mll<80 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (mll<106.1876 && mll>76.1876)     &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
 #
 ########################################
 #
@@ -39,10 +39,10 @@
 # 3-A-SR
 # 3-B-SR
 #
-(!(mll<106.1876 && mll>76.1876))  &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && mll<100 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(mll<106.1876 && mll>76.1876)     &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(!(mll<106.1876 && mll>76.1876))  &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && mll<100 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(mll<106.1876 && mll>76.1876)     &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (!(mll<106.1876 && mll>76.1876))  &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && mll<100 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (mll<106.1876 && mll>76.1876)     &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (!(mll<106.1876 && mll>76.1876))  &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && mll<100 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (mll<106.1876 && mll>76.1876)     &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<1.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
 #
 ########################################
 #
@@ -53,10 +53,10 @@
 # 4-A-SR
 # 4-B-SR
 #
-(!(mll<106.1876 && mll>76.1876))  &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && mll<100 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<2.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(mll<106.1876 && mll>76.1876)     &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<2.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(!(mll<106.1876 && mll>76.1876))  &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && mll<100 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<2.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(mll<106.1876 && mll>76.1876)     &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<2.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (!(mll<106.1876 && mll>76.1876))  &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && mll<100 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<2.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (mll<106.1876 && mll>76.1876)     &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<2.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (!(mll<106.1876 && mll>76.1876))  &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && mll<100 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<2.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (mll<106.1876 && mll>76.1876)     &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>3.5 && dphill<2.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
 #
 ########################################
 #
@@ -67,10 +67,10 @@
 # 5-A-SR
 # 5-B-SR
 #
-(!(mll<106.1876 && mll>76.1876))  &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill<2.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(mll<106.1876 && mll>76.1876)     &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill<2.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(!(mll<106.1876 && mll>76.1876))  &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill<2.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(mll<106.1876 && mll>76.1876)     &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill<2.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (!(mll<106.1876 && mll>76.1876))  &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill<2.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (mll<106.1876 && mll>76.1876)     &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill<2.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (!(mll<106.1876 && mll>76.1876))  &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill<2.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (mll<106.1876 && mll>76.1876)     &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill<2.5 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
 #
 ########################################
 #
@@ -81,10 +81,10 @@
 # 6-A-SR
 # 6-B-SR
 #
-(!(mll<106.1876 && mll>76.1876))  &&         mll>12 && pt1>30 && pt2>15 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && mll>100 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill>1.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(mll<106.1876 && mll>76.1876)     &&         mll>12 && pt1>30 && pt2>15 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill>1.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(!(mll<106.1876 && mll>76.1876))  &&         mll>12 && pt1>30 && pt2>15 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && mll>100 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill>1.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(mll<106.1876 && mll>76.1876)     &&         mll>12 && pt1>30 && pt2>15 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill>1.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (!(mll<106.1876 && mll>76.1876))  &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>30 && pt2>15 && ((channel==0 || channel==2) || pt2>30) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && mll>100 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill>1.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (mll<106.1876 && mll>76.1876)     &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>30 && pt2>15 && ((channel==0 || channel==2) || pt2>30) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill>1.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (!(mll<106.1876 && mll>76.1876))  &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>30 && pt2>15 && ((channel==0 || channel==2) || pt2>30) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && mll>100 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill>1.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (mll<106.1876 && mll>76.1876)     &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>30 && pt2>15 && ((channel==0 || channel==2) || pt2>30) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill>1.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
 #
 ########################################
 #
@@ -95,10 +95,324 @@
 # 7-A-SR
 # 7-B-SR
 #
-(!(mll<106.1876 && mll>76.1876))  &&         mll>12 && pt1>30 && pt2>30 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && mll>100 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill>1.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(mll<106.1876 && mll>76.1876)     &&         mll>12 && pt1>30 && pt2>30 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill>1.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(!(mll<106.1876 && mll>76.1876))  &&         mll>12 && pt1>30 && pt2>30 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && mll>100 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill>1.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
-(mll<106.1876 && mll>76.1876)     &&         mll>12 && pt1>30 && pt2>30 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill>1.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (!(mll<106.1876 && mll>76.1876))  &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>30 && pt2>30 && ((channel==0 || channel==2) || pt2>30) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && mll>100 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill>1.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (mll<106.1876 && mll>76.1876)     &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>30 && pt2>30 && ((channel==0 || channel==2) || pt2>30) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill>1.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (!(mll<106.1876 && mll>76.1876))  &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>30 && pt2>30 && ((channel==0 || channel==2) || pt2>30) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && mll>100 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill>1.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#     (mll<106.1876 && mll>76.1876)     &&         njet >= 2 && pfmet > 20   &&  mll>12 && pt1>30 && pt2>30 && ((channel==0 || channel==2) || pt2>30) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>4.0 && dphill>1.0 && nextra==0 && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5  && bveto_ip && bveto_mu == 1 && jettche2<2.1 && jettche1<2.1
+#
+#
+#
+#
+#
+#
+########################################
+#
+# Fall11 WP 1       <=120
+#
+# 1-A-CR
+# 1-B-CR
+# 1-A-SR
+# 1-B-SR
+#
+(!(mll<106.1876 && mll>76.1876))  &&        mll<70  &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(!(mll<106.1876 && mll>76.1876))  &&        mll<70  &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+#
+########################################
+#
+# Fall11 WP 2       130
+#
+# 2-A-CR
+# 2-B-CR
+# 2-A-SR
+# 2-B-SR
+#
+(!(mll<106.1876 && mll>76.1876))  &&        mll<80  &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(!(mll<106.1876 && mll>76.1876))  &&        mll<80  &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+#
+########################################
+#
+# Fall11 WP 3       140
+#
+# 3-A-CR
+# 3-B-CR
+# 3-A-SR
+# 3-B-SR
+#
+(!(mll<106.1876 && mll>76.1876))  &&        mll<90  &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(!(mll<106.1876 && mll>76.1876))  &&        mll<90  &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+#
+########################################
+#
+# Fall11 WP 4       150-170
+#
+# 4-A-CR
+# 4-B-CR
+# 4-A-SR
+# 4-B-SR
+#
+(!(mll<106.1876 && mll>76.1876))  &&        mll<100 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(!(mll<106.1876 && mll>76.1876))  &&        mll<100 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+#
+########################################
+#
+# Fall11 WP 5       180
+#
+# 5-A-CR
+# 5-B-CR
+# 5-A-SR
+# 5-B-SR
+#
+(!(mll<106.1876 && mll>76.1876))  &&        mll<110 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(!(mll<106.1876 && mll>76.1876))  &&        mll<110 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+#
+########################################
+#
+# Fall11 WP 6       190
+#
+# 6-A-CR
+# 6-B-CR
+# 6-A-SR
+# 6-B-SR
+#
+(!(mll<106.1876 && mll>76.1876))  &&        mll<120 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(!(mll<106.1876 && mll>76.1876))  &&        mll<120 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+#
+########################################
+#
+# Fall11 WP 7       200
+#
+# 7-A-CR
+# 7-B-CR
+# 7-A-SR
+# 7-B-SR
+#
+(!(mll<106.1876 && mll>76.1876))  &&        mll<130 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(!(mll<106.1876 && mll>76.1876))  &&        mll<130 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+#
+########################################
+#
+# Fall11 WP 8       210
+#
+# 8-A-CR
+# 8-B-CR
+# 8-A-SR
+# 8-B-SR
+#
+(!(mll<106.1876 && mll>76.1876))  &&        mll<140 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(!(mll<106.1876 && mll>76.1876))  &&        mll<140 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+#
+########################################
+#
+# Fall11 WP 9       220
+#
+# 9-A-CR
+# 9-B-CR
+# 9-A-SR
+# 9-B-SR
+#
+(!(mll<106.1876 && mll>76.1876))  &&        mll<150 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(!(mll<106.1876 && mll>76.1876))  &&        mll<150 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+#
+########################################
+#
+# Fall11 WP 10      230
+#
+# 10-A-CR
+# 10-B-CR
+# 10-A-SR
+# 10-B-SR
+#
+(!(mll<106.1876 && mll>76.1876))  &&        mll<230 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(!(mll<106.1876 && mll>76.1876))  &&        mll<230 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+#
+########################################
+#
+# Fall11 WP 11      250
+#
+# 11-A-CR
+# 11-B-CR
+# 11-A-SR
+# 11-B-SR
+#
+(!(mll<106.1876 && mll>76.1876))  &&        mll<250 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(!(mll<106.1876 && mll>76.1876))  &&        mll<250 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+#
+########################################
+#
+# Fall11 WP 12      300
+#
+# 12-A-CR
+# 12-B-CR
+# 12-A-SR
+# 12-B-SR
+#
+(!(mll<106.1876 && mll>76.1876))  &&        mll<300 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(!(mll<106.1876 && mll>76.1876))  &&        mll<300 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+#
+########################################
+#
+# Fall11 WP 13      350
+#
+# 13-A-CR
+# 13-B-CR
+# 13-A-SR
+# 13-B-SR
+#
+(!(mll<106.1876 && mll>76.1876))  &&        mll<350 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(!(mll<106.1876 && mll>76.1876))  &&        mll<350 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+#
+########################################
+#
+# Fall11 WP 14      400
+#
+# 14-A-CR
+# 14-B-CR
+# 14-A-SR
+# 14-B-SR
+#
+(!(mll<106.1876 && mll>76.1876))  &&        mll<400 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(!(mll<106.1876 && mll>76.1876))  &&        mll<400 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+#
+########################################
+#
+# Fall11 WP 15      450
+#
+# 15-A-CR
+# 15-B-CR
+# 15-A-SR
+# 15-B-SR
+#
+(!(mll<106.1876 && mll>76.1876))  &&        mll<450 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(!(mll<106.1876 && mll>76.1876))  &&        mll<450 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+#
+########################################
+#
+# Fall11 WP 16     500
+#
+# 16-A-CR
+# 16-B-CR
+# 16-A-SR
+# 16-B-SR
+#
+(!(mll<106.1876 && mll>76.1876))  &&        mll<500 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(!(mll<106.1876 && mll>76.1876))  &&        mll<500 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+#
+########################################
+#
+# Fall11 WP 17      550
+#
+# 17-A-CR
+# 17-B-CR
+# 17-A-SR
+# 17-B-SR
+#
+(!(mll<106.1876 && mll>76.1876))  &&        mll<550 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(!(mll<106.1876 && mll>76.1876))  &&        mll<550 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+#
+########################################
+#
+# Fall11 WP 18      600
+#
+# 18-A-CR
+# 18-B-CR
+# 18-A-SR
+# 18-B-SR
+#
+(!(mll<106.1876 && mll>76.1876))  &&        mll<600 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(!(mll<106.1876 && mll>76.1876))  &&        mll<600 &&          trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+(mll<106.1876 && mll>76.1876)     &&                            trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5         && jettche1<2.1 && jettche2<2.1   
+#
+#
+#
+#
+#
+#########################################
+#
+# Fall11 WP Jolly     for K calculation
+#
+# 16-A-CR
+# 16-B-CR
+# 16-A-SR
+# 16-B-SR
+#
+(!(mll<106.1876 && mll>76.1876))  &&                  trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                              
+(mll<106.1876 && mll>76.1876)     &&                  trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > 20 && mpmet < 25      && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                              
+(!(mll<106.1876 && mll>76.1876))  &&                  trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                              
+(mll<106.1876 && mll>76.1876)     &&                  trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1)   && njet >= 2 && njet <= 3    &&     njetvbf == 0  && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip &&  (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                              
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 #
 ########################################
 #
@@ -109,10 +423,10 @@
 # 8-A-SR
 # 8-B-SR
 #
-(!(mll<106.1876 && mll>76.1876))  &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>3.5 && nextra==0 && jettche2<2.1 && jettche1<2.1 && mll<100 
-(mll<106.1876 && mll>76.1876)     &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>3.5 && nextra==0 && jettche2<2.1 && jettche1<2.1
-(!(mll<106.1876 && mll>76.1876))  &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>3.5 && nextra==0 && jettche2<2.1 && jettche1<2.1 && mll<100 
-(mll<106.1876 && mll>76.1876)     &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>3.5 && nextra==0 && jettche2<2.1 && jettche1<2.1
+# (!(mll<106.1876 && mll>76.1876))  &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (10) && njet >= 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!sameflav) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5                           && mll<100          
+# (mll<106.1876 && mll>76.1876)     &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (10) && njet >= 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!sameflav) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5
+# (!(mll<106.1876 && mll>76.1876))  &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1) && njet >= 2 && (dphilljetjet<2.879793266 || ! sameflav) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5     && mll<100 
+# (mll<106.1876 && mll>76.1876)     &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1) && njet >= 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5
 #
 ########################################
 #
@@ -123,10 +437,74 @@
 # 9-A-SR
 # 9-B-SR
 #
-(!(mll<106.1876 && mll>76.1876))  &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>3.5 && nextra==0 && jettche2<2.1 && jettche1<2.1
-(mll<106.1876 && mll>76.1876)     &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>10 && njetvbf == 0 && mjj>450 && detajj>3.5 && nextra==0 && jettche2<2.1 && jettche1<2.1
-(!(mll<106.1876 && mll>76.1876))  &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>3.5 && nextra==0 && jettche2<2.1 && jettche1<2.1
-(mll<106.1876 && mll>76.1876)     &&         mll>12 && pt1>20 && pt2>10 && ((channel==0 || channel==2) || pt2>15) && jetpt1>30 && jetpt2>30 && ch1*ch2==-1 && mpmet>40 && njetvbf == 0 && mjj>450 && detajj>3.5 && nextra==0 && jettche2<2.1 && jettche1<2.1
+# (!(mll<106.1876 && mll>76.1876))  &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (10) && njet >= 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5
+# (mll<106.1876 && mll>76.1876)     &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (10) && njet >= 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5
+# (!(mll<106.1876 && mll>76.1876))  &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1) && njet >= 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5
+# (mll<106.1876 && mll>76.1876)     &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1) && njet >= 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5
+#
+#
+#
+#    with njet == 2
+########################################
+#
+# MIT low mass <=200
+#
+# 8-A-CR
+# 8-B-CR
+# 8-A-SR
+# 8-B-SR
+#
+# (!(mll<106.1876 && mll>76.1876))  &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (10) && njet == 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5                           && mll<100          
+# (mll<106.1876 && mll>76.1876)     &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (10) && njet == 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5
+# (!(mll<106.1876 && mll>76.1876))  &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1) && njet == 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5     && mll<100 
+# (mll<106.1876 && mll>76.1876)     &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1) && njet == 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5
+#
+########################################
+#
+# MIT high mass >=250
+#
+# 9-A-CR
+# 9-B-CR
+# 9-A-SR
+# 9-B-SR
+#
+# (!(mll<106.1876 && mll>76.1876))  &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (10) && njet == 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5
+# (mll<106.1876 && mll>76.1876)     &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (10) && njet == 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5
+# (!(mll<106.1876 && mll>76.1876))  &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1) && njet == 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5
+# (mll<106.1876 && mll>76.1876)     &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1) && njet == 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                               &&     njetvbf == 0    && detajj > 3.5  && mjj>450      && abs(eta1 - (jeteta1+jeteta2)/2)/detajj < 0.5 && abs(eta2 - (jeteta1+jeteta2)/2)/detajj < 0.5
+#
+#
+#
+########################################
+#
+# MIT @WW level   2! jets
+#
+# 10-A-CR
+# 10-B-CR
+# 10-A-SR
+# 10-B-SR
+#
+# (!(mll<106.1876 && mll>76.1876))  &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (10) && njet == 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                
+# (mll<106.1876 && mll>76.1876)     &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (10) && njet == 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5               
+# (!(mll<106.1876 && mll>76.1876))  &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1) && njet == 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                 
+# (mll<106.1876 && mll>76.1876)     &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1) && njet == 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                 
+#
+########################################
+#
+# MIT @WW level   >=2 jets
+#
+# 11-A-CR
+# 11-B-CR
+# 11-A-SR
+# 11-B-SR
+#
+# (!(mll<106.1876 && mll>76.1876))  &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (10) && njet >= 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                
+# (mll<106.1876 && mll>76.1876)     &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (10) && njet >= 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5               
+# (!(mll<106.1876 && mll>76.1876))  &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1) && njet >= 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                 
+# (mll<106.1876 && mll>76.1876)     &&         trigger && pfmet > 20 && mll > (12 + 8*1)  && mpmet > (20+(17+nvtx/2.)*1) && njet >= 2 && (dphilljetjet<2.879793266 || ! 1) && bveto_mu && nextra == 0 && bveto_ip && nbjet==0 && (pt2 > 15||!1) && ptll > 45  && abs(jeteta1)<4.5 && abs(jeteta2)<4.5                 
+#
+#
+#
 #
 #
 #
