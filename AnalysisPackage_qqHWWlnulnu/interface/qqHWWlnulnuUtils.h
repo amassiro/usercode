@@ -36,7 +36,7 @@ std::pair<TGraphErrors*, TGraphErrors*> grPullPlot(TH1F* hDATA, TH1F* hMC);
 
 
 ///==== Draw Stack ====
-void DrawStack(THStack* hs, int error = 0, double syst = 0);
+void DrawStack(THStack* hs, int error = 0, double syst = 0, TString option = "");
 void DrawStackError(THStack* hs, double syst = 0);
 void DrawStackNormalized(THStack* hs);
 
@@ -162,6 +162,11 @@ bool IsMu_Soft( treeReader& reader, int iMu);
 
 /** Jet ID */
 bool IsJetID( treeReader& reader, int iJet);
+
+
+
+/** canvas division */
+void DivideCanvas(TPad* cPad, int numberCanvas, double x1, double y1, double x2, double y2 = 0, double yb = -99, double yt = -99, double xl = -99, double xr = -99); 
 
 #endif
 
