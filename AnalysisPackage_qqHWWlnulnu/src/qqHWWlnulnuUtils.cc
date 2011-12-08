@@ -20,10 +20,10 @@ std::pair<int,int> GetMCDecayChannel(const std::vector<float>& pdgId){
   ///== pdgId.at(2) ==> f21
   ///== pdgId.at(3) ==> f22
   
-  int f11 = abs(pdgId.at(0));
-  int f12 = abs(pdgId.at(1));
-  int f21 = abs(pdgId.at(2));
-  int f22 = abs(pdgId.at(3));
+  int f11 = fabs(pdgId.at(0));
+  int f12 = fabs(pdgId.at(1));
+  int f21 = fabs(pdgId.at(2));
+  int f22 = fabs(pdgId.at(3));
   
   
   ///==== lepton - lepton ====
@@ -625,8 +625,11 @@ std::pair<TGraphErrors*, TGraphErrors*> grPullPlot(TH1F* hDATA, TH1F* hMC){
  std::string name2 = hMC->GetName(); 
  std::string nameNew = name1 + name2; 
  
- TGraphErrors* grPool = new TGraphErrors();
- TGraphErrors* grPoolMC = new TGraphErrors();
+ double DeltaX;
+ if (nbin >= 2) DeltaX = 1./2. * fabs(hDATA->GetBinCenter(2) - hDATA->GetBinCenter(1));
+ 
+ TGraphErrors* grPull = new TGraphErrors();
+ TGraphErrors* grPullMC = new TGraphErrors();
  int point = 0; 
  for (int iBin = 0; iBin<nbin; iBin++){
   double X = hDATA->GetBinCenter(iBin+1);
@@ -634,30 +637,31 @@ std::pair<TGraphErrors*, TGraphErrors*> grPullPlot(TH1F* hDATA, TH1F* hMC){
   double MC = hMC->GetBinContent(iBin+1);
   double errMC = hMC->GetBinError(iBin+1);
   
-  grPool->SetPoint      (point, X, (MC ? DATA/MC : 0));
-  grPool->SetPointError (point, 0, (MC ? sqrt(DATA)/MC : 0));
+  grPull->SetPoint      (point, X     , (MC ? DATA/MC : 0));
+  grPull->SetPointError (point, DeltaX, (MC ? sqrt(DATA)/MC : 0));
   
-  grPoolMC->SetPoint      (point, X, 1.);
-  grPoolMC->SetPointError (point, 0, (MC ? errMC / MC : 0));
+  grPullMC->SetPoint      (point, X     , 1.);
+  grPullMC->SetPointError (point, DeltaX, (MC ? errMC / MC : 0));
   point++;
  }
- grPool->SetLineColor(kRed);
- grPool->SetLineWidth(2);
- grPool->SetMarkerColor(kRed);
- grPool->SetMarkerStyle(20);
- grPool->SetMarkerSize(1);
- grPool->GetXaxis()->SetTitle(hMC->GetXaxis()->GetTitle()); 
- grPool->GetYaxis()->SetTitle("DATA/MC"); 
- grPool->GetYaxis()->SetRangeUser(0.,3.); 
+ grPull->SetLineColor(kBlack);    // grPull->SetLineColor(kRed);
+ grPull->SetLineWidth(2);
+ grPull->SetMarkerColor(kBlack);  // grPull->SetMarkerColor(kRed);
+ grPull->SetMarkerStyle(20);
+ grPull->SetMarkerSize(1);
+ grPull->GetXaxis()->SetTitle(hMC->GetXaxis()->GetTitle()); 
+ grPull->GetYaxis()->SetTitle("data / sim"); 
+ grPull->GetYaxis()->SetRangeUser(0.,3.); 
  
- grPoolMC->SetLineWidth(0);
- grPoolMC->SetMarkerSize(0);
- grPoolMC->SetFillColor(kGreen);
- grPoolMC->GetXaxis()->SetTitle(hMC->GetXaxis()->GetTitle()); 
- grPoolMC->GetYaxis()->SetTitle("DATA/MC"); 
- grPoolMC->GetYaxis()->SetRangeUser(0.,3.); 
+ grPullMC->SetLineWidth(0);
+ grPullMC->SetMarkerSize(0);
+ grPullMC->SetFillColor(kGray+1); // grPullMC->SetFillColor(kGreen);
+ grPullMC->SetFillStyle(3001);
+ grPullMC->GetXaxis()->SetTitle(hMC->GetXaxis()->GetTitle()); 
+ grPullMC->GetYaxis()->SetTitle("data / sim"); 
+ grPullMC->GetYaxis()->SetRangeUser(0.,3.); 
  
- return std::pair<TGraphErrors*, TGraphErrors*> (grPool, grPoolMC); 
+ return std::pair<TGraphErrors*, TGraphErrors*> (grPull, grPullMC); 
 }
 
 
@@ -670,25 +674,25 @@ TH1F* PullPlot(TH1F* hDATA, TH1F* hMC){
  std::string name1 = hDATA->GetName();
  std::string name2 = hMC->GetName(); 
  std::string nameNew = name1 + name2; 
- TH1F* hPool = new TH1F (nameNew.c_str(),nameNew.c_str(),nbin,min,max);
+ TH1F* hPull = new TH1F (nameNew.c_str(),nameNew.c_str(),nbin,min,max);
  for (int iBin = 0; iBin<nbin; iBin++){
   double A = hDATA->GetBinContent(iBin+1);
   double B = hMC->GetBinContent(iBin+1);
   if (A+B != 0) {
-   hPool->SetBinContent(iBin,(A-B)/(A+B)*2.);
-//    hPool->SetBinError(iBin,4. * A / (A+B) / (A+B) * sqrt(A+B));
-   hPool->SetBinError(iBin,4. * B / (A+B) / (A+B) * sqrt(A));
+   hPull->SetBinContent(iBin,(A-B)/(A+B)*2.);
+//    hPull->SetBinError(iBin,4. * A / (A+B) / (A+B) * sqrt(A+B));
+   hPull->SetBinError(iBin,4. * B / (A+B) / (A+B) * sqrt(A));
   }
  }
- hPool->SetLineColor(kRed);
- hPool->SetLineWidth(2);
- hPool->SetMarkerColor(kRed);
- hPool->SetMarkerStyle(20);
- hPool->SetMarkerSize(1);
- hPool->GetXaxis()->SetTitle(hMC->GetXaxis()->GetTitle()); 
- hPool->GetYaxis()->SetTitle("2(DATA-MC)/(DATA+MC)"); 
- hPool->GetYaxis()->SetRangeUser(-2.,2.); 
- return hPool;
+ hPull->SetLineColor(kRed);
+ hPull->SetLineWidth(2);
+ hPull->SetMarkerColor(kRed);
+ hPull->SetMarkerStyle(20);
+ hPull->SetMarkerSize(1);
+ hPull->GetXaxis()->SetTitle(hMC->GetXaxis()->GetTitle()); 
+ hPull->GetYaxis()->SetTitle("2(DATA-MC)/(DATA+MC)"); 
+ hPull->GetYaxis()->SetRangeUser(-2.,2.); 
+ return hPull;
 }
 
 
@@ -703,13 +707,13 @@ void PullPlot(TCanvas* canvas, TH1* hDATA, TH1* hMC){
  
  std::string nameNew = name1 + name2;
  
- TH1F* hPool = new TH1F (nameNew.c_str(),nameNew.c_str(),nbin,min,max);
+ TH1F* hPull = new TH1F (nameNew.c_str(),nameNew.c_str(),nbin,min,max);
  for (int iBin = 0; iBin<nbin; iBin++){
   double A = hDATA->GetBinContent(iBin);
   double B = hMC->GetBinContent(iBin);
   if (A+B != 0) {
-   hPool->SetBinContent(iBin,(A-B)/(A+B)*2.);
-   hPool->SetBinError(iBin,4. * B / (A+B) / (A+B) * sqrt(A));
+   hPull->SetBinContent(iBin,(A-B)/(A+B)*2.);
+   hPull->SetBinError(iBin,4. * B / (A+B) / (A+B) * sqrt(A));
   }
  }
  
@@ -734,15 +738,15 @@ void PullPlot(TCanvas* canvas, TH1* hDATA, TH1* hMC){
  gPad->SetGrid();
  
  canvas->cd(2); 
- hPool->SetLineColor(kRed);
- hPool->SetLineWidth(2);
- hPool->SetMarkerColor(kRed);
- hPool->SetMarkerStyle(20);
- hPool->SetMarkerSize(1);
- hPool->Draw("EP");
- hPool->GetXaxis()->SetTitle(hMC->GetXaxis()->GetTitle()); 
- hPool->GetYaxis()->SetTitle("2(DATA-MC)/(DATA+MC)"); 
- hPool->Draw("EP");
+ hPull->SetLineColor(kRed);
+ hPull->SetLineWidth(2);
+ hPull->SetMarkerColor(kRed);
+ hPull->SetMarkerStyle(20);
+ hPull->SetMarkerSize(1);
+ hPull->Draw("EP");
+ hPull->GetXaxis()->SetTitle(hMC->GetXaxis()->GetTitle()); 
+ hPull->GetYaxis()->SetTitle("2(DATA-MC)/(DATA+MC)"); 
+ hPull->Draw("EP");
  gPad->SetGrid();
 }
 
@@ -757,13 +761,13 @@ void PullPlot(TCanvas* canvas, TH1* hDATA, THStack* hsMC){
  
  std::string nameNew = name1 + name2;
  
- TH1F* hPool = new TH1F (nameNew.c_str(),nameNew.c_str(),nbin,min,max);
+ TH1F* hPull = new TH1F (nameNew.c_str(),nameNew.c_str(),nbin,min,max);
  for (int iBin = 0; iBin<nbin; iBin++){
   double A = hDATA->GetBinContent(iBin);
   double B = ((TH1*)(hsMC->GetStack()->Last()))->GetBinContent(iBin);
   if (A+B != 0) {
-   hPool->SetBinContent(iBin,(A-B)/(A+B)*2.);
-   hPool->SetBinError(iBin,4. * B / (A+B) / (A+B) * sqrt(A));
+   hPull->SetBinContent(iBin,(A-B)/(A+B)*2.);
+   hPull->SetBinError(iBin,4. * B / (A+B) / (A+B) * sqrt(A));
   }
  }
  
@@ -780,39 +784,42 @@ void PullPlot(TCanvas* canvas, TH1* hDATA, THStack* hsMC){
  gPad->SetGrid();
  
  canvas->cd(2); 
- hPool->SetLineColor(kRed);
- hPool->SetLineWidth(2);
- hPool->SetMarkerColor(kRed);
- hPool->SetMarkerStyle(20);
- hPool->SetMarkerSize(1);
- hPool->Draw("EP");
- hPool->GetXaxis()->SetTitle(hDATA->GetXaxis()->GetTitle()); 
- hPool->GetYaxis()->SetTitle("2(DATA-MC)/(DATA+MC)"); 
- hPool->Draw("EP");
+ hPull->SetLineColor(kRed);
+ hPull->SetLineWidth(2);
+ hPull->SetMarkerColor(kRed);
+ hPull->SetMarkerStyle(20);
+ hPull->SetMarkerSize(1);
+ hPull->Draw("EP");
+ hPull->GetXaxis()->SetTitle(hDATA->GetXaxis()->GetTitle()); 
+ hPull->GetYaxis()->SetTitle("2(DATA-MC)/(DATA+MC)"); 
+ hPull->Draw("EP");
  gPad->SetGrid();
 }
 
 ///==== Draw Stack ====
 ///---- if error == 1 than consider systematic error
-void DrawStack(THStack* hs, int error, double syst){ 
+void DrawStack(THStack* hs, int error, double syst, TString option){ 
  if (error == 1) {
    DrawStackError(hs, syst);
  }
  else {
   TObjArray* histos = hs->GetStack () ;
-  Int_t number = histos->GetEntries();
-  TH1F* last = (TH1F*) histos->At (number-1) ;
-  last->Draw ("hist") ;
-  for (int i = number-2 ; i >=0 ; --i) 
-  {
-   TH1F * histo = (TH1F*) histos->At (i) ;
-   Style_t origStyle = histo->GetFillStyle ();
-   Color_t origColor = histo->GetFillColor ();
-   TH1F* dummy = (TH1F*) histo->Clone () ;
-   dummy->SetFillStyle (1001) ; 
-   dummy->SetFillColor (10) ;        
-   dummy->Draw ("same hist") ;
-   histo->Draw ("same hist") ;
+  if (histos) {
+   Int_t number = histos->GetEntries();
+   TH1F* last = (TH1F*) histos->At (number-1) ;
+   TString newoption = Form ("hist%s",option.Data());
+   last->Draw (newoption) ;
+   for (int i = number-2 ; i >=0 ; --i) {
+    TH1F * histo = (TH1F*) histos->At (i) ;
+//     Style_t origStyle = histo->GetFillStyle ();
+//     Color_t origColor = histo->GetFillColor ();
+//     TH1F* dummy = (TH1F*) histo->Clone () ;
+//     dummy->SetFillStyle (1001) ; 
+//     dummy->SetFillColor (10) ;    
+    TString newoptionIn = Form ("same hist %s",option.Data());
+//     dummy->Draw (newoptionIn) ;
+    histo->Draw (newoptionIn) ;
+   }
   }
  }
 }
@@ -821,38 +828,39 @@ void DrawStack(THStack* hs, int error, double syst){
 ///==== Draw Stack ====
 void DrawStackError(THStack* hs, double syst){ 
  TObjArray* histos = hs->GetStack () ;
- Int_t number = histos->GetEntries();
- TH1F* last = (TH1F*) histos->At (number-1) ;
- last->DrawClone ("hist") ;
- for (int i = number-2 ; i >=0 ; --i) 
- {
-  TH1F * histo = (TH1F*) histos->At (i) ;
-  Style_t origStyle = histo->GetFillStyle ();
-  Color_t origColor = histo->GetFillColor ();
-  TH1F* dummy = (TH1F*) histo->Clone () ;
-  dummy->SetFillStyle (1001) ; 
-  dummy->SetFillColor (10) ;        
-  dummy->Draw ("same hist") ;
-  histo->Draw ("same hist") ;
- }
- Style_t origStyleLast = last->GetFillStyle ();
- Color_t origColorLast = last->GetFillColor ();
- last->SetFillStyle(3335);
- last->SetFillColor(kBlack);
- last->SetMarkerSize(0);
- 
- std::vector <double> vErr ;
- for (int iBin = 0 ; iBin < last->GetNbinsX(); iBin++) {
-  double additionalError = last->GetBinContent(iBin+1) * syst;
-  vErr.push_back(last->GetBinError(iBin+1));
-  last->SetBinError(iBin+1,sqrt(additionalError*additionalError + last->GetBinError(iBin+1) * last->GetBinError(iBin+1)) );
- }
- last->DrawClone ("sameE2") ;
- //---- restore hist ----
- last->SetFillStyle(origStyleLast);
- last->SetFillColor(origColorLast);
- for (int iBin = 0 ; iBin < last->GetNbinsX(); iBin++) {
-  last->SetBinError(iBin+1, vErr.at(iBin));
+ if (histos) {
+  Int_t number = histos->GetEntries();
+  TH1F* last = (TH1F*) histos->At (number-1) ;
+  last->DrawClone ("hist") ;
+  for (int i = number-2 ; i >=0 ; --i) {
+   TH1F * histo = (TH1F*) histos->At (i) ;
+//    Style_t origStyle = histo->GetFillStyle ();
+//    Color_t origColor = histo->GetFillColor ();
+//    TH1F* dummy = (TH1F*) histo->Clone () ;
+//    dummy->SetFillStyle (1001) ; 
+//    dummy->SetFillColor (10) ;        
+//    dummy->Draw ("same hist") ;
+   histo->Draw ("same hist") ;
+  }
+  Style_t origStyleLast = last->GetFillStyle ();
+  Color_t origColorLast = last->GetFillColor ();
+  last->SetFillStyle(3335);
+  last->SetFillColor(kBlack);
+  last->SetMarkerSize(0);
+  
+  std::vector <double> vErr ;
+  for (int iBin = 0 ; iBin < last->GetNbinsX(); iBin++) {
+   double additionalError = last->GetBinContent(iBin+1) * syst;
+   vErr.push_back(last->GetBinError(iBin+1));
+   last->SetBinError(iBin+1,sqrt(additionalError*additionalError + last->GetBinError(iBin+1) * last->GetBinError(iBin+1)) );
+  }
+  last->DrawClone ("sameE2") ;
+  //---- restore hist ----
+  last->SetFillStyle(origStyleLast);
+  last->SetFillColor(origColorLast);
+  for (int iBin = 0 ; iBin < last->GetNbinsX(); iBin++) {
+   last->SetBinError(iBin+1, vErr.at(iBin));
+  }
  }
 }
 
@@ -874,13 +882,15 @@ void AddError(THStack* hs, double syst){
 ///---- if error == 1 than consider systematic error
 void DrawStackNormalized(THStack* hs){ 
  TObjArray* histos = hs->GetStack () ;
- Int_t number = histos->GetEntries();
- TH1F* last = (TH1F*) histos->At (number-1) ;
- last->DrawNormalized ("L") ;
- for (int i = number-2 ; i >=0 ; --i){
-  TH1F * histo = (TH1F*) histos->At (i) ;
-  histo->DrawNormalized ("same L") ;
- } 
+ if (histos) {
+  Int_t number = histos->GetEntries();
+  TH1F* last = (TH1F*) histos->At (number-1) ;
+  last->DrawNormalized ("L") ;
+  for (int i = number-2 ; i >=0 ; --i){
+   TH1F * histo = (TH1F*) histos->At (i) ;
+   histo->DrawNormalized ("same L") ;
+  }
+ }
 }
 
 
@@ -1258,7 +1268,7 @@ bool IsMu_VBFMerged( treeReader& reader, int iMu){
            ) 
         )
       && reader.GetInt("muons_innerTrack_found")->at(iMu)>10 
-      && reader.GetInt("muons_numberOfValidPixelHits")->at(iMu)>0       //------------------------> to be added!
+//      && reader.GetInt("muons_numberOfValidPixelHits")->at(iMu)>0       //------------------------> to be added!
       && fabs(reader.GetFloat("muons_trackPtErrorOverPt")->at(iMu)) < 0.10
       )   
      ) skipMu=true;
@@ -1361,7 +1371,8 @@ bool IsMu_Soft( treeReader& reader, int iMu){
      reader.Get4V("muons")->at(iMu).pt()>3 && 
      reader.GetInt("muons_tracker")->at(iMu) &&
 
-     reader.GetFloat("muons_TMLastStationAngTight")->at(iMu) > 0.5 &&  //=========> angTIght to be added!
+     reader.GetFloat("muons_TMLastStationTight")->at(iMu) > 0.5 &&  //=========> angTIght to be added!
+     reader.GetFloat("muons_TMLastStationTight")->at(iMu) > 0.5 &&  //=========> angTIght to be added!
      
      reader.GetInt("muons_innerTrack_found")->at(iMu)>10 &&
      fabs(reader.GetFloat("muons_dz_PV")->at(iMu))<0.1&&
@@ -1398,7 +1409,7 @@ bool IsJetID( treeReader& reader, int iJet){
      multiplicity ==0
      )   skipJet=true;
 
-  if(fabs(reader.Get4V("jets")->at(iJet).Eta()) <2.4) { 
+  if(reader.Get4V("jets")->at(iJet).Eta() <2.4) { 
      if( 
          reader.GetFloat("jets_chargedEmEnergyFraction")->at(iJet)>=0.99 ||
          reader.GetFloat("jets_chargedHadronEnergyFraction")->at(iJet) ==0 ||
@@ -1414,7 +1425,20 @@ bool IsJetID( treeReader& reader, int iJet){
 
 
 
-
+///---- canvas division ----
+void DivideCanvas(TPad* cPad, int numberCanvas, double x1, double y1, double x2, double y2, double yb, double yt, double xl, double xr) {
+ const char* nameIn = cPad->GetName();
+ Int_t nchname  = strlen(nameIn)+6;
+ char *name  = new char [nchname];
+ snprintf(name,nchname,"%s_%d",nameIn,numberCanvas);
+ TPad* pad = new TPad(name,name,x1,y1,x2,y2);
+ pad->SetNumber(numberCanvas);
+ if (xl != -99) pad->SetLeftMargin(xl);
+ if (xr != -99) pad->SetRightMargin(xr);
+ if (yb != -99) pad->SetBottomMargin(yb);
+ if (yt != -99) pad->SetTopMargin(yt);
+ pad->Draw();
+}
 
 
 
