@@ -51,7 +51,8 @@ int GetNumList(std::vector<int> &list){
 
 int main(int argc, char** argv)
 { 
- 
+ TFormula::SetMaxima(10000);   //---- for too long "draw" instructions ----
+  
 //  TProof::Open("");
  
 //  TDRStyle();
@@ -135,9 +136,9 @@ int main(int argc, char** argv)
  
  
 
- int nCol = 52+6+19+4+12;
- const std::string sampNames[] = { "Undefined",                            "DY",              "top"  ,               "WZ/ZZ"   ,                "WW",              "Wjets",             "ggH-110",              "qqH-110",                "ggH-115",                 "qqH-115",               "ggH-120",                "qqH-120",              "ggH-130",               "qqH-130",              "ggH-140",               "qqH-140",                "ggH-150",                   "qqH-150",                "ggH-160",                 "qqH-160",             "ggH-170",              "qqH-170",              "ggH-180",               "qqH-180",               "ggH-190",                "qqH-190",                 "ggH-200",                  "qqH-200",              "ggH-250",               "qqH-250",               "ggH-300",                "qqH-300",              "ggH-350",               "qqH-350",                "ggH-400",                 "qqH-400",             "ggH-450",              "qqH-450",               "ggH-500",                "qqH-500",             "ggH-550",              "qqH-550",              "ggH-600",             "qqH-600"    ,             "ggH"       ,             "qqH"       ,             "VV"        ,             "W"         ,             "DYmumu"     ,             "DYee"       ,             "DYtautau"   ,             "ZV"           ,             "ZJets"           ,             "WJets"           ,             "Top"           ,             "WW"   ,             "VV"        ,             "HWW"       ,             "HWW-110"  ,             "HWW-110x10"  ,             "HWW-115"  ,             "HWW-115x10"  ,             "HWW-118"  ,             "HWW-118x10"  ,             "HWW-120" ,             "HWW-120x10"   ,             "HWW-122"  ,             "HWW-122x10"  ,             "HWW-124"  ,             "HWW-124x10"  ,             "HWW-126"  ,             "HWW-126x10"  ,             "HWW-128"  ,             "HWW-128x10"  ,             "HWW-130"  ,             "HWW-130x10"   ,             "HWW-135"  ,             "HWW-135x10"  ,             "HWW-140"  ,             "HWW-150"  ,             "HWW-160"  ,             "HWW-170"  ,             "HWW-180"  ,             "HWW-190"  ,             "HWW-200"  ,             "HWW-250"  ,             "HWW-300"  ,             "HWW-350"  ,             "HWW-400"  ,             "HWW-450"  ,             "HWW-500"  ,             "HWW-550"  ,             "HWW-600"      };
- EColor vColorMap[]            = { (EColor) ( kWhite),(EColor) (      kGreen+2),(EColor) (  kYellow ),(EColor) (   kAzure-2),(EColor) (    kAzure-9),(EColor) (   kGray+1),(EColor) (     kRed+1),(EColor) (      kRed+2),(EColor) (     kOrange+1),(EColor) (      kOrange+2),(EColor) (      kBlue+1),(EColor) (       kBlue+2),(EColor) (     kTeal+1),(EColor) (      kTeal+2),(EColor) (     kBlue+1),(EColor) (      kBlue+2),(EColor) (     kMagenta+1),(EColor) (      kMagenta+2),(EColor) (        kRed+1),(EColor) (         kRed+2),(EColor) (     kRed+1),(EColor) (      kRed+2),(EColor) (     kTeal+1),(EColor) (      kTeal+2),(EColor) (     kBlack+1),(EColor) (      kBlack+2),(EColor) (     kMagenta+1),(EColor) (      kMagenta+2),(EColor) (     kGray+1),(EColor) (      kGray+2),(EColor) (     kGreen+1),(EColor) (      kGreen+2),(EColor) (     kBlue+1),(EColor) (      kBlue+2),(EColor) (     kYellow+1),(EColor) (      kYellow+2),(EColor) (     kRed+1),(EColor) (      kRed+2),(EColor) (     kBlack+1),(EColor) (      kBlack+2),(EColor) (     kRed+1),(EColor) (      kRed+2),(EColor) (     kTeal+1),(EColor) (      kTeal+2 ) ,(EColor) (      kRed+2 ) ,(EColor) (      kRed+4 ) ,(EColor) (      kBlue+2 ),(EColor) (      kGray+2 ),(EColor) (      kGreen+2 ),(EColor) (      kGreen+4 ),(EColor) (      kGreen+6 ),(EColor) (      kMagenta)   ,(EColor) (      kGreen+2)   ,(EColor) (      kGray+1 )   ,(EColor) (      kYellow)    ,(EColor) (      kAzure-9)  ,(EColor) (      kAzure-2),(EColor) (      kRed+1)  ,(EColor) (      kRed+1) ,(EColor) (      kRed+1)    ,(EColor) (     kBlue+1) ,(EColor) (     kBlue+1)    ,(EColor) (     kTeal+1) ,(EColor) (     kTeal+1)    ,(EColor) (      kRed+2),(EColor) (      kRed+2)     ,(EColor) (  kMagenta+1) ,(EColor) (  kMagenta+1)    ,(EColor) (    kGreen+1) ,(EColor) (    kGreen+1)    ,(EColor) (  kMagenta+4) ,(EColor) (  kMagenta+4)    ,(EColor) (  kMagenta-3) ,(EColor) (  kMagenta-3)    ,(EColor) (     kBlue+2) ,(EColor) (     kBlue+2)     ,(EColor) (     kBlue-1) ,(EColor) (     kBlue-1)    ,(EColor) (      kRed+3) ,(EColor) (     kBlue+3) ,(EColor) (      kRed+4) ,(EColor) (     kBlue+4) ,(EColor) (      kRed+5) ,(EColor) (     kBlue+5) ,(EColor) (      kRed+6) ,(EColor) (     kBlue+6) ,(EColor) (      kRed+7) ,(EColor) (     kBlue+7) ,(EColor) (      kRed-1) ,(EColor) (     kBlue-1) ,(EColor) (      kRed-2) ,(EColor) (     kBlue-2) ,(EColor) (     kRed-3)      };
+ int nCol = 52+6+19+4+12+1+6+2+1+2;
+ const std::string sampNames[] = { "Undefined",                            "DY",              "top"  ,               "WZ/ZZ"   ,                "WW",              "Wjets",             "ggH-110",              "qqH-110",                "ggH-115",                 "qqH-115",               "ggH-120",                "qqH-120",               "VH-120",              "ggH-130",               "qqH-130",               "VH-130",              "ggH-140",               "qqH-140",               "VH-140",                "ggH-150",                   "qqH-150",               "VH-150",                "ggH-160",                 "qqH-160",                  "VH-160",             "ggH-170",              "qqH-170",               "VH-170",              "ggH-180",               "qqH-180",               "VH-180",               "ggH-190",                "qqH-190",               "VH-190",                 "ggH-200",                  "qqH-200",              "ggH-250",               "qqH-250",               "ggH-300",                "qqH-300",              "ggH-350",               "qqH-350",                "ggH-400",                 "qqH-400",             "ggH-450",              "qqH-450",               "ggH-500",                "qqH-500",             "ggH-550",              "qqH-550",              "ggH-600",             "qqH-600"    ,             "ggH"       ,             "qqH"      ,              "VH"        ,             "VV"         ,             "VV-DY-Fake",             "W"         ,             "DYmumu"     ,             "DYee"       ,             "DYtautau"   ,             "DY#tau#tau"   ,          "DY#tau#tau-MC"   ,             "ZV"           ,             "ZJets"           ,             "WJets"           ,             "t#bar{t}"         ,             "ttbar"                ,             "Top"           ,             "WW"   ,             "VV"        ,             "HWW"       ,             "HWW-110"  ,             "HWW-110x10"  ,             "HWW-115"  ,             "HWW-115x10"  ,             "HWW-118"  ,             "HWW-118x10"  ,             "HWW-120" ,             "HWW-120x10"   ,             "HWW-122"  ,             "HWW-122x10"  ,             "HWW-124"  ,             "HWW-124x10"  ,             "HWW-126"  ,             "HWW-126x10"  ,             "HWW-128"  ,             "HWW-128x10"  ,             "HWW-130"  ,             "HWW-130x10"   ,             "HWW-135"  ,             "HWW-135x10"  ,             "HWW-140"  ,             "HWW-150"  ,             "HWW-160"  ,             "HWW-170"  ,             "HWW-180"  ,             "HWW-190"  ,             "HWW-200"  ,             "HWW-250"  ,             "HWW-300"  ,             "HWW-350"  ,             "HWW-400"  ,             "HWW-450"  ,             "HWW-500"  ,             "HWW-550"  ,             "HWW-600"      };
+ EColor vColorMap[]            = { (EColor) ( kWhite),(EColor) (      kGreen+2),(EColor) (  kYellow ),(EColor) (   kAzure-2),(EColor) (    kAzure-9),(EColor) (   kGray+1),(EColor) (     kRed+1),(EColor) (      kRed+2),(EColor) (     kOrange+1),(EColor) (      kOrange+2),(EColor) (      kBlue+1),(EColor) (       kBlue+2),(EColor) (     kBlue+3),(EColor) (  kMagenta-7),(EColor) (   kMagenta+0),(EColor) (  kMagenta+2),(EColor) (     kBlue+1),(EColor) (      kBlue+2),(EColor) (     kBlue+3),(EColor) (     kMagenta+1),(EColor) (      kMagenta+2),(EColor) (  kMagenta+3),(EColor) (        kRed+1),(EColor) (         kRed+2),(EColor) (         kRed+3),(EColor) (     kRed+1),(EColor) (      kRed+2),(EColor)     (  kRed+3),(EColor) (     kTeal+1),(EColor) (      kTeal+2),(EColor) (     kTeal+2),(EColor) (     kBlack+1),(EColor) (      kBlack+2),(EColor) (    kBlack+3),(EColor) (     kMagenta+1),(EColor) (      kMagenta+2),(EColor) (     kGray+1),(EColor) (      kGray+2),(EColor) (     kGreen+1),(EColor) (      kGreen+2),(EColor) (     kBlue+1),(EColor) (      kBlue+2),(EColor) (     kYellow+1),(EColor) (      kYellow+2),(EColor) (     kRed+1),(EColor) (      kRed+2),(EColor) (     kBlack+1),(EColor) (      kBlack+2),(EColor) (     kRed+1),(EColor) (      kRed+2),(EColor) (     kTeal+1),(EColor) (      kTeal+2 ) ,(EColor) (      kRed+2 ) ,(EColor) (      kRed+4 ),(EColor) (      kRed+3 )  ,(EColor) (      kBlue+0 ) ,(EColor) (      kBlue+0 ),(EColor) (      kGray+2 ),(EColor) (      kGreen+2 ),(EColor) (      kGreen+4 ),(EColor) (      kGreen+6 ),(EColor) (        kMagenta ),(EColor) (        kRed     ),(EColor) (      kMagenta)   ,(EColor) (      kGreen+2)   ,(EColor) (      kGray+1 )   ,(EColor) (      kOrange)        ,(EColor) (      kOrange)            ,(EColor) (      kYellow)    ,(EColor) (      kAzure-9)  ,(EColor) (      kAzure-2),(EColor) (      kRed+1)  ,(EColor) (      kRed+1) ,(EColor) (      kRed+1)    ,(EColor) (     kBlue+1) ,(EColor) (     kBlue+1)    ,(EColor) (     kTeal+1) ,(EColor) (     kTeal+1)    ,(EColor) (      kRed+2),(EColor) (      kRed+2)     ,(EColor) (  kMagenta+1) ,(EColor) (  kMagenta+1)    ,(EColor) (    kGreen+1) ,(EColor) (    kGreen+1)    ,(EColor) (  kMagenta+4) ,(EColor) (  kMagenta+4)    ,(EColor) (  kMagenta-3) ,(EColor) (  kMagenta-3)    ,(EColor) (     kBlue+2) ,(EColor) (     kBlue+2)     ,(EColor) (     kBlue-1) ,(EColor) (     kBlue-1)    ,(EColor) (      kRed+3) ,(EColor) (     kBlue+3) ,(EColor) (      kRed+4) ,(EColor) (     kBlue+4) ,(EColor) (      kRed+5) ,(EColor) (     kBlue+5) ,(EColor) (      kRed+6) ,(EColor) (     kBlue+6) ,(EColor) (      kRed+7) ,(EColor) (     kBlue+7) ,(EColor) (      kRed-1) ,(EColor) (     kBlue-1) ,(EColor) (      kRed-2) ,(EColor) (     kBlue-2) ,(EColor) (     kRed-3)      };
  
  
 //  EColor vColorSig[1000] = {
@@ -194,7 +195,7 @@ int main(int argc, char** argv)
  int Normalize = gConfigParser -> readIntOption("Input::Normalize");
  
  std::vector<std::vector<std::string> > SignalName;
- int numSignalSets = 1;
+ int numSignalSets = -1;
  
  try {
   numSignalSets = gConfigParser -> readIntOption("Input::SignalSets");
@@ -204,11 +205,12 @@ int main(int argc, char** argv)
  }
  std::cout << ">>>>> Input::SignalSets  " << numSignalSets  << std::endl;  
  
- if (numSignalSets == 1) {
+ if (numSignalSets == -1) {
   try {
    std::vector<std::string> tempSignalName;
    tempSignalName = gConfigParser -> readStringListOption("Input::SignalName");
    SignalName.push_back(tempSignalName);
+   numSignalSets = 1;
   }
   catch (char const* exceptionString){
    std::cerr << " exception = " << exceptionString << std::endl;
@@ -329,31 +331,32 @@ int main(int argc, char** argv)
  
  
  
- TTree *treeEffVect[83];
- TTree *treeJetLepVect[83];
+ TTree *treeEffVect[27];
+ TTree *treeJetLepVect[27];
  
 
  
   //  [iCut][iVar] 
- TString* infoString[103][43];
- TLatex *infoLatex[103][43]; 
- TCanvas* ccCanvas[103][43];
- TCanvas* ccCanvasNormalize[103][43];
- TCanvas* ccCanvasPull[103][43];
- TCanvas* ccCanvasVarAndPull[103][43];
- TCanvas* ccCanvasPullTrace[103][43];
- TH1F* histoSumMC[103][43];
+ TString* infoString[351][21];
+ TLatex *infoLatex[351][21]; 
+ TCanvas* ccCanvas[351][21];
+ TCanvas* ccCanvasNormalize[351][21];
+ TCanvas* ccCanvasPull[351][21];
+ TCanvas* ccCanvasVarAndPull[351][21];
+ TCanvas* ccCanvasPullTrace[351][21];
+ TH1F* histoSumMC[351][21];
  //  [iName][iCut][iVar]
- TH1F* histo[83][103][43];
- TH1F* histo_temp[83][103][43];
+ TH1F* histo[27][351][21];
+ TH1F* histo_temp[27][351][21];
 
  //  [iName][iCut]
- double numEvents[83][103];
+ double numEvents[27][351];
  
  char *nameSample[1000];
  char *nameHumanReadable[1000];
  char* xsectionName[1000];
  
+ char NameNormalization[1000][1000];
  double Normalization[1000];
  double xsection[1000];
  char nameFileIn[1000];
@@ -402,6 +405,8 @@ int main(int argc, char** argv)
   }
  }
  
+ std::cout << " nCuts   = " << vCut.size() << std::endl;
+ 
  
  ///==== output file ====
  std::string OutFileName    = gConfigParser -> readStringOption("Output::outFileName");
@@ -449,18 +454,20 @@ int main(int argc, char** argv)
   
   char nameFile[20000];
   sprintf(nameFile,"%s/%s%s.root",inputDirectory.c_str(),inputBeginningFile.c_str(),nameSample[iSample]);  
+  if (debug) std::cout << " nameFile = " << nameFile << std::endl;
+  
   TFile* f = new TFile(nameFile, "READ");
   
   treeEffVect[iSample] = (TTree*) f->Get(treeNameSelections.c_str());
   
   if (treeEffVect[iSample] != 0) {
-   char nameTreeEff[83];
+   char nameTreeEff[27];
    sprintf(nameTreeEff,"treeEff_%d",iSample); 
    treeEffVect[iSample]->SetName(nameTreeEff);      
   }
   
   treeJetLepVect[iSample] = (TTree*) f->Get(treeName.c_str());
-  char nameTreeJetLep[83];
+  char nameTreeJetLep[27];
   sprintf(nameTreeJetLep,"treeJetLep_%d",iSample); 
   treeJetLepVect[iSample]->SetName(nameTreeJetLep);
  }
@@ -525,7 +532,11 @@ int main(int argc, char** argv)
    Normalization[iSample] = 0; 
   }  
   
-  if (Latinos) Normalization[iSample] = XSection * LUMI / 1000.;
+  if (Latinos) {
+   sprintf (NameNormalization[iSample], "(%s) *  %f / 1000. ", xsectionName[iSample], LUMI);
+   Normalization[iSample] = XSection * LUMI / 1000.;   
+//    std::cout << " NameNormalization[" << iSample << "] = " << NameNormalization[iSample] << " ---  Normalization[" << iSample << "] = " << Normalization[iSample] << std::endl;
+  }
  }
  
  
@@ -569,9 +580,9 @@ int main(int argc, char** argv)
    ///==== cicle on samples ====
    for (int iSample = (numberOfSamples-1); iSample>= 0; iSample--){
     if (debug) std::cout << " Sample[" << iSample << ":" << numberOfSamples << "] = " << nameSample[iSample] << " ~~ " << std::endl;
-    TString name_histo_temp = Form("%s_%d_%d_temp",nameSample[iSample], iCut, iVar);
+    TString name_histo_temp = Form("%s_%d_%d_%d_temp",nameSample[iSample], iCut, iVar,iSample);
     histo_temp[iSample][iCut][iVar] = new TH1F(name_histo_temp,name_histo_temp,vNBin.at(iVar),vMin.at(iVar), vMax.at(iVar));
-    char toDraw[1000];
+    char toDraw[100000];
     sprintf(toDraw,"%s >> %s",vVarName.at(iVar).c_str(),name_histo_temp.Data());      
 
     histo_temp[iSample][iCut][iVar] -> Sumw2(); //---- così mette l'errore giusto!
@@ -603,16 +614,18 @@ int main(int argc, char** argv)
       }
      }
      //      CutExtended = Form ("(%s) * autoWeight(numPUMC) * ptHWeight(ptH)",Cut.Data());    
+     CutExtended = Form ("(%s) * (%s)",CutExtended.Data(),NameNormalization[iSample] );    
     }
-    else {
+    else { //---- if LHC data
      CutExtended = Form ("(%s)",Cut.Data());    
     }
     treeJetLepVect[iSample]->Draw(toDraw,CutExtended,"");
     
-    if (Normalization[iSample]>0) { 
-//      histo_temp[iSample][iCut][iVar] -> Sumw2();
-     histo_temp[iSample][iCut][iVar] -> Scale(Normalization[iSample]); 
-    }
+//     std::cout << " CutExtended = " << CutExtended.Data() << std::endl;
+//     if (Normalization[iSample]>0) { 
+// //      histo_temp[iSample][iCut][iVar] -> Sumw2();
+//      histo_temp[iSample][iCut][iVar] -> Scale(Normalization[iSample]); 
+//     }
     
 //     std::cout << "Processing: " << blue << (((double) numberOfSamples - iSample)/numberOfSamples) << "% \r"  << normal << std::flush;
    } ///==== end cicle on samples ====
@@ -729,22 +742,22 @@ int main(int argc, char** argv)
  std::cout << " last plot " << std::endl;
  
 //  [iName]
- TH1F* hTrend[83];
+ TH1F* hTrend[27];
  THStack* hsTrend;
  //   [iSignalSet]
  THStack* hsSignalTrend[30];
  //  [iCut]
- TPie* hTrendPie[103];
+ TPie* hTrendPie[351];
  
  
  //  [iCut][iVar][iSignalSet]
- THStack* hsSignal[103][83][30];
- THStack* hs[103][83];
- TH1F* hPull[103][83];
- TH1F* hPullTrace[103][83];
+ THStack* hsSignal[351][27][30];
+ THStack* hs[351][27];
+ TH1F* hPull[351][27];
+ TH1F* hPullTrace[351][27];
 
- TGraphErrors* grPull[103][83];
- TGraphErrors* grPullMC[103][83];
+ TGraphErrors* grPull[351][27];
+ TGraphErrors* grPullMC[351][27];
  
  
  std::cout << std::endl;
@@ -1024,26 +1037,25 @@ int main(int argc, char** argv)
  
  std::cout << std::endl;
  std::cout << " Plot ... (wait) " << std::endl;
- TCanvas* cTrendPie[83];
- TCanvas* cTrendPieAll = new TCanvas("cTrendPieAll","cTrendPieAll",400 * vCut.size(),400);
+ TCanvas* cTrendPie[27];
+ TCanvas* cTrendPieAll = new TCanvas("cTrendPieAll","cTrendPieAll",30 * vCut.size(),30);
  cTrendPieAll -> Divide (vCut.size());
  TCanvas* cTrend = new TCanvas("cTrend","cTrend",400,400);
  TCanvas* cTrendPull = new TCanvas("cTrendPull","cTrendPull",500,670); // 800);
  
- TCanvas* cCompareCutPull[83];
- TCanvas* cCompareVarPull[83];
+ TCanvas* cCompareCutPull[351];
+ TCanvas* cCompareVarPull[27];
  
- TCanvas* cCompareCut[103];
- TCanvas* cCompareVar[83];
+ TCanvas* cCompareCut[351];
+ TCanvas* cCompareVar[27];
  
  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
   TString titleCanvas = Form("%d_Cut_Canvas %s",iCut,vCutHR.at(iCut).c_str());
   TString nameCanvas = Form("%d_Cut_Canvas",iCut);
-  cCompareCut[iCut] = new TCanvas(nameCanvas,titleCanvas,400 * vVarName.size(),400);
+  cCompareCut[iCut] = new TCanvas(nameCanvas,titleCanvas,30 * vVarName.size(),30);
   cCompareCut[iCut] -> Divide (vVarName.size(),1);
   TString nameCanvasPull = Form("%d_Cut_Canvas_Pull",iCut);
   cCompareCutPull[iCut] = new TCanvas(nameCanvasPull,titleCanvas,500 * vVarName.size(),670); //400*3);
-//   cCompareCutPull[iCut] -> Divide (vVarName.size(),3);
   for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
    //    void DivideCanvas(TPad* cPad, int numberCanvas, double x1, double y1, double x2, double y2 = 0, double yb = 0, double yt = 0, double xl = 0, double xr = 0); 
    DivideCanvas((TPad*) cCompareCutPull[iCut]->cd(), iVar+1,                 iVar * (1. / vVarName.size()) , 0.40, (iVar+1) * (1. / vVarName.size()), 1.00, -99, -99, -99, 0.23);
@@ -1055,10 +1067,10 @@ int main(int argc, char** argv)
  
  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){ ///==== cicle on variables to plot ====
    TString nameCanvas = Form("%d_Var_Canvas",iVar);
-   cCompareVar[iVar] = new TCanvas(nameCanvas,nameCanvas,400,400 * vCut.size());
+   cCompareVar[iVar] = new TCanvas(nameCanvas,nameCanvas,30,30 * vCut.size());
    cCompareVar[iVar] -> Divide (1,vCut.size());
    TString nameCanvasPull = Form("%d_Var_Canvas_Pull",iVar);
-   cCompareVarPull[iVar] = new TCanvas(nameCanvasPull,nameCanvasPull,400*3,400 * vCut.size());
+   cCompareVarPull[iVar] = new TCanvas(nameCanvasPull,nameCanvasPull,30*3,30 * vCut.size());
    cCompareVarPull[iVar] -> Divide (3,vCut.size());
  }
  
@@ -1079,7 +1091,6 @@ int main(int argc, char** argv)
 // //    void DivideCanvas(TPad* cPad, int numberCanvas, double x1, double y1, double x2, double y2 = 0, double yb = 0, double yt = 0, double xl = 0, double xr = 0); 
    DivideCanvas((TPad*) ccCanvasVarAndPull[iCut][iVar]->cd(), 1, 0.00, 0.30, 0.77, 1.00, -99, -99, -99, 0.10);
    DivideCanvas((TPad*) ccCanvasVarAndPull[iCut][iVar]->cd(), 2, 0.00, 0.02, 0.77, 0.25, -99, -99, -99, 0.10);
-//    ccCanvasVarAndPull[iCut][iVar]->Divide(1,2,0.01,0);
   }
  } 
   
@@ -1087,27 +1098,16 @@ int main(int argc, char** argv)
  cTrend->cd();
  DrawStack(hsTrend,1,LumiSyst);
  for (int iSignalSet = 0; iSignalSet < numSignalSets; iSignalSet++) {
-//   std::cout << std::endl << " iSignalSet = " << iSignalSet << " --> pointer = " << hsSignalTrend[iSignalSet] << std::endl;
   if (Discovery) DrawStack(hsSignalTrend[iSignalSet],0,0,"EsameP");
  } 
  
  if (numDATA != -1) hTrend[numDATA] -> Draw("EsameP");
-//  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
-//   bool isSig = false;
-//   for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
-//    if (reduced_name_samples.at(iName) == *itSig) isSig = true;
-//   }
-//   if (isSig) {
-//    hTrend[iName]->Draw("EsameP");
-//   }
-//  } 
 
  gPad->SetLogy();
  gPad->SetGrid();
  leg->Draw();
  latex->Draw();
   
-//  cTrendPull->Divide(1,3);
  DivideCanvas((TPad*) cTrendPull->cd(), 1, 0.0, 0.40, 0.77, 1.00, 0.30, -99, -99, 0.10);
  DivideCanvas((TPad*) cTrendPull->cd(), 2, 0.0, 0.20, 0.77, 0.39, 0.30, -99, -99, 0.10);
  DivideCanvas((TPad*) cTrendPull->cd(), 3, 0.0, 0.02, 0.77, 0.15, 0.30, -99, -99, 0.10);
@@ -1119,22 +1119,14 @@ int main(int argc, char** argv)
   if (Discovery) DrawStack(hsSignalTrend[iSignalSet],0,0,"EsameP");
  }
  if (numDATA != -1) hTrend[numDATA] -> Draw("EsameP"); 
-//  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
-//   bool isSig = false;
-//   for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
-//    if (reduced_name_samples.at(iName) == *itSig) isSig = true;
-//   }
-//   if (isSig) {
-//    hTrend[iName]->Draw("EsameP");
-//   }
-//  }
+
  gPad->SetLogy();
  gPad->SetGrid();
  cTrendPull->cd();
  leg->Draw();
  latex->Draw();
  cTrendPull->cd(2);
-//  hPullTrendSumMC->Draw("EP");
+
  if (grPullTrendSumMCMC) grPullTrendSumMCMC -> Draw("A2");     //    grPullTrendSumMCMC -> Draw("AE3");
  if (grPullTrendSumMC)   grPullTrendSumMC   -> Draw("PsameE");  
  
@@ -1444,7 +1436,7 @@ int main(int argc, char** argv)
  cdAll->mkdir("Var");
  cdAll->mkdir("Pull");
  cdAll->mkdir("PullTrace");
- cdAll->mkdir("VarPull");
+ TDirectory* cdVarPull = (TDirectory*) cdAll->mkdir("VarPull"); 
  
  outFile.cd("All/Var");
  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
@@ -1480,6 +1472,12 @@ int main(int argc, char** argv)
  outFile.cd();
  outFile.cd("All/VarPull");
  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+  outFile.cd();
+  TString dirName = Form ("cut-%d",iCut);
+  cdVarPull->mkdir(dirName.Data());
+  outFile.cd();
+  TString absoluteDirName = Form ("All/VarPull/cut-%d",iCut);
+  outFile.cd(absoluteDirName.Data());
   for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
    ccCanvasVarAndPull[iCut][iVar]-> Write();
   }
