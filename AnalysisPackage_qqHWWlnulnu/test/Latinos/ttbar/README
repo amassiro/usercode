@@ -2,13 +2,78 @@
  Top Background Data Driven Estimation Tool
 ##############################################
 
-ls test/Latinos/ttbar/datacard/H*.cfg | grep -v MiBiNT | awk '{printf "./bin/MCDATAComparisonPLOTTool.exe "$1" \n"}' | /bin/sh 
+
+rm test/Latinos/ttbar/result-value.txt
+rm test/Latinos/ttbar/result-syst.txt
+echo top > test/Latinos/ttbar/result-value.txt
+echo top > test/Latinos/ttbar/result-syst.txt
+
+ls -r test/Latinos/ttbar/datacard/H*.cfg | grep -v MiBiNT | awk '{printf "./bin/MCDATAComparisonPLOTTool.exe "$1" \n"}'  | grep MIT | /bin/sh
+ls -r test/Latinos/ttbar/datacard/H*.cfg | grep -v MiBiNT | tr "." " " | tr "/" " " | awk '{ print "root -l test/Latinos/ttbar/BTag_Efficiency.cxx#(\\\@output/out_ComparisonPLOTT_"$5".root\\\@,\\\@test/Latinos/ttbar/output/Efficiency_Plott_"$5".root\\\@,\\\@test/Latinos/ttbar/output/Event_Dumper_"$5".txt\\\@#)"}' | tr "@" "\"" | tr "#" "\\"  | grep MIT | /bin/sh
+
+ls -r test/Latinos/ttbar/datacard/H*.cfg | grep -v MiBiNT | awk '{printf "./bin/MCDATAComparisonPLOTTool.exe "$1" \n"}'  | grep WP
+for ((i=1; i<19; i++)) do  ls -r test/Latinos/ttbar/datacard/H-WP$i.cfg | grep -v MiBiNT | tr "." " " | tr "/" " " | awk '{ print "root -l test/Latinos/ttbar/BTag_Efficiency-Amassiro.cxx#(\\\@output/out_ComparisonPLOTT_"$5".root\\\@,\\\@test/Latinos/ttbar/output/Efficiency_Plott_"$5".root\\\@,\\\@test/Latinos/ttbar/output/Event_Dumper_"$5".txt\\\@#)"}' | tr "@" "\"" | tr "#" "\\"  | grep WP ;   done
+for ((i=1; i<19; i++)) do  ls -r test/Latinos/ttbar/datacard/H-WP$i.cfg | grep -v MiBiNT | tr "." " " | tr "/" " " | awk '{ print "root -l test/Latinos/ttbar/BTag_Efficiency.cxx#(\\\@output/out_ComparisonPLOTT_"$5".root\\\@,\\\@test/Latinos/ttbar/output/Efficiency_Plott_"$5".root\\\@,\\\@test/Latinos/ttbar/output/Event_Dumper_"$5".txt\\\@#)"}' | tr "@" "\"" | tr "#" "\\"  | grep WP ;   done
+
+
+
+for ((i=1; i<19; i++)) do  cp test/Latinos/ttbar/datacard/H-WP$i.cfg test/Latinos/ttbar/datacard/H-WP$i-LP.cfg  ;   done
+for ((i=1; i<19; i++)) do  cp test/Latinos/ttbar/datacard/CutH-WP$i.txt test/Latinos/ttbar/datacard/CutH-WP$i-LP.txt  ;   done
+
+for ((i=1; i<19; i++)) do  cp test/Latinos/ttbar/datacard/H-WP$i.cfg test/Latinos/ttbar/datacard/H-WP$i-PostEPS.cfg  ;   done
+for ((i=1; i<19; i++)) do  cp test/Latinos/ttbar/datacard/CutH-WP$i.txt test/Latinos/ttbar/datacard/CutH-WP$i-PostEPS.txt  ;   done
+for ((i=1; i<19; i++)) do  ./bin/MCDATAComparisonPLOTTool.exe test/Latinos/ttbar/datacard/H-WP$i-PostEPS.cfg  ;   done
+for ((i=1; i<19; i++)) do  root -l test/Latinos/ttbar/GetTop-Result-forDataCard.cxx\(\"output/out_ComparisonPLOTT_H-WP$i.root\"\) ;   done
+
+
+for ((i=1; i<19; i++)) do  ./bin/MCDATAComparisonPLOTTool.exe test/Latinos/ttbar/datacard/H-WP$i.cfg  ;   done
+for ((i=1; i<19; i++)) do  root -l test/Latinos/ttbar/GetTop-Result-forDataCard.cxx\(\"output/out_ComparisonPLOTT_H-WP$i.root\"\) ;   done
+
+
+
+for ((i=1; i<19; i++)) do  ls -r test/Latinos/ttbar/datacard/H-WP$i.cfg | grep -v MiBiNT | tr "." " " | tr "/" " " | awk '{ print "root -l test/Latinos/ttbar/GetTop-Result-forDataCard.cxx#(\\\@output/out_ComparisonPLOTT_"$5".root\\\@#)"}' | tr "@" "\"" | tr "#" "\\"  | grep WP ;   done
+
+
+
+ls -r test/Latinos/ttbar/datacard/H*.cfg | grep -v MiBiNT | awk '{printf "./bin/MCDATAComparisonPLOTTool.exe "$1" \n"}'  | grep WP | /bin/sh
+for ((i=1; i<19; i++)) do  ls -r test/Latinos/ttbar/datacard/H-WP$i.cfg | grep -v MiBiNT | tr "." " " | tr "/" " " | awk '{ print "root -l test/Latinos/ttbar/BTag_Efficiency-Amassiro.cxx#(\\\@output/out_ComparisonPLOTT_"$5".root\\\@,\\\@test/Latinos/ttbar/output/Efficiency_Plott_"$5".root\\\@,\\\@test/Latinos/ttbar/output/Event_Dumper_"$5".txt\\\@#)"}' | tr "@" "\"" | tr "#" "\\"  | grep WP ;   done       |    /bin/sh
+
+
+ls -r test/Latinos/ttbar/datacard/H*.cfg | grep -v MiBiNT | awk '{printf "./bin/MCDATAComparisonPLOTTool.exe "$1" \n"}'  | grep MIT
+ls -r test/Latinos/ttbar/datacard/H*.cfg | grep -v MiBiNT | tr "." " " | tr "/" " " | awk '{ print "root -l test/Latinos/ttbar/BTag_Efficiency.cxx#(\\\@output/out_ComparisonPLOTT_"$5".root\\\@,\\\@test/Latinos/ttbar/output/Efficiency_Plott_"$5".root\\\@,\\\@test/Latinos/ttbar/output/Event_Dumper_"$5".txt\\\@#)"}' | tr "@" "\"" | tr "#" "\\"  | grep MIT 
+ls -r test/Latinos/ttbar/datacard/H*.cfg | grep -v MiBiNT | tr "." " " | tr "/" " " | awk '{ print "root -l test/Latinos/ttbar/BTag_Efficiency-Amassiro.cxx#(\\\@output/out_ComparisonPLOTT_"$5".root\\\@,\\\@test/Latinos/ttbar/output/Efficiency_Plott_"$5".root\\\@,\\\@test/Latinos/ttbar/output/Event_Dumper_"$5".txt\\\@#)"}' | tr "@" "\"" | tr "#" "\\"  | grep MIT 
+
+
+
+
+ls test/Latinos/ttbar/datacard/H*.cfg | grep -v MiBiNT | awk '{printf "./bin/MCDATAComparisonPLOTTool.exe "$1" \n"}' 
 ls test/Latinos/ttbar/datacard/H*.cfg | grep -v MiBiNT | tr "." " " | tr "/" " " | awk '{ print "root -l test/Latinos/ttbar/BTag_Efficiency.cxx#(\\\@output/out_ComparisonPLOTT_"$5".root\\\@,\\\@test/Latinos/ttbar/output/Efficiency_Plott_"$5".root\\\@,\\\@test/Latinos/ttbar/output/Event_Dumper_"$5".txt\\\@#)"}' | tr "@" "\"" | tr "#" "\\" 
 
 
 
+ls -r test/Latinos/ttbar/datacard/H*.cfg | grep -v MiBiNT | grep jet | awk '{printf "./bin/MCDATAComparisonPLOTTool.exe "$1" \n"}'  | grep MIT | /bin/sh
+ls -r test/Latinos/ttbar/datacard/H*.cfg | grep -v MiBiNT | grep jet | tr "." " " | tr "/" " " | awk '{ print "root -l test/Latinos/ttbar/BTag_Efficiency.cxx#(\\\@output/out_ComparisonPLOTT_"$5".root\\\@,\\\@test/Latinos/ttbar/output/Efficiency_Plott_"$5".root\\\@,\\\@test/Latinos/ttbar/output/Event_Dumper_"$5".txt\\\@#)"}' | tr "@" "\"" | tr "#" "\\"  | grep MIT | /bin/sh
 
 
+
+ls -r test/Latinos/ttbar/datacard/H*.cfg | grep -v MiBiNT | grep -v jet | awk '{printf "./bin/MCDATAComparisonPLOTTool.exe "$1" \n"}'  | grep MIT | /bin/sh
+ls -r test/Latinos/ttbar/datacard/H*.cfg | grep -v MiBiNT | grep -v jet | tr "." " " | tr "/" " " | awk '{ print "root -l test/Latinos/ttbar/BTag_Efficiency.cxx#(\\\@output/out_ComparisonPLOTT_"$5".root\\\@,\\\@test/Latinos/ttbar/output/Efficiency_Plott_"$5".root\\\@,\\\@test/Latinos/ttbar/output/Event_Dumper_"$5".txt\\\@#)"}' | tr "@" "\"" | tr "#" "\\"  | grep MIT | /bin/sh
+
+
+
+#### to run ###
+ls test/Latinos/ttbar/Eff_Cut_H*.cfg | grep -v MiBiNT | awk '{printf "./bin/MCDATAComparisonPLOTTool.exe "$1" \n"}'
+ls output/out_ComparisonPLOTT_Efficiency_vs_Cut_H*.root | grep -v MiBiNT | tr "_" " "  | awk '{ print "root -l test/Latinos/ttbar/TopDataDrivenVsCut.cxx#(\\\@output/out_ComparisonPLOTT_Efficiency_vs_Cut_"$6"\\\@,\\\@test/Latinos/ttbar/output/TopDataDrivenVsCut_"$6"\\\@,\\\@test/Latinos/ttbar/Efficiency_vs_Cut.txt\\\@#)"}' | tr "@" "\"" | tr "#" "\\" 
+###############
+
+
+///---- for MassLike variable:: all masses ----
+./bin/MCDATAComparisonPLOTTool.exe test/Latinos/ttbar/Eff_Cut_AllMasses.cfg
+r00t test/Latinos/ttbar/TopDataDrivenVsCut.cxx\(\"output/out_ComparisonPLOTT_Efficiency_vs_Cut_AllMasses.root\",\"test/Latinos/ttbar/output/TopDataDrivenVsCut_AllMasses.root\",\"test/Latinos/ttbar/Efficiency_vs_Cut_AllMasses_Definition.txt\"\)
+ 
+
+
+r00t test/Latinos/ModifyPlot.cxx\(\"1_0\",\"top\",\"out_test_Latinos_10Oct_ForMassLikeVariable.root\",\"test/Latinos/ttbar/DDResult-MassVariable.txt\",3\)
 
 
 
