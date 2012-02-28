@@ -2,7 +2,8 @@
 ~~~~ Higgs masses ~~~~
 ~~~~~~~~~~~~~~~~~~~~~~
 
-
+./bin/MCDATACounter.exe test/Latinos/HiggsMasses/H110.cfg
+./bin/MCDATACounter.exe test/Latinos/HiggsMasses/H115.cfg
 ./bin/MCDATACounter.exe test/Latinos/HiggsMasses/H120.cfg
 ./bin/MCDATACounter.exe test/Latinos/HiggsMasses/H130.cfg
 ./bin/MCDATACounter.exe test/Latinos/HiggsMasses/H140.cfg
@@ -21,39 +22,6 @@
 ./bin/MCDATACounter.exe test/Latinos/HiggsMasses/H550.cfg
 ./bin/MCDATACounter.exe test/Latinos/HiggsMasses/H600.cfg
 
-for mass in 120 130 140 150 160 170 180 190 200 250 300 350 400 450 500 550 600 ; do \
-./bin/MCDATACounter.exe test/Latinos/HiggsMasses/H$mass.cfg > output_$mass.txt ; \
-done
-
 #### draw distributions ####
 ./bin/MCComparison.exe test/Latinos/HiggsMasses/testMCComparison.cfg
-
-
-
-
-
-#### laptop ####
-cat  dataCard_H???.txt | grep rate
-ls dataCard_H???.txt | awk '{print "root -l test/normalizeDataCard.cxx\\(\\@"$1"\\@,\\@"$1".new\\@,5.46,7\\) \n .q"}' | tr "@" "\"" 
-cat  dataCard_H???.txt.new | grep rate
-
-#### hercules ####
-scp dataCard_H???.txt amassiro@hercules.mib.infn.it:/gwpool/users/amassiro/VBF/Analysis/Spring11/PlotAndLands/dataAN/
-
-root -l normalizeDataCard.cxx\(\"data/dataCard_H190.txt\",\"test.txt\",10,7\)
-ls dataAN/dataCard_H???.txt | awk '{print "root -l normalizeDataCard.cxx\\(\\@"$1"\\@,\\@"$1".new\\@,5.46,7\\) \n .q"}' | tr "@" "\"" 
-
-
-#   exstrapolation to 1fb-1
-perl scripts/launchJobsDataCard_hercules.pl scripts/params_hercules_dataCard.cfg
-
-perl scripts/getResults_hercules.pl scripts/params_hercules_dataCard.cfg
-ls
-cat results_H???.txt.new > results.txt 
-more results.txt 
-root -l scripts/Draw_Plot.cxx\(0\)
-
-cat  dataAN/dataCard_H???.txt.new | grep rate
-
-
 
