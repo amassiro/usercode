@@ -20,25 +20,25 @@
 015_TsFull                     0.0122894611    top
 016_TbarsFull                  0.0104615429    top
 #
-019_TTTo2L2Nu2B                0.0016569566    top     ttbar
+#    019_TTTo2L2Nu2B                0.0016569566    top     ttbar                   ### FIXME!
 #
-#      030_DYtoElEl                   0.0565850053    DY
-#      031_DYtoMuMu                   0.0561153997    DY
-#      032_DYtoTauTau                 0.0837185509    DY
-#      033_DY10toElEl                 0.3389271736    DY    DY-low    
-#      034_DY10toMuMu                 0.3384486201    DY    DY-low
-#      035_DY10toTauTau               1.5089513601    DY    DY-low
+#     030_DYtoElEl                   0.0565850053    DY
+#     031_DYtoMuMu                   0.0561153997    DY
+#     032_DYtoTauTau                 0.0837185509    DY
+#     033_DY10toElEl                 0.3389271736    DY    DY-low    
+#     034_DY10toMuMu                 0.3384486201    DY    DY-low
+#     035_DY10toTauTau               1.5089513601    DY    DY-low
 #
 #  070_WZFull                     0.0042670528    WZ/ZZ
-071_ZZFull                     0.0018300938    WZ/ZZ
+#  071_ZZFull                     0.0018300938    WZ/ZZ                INVERSION!!!
 074_WZJetsMad                  0.0004893420    WZ/ZZ
-#  075_ZZJetsMad                  0.0002819586    WZ/ZZ
+075_ZZJetsMad                  0.0002819586    WZ/ZZ                   INVERSION!!!
 #   
-080_WJetsToLNuMad              0.3863388729    Wjets
+#  080_WJetsToLNuMad              0.3863388729    Wjets
 #  081_VGamma                     0.1550354091    Wgamma
-082_WgammaToElNuMad            0.2630577063    Wgamma
-083_WgammaToMuNuMad            0.2643895198    Wgamma
-084_WgammaToTauNuMad           0.2662154235    Wgamma
+#  082_WgammaToElNuMad            0.2630577063    Wgamma
+#  083_WgammaToMuNuMad            0.2643895198    Wgamma
+#  084_WgammaToTauNuMad           0.2662154235    Wgamma
 #
 #
 #
@@ -49,24 +49,12 @@
 9115_ggToH115toWWTo2LAndTau2Nu    0.0005497143 ggH-115
 8115_vbfToH115toWWTo2LAndTau2Nu   0.0001229431 qqH-115   
 #   
-9118_ggToH118toWWTo2LAndTau2Nu    0.0007387361 ggH-118
-8118_vbfToH118toWWTo2LAndTau2Nu   0.0001607965 qqH-118
-#
 1120_ggToH120toWWto2L2Nu       0.0010091551    ggH-120
 2120_ggToH120toWWtoLNuTauNu    0.0010091643    ggH-120
 3120_ggToH120toWWto2Tau2Nu     0.0005036730    ggH-120
 4120_vbfToH120toWWto2L2Nu      0.0000766444    qqH-120
 5120_vbfToH120toWWtoLNuTauNu   0.0000766284    qqH-120
 6120_vbfToH120toWWto2Tau2Nu    0.0000398429    qqH-120
-#
-9124_ggToH124toWWTo2LAndTau2Nu    0.0010890262 ggH-124
-8124_vbfToH124toWWTo2LAndTau2Nu   0.0002573407 qqH-124
-#
-9126_ggToH126toWWTo2LAndTau2Nu    0.0012279534 ggH-126
-8126_vbfToH126toWWTo2LAndTau2Nu   0.0002941770 qqH-126
-#
-9128_ggToH128toWWTo2LAndTau2Nu    0.0013674131 ggH-128
-8128_vbfToH128toWWTo2LAndTau2Nu   0.0003319897 qqH-128
 #
 1130_ggToH130toWWto2L2Nu       0.0018283314    ggH-130
 2130_ggToH130toWWtoLNuTauNu    0.0018442773    ggH-130
@@ -75,9 +63,6 @@
 5130_vbfToH130toWWtoLNuTauNu   0.0001487158    qqH-130
 6130_vbfToH130toWWto2Tau2Nu    0.0000777812    qqH-130
 #
-9135_ggToH135toWWTo2LAndTau2Nu    0.0020867660 ggH-135
-8135_vbfToH135toWWTo2LAndTau2Nu   0.0004669185 qqH-135
-#
 1140_ggToH140toWWto2L2Nu       0.0026134876    ggH-140
 2140_ggToH140toWWtoLNuTauNu    0.0025956197    ggH-140
 3140_ggToH140toWWto2Tau2Nu     0.0014836055    ggH-140
@@ -85,12 +70,12 @@
 5140_vbfToH140toWWtoLNuTauNu   0.0002235667    qqH-140
 6140_vbfToH140toWWto2Tau2Nu    0.0001113159    qqH-140
 #
-#    1150_ggToH150toWWto2L2Nu       0.0031192611    ggH-150
-#    2150_ggToH150toWWtoLNuTauNu    0.0031193178    ggH-150
-#    3150_ggToH150toWWto2Tau2Nu     0.0015602269    ggH-150
-#    4150_vbfToH150toWWto2L2Nu      0.0002923508    qqH-150
-#    5150_vbfToH150toWWtoLNuTauNu   0.0002827745    qqH-150
-#    6150_vbfToH150toWWto2Tau2Nu    0.0001422942    qqH-150
+# 1150_ggToH150toWWto2L2Nu       0.0031192611    ggH-150
+# 2150_ggToH150toWWtoLNuTauNu    0.0031193178    ggH-150
+# 3150_ggToH150toWWto2Tau2Nu     0.0015602269    ggH-150
+# 4150_vbfToH150toWWto2L2Nu      0.0002923508    qqH-150
+# 5150_vbfToH150toWWtoLNuTauNu   0.0002827745    qqH-150
+# 6150_vbfToH150toWWto2Tau2Nu    0.0001422942    qqH-150
 #
 1160_ggToH160toWWto2L2Nu       0.0036198032    ggH-160
 2160_ggToH160toWWtoLNuTauNu    0.0035011319    ggH-160
