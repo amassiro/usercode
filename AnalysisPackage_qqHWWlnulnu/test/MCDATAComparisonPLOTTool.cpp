@@ -171,7 +171,16 @@ int main(int argc, char** argv)
  parseConfigFile (argv[1]) ;
  
  std::string treeName  = gConfigParser -> readStringOption("Input::treeName");
- std::string treeNameSelections = gConfigParser -> readStringOption("Input::treeNameSelections");
+
+ std::string treeNameSelections;
+ try {
+  treeNameSelections = gConfigParser -> readStringOption("Input::treeNameSelections");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+  treeNameSelections = "outTreeSelections";
+ }
+ 
  std::string fileSamples = gConfigParser -> readStringOption("Input::fileSamples");
  std::string inputDirectory = gConfigParser -> readStringOption("Input::inputDirectory");
  
@@ -330,27 +339,28 @@ int main(int argc, char** argv)
  ///==== pT Higgs reweight (end) ====
  
  
- 
- TTree *treeEffVect[27];
- TTree *treeJetLepVect[27];
+ //  [iName]
+ TTree *treeEffVect[41];
+ TTree *treeJetLepVect[41];
  
 
  
   //  [iCut][iVar] 
- TString* infoString[351][21];
- TLatex *infoLatex[351][21]; 
- TCanvas* ccCanvas[351][21];
- TCanvas* ccCanvasNormalize[351][21];
- TCanvas* ccCanvasPull[351][21];
- TCanvas* ccCanvasVarAndPull[351][21];
- TCanvas* ccCanvasPullTrace[351][21];
- TH1F* histoSumMC[351][21];
+ TString* infoString[247][21];
+ TLatex *infoLatex[247][21]; 
+ TCanvas* ccCanvas[247][21];
+ TCanvas* ccCanvasNormalize[247][21];
+ TCanvas* ccCanvasPull[247][21];
+ TCanvas* ccCanvasVarAndPull[247][21];
+ TCanvas* ccCanvasPullTrace[247][21];
+ TH1F* histoSumMC[247][21];
  //  [iName][iCut][iVar]
- TH1F* histo[27][351][21];
- TH1F* histo_temp[27][351][21];
-
+ TH1F* histo[41][247][21];
+ TH1F* histo_temp[41][247][21];
+ TH1F* histo_temp_over_under[41][247][21];
+ 
  //  [iName][iCut]
- double numEvents[27][351];
+ double numEvents[41][247];
  
  char *nameSample[1000];
  char *nameHumanReadable[1000];
@@ -373,8 +383,17 @@ int main(int argc, char** argv)
  std::string VarFile = gConfigParser -> readStringOption("Plot::VarFile");
  
  int numVar = ReadFileVar(VarFile,vMin,vMax,vNBin,vVarName,vVarNameHR);
-  
  
+ std::vector<double> vMinBasic;
+ std::vector<double> vMaxBasic;
+ std::vector<int> vNBinBasic;
+ 
+ for (int iVar = 0; iVar < vNBin.size(); iVar++) {
+  vNBinBasic.push_back(vNBin.at(iVar));
+  vMinBasic.push_back(vMin.at(iVar));
+  vMaxBasic.push_back(vMax.at(iVar));
+ }
+
 //  double XSection  = gConfigParser -> readDoubleOption("Plot::XSection");
  
  ///==== list of selections to perform (NOT sequential additive selections) ====
@@ -438,6 +457,30 @@ int main(int argc, char** argv)
   std::cerr << " exception = " << exceptionString << std::endl;
  }
  std::cout << ">>>>> input::debug  " << debug  << std::endl;  
+
+ 
+ ///==== underflow flag ==== 
+ bool  underflowFlag = false; 
+ try {
+  underflowFlag = gConfigParser -> readBoolOption("Input::underflowFlag");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ std::cout << ">>>>> input::underflowFlag  " << underflowFlag  << std::endl;  
+ 
+ ///==== overflow flag ==== 
+ bool  overflowFlag = false; 
+ try {
+  overflowFlag = gConfigParser -> readBoolOption("Input::overflowFlag");
+ }
+ catch (char const* exceptionString){
+  std::cerr << " exception = " << exceptionString << std::endl;
+ }
+ std::cout << ">>>>> input::overflowFlag  " << overflowFlag  << std::endl;  
+ 
+ 
+ 
  ///==== program ====
  
  
@@ -461,13 +504,13 @@ int main(int argc, char** argv)
   treeEffVect[iSample] = (TTree*) f->Get(treeNameSelections.c_str());
   
   if (treeEffVect[iSample] != 0) {
-   char nameTreeEff[27];
+   char nameTreeEff[41];
    sprintf(nameTreeEff,"treeEff_%d",iSample); 
    treeEffVect[iSample]->SetName(nameTreeEff);      
   }
   
   treeJetLepVect[iSample] = (TTree*) f->Get(treeName.c_str());
-  char nameTreeJetLep[27];
+  char nameTreeJetLep[41];
   sprintf(nameTreeJetLep,"treeJetLep_%d",iSample); 
   treeJetLepVect[iSample]->SetName(nameTreeJetLep);
  }
@@ -572,6 +615,25 @@ int main(int argc, char** argv)
   ///==== cicle on variables to plot ====
   for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
    if (debug) std::cout << " Var[" << iVar << ":" << vVarName.size() << "] = " << vVarName.at(iVar) << " ~~ " << std::endl;
+   
+   ///---- check underflow and overflow (begin) ----
+   double delta = (vMaxBasic.at(iVar)-vMinBasic.at(iVar)) / vNBinBasic.at(iVar) ; 
+   if (underflowFlag && !overflowFlag) {
+    vNBin.at(iVar) = vNBinBasic.at(iVar) + 1;
+    vMin.at(iVar)  = vMinBasic.at(iVar) - delta;
+   }
+   else if (!underflowFlag && overflowFlag) {
+    vNBin.at(iVar) = vNBinBasic.at(iVar) + 1;
+    vMax.at(iVar)  = vMaxBasic.at(iVar) + delta;
+   }
+   else if (underflowFlag && overflowFlag) {
+    vNBin.at(iVar) = vNBinBasic.at(iVar) + 2;
+    vMax.at(iVar)  = vMaxBasic.at(iVar) + delta;
+    vMin.at(iVar)  = vMinBasic.at(iVar) - delta;
+   }
+   ///---- check underflow and overflow (end) ----
+   
+   
    ///==== initialize ====
    for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
     reduced_name_samples_flag.at(iName) = -1;
@@ -580,12 +642,12 @@ int main(int argc, char** argv)
    ///==== cicle on samples ====
    for (int iSample = (numberOfSamples-1); iSample>= 0; iSample--){
     if (debug) std::cout << " Sample[" << iSample << ":" << numberOfSamples << "] = " << nameSample[iSample] << " ~~ " << std::endl;
-    TString name_histo_temp = Form("%s_%d_%d_%d_temp",nameSample[iSample], iCut, iVar,iSample);
-    histo_temp[iSample][iCut][iVar] = new TH1F(name_histo_temp,name_histo_temp,vNBin.at(iVar),vMin.at(iVar), vMax.at(iVar));
+    TString name_histo_temp = Form("%s_%d_%d_%d_temp_over_under",nameSample[iSample], iCut, iVar,iSample);
+    histo_temp_over_under[iSample][iCut][iVar] = new TH1F(name_histo_temp,name_histo_temp,vNBinBasic.at(iVar),vMinBasic.at(iVar), vMaxBasic.at(iVar));
     char toDraw[100000];
     sprintf(toDraw,"%s >> %s",vVarName.at(iVar).c_str(),name_histo_temp.Data());      
 
-    histo_temp[iSample][iCut][iVar] -> Sumw2(); //---- così mette l'errore giusto!
+    histo_temp_over_under[iSample][iCut][iVar] -> Sumw2(); //---- così mette l'errore giusto!
     
     TString CutExtended;
     bool isData = false;
@@ -621,6 +683,33 @@ int main(int argc, char** argv)
     }
     treeJetLepVect[iSample]->Draw(toDraw,CutExtended,"");
     
+    name_histo_temp = Form("%s_%d_%d_%d_temp",nameSample[iSample], iCut, iVar,iSample);
+    histo_temp[iSample][iCut][iVar] = new TH1F(name_histo_temp,name_histo_temp,vNBin.at(iVar),vMin.at(iVar), vMax.at(iVar));
+    
+    histo_temp[iSample][iCut][iVar] -> Sumw2(); //---- così mette l'errore giusto!
+    
+    for (int iBin = 0; iBin < vNBinBasic.at(iVar); iBin++) {
+     if (underflowFlag) {
+      histo_temp[iSample][iCut][iVar] -> SetBinContent( iBin+2, histo_temp_over_under[iSample][iCut][iVar] -> GetBinContent(iBin+1) );
+      histo_temp[iSample][iCut][iVar] -> SetBinError  ( iBin+2, histo_temp_over_under[iSample][iCut][iVar] -> GetBinError(iBin+1)   ); 
+     }
+     else {
+      histo_temp[iSample][iCut][iVar] -> SetBinContent( iBin+1, histo_temp_over_under[iSample][iCut][iVar] -> GetBinContent(iBin+1) );
+      histo_temp[iSample][iCut][iVar] -> SetBinError  ( iBin+1, histo_temp_over_under[iSample][iCut][iVar] -> GetBinError(iBin+1)   );      
+     }
+    }
+    
+    if (underflowFlag) {
+     histo_temp[iSample][iCut][iVar] -> SetBinContent( 1, histo_temp_over_under[iSample][iCut][iVar] -> GetBinContent(0) );
+     histo_temp[iSample][iCut][iVar] -> SetBinError  ( 1, histo_temp_over_under[iSample][iCut][iVar] -> GetBinError(0)   ); 
+    }
+
+    if (overflowFlag) {
+     histo_temp[iSample][iCut][iVar] -> SetBinContent( vNBin.at(iVar), histo_temp_over_under[iSample][iCut][iVar] -> GetBinContent(vNBinBasic.at(iVar)+1) );
+     histo_temp[iSample][iCut][iVar] -> SetBinError  ( vNBin.at(iVar), histo_temp_over_under[iSample][iCut][iVar] -> GetBinError(vNBinBasic.at(iVar)+1)   ); 
+//      std::cout << "[" << iSample << "][" << iCut << "][" << iVar << "] = " << histo_temp_over_under[iSample][iCut][iVar] -> GetBinContent(vNBinBasic.at(iVar)+1) << std::endl;
+    }
+
 //     std::cout << " CutExtended = " << CutExtended.Data() << std::endl;
 //     if (Normalization[iSample]>0) { 
 // //      histo_temp[iSample][iCut][iVar] -> Sumw2();
@@ -742,22 +831,22 @@ int main(int argc, char** argv)
  std::cout << " last plot " << std::endl;
  
 //  [iName]
- TH1F* hTrend[27];
+ TH1F* hTrend[41];
  THStack* hsTrend;
  //   [iSignalSet]
  THStack* hsSignalTrend[30];
  //  [iCut]
- TPie* hTrendPie[351];
+//  TPie* hTrendPie[247];
  
  
  //  [iCut][iVar][iSignalSet]
- THStack* hsSignal[351][27][30];
- THStack* hs[351][27];
- TH1F* hPull[351][27];
- TH1F* hPullTrace[351][27];
+ THStack* hsSignal[247][41][30];
+ THStack* hs[247][41];
+ TH1F* hPull[247][41];
+ TH1F* hPullTrace[247][41];
 
- TGraphErrors* grPull[351][27];
- TGraphErrors* grPullMC[351][27];
+ TGraphErrors* grPull[247][41];
+ TGraphErrors* grPullMC[247][41];
  
  
  std::cout << std::endl;
@@ -901,10 +990,10 @@ int main(int argc, char** argv)
   hsSignalTrend[iSignalSet] = new THStack(nameSignalTrend,nameSignalTrend);
  }
  
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  TString nameTHTrendPie = Form("%d_Trend_Pie",iCut);
-  hTrendPie[iCut] = new TPie (nameTHTrendPie,nameTHTrendPie,reduced_name_samples.size());
- }
+//  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+//   TString nameTHTrendPie = Form("%d_Trend_Pie",iCut);
+//   hTrendPie[iCut] = new TPie (nameTHTrendPie,nameTHTrendPie,reduced_name_samples.size());
+//  }
  
  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
   TString nameTHTrend = Form("%s_Trend",reduced_name_samples.at(iName).c_str());
@@ -948,22 +1037,21 @@ int main(int argc, char** argv)
 //     Double_t IntegralAndError(Int_t binx1, Int_t binx2, Double_t& err, Option_t* option = "") const
    std::cout << ">>>  numEvents[" << iName << "," << reduced_name_samples.at(iName) << "][" << iCut << "] = " << numEvents[iName][iCut] << " , " << histo[iName][iCut][0]->GetEntries() << " , " << histo[iName][iCut][0]->GetEffectiveEntries() << std::endl;
    
-   if (iName != numDATA) {
-    hTrendPie[iCut]->SetTextSize(0.04);
-    hTrendPie[iCut]->SetTextFont(12);
-    hTrendPie[iCut]->SetEntryFillColor(iName,vColor[iName]);
-    hTrendPie[iCut]->SetEntryFillStyle(iName,3001);
-    hTrendPie[iCut]->SetEntryLabel(iName, reduced_name_samples.at(iName).c_str());
-    hTrendPie[iCut]->SetEntryLineColor(iName, vColor[iName]);
-    hTrendPie[iCut]->SetEntryLineStyle(iName, 2);
-    hTrendPie[iCut]->SetEntryLineWidth(iName, 2);
-    hTrendPie[iCut]->SetEntryRadiusOffset(iName, 0.01);
-    hTrendPie[iCut]->SetEntryVal(iName,numEvents[iName][iCut]);
-   }
-   else {
-    hTrendPie[iCut]->SetEntryLabel(iName, "");
-//     hTrendPie[iCut]->SetEntryVal(iName,10e-1);
-   }
+//    if (iName != numDATA) {
+//     hTrendPie[iCut]->SetTextSize(0.04);
+//     hTrendPie[iCut]->SetTextFont(12);
+//     hTrendPie[iCut]->SetEntryFillColor(iName,vColor[iName]);
+//     hTrendPie[iCut]->SetEntryFillStyle(iName,3001);
+//     hTrendPie[iCut]->SetEntryLabel(iName, reduced_name_samples.at(iName).c_str());
+//     hTrendPie[iCut]->SetEntryLineColor(iName, vColor[iName]);
+//     hTrendPie[iCut]->SetEntryLineStyle(iName, 2);
+//     hTrendPie[iCut]->SetEntryLineWidth(iName, 2);
+//     hTrendPie[iCut]->SetEntryRadiusOffset(iName, 0.01);
+//     hTrendPie[iCut]->SetEntryVal(iName,numEvents[iName][iCut]);
+//    }
+//    else {
+//     hTrendPie[iCut]->SetEntryLabel(iName, "");
+//    }
   }
   
   bool isSig = false;
@@ -1037,25 +1125,28 @@ int main(int argc, char** argv)
  
  std::cout << std::endl;
  std::cout << " Plot ... (wait) " << std::endl;
- TCanvas* cTrendPie[27];
- TCanvas* cTrendPieAll = new TCanvas("cTrendPieAll","cTrendPieAll",30 * vCut.size(),30);
- cTrendPieAll -> Divide (vCut.size());
+//  TCanvas* cTrendPie[247];
+//  TCanvas* cTrendPieAll = new TCanvas("cTrendPieAll","cTrendPieAll",400 * vCut.size(),400);
+//  cTrendPieAll -> Divide (vCut.size());
  TCanvas* cTrend = new TCanvas("cTrend","cTrend",400,400);
  TCanvas* cTrendPull = new TCanvas("cTrendPull","cTrendPull",500,670); // 800);
  
- TCanvas* cCompareCutPull[351];
- TCanvas* cCompareVarPull[27];
+ TCanvas* cCompareCutPull[247];
+ TCanvas* cCompareVarPull[41];
  
- TCanvas* cCompareCut[351];
- TCanvas* cCompareVar[27];
+ TCanvas* cCompareCut[247];
+ TCanvas* cCompareVar[41];
+ 
+ std::cout << " Plot ... 2 ... (wait) " << std::endl;
  
  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
   TString titleCanvas = Form("%d_Cut_Canvas %s",iCut,vCutHR.at(iCut).c_str());
   TString nameCanvas = Form("%d_Cut_Canvas",iCut);
-  cCompareCut[iCut] = new TCanvas(nameCanvas,titleCanvas,30 * vVarName.size(),30);
+  cCompareCut[iCut] = new TCanvas(nameCanvas,titleCanvas,400 * vVarName.size(),400);
   cCompareCut[iCut] -> Divide (vVarName.size(),1);
   TString nameCanvasPull = Form("%d_Cut_Canvas_Pull",iCut);
   cCompareCutPull[iCut] = new TCanvas(nameCanvasPull,titleCanvas,500 * vVarName.size(),670); //400*3);
+//   cCompareCutPull[iCut] -> Divide (vVarName.size(),3);
   for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){
    //    void DivideCanvas(TPad* cPad, int numberCanvas, double x1, double y1, double x2, double y2 = 0, double yb = 0, double yt = 0, double xl = 0, double xr = 0); 
    DivideCanvas((TPad*) cCompareCutPull[iCut]->cd(), iVar+1,                 iVar * (1. / vVarName.size()) , 0.40, (iVar+1) * (1. / vVarName.size()), 1.00, -99, -99, -99, 0.23);
@@ -1065,12 +1156,14 @@ int main(int argc, char** argv)
   
  }
  
+ std::cout << " Plot ... 3 ... (wait) " << std::endl;
+ 
  for (unsigned int iVar = 0; iVar<vVarName.size(); iVar++){ ///==== cicle on variables to plot ====
    TString nameCanvas = Form("%d_Var_Canvas",iVar);
-   cCompareVar[iVar] = new TCanvas(nameCanvas,nameCanvas,30,30 * vCut.size());
+   cCompareVar[iVar] = new TCanvas(nameCanvas,nameCanvas,400,400 * vCut.size());
    cCompareVar[iVar] -> Divide (1,vCut.size());
    TString nameCanvasPull = Form("%d_Var_Canvas_Pull",iVar);
-   cCompareVarPull[iVar] = new TCanvas(nameCanvasPull,nameCanvasPull,30*3,30 * vCut.size());
+   cCompareVarPull[iVar] = new TCanvas(nameCanvasPull,nameCanvasPull,400*3,400 * vCut.size());
    cCompareVarPull[iVar] -> Divide (3,vCut.size());
  }
  
@@ -1091,23 +1184,39 @@ int main(int argc, char** argv)
 // //    void DivideCanvas(TPad* cPad, int numberCanvas, double x1, double y1, double x2, double y2 = 0, double yb = 0, double yt = 0, double xl = 0, double xr = 0); 
    DivideCanvas((TPad*) ccCanvasVarAndPull[iCut][iVar]->cd(), 1, 0.00, 0.30, 0.77, 1.00, -99, -99, -99, 0.10);
    DivideCanvas((TPad*) ccCanvasVarAndPull[iCut][iVar]->cd(), 2, 0.00, 0.02, 0.77, 0.25, -99, -99, -99, 0.10);
+//    ccCanvasVarAndPull[iCut][iVar]->Divide(1,2,0.01,0);
   }
  } 
   
+  std::cout << " Plot ... 4 ... (wait) " << std::endl;
+
  ///==== draw trend vs cut (begin)
  cTrend->cd();
  DrawStack(hsTrend,1,LumiSyst);
  for (int iSignalSet = 0; iSignalSet < numSignalSets; iSignalSet++) {
+//   std::cout << std::endl << " iSignalSet = " << iSignalSet << " --> pointer = " << hsSignalTrend[iSignalSet] << std::endl;
   if (Discovery) DrawStack(hsSignalTrend[iSignalSet],0,0,"EsameP");
  } 
  
+ std::cout << " Plot ... 5 ... (wait) " << std::endl;
+ 
  if (numDATA != -1) hTrend[numDATA] -> Draw("EsameP");
+//  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+//   bool isSig = false;
+//   for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+//    if (reduced_name_samples.at(iName) == *itSig) isSig = true;
+//   }
+//   if (isSig) {
+//    hTrend[iName]->Draw("EsameP");
+//   }
+//  } 
 
  gPad->SetLogy();
  gPad->SetGrid();
  leg->Draw();
  latex->Draw();
   
+//  cTrendPull->Divide(1,3);
  DivideCanvas((TPad*) cTrendPull->cd(), 1, 0.0, 0.40, 0.77, 1.00, 0.30, -99, -99, 0.10);
  DivideCanvas((TPad*) cTrendPull->cd(), 2, 0.0, 0.20, 0.77, 0.39, 0.30, -99, -99, 0.10);
  DivideCanvas((TPad*) cTrendPull->cd(), 3, 0.0, 0.02, 0.77, 0.15, 0.30, -99, -99, 0.10);
@@ -1119,14 +1228,22 @@ int main(int argc, char** argv)
   if (Discovery) DrawStack(hsSignalTrend[iSignalSet],0,0,"EsameP");
  }
  if (numDATA != -1) hTrend[numDATA] -> Draw("EsameP"); 
-
+//  for (unsigned int iName=0; iName<reduced_name_samples.size(); iName++){
+//   bool isSig = false;
+//   for (std::vector<std::string>::const_iterator itSig = SignalName.begin(); itSig != SignalName.end(); itSig++){
+//    if (reduced_name_samples.at(iName) == *itSig) isSig = true;
+//   }
+//   if (isSig) {
+//    hTrend[iName]->Draw("EsameP");
+//   }
+//  }
  gPad->SetLogy();
  gPad->SetGrid();
  cTrendPull->cd();
  leg->Draw();
  latex->Draw();
  cTrendPull->cd(2);
-
+//  hPullTrendSumMC->Draw("EP");
  if (grPullTrendSumMCMC) grPullTrendSumMCMC -> Draw("A2");     //    grPullTrendSumMCMC -> Draw("AE3");
  if (grPullTrendSumMC)   grPullTrendSumMC   -> Draw("PsameE");  
  
@@ -1137,24 +1254,28 @@ int main(int argc, char** argv)
  if (hPullTrendTraceSumMC) hPullTrendTraceSumMC->Draw();
  gPad->SetGrid();
   
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  TString nameCanvas = Form("%d_Canvas_Trend",iCut);
-  cTrendPie[iCut] = new TCanvas(nameCanvas,nameCanvas,400,400);
-  cTrendPie[iCut]->cd();
-  hTrendPie[iCut] -> Draw("3d t nol");
-  hTrendPie[iCut]->SetX(.45);
-  hTrendPie[iCut]->SetRadius(.22);
-  leg->Draw();
-  latex->Draw();
-  
-  cTrendPieAll->cd(iCut+1);
-  hTrendPie[iCut] -> Draw("3d t nol");
-  hTrendPie[iCut]->SetX(.45);
-  hTrendPie[iCut]->SetRadius(.22);
-  leg->Draw();
-  latex->Draw();
- }
+ std::cout << " Plot ... 6 ... (wait) " << std::endl;
+ 
+//  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++) {
+//   TString nameCanvas = Form("%d_Canvas_Trend",iCut);
+//   cTrendPie[iCut] = new TCanvas(nameCanvas,nameCanvas,400,400);
+//   cTrendPie[iCut]->cd();
+//   hTrendPie[iCut] -> Draw("3d t nol");
+//   hTrendPie[iCut]->SetX(.45);
+//   hTrendPie[iCut]->SetRadius(.22);
+//   leg->Draw();
+//   latex->Draw();
+//   
+//   cTrendPieAll->cd(iCut+1);
+//   hTrendPie[iCut] -> Draw("3d t nol");
+//   hTrendPie[iCut]->SetX(.45);
+//   hTrendPie[iCut]->SetRadius(.22);
+//   leg->Draw();
+//   latex->Draw();
+//  }
  ///==== draw trend vs cut (end)
+ 
+ std::cout << " Plot ... 7 ... (wait) " << std::endl;
  
  ///==== cicle on selections ====
  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
@@ -1394,10 +1515,10 @@ int main(int argc, char** argv)
  
  outFile.mkdir("Trend");
  outFile.cd("Trend");
- for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
-  cTrendPie[iCut] -> Write();
- }
- cTrendPieAll -> Write();
+//  for (unsigned int iCut = 0; iCut<vCut.size(); iCut++){
+//   cTrendPie[iCut] -> Write();
+//  }
+//  cTrendPieAll -> Write();
  
  
  outFile.cd();
