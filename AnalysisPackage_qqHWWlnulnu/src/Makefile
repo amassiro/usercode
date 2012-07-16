@@ -3,8 +3,10 @@ OBJ   = ../obj/
 LIB   = ../lib/
 BIN   =  ../bin/
 PRG  =  ../test/
+SCRIPT   = ../scripts/
 
 
+Shell   =  .sh
 HdrSuf  =  .h
 SrcSuf  =  .cc
 ObjSuf  =  .o
@@ -36,24 +38,19 @@ CLHEPLIBS     =  $(shell clhep-config --libs)
 NTUPLEPACKAGEFLAGS = $(shell ntuplepkg-config --include)
 NTUPLEPACKAGELIBS = $(shell ntuplepkg-config --libs)
 
-ARCH = -m32
-ARCH  =  $(shell root-config --arch)
-ifeq ($(ARCH),linuxx8664gcc)
 ARCHL = -m64
-endif
 
-
-CXX  =  c++
+CXX  =  g++
 CXXFLAGS  =  -Wall -O -fPIC -I$(HDR) $(ROOTCFLAGS) $(CLHEPCFLAGS) $(NTUPLEPACKAGEFLAGS)
-CPP  =  c++
+CPP  =  g++
 CPPFLAGS  = -Wall $(ARCHL) -I$(HDR) $(ROOTCFLAGS) $(CLHEPCFLAGS) $(NTUPLEPACKAGEFLAGS)
 
-LD       =  c++
+LD       =  g++
 LDFLAGS  =  -rdynamic -shared $(ARCHL)
 SONAME	 =  libVBFHWWlnulnu.so
 SOFLAGS  =  -Wl,-soname,$(SONAME)
 
-GLIBS   =  -lm -ldl -rdynamic $(ROOTGLIBS) $(CLHEPLIBS) -lGenVector -lFoam -lMinuit -lTMVA -lMLP -lXMLIO  -lTreePlayer  $(NTUPLEPACKAGELIBS)
+GLIBS   =  -lm -ldl -rdynamic  $(NTUPLEPACKAGELIBS) -lGpad $(ROOTGLIBS) $(CLHEPLIBS) -lProof -lProofPlayer -lGenVector -lFoam -lMinuit -lTMVA -lMLP -lXMLIO  -lTreePlayer
 
 
 #################################################
@@ -112,12 +109,13 @@ test:
 	@echo "BINS = $(BINS)"
 
 
+
 $(OBJ)%$(ObjSuf): %$(SrcSuf) $(HDRS)
-	$(CXX) -c $(CXXFLAGS) -o $@ $< 
+	$(CXX)  $< -c $(CXXFLAGS) -o $@
 
 
 $(OBJ)mydict.o: $(OBJ)mydict.cc $(OBJ)mydict.h
-	$(CXX) -c $(CXXFLAGS) -o $@ $<
+	$(CXX)  $< -c $(CXXFLAGS) -o $@
 
 
 $(OBJ)mydict.cc: $(DICTHDRS)
@@ -125,12 +123,14 @@ $(OBJ)mydict.cc: $(DICTHDRS)
 	rootcint -f $(OBJ)mydict.cc -c -p ${CXXFLAGS} $(DICTHDRS)
 
 $(LIB)$(SONAME): $(OBJS) $(OBJ)mydict.o
-	@echo "Linking $(SONAME):"
-	$(LD) $(LDFLAGS) $(OBJS) $(OBJ)mydict.o $(SOFLAGS) -o $(LIB)$(SONAME)
+	@echo "Linking $(SONAME):" 
+	$(LD) $(OBJS)  $(LDFLAGS) $(OBJ)mydict.o $(SOFLAGS) -o $(LIB)$(SONAME)
 
 $(BIN)%$(BinSuf): $(PRG)%$(PrgSuf) $(HDRS) $(LIB)$(SONAME)
-	$(CPP) $(CPPFLAGS) -L$(LIB) $(GLIBS) -lVBFHWWlnulnu  -o $@ $<
+	$(CPP) $< $(CPPFLAGS) -L$(LIB) -lVBFHWWlnulnu $(GLIBS)  -o $@
 
 
 clean:
 	rm -f $(OBJ)*$(ObjSuf) $(LIB)*$(LibSuf) $(OBJ)mydict*
+
+
