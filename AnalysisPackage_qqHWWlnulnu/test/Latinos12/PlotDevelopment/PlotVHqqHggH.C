@@ -15,6 +15,7 @@
 #include "TStyle.h"
 #include "TGraph.h"
 #include "TGraphAsymmErrors.h"
+#include "TGraph2DErrors.h"
 #endif
 
 #include <iostream>
@@ -467,9 +468,37 @@ class PlotVHqqHggH {
         TH2F *h_bkgoffsetsummed_do = new TH2F("h_bkgoffsetsummed_do","background offset",(int) nbinX, minX, maxX,(int) nbinY, minY, maxY);
         TH2F *h_dataoffset      = new TH2F("h_dataoffset"     ,"data       offset",(int) nbinX, minX, maxX,(int) nbinY, minY, maxY);
         TH2F *h_dataoffsetsigma = new TH2F("h_dataoffsetsigma","data #sigma offset",(int) nbinX, minX, maxX,(int) nbinY, minY, maxY);
+
         
-        h_bkgoffsetsummed->SetFillColor(kGreen);
-        h_bkgoffsetsummed->SetFillStyle(3001);
+        TGraph2DErrors *g_bkgoffsetsummed = new TGraph2DErrors();
+        TGraph2DErrors *g_bkgoffsetsummed_error = new TGraph2DErrors();
+        TGraph2DErrors *g_dataoffset      = new TGraph2DErrors();
+        TGraph2DErrors *g_dataoffsetsigma = new TGraph2DErrors();
+  
+        g_bkgoffsetsummed -> SetFillColor(kGreen);
+        g_bkgoffsetsummed -> SetLineWidth(1);
+        g_bkgoffsetsummed -> SetLineColor(kGreen);
+        g_bkgoffsetsummed -> SetFillStyle(3001);
+        g_bkgoffsetsummed -> SetMarkerSize(0);
+        g_bkgoffsetsummed -> SetMarkerStyle(21);
+        g_bkgoffsetsummed -> SetMarkerColor(kGreen);
+
+        g_bkgoffsetsummed_error -> SetFillColor(kGreen);
+        g_bkgoffsetsummed_error -> SetLineWidth(1);
+        g_bkgoffsetsummed_error -> SetLineColor(kGreen);
+        g_bkgoffsetsummed_error -> SetFillStyle(3001);
+        g_bkgoffsetsummed_error -> SetMarkerSize(0);
+        g_bkgoffsetsummed_error -> SetMarkerStyle(21);
+        g_bkgoffsetsummed_error -> SetMarkerColor(kGreen);
+        
+        
+        h_bkgoffsetsummed -> SetFillColor(kGreen);
+        h_bkgoffsetsummed -> SetFillStyle(3001);
+        h_bkgoffsetsummed -> SetMarkerSize(2);
+        h_bkgoffsetsummed -> SetMarkerStyle(21);
+        h_bkgoffsetsummed -> SetMarkerColor(kGreen);
+        
+        
         h_bkgoffsetsummed_up->SetFillColor(kGreen);
         h_bkgoffsetsummed_up->SetFillStyle(3001);
         h_bkgoffsetsummed_do->SetFillColor(kGreen);
@@ -478,11 +507,20 @@ class PlotVHqqHggH {
         h_dataoffsetsigma->SetFillColor(kRed);
         h_dataoffsetsigma->SetFillStyle(3001);
         
-        h_dataoffset -> SetMarkerSize(2);
+        h_dataoffset -> SetMarkerSize(1);
         h_dataoffset -> SetMarkerStyle(20);
         h_dataoffset -> SetMarkerColor(kBlack);
         h_dataoffset -> SetLineWidth(2);
         h_dataoffset -> SetLineColor(kBlack);
+        
+        
+        g_dataoffset -> SetMarkerSize(2);
+        g_dataoffset -> SetMarkerStyle(20);
+        g_dataoffset -> SetMarkerColor(kBlue);
+        g_dataoffset -> SetLineWidth(2);
+        g_dataoffset -> SetLineColor(kBlue);
+        g_dataoffset -> SetFillStyle(3001);
+        g_dataoffset -> SetFillColor(kBlue);
         
         
         TGraphAsymmErrors *bkgoffsetsummed = new TGraphAsymmErrors();        
@@ -518,7 +556,7 @@ class PlotVHqqHggH {
 //          if (statisticalError == 0) statisticalError = 1;
 //          dataoffset -> SetPointError (iBin, errXDown, errXUp, statisticalError, statisticalError);
 //          
-         bkgoffsetsummed -> SetPoint      (iBin, X, 0);
+//          bkgoffsetsummed -> SetPoint      (iBin, X, 0);
 //          bkgoffsetsummed -> SetPointError (iBin, errXDown, errXUp, errYDown, errYUp);
 
          
@@ -541,6 +579,13 @@ class PlotVHqqHggH {
           h_bkgoffsetsummed -> SetBinContent (ibinX+1, ibinY+1, 0);
           h_bkgoffsetsummed -> SetBinError   (ibinX+1, ibinY+1, errY);
 
+          g_bkgoffsetsummed -> SetPoint      (iBin, (ibinX+0.5)*(maxX-minX)/nbinX + minX, (ibinY+0.5)*(maxY-minY)/nbinY + minY, errY);
+          g_bkgoffsetsummed -> SetPointError (iBin, 0, 0, 0);
+          
+          g_bkgoffsetsummed_error -> SetPoint      (iBin, (ibinX+0.5)*(maxX-minX)/nbinX + minX, (ibinY+0.5)*(maxY-minY)/nbinY + minY, 0);
+          g_bkgoffsetsummed_error -> SetPointError (iBin, (maxX-minX)/nbinX/2., (maxY-minY)/nbinY/2., errY);
+//           std::cout << " errY = " << errY << std::endl;
+          
           h_bkgoffsetsummed_up -> SetBinContent (ibinX+1, ibinY+1, errYUp);
           h_bkgoffsetsummed_up -> SetBinError   (ibinX+1, ibinY+1, 0);
           h_bkgoffsetsummed_do -> SetBinContent (ibinX+1, ibinY+1, -errYDown);
@@ -549,6 +594,10 @@ class PlotVHqqHggH {
           h_dataoffset -> SetBinContent (ibinX+1, ibinY+1, Y);
           h_dataoffset -> SetBinError   (ibinX+1, ibinY+1, errY);
 //           h_dataoffset -> SetBinError   (ibinX+1, ibinY+1, 0);
+          
+ //           g_dataoffset -> SetPoint      (iBin, (ibinX+0.5)*(maxX-minX)/nbinX + minX, (ibinY+0.5)*(maxY-minY)/nbinY + minY, Y);
+          g_dataoffset -> SetPointError (iBin, (maxX-minX)/nbinX/2., (maxY-minY)/nbinY/2., 0);
+          
           
           double numsigma;
           if (errY != 0) {
@@ -560,20 +609,18 @@ class PlotVHqqHggH {
 //           if (errY != 0) errnumsigma = statisticalError/errY;
 //           else errnumsigma = 0;
           
+          
 //           std::cout << " numsigma = " << numsigma << std::endl;
           h_dataoffsetsigma -> SetBinContent (ibinX+1, ibinY+1, numsigma);
           // h_dataoffsetsigma -> SetBinError   (ibinX+1, ibinY+1, errnumsigma);
+          g_dataoffset -> SetPoint      (iBin, (ibinX+0.5)*(maxX-minX)/nbinX + minX, (ibinY+0.5)*(maxY-minY)/nbinY + minY, numsigma);
           
          }
          
+         
         }
         
-        
-        dataoffset->Draw("AP");
-        dataoffset->GetXaxis()->SetTitle(_xLabel);
-        dataoffset->GetYaxis()->SetTitle("data-background");
-        bkgoffsetsummed->Draw("E2");
-        
+              
         
         
         if (numRolling != -1) {
@@ -581,6 +628,23 @@ class PlotVHqqHggH {
          h_bkgoffsetsummed_up->GetYaxis()->SetTitle(nameY);
          h_bkgoffsetsummed_do->GetXaxis()->SetTitle(nameX);
          h_bkgoffsetsummed_do->GetYaxis()->SetTitle(nameY);
+         
+         g_dataoffset->GetXaxis()->SetTitle(nameX);
+         g_dataoffset->GetYaxis()->SetTitle(nameY);
+         g_dataoffset->GetZaxis()->SetTitle("number of #sigma");
+         g_dataoffset->SetTitle ("number of #sigma");
+         
+         h_dataoffset->GetXaxis()->SetTitle(nameX);
+         h_dataoffset->GetYaxis()->SetTitle(nameY);
+         h_dataoffset->GetZaxis()->SetTitle("excess of events");
+         h_dataoffset->SetTitle ("number of events over background");
+         h_dataoffset->SetTitle ("");
+         
+         h_dataoffsetsigma->GetXaxis()->SetTitle(nameX);
+         h_dataoffsetsigma->GetYaxis()->SetTitle(nameY);
+         h_dataoffsetsigma->GetZaxis()->SetTitle("number of #sigma");
+         h_dataoffsetsigma->SetTitle ("number of #sigma");
+         h_dataoffsetsigma->SetTitle ("");         
          
 //          h_bkgoffsetsummed_up->RebinX(2);
 //          h_bkgoffsetsummed_up->RebinY(2);
@@ -591,24 +655,52 @@ class PlotVHqqHggH {
 //          h_dataoffset->RebinX(2);
 //          h_dataoffset->RebinY(2);
          
-         h_dataoffset->GetXaxis()->SetTitle(nameX);
-         h_dataoffset->GetYaxis()->SetTitle(nameY);
-         h_dataoffset->SetMarkerSize(1.0);
-         h_dataoffset->GetZaxis()->SetTitle("excess events");
-         h_dataoffset->Draw ("colZtextE");
+//          h_dataoffset->GetXaxis()->SetTitle(nameX);
+//          h_dataoffset->GetYaxis()->SetTitle(nameY);
+//          h_dataoffset->SetMarkerSize(1.0);
+//          h_dataoffset->GetZaxis()->SetTitle("excess events");
+//          h_dataoffset->Draw ("colZtextE");
          
          
-// // //          h_dataoffset      -> Draw ("E");
-// // //          h_bkgoffsetsummed_up -> Draw ("LEGO1");
-// // //          h_bkgoffsetsummed_do -> Draw ("LEGO1same");
-// // //          
-// // //          //          h_bkgoffsetsummed_up -> Draw ("surf2");
-// // // //          h_bkgoffsetsummed_up -> Draw ("bar2");
-// // // //          h_bkgoffsetsummed_up -> Draw ("surf2");
-// // // //          h_bkgoffsetsummed_up -> Draw ("cont1 same");
-// // //          //          h_bkgoffsetsummed_do -> Draw ("lego1 0");
-// // //          h_dataoffset      -> Draw ("Esame");
-// // //          
+//          h_dataoffset      -> Draw ("EP");
+//          h_bkgoffsetsummed -> Draw ("EPsame");
+
+//          h_dataoffset      -> Draw ("EP");
+//          g_bkgoffsetsummed_error -> Draw ("Err p same");
+
+//          g_bkgoffsetsummed -> Draw ("surf1");
+//          g_dataoffset      -> Draw ("err p0");
+//          g_dataoffset      -> Draw ("p");
+//          g_dataoffset -> Draw ("surf2");
+//          g_dataoffset -> Draw ("lego");
+//          g_dataoffset -> Draw ("contsame");
+//          g_dataoffset -> GetXaxis() -> SetRangeUser (minX+(0.5)*(maxX-minX)/nbinX,maxX-(0.5)*(maxX-minX)/nbinX);
+//          g_dataoffset -> GetYaxis() -> SetRangeUser (minY+(0.5)*(maxY-minY)/nbinY,maxY-(0.5)*(maxY-minY)/nbinY);
+//          g_dataoffset -> GetZaxis() -> SetRangeUser (-4,4);
+  
+         
+//          h_dataoffsetsigma -> Draw ("surf3");
+//          h_dataoffsetsigma -> Draw ("lego1");
+//          h_dataoffsetsigma -> Draw ("COLZ");
+//          h_dataoffsetsigma -> Draw ("textsame");
+//          h_dataoffsetsigma -> GetXaxis() -> SetRangeUser (minX+(0.5)*(maxX-minX)/nbinX,maxX-(0.5)*(maxX-minX)/nbinX);
+//          h_dataoffsetsigma -> GetYaxis() -> SetRangeUser (minY+(0.5)*(maxY-minY)/nbinY,maxY-(0.5)*(maxY-minY)/nbinY);
+//          h_dataoffsetsigma -> GetZaxis() -> SetRangeUser (-4,4);
+         
+         
+         //          g_bkgoffsetsummed -> Draw ("surf1same");
+//          h_dataoffset      -> Draw ("EPsame");
+         
+         //          h_bkgoffsetsummed_up -> Draw ("LEGO1");
+//          h_bkgoffsetsummed_do -> Draw ("LEGO1same");
+         
+         //          h_bkgoffsetsummed_up -> Draw ("surf2");
+//          h_bkgoffsetsummed_up -> Draw ("bar2");
+//          h_bkgoffsetsummed_up -> Draw ("surf2");
+//          h_bkgoffsetsummed_up -> Draw ("cont1 same");
+         //          h_bkgoffsetsummed_do -> Draw ("lego1 0");
+//          h_dataoffset      -> Draw ("Esame");
+         
          
 //          h_dataoffsetsigma->GetXaxis()->SetTitle(nameX);
 //          h_dataoffsetsigma->GetYaxis()->SetTitle(nameY);
@@ -617,11 +709,37 @@ class PlotVHqqHggH {
 //          h_dataoffsetsigma->Draw("COLZ");
 //          h_dataoffsetsigma->Draw("textsame");
          gStyle->SetPaintTextFormat("4.1f");
+
          
-         c1 -> SetRightMargin(0.2);
+         c1 -> Divide(2,1);
+         
+         c1 -> cd (1);
+         
+         h_dataoffsetsigma -> Draw ("COLZ");
+         h_dataoffsetsigma -> Draw ("textsame");
+         h_dataoffsetsigma -> GetXaxis() -> SetRangeUser (minX+(0.5)*(maxX-minX)/nbinX,maxX-(0.5)*(maxX-minX)/nbinX);
+         h_dataoffsetsigma -> GetYaxis() -> SetRangeUser (minY+(0.5)*(maxY-minY)/nbinY,maxY-(0.5)*(maxY-minY)/nbinY);
+         h_dataoffsetsigma -> GetZaxis() -> SetRangeUser (-4,4);
+         gPad -> SetRightMargin(0.2);
+         
+         
+         c1 -> cd (2);
+         
+         h_dataoffset -> Draw ("COLZ");
+         h_dataoffset -> Draw ("Etextsame");
+         h_dataoffset -> GetXaxis() -> SetRangeUser (minX+(0.5)*(maxX-minX)/nbinX,maxX-(0.5)*(maxX-minX)/nbinX);
+         h_dataoffset -> GetYaxis() -> SetRangeUser (minY+(0.5)*(maxY-minY)/nbinY,maxY-(0.5)*(maxY-minY)/nbinY);
+         gPad -> SetRightMargin(0.2);
+         
 
         }
         
+        else {
+         dataoffset->Draw("AP");
+         dataoffset->GetXaxis()->SetTitle(_xLabel);
+         dataoffset->GetYaxis()->SetTitle("data-background");
+         bkgoffsetsummed->Draw("E2");
+        }
          
        }
        
