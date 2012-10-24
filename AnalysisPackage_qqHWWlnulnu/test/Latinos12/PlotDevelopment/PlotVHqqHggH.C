@@ -547,7 +547,8 @@ class PlotVHqqHggH {
           h_bkgoffsetsummed_do -> SetBinError   (ibinX+1, ibinY+1, 0);
           
           h_dataoffset -> SetBinContent (ibinX+1, ibinY+1, Y);
-          h_dataoffset -> SetBinError   (ibinX+1, ibinY+1, 0);
+          h_dataoffset -> SetBinError   (ibinX+1, ibinY+1, errY);
+//           h_dataoffset -> SetBinError   (ibinX+1, ibinY+1, 0);
           
           double numsigma;
           if (errY != 0) {
@@ -561,7 +562,7 @@ class PlotVHqqHggH {
           
 //           std::cout << " numsigma = " << numsigma << std::endl;
           h_dataoffsetsigma -> SetBinContent (ibinX+1, ibinY+1, numsigma);
-          //           h_dataoffsetsigma -> SetBinError   (ibinX+1, ibinY+1, errnumsigma);
+          // h_dataoffsetsigma -> SetBinError   (ibinX+1, ibinY+1, errnumsigma);
           
          }
          
@@ -581,16 +582,23 @@ class PlotVHqqHggH {
          h_bkgoffsetsummed_do->GetXaxis()->SetTitle(nameX);
          h_bkgoffsetsummed_do->GetYaxis()->SetTitle(nameY);
          
-         h_bkgoffsetsummed_up->RebinX(2);
-         h_bkgoffsetsummed_up->RebinY(2);
-
-         h_bkgoffsetsummed_do->RebinX(2);
-         h_bkgoffsetsummed_do->RebinY(2);
-
-         h_dataoffset->RebinX(2);
-         h_dataoffset->RebinY(2);
+//          h_bkgoffsetsummed_up->RebinX(2);
+//          h_bkgoffsetsummed_up->RebinY(2);
+// 
+//          h_bkgoffsetsummed_do->RebinX(2);
+//          h_bkgoffsetsummed_do->RebinY(2);
+// 
+//          h_dataoffset->RebinX(2);
+//          h_dataoffset->RebinY(2);
          
-// // // //          h_dataoffset      -> Draw ("E");
+         h_dataoffset->GetXaxis()->SetTitle(nameX);
+         h_dataoffset->GetYaxis()->SetTitle(nameY);
+         h_dataoffset->SetMarkerSize(1.0);
+         h_dataoffset->GetZaxis()->SetTitle("excess events");
+         h_dataoffset->Draw ("colZtextE");
+         
+         
+// // //          h_dataoffset      -> Draw ("E");
 // // //          h_bkgoffsetsummed_up -> Draw ("LEGO1");
 // // //          h_bkgoffsetsummed_do -> Draw ("LEGO1same");
 // // //          
@@ -602,15 +610,13 @@ class PlotVHqqHggH {
 // // //          h_dataoffset      -> Draw ("Esame");
 // // //          
          
-         h_dataoffsetsigma->GetXaxis()->SetTitle(nameX);
-         h_dataoffsetsigma->GetYaxis()->SetTitle(nameY);
-         h_dataoffsetsigma->GetZaxis()->SetTitle("number of #sigma");
-         h_dataoffsetsigma->GetZaxis() -> SetRangeUser (-5,5);
-         h_dataoffsetsigma->Draw("COLZ");
-         h_dataoffsetsigma->Draw("textsame");
-//          h_dataoffsetsigma->GetZaxis()->
+//          h_dataoffsetsigma->GetXaxis()->SetTitle(nameX);
+//          h_dataoffsetsigma->GetYaxis()->SetTitle(nameY);
+//          h_dataoffsetsigma->GetZaxis()->SetTitle("number of #sigma");
+//          h_dataoffsetsigma->GetZaxis() -> SetRangeUser (-5,5);
+//          h_dataoffsetsigma->Draw("COLZ");
+//          h_dataoffsetsigma->Draw("textsame");
          gStyle->SetPaintTextFormat("4.1f");
-//          TGaxis::SetMaxDigits(2);
          
          c1 -> SetRightMargin(0.2);
 

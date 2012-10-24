@@ -181,7 +181,8 @@ void Plot_AM_Mll_testPropaganda() {
  
  TCanvas* c2 = new TCanvas("mll_prop","mll_prop",700,700);
 //  hs->DrawPropagandaPlot(c2,1);
- hs->DrawPropagandaPlot(c2,1,10,"m_{ll} [GeV]",0,200,"m_{T}^{ll-E_{T}^{miss}} [GeV]",80,280);
+//  hs->DrawPropagandaPlot(c2,1,10,"m_{ll} [GeV]",0,200,"m_{T}^{ll-E_{T}^{miss}} [GeV]",80,280);
+ hs->DrawPropagandaPlot(c2,1,8,"m_{T}^{ll-E_{T}^{miss}} [GeV]",80,280,"m_{ll} [GeV]",0,200);
  
 //  10,80,280,8,0,200
  
