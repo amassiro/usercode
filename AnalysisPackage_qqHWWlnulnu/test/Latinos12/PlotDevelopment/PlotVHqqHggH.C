@@ -4,6 +4,7 @@
 #include "THStack.h"
 #include "TGaxis.h"
 #include "TH1F.h"
+#include "TH2F.h"
 #include "TLatex.h"
 #include "TPad.h"
 #include "TCanvas.h"
@@ -13,6 +14,7 @@
 #include "TROOT.h"
 #include "TStyle.h"
 #include "TGraph.h"
+#include "TGraphAsymmErrors.h"
 #endif
 
 #include <iostream>
@@ -83,6 +85,7 @@ class PlotVHqqHggH {
             _cutSx            = -999;
 	    _cutDx            = -999;
             _mass             = -1;
+            _doBandError      = false;
         }
         
         ///---- data
@@ -107,7 +110,14 @@ class PlotVHqqHggH {
 	 std::cout << " ~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
 	} 
 	
-	                                                   
+
+       void set_ErrorBand (TGraphAsymmErrors& grAE) {
+        std::cout << " TGraphAsymmErrors:: Error band"  << std::endl;
+        _doBandError = true;
+        std::cout << " grAE = " << &grAE << std::endl;
+        _BandError = (TGraphAsymmErrors*) grAE.Clone();
+        }
+         
        ///---- background
        
        void set_vectTHBkg (std::vector<TH1F*>& vh) {
@@ -428,6 +438,275 @@ class PlotVHqqHggH {
        } 
 
 
+       //---- draw propaganda plot for discovery ----
+       
+       void DrawPropagandaPlot(const int &rebin,const int& numRolling=-1, TString nameX = "mth", double minX=0,  double maxX=0,  TString nameY = "mll", double minY=0,  double maxY=0) {
+        DrawPropagandaPlot(new TCanvas(),rebin,numRolling,nameX,minX,maxX,nameY,minY,maxY);
+       }
+
+       void DrawPropagandaPlot(TCanvas *c1, const int &rebin,const int& numRolling=-1, TString nameX = "mth", double minX=0,  double maxX=0,  TString nameY = "mll", double minY=0,  double maxY=0) {
+        int rebin2 = rebin; //---> just not to have warning :)
+        rebin2+=0; 
+
+        
+        
+        TH1F *summed = GetSummedMCHist();
+    
+//         TH1F *bkgoffsetsummed = new TH1F("bkgoffsetsummed","background offset",summed->GetNbinsX(), summed->GetBinLowEdge(1), summed->GetBinLowEdge(summed->GetNbinsX()+1));
+
+        int nbinX = summed->GetNbinsX()/numRolling;
+        int nbinY = numRolling;
+        
+        if (numRolling == -1) {
+         nbinX = 1;
+         nbinY = 1;
+        }
+        
+        TH2F *h_bkgoffsetsummed = new TH2F("h_bkgoffsetsummed","background offset",(int) nbinX, minX, maxX,(int) nbinY, minY, maxY);
+        TH2F *h_bkgoffsetsummed_up = new TH2F("h_bkgoffsetsummed_up","background offset",(int) nbinX, minX, maxX,(int) nbinY, minY, maxY);
+        TH2F *h_bkgoffsetsummed_do = new TH2F("h_bkgoffsetsummed_do","background offset",(int) nbinX, minX, maxX,(int) nbinY, minY, maxY);
+        TH2F *h_dataoffset      = new TH2F("h_dataoffset"     ,"data       offset",(int) nbinX, minX, maxX,(int) nbinY, minY, maxY);
+        TH2F *h_dataoffsetsigma = new TH2F("h_dataoffsetsigma","data #sigma offset",(int) nbinX, minX, maxX,(int) nbinY, minY, maxY);
+        
+        h_bkgoffsetsummed->SetFillColor(kGreen);
+        h_bkgoffsetsummed->SetFillStyle(3001);
+        h_bkgoffsetsummed_up->SetFillColor(kGreen);
+        h_bkgoffsetsummed_up->SetFillStyle(3001);
+        h_bkgoffsetsummed_do->SetFillColor(kGreen);
+        h_bkgoffsetsummed_do->SetFillStyle(3001);
+        
+        h_dataoffsetsigma->SetFillColor(kRed);
+        h_dataoffsetsigma->SetFillStyle(3001);
+        
+        h_dataoffset -> SetMarkerSize(2);
+        h_dataoffset -> SetMarkerStyle(20);
+        h_dataoffset -> SetMarkerColor(kBlack);
+        h_dataoffset -> SetLineWidth(2);
+        h_dataoffset -> SetLineColor(kBlack);
+        
+        
+        TGraphAsymmErrors *bkgoffsetsummed = new TGraphAsymmErrors();        
+        TGraphAsymmErrors *dataoffset = new TGraphAsymmErrors();        
+        TH1F *data   = GetDataHist();
+        
+        bkgoffsetsummed->SetFillColor(kGreen);
+        bkgoffsetsummed->SetFillStyle(3001);
+        
+        dataoffset -> SetMarkerSize(2);
+        dataoffset -> SetMarkerStyle(20);
+        dataoffset -> SetMarkerColor(kBlack);
+        dataoffset -> SetLineWidth(2);
+        dataoffset -> SetLineColor(kBlack);
+             
+        for (int iBin = 0; iBin < summed->GetNbinsX(); iBin ++) {
+         
+         double YwithSig = (_BandError->GetY()) [iBin];
+         double X = (_BandError->GetX()) [iBin];
+         
+         double Y = YwithSig - (_vectTHstackSig.at(_vectTHstackSig.size() - 1) -> GetBinContent(iBin+1)); //---- subtract the signal
+         double alpha =  Y/YwithSig; //---- scale the error ... first approx! Since TGraphErrors is built onder the sig+bkg hypothesis
+         
+         double errXUp      = _BandError->GetErrorXhigh(iBin);
+         double errXDown    = _BandError->GetErrorXlow(iBin);
+         double errYUp      = alpha * _BandError->GetErrorYhigh(iBin);
+         double errYDown    = alpha * _BandError->GetErrorYlow(iBin);
+
+         Y = data->GetBinContent(iBin+1) - Y;
+         
+         dataoffset -> SetPoint      (iBin, X, Y);
+//          double statisticalError = sqrt(data->GetBinContent(iBin+1));
+//          if (statisticalError == 0) statisticalError = 1;
+//          dataoffset -> SetPointError (iBin, errXDown, errXUp, statisticalError, statisticalError);
+//          
+         bkgoffsetsummed -> SetPoint      (iBin, X, 0);
+//          bkgoffsetsummed -> SetPointError (iBin, errXDown, errXUp, errYDown, errYUp);
+
+         
+         
+         dataoffset -> SetPoint      (iBin, X, Y);
+         double statisticalError = sqrt(data->GetBinContent(iBin+1));
+         if (statisticalError == 0) statisticalError = 1;
+         dataoffset -> SetPointError (iBin, errXDown, errXUp, 0, 0);
+         
+         errYUp = sqrt(errYUp*errYUp       + statisticalError*statisticalError);
+         errYDown = sqrt(errYDown*errYDown + statisticalError*statisticalError);
+         
+         bkgoffsetsummed -> SetPoint      (iBin, X, 0);
+         bkgoffsetsummed -> SetPointError (iBin, errXDown, errXUp, errYDown, errYUp);
+         
+         if (numRolling != -1) {
+          int ibinX = iBin/numRolling;
+          int ibinY = iBin - ibinX*numRolling;
+          double errY = ( errYDown + errYUp ) / 2.;
+          h_bkgoffsetsummed -> SetBinContent (ibinX+1, ibinY+1, 0);
+          h_bkgoffsetsummed -> SetBinError   (ibinX+1, ibinY+1, errY);
+
+          h_bkgoffsetsummed_up -> SetBinContent (ibinX+1, ibinY+1, errYUp);
+          h_bkgoffsetsummed_up -> SetBinError   (ibinX+1, ibinY+1, 0);
+          h_bkgoffsetsummed_do -> SetBinContent (ibinX+1, ibinY+1, -errYDown);
+          h_bkgoffsetsummed_do -> SetBinError   (ibinX+1, ibinY+1, 0);
+          
+          h_dataoffset -> SetBinContent (ibinX+1, ibinY+1, Y);
+          h_dataoffset -> SetBinError   (ibinX+1, ibinY+1, 0);
+          
+          double numsigma;
+          if (errY != 0) {
+           if (Y>0) numsigma = Y/errYUp;
+           if (Y<0) numsigma = Y/errYDown;
+          }
+          else numsigma = 0;
+//           double errnumsigma;
+//           if (errY != 0) errnumsigma = statisticalError/errY;
+//           else errnumsigma = 0;
+          
+//           std::cout << " numsigma = " << numsigma << std::endl;
+          h_dataoffsetsigma -> SetBinContent (ibinX+1, ibinY+1, numsigma);
+          //           h_dataoffsetsigma -> SetBinError   (ibinX+1, ibinY+1, errnumsigma);
+          
+         }
+         
+        }
+        
+        
+        dataoffset->Draw("AP");
+        dataoffset->GetXaxis()->SetTitle(_xLabel);
+        dataoffset->GetYaxis()->SetTitle("data-background");
+        bkgoffsetsummed->Draw("E2");
+        
+        
+        
+        if (numRolling != -1) {
+         h_bkgoffsetsummed_up->GetXaxis()->SetTitle(nameX);
+         h_bkgoffsetsummed_up->GetYaxis()->SetTitle(nameY);
+         h_bkgoffsetsummed_do->GetXaxis()->SetTitle(nameX);
+         h_bkgoffsetsummed_do->GetYaxis()->SetTitle(nameY);
+         
+         h_bkgoffsetsummed_up->RebinX(2);
+         h_bkgoffsetsummed_up->RebinY(2);
+
+         h_bkgoffsetsummed_do->RebinX(2);
+         h_bkgoffsetsummed_do->RebinY(2);
+
+         h_dataoffset->RebinX(2);
+         h_dataoffset->RebinY(2);
+         
+// // // //          h_dataoffset      -> Draw ("E");
+// // //          h_bkgoffsetsummed_up -> Draw ("LEGO1");
+// // //          h_bkgoffsetsummed_do -> Draw ("LEGO1same");
+// // //          
+// // //          //          h_bkgoffsetsummed_up -> Draw ("surf2");
+// // // //          h_bkgoffsetsummed_up -> Draw ("bar2");
+// // // //          h_bkgoffsetsummed_up -> Draw ("surf2");
+// // // //          h_bkgoffsetsummed_up -> Draw ("cont1 same");
+// // //          //          h_bkgoffsetsummed_do -> Draw ("lego1 0");
+// // //          h_dataoffset      -> Draw ("Esame");
+// // //          
+         
+         h_dataoffsetsigma->GetXaxis()->SetTitle(nameX);
+         h_dataoffsetsigma->GetYaxis()->SetTitle(nameY);
+         h_dataoffsetsigma->GetZaxis()->SetTitle("number of #sigma");
+         h_dataoffsetsigma->GetZaxis() -> SetRangeUser (-5,5);
+         h_dataoffsetsigma->Draw("COLZ");
+         h_dataoffsetsigma->Draw("textsame");
+//          h_dataoffsetsigma->GetZaxis()->
+         gStyle->SetPaintTextFormat("4.1f");
+//          TGaxis::SetMaxDigits(2);
+         
+         c1 -> SetRightMargin(0.2);
+
+        }
+        
+         
+       }
+       
+       
+       //---- draw only background -> normalized to 1! ----
+       
+       void DrawNormalized(const int &rebin=1) {
+        DrawNormalized(new TCanvas(),rebin);
+       }
+       
+       void DrawNormalized(TCanvas *c1, const int &rebin=1) {
+        int rebin2 = rebin; //---> just not to have warning :)
+        rebin2+=0; 
+        
+        gStyle->SetOptStat(0);
+        c1->cd();
+        c1->Clear();
+
+        TPad *pad1;
+        _globalYoffset = 0.85;
+        pad1 = new TPad("pad1","pad1",0,0,1,1);
+        pad1->Draw();
+        pad1->cd();
+
+            
+        if (c1->GetLogy()) gPad->SetLogy();
+
+        _max = 1.1;
+        _min = 0;
+        
+        _maxLog = 10.5;
+        _minLog = 0.001;
+        
+        double maxy ;
+        double miny ;
+        
+        if (c1->GetLogy()) {
+         maxy = _maxLog;
+         miny = _minLog;
+        }
+        else {
+         maxy = _max;
+         miny = _min;
+        }          
+                                                              
+        THStack *hstack = GetStack(c1->GetLogy());
+        
+        for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
+         if (iBkg == 0) {
+          _vectTHBkg.at(iBkg)->SetLabelSize(0.00,"X");
+          _vectTHBkg.at(iBkg)->SetLabelSize(0.06,"Y");
+          _vectTHBkg.at(iBkg)->SetTitleSize(0.06,"XY");  
+          _vectTHBkg.at(iBkg)->DrawNormalized("L");
+          AxisFonts(_vectTHBkg.at(iBkg)->GetXaxis(), "x", hstack->GetXaxis()->GetTitle());
+          AxisFonts(_vectTHBkg.at(iBkg)->GetYaxis(), "y", "a.u.");
+          std::cout << " miny,maxy = " << miny << " , "  << maxy << std::endl;
+//           _vectTHBkg.at(iBkg)->GetYaxis()->SetRangeUser(miny, maxy);
+          _vectTHBkg.at(iBkg)->SetTitle("");
+          gPad->SetGrid();
+//           _vectTHBkg.at(iBkg)->SetMaximum(5);
+          TH1F* tempOfHisto = (TH1F*) _vectTHBkg.at(iBkg)->Clone();
+          double tempint = tempOfHisto->Integral();
+          tempOfHisto->Scale(1./tempint);
+          tempOfHisto->GetYaxis()->SetRangeUser(miny, maxy);
+          tempOfHisto->Draw("L");
+         }
+         else {
+          _vectTHBkg.at(iBkg) -> DrawNormalized("Lsame");
+         }
+        }
+        
+        for (unsigned int iSig = 0; iSig<_vectTHstackSig.size(); iSig++) {
+         if (_mergeSignal == 0) {
+          _vectTHSig.at(iSig) -> DrawNormalized("L,same");
+         } 
+         else {
+          if (_mergeSignal == 1 && iSig == (_vectTHstackSig.size()-1)) {
+           _vectTHstackSig.at(iSig) -> SetLineColor (kRed);
+          _vectTHstackSig.at(iSig) -> DrawNormalized("L,same");
+          }
+         }
+        }
+        
+        
+        DrawLabels(false); // do not plot data!
+        pad1->GetFrame()->DrawClone();
+       }
+        
+        
+        //---- draw ----
+       
        void Draw(const int &rebin=1,const bool &div=false) {
             Draw(new TCanvas(),rebin,div);
         }
@@ -483,8 +762,38 @@ class PlotVHqqHggH {
 	    summed->SetFillStyle(3335);
 	    summed->SetFillColor(kBlack);
 	    summed->SetMarkerSize(0);
-	    summed->Draw("sameE2");
-
+	    
+            if (_doBandError) {
+//              summed->Draw("same");
+             _BandError -> Draw("E2same");
+             double allTG = 0;
+             for (int iBin = 0; iBin < summed->GetNbinsX(); iBin ++) {
+              std::cout << " iBin = " << iBin << " :: " << summed->GetNbinsX();
+              std::cout << " => " << (_BandError->GetY()) [iBin] << " / " << summed->GetBinContent(iBin+1) << " = ";
+              if (summed->GetBinContent(iBin+1) != 0) std::cout << (_BandError->GetY()) [iBin] / summed->GetBinContent(iBin+1) << std::endl;
+              else std::cout << std::endl;
+              
+              if ((_BandError->GetY()) [iBin]) {
+               allTG += (_BandError->GetY()) [iBin];
+               double alpha =  summed->GetBinContent(iBin+1) / (_BandError->GetY()) [iBin];
+               
+               double Y = (_BandError->GetY()) [iBin];
+               double X = (_BandError->GetX()) [iBin];
+               double errXUp      = _BandError->GetErrorXhigh(iBin);
+               double errXDown    = _BandError->GetErrorXlow(iBin);
+               double errYUp      = _BandError->GetErrorYhigh(iBin);
+               double errYDown    = _BandError->GetErrorYlow(iBin);
+               
+               _BandError->SetPoint(iBin, X, alpha*Y);
+               _BandError->SetPointError(iBin, errXDown, errXUp, errYDown * alpha, errYUp * alpha);
+               
+              }
+             }
+             std::cout << " allTG = " << allTG << std::endl;
+            }
+            else {
+             summed->Draw("sameE2");
+            }
 	    
 	    _max = hstack->GetMaximum() * 1.1;
 	    if (_data && _data->GetMaximum() * 1.1 > _max) _max = _data->GetMaximum() * 1.1;
@@ -895,7 +1204,7 @@ class PlotVHqqHggH {
 	 return sampCount;
         }
 
-        void DrawLabels() {
+        void DrawLabels(bool plotData=true) {
 
             // total mess to get it nice, should be redone
             size_t j=0;
@@ -906,10 +1215,13 @@ class PlotVHqqHggH {
             else if(sampCount == 11 )              { pos = xPosB; off = yOffB; }
             else                                   { pos = xPos;  off = yOff;  }
             float x0=0.22; float wx=0.19;
-            if(_data        ) { 
+            if(_data   && plotData     ) { 
 	     DrawLegend(x0+pos[j]*wx, _globalYoffset - off[j]*_yoffset, _data,                  " data",                "lp");
 	     j++; 
 	    }
+	    else {
+//              if (plotData == false) j++;
+            }
 	    for (unsigned int iSig = 0; iSig<_vectTHstackSig.size(); iSig++) {
              if (_mergeSignal == 0 ||  iSig == (_vectTHstackSig.size()-1)) {
               if (_mergeSignal == 1) {
@@ -928,23 +1240,29 @@ class PlotVHqqHggH {
              }
 	     j++;
 	    }
+	   
+	    if (plotData == false) j++;
+           
 	    for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
 	     DrawLegend(x0+pos[j]*wx, _globalYoffset - off[j]*_yoffset, _vectTHBkg.at(iBkg)         , _vectNameBkg.at(iBkg) ,           "f" );
 	     j++; 
 	    }
 	    
-            TLatex* luminosity;
-            if(_extraLabel) {
-	     luminosity = new TLatex(0.670, 0.781, TString::Format("#splitline{CMS preliminary}{#splitline{     L = %.1f fb^{-1}}{%s}}",_lumi,_extraLabel->Data()));
-	    }
-	    else {
-	     luminosity = new TLatex(0.670, 0.781, TString::Format("#splitline{CMS preliminary}{     L = %.1f fb^{-1}}",_lumi));
-	    }
-            luminosity->SetNDC();
-            luminosity->SetTextAlign(12);
-            luminosity->SetTextFont(42);
-            luminosity->SetTextSize(_legendTextSize*0.95);
-            luminosity->Draw("same");
+	    
+	    if (plotData) {
+             TLatex* luminosity;
+             if(_extraLabel) {
+              luminosity = new TLatex(0.670, 0.781, TString::Format("#splitline{CMS preliminary}{#splitline{     L = %.1f fb^{-1}}{%s}}",_lumi,_extraLabel->Data()));
+             }
+             else {
+              luminosity = new TLatex(0.670, 0.781, TString::Format("#splitline{CMS preliminary}{     L = %.1f fb^{-1}}",_lumi));
+             }
+             luminosity->SetNDC();
+             luminosity->SetTextAlign(12);
+             luminosity->SetTextFont(42);
+             luminosity->SetTextSize(_legendTextSize*0.95);
+             luminosity->Draw("same");
+            }
 // 	    if(_extraLabel) _extraLabel->Draw("same");
 	}
 
@@ -1069,6 +1387,9 @@ class PlotVHqqHggH {
         int     _mergeSignal    ;
         
         int     _mass           ;
+        
+        bool    _doBandError    ;
+        TGraphAsymmErrors*    _BandError      ;
         
 };
 
