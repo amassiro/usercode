@@ -7,7 +7,7 @@
 #include "PlotVHqqHggH.C"
 
 
-void Plot_AM_Mll_testPropaganda() {
+void Plot_AM_2D_testPropaganda() {
  TString folder = Form("sig/");
  TString cutNameBefore = Form("sig/histo_");
 
@@ -22,7 +22,7 @@ void Plot_AM_Mll_testPropaganda() {
 
  TCanvas* c1 = new TCanvas("mll","mll",500,600);
 //  TFile* f = new TFile("postFitMll/mH125.root");
- TFile* f = new TFile("postFitTest0F/dump_hww-12.10fb.mH125.of_0j_shape.root");
+ TFile* f = new TFile("postFitDF0J/of0j_mH125.root");
 
 
  PlotVHqqHggH* hs = new PlotVHqqHggH();

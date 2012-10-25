@@ -652,7 +652,9 @@ class PlotVHqqHggH {
 //          h_bkgoffsetsummed_do->RebinX(2);
 //          h_bkgoffsetsummed_do->RebinY(2);
 // 
-//          h_dataoffset->RebinX(2);
+         h_dataoffsetsigma->RebinX(2);
+         
+         h_dataoffset->RebinX(2);
 //          h_dataoffset->RebinY(2);
          
 //          h_dataoffset->GetXaxis()->SetTitle(nameX);
