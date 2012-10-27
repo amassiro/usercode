@@ -16,6 +16,8 @@
 #include "TGraph.h"
 #include "TGraphAsymmErrors.h"
 #include "TGraph2DErrors.h"
+#include "TExec.h"
+#include "TText.h"
 #endif
 
 #include <iostream>
@@ -87,6 +89,7 @@ class PlotVHqqHggH {
 	    _cutDx            = -999;
             _mass             = -1;
             _doBandError      = false;
+            _doLabelNumber    = false;
         }
         
         ///---- data
@@ -112,6 +115,11 @@ class PlotVHqqHggH {
 	} 
 	
 
+	void set_doLabelNumber (bool doLabelNumber) {
+         _doLabelNumber = doLabelNumber;
+        }
+        
+	
        void set_ErrorBand (TGraphAsymmErrors& grAE) {
         std::cout << " TGraphAsymmErrors:: Error band"  << std::endl;
         _doBandError = true;
@@ -439,13 +447,14 @@ class PlotVHqqHggH {
        } 
 
 
+       
        //---- draw propaganda plot for discovery ----
        
-       void DrawPropagandaPlot(const int &rebin,const int& numRolling=-1, TString nameX = "mth", double minX=0,  double maxX=0,  TString nameY = "mll", double minY=0,  double maxY=0) {
-        DrawPropagandaPlot(new TCanvas(),rebin,numRolling,nameX,minX,maxX,nameY,minY,maxY);
+       void DrawPropagandaPlot(const int &rebin,const int& numRolling=-1, TString nameX = "mth", double minX=0,  double maxX=0,  TString nameY = "mll", double minY=0,  double maxY=0, int subrangeX=-1, int subrangeY=-1) {
+        DrawPropagandaPlot(new TCanvas(),rebin,numRolling,nameX,minX,maxX,nameY,minY,maxY, subrangeX, subrangeY);
        }
 
-       void DrawPropagandaPlot(TCanvas *c1, const int &rebin,const int& numRolling=-1, TString nameX = "mth", double minX=0,  double maxX=0,  TString nameY = "mll", double minY=0,  double maxY=0) {
+       void DrawPropagandaPlot(TCanvas *c1, const int &rebin,const int& numRolling=-1, TString nameX = "mth", double minX=0,  double maxX=0,  TString nameY = "mll", double minY=0,  double maxY=0, int subrangeX=-1, int subrangeY=-1) {
         int rebin2 = rebin; //---> just not to have warning :)
         rebin2+=0; 
 
@@ -466,9 +475,44 @@ class PlotVHqqHggH {
         TH2F *h_bkgoffsetsummed = new TH2F("h_bkgoffsetsummed","background offset",(int) nbinX, minX, maxX,(int) nbinY, minY, maxY);
         TH2F *h_bkgoffsetsummed_up = new TH2F("h_bkgoffsetsummed_up","background offset",(int) nbinX, minX, maxX,(int) nbinY, minY, maxY);
         TH2F *h_bkgoffsetsummed_do = new TH2F("h_bkgoffsetsummed_do","background offset",(int) nbinX, minX, maxX,(int) nbinY, minY, maxY);
-        TH2F *h_dataoffset      = new TH2F("h_dataoffset"     ,"data       offset",(int) nbinX, minX, maxX,(int) nbinY, minY, maxY);
         TH2F *h_dataoffsetsigma = new TH2F("h_dataoffsetsigma","data #sigma offset",(int) nbinX, minX, maxX,(int) nbinY, minY, maxY);
+        TH2F *h_dataoffset      = new TH2F("h_dataoffset"     ,"data       offset",(int) nbinX, minX, maxX,(int) nbinY, minY, maxY);
+        TH2F *h_signaloffset    = new TH2F("h_signaloffset"   ,"signal      offset",(int) nbinX, minX, maxX,(int) nbinY, minY, maxY);
+        TH2F *h_dummy           = new TH2F("h_dummy"          ,""                  ,(int) nbinX, minX, maxX,(int) nbinY, minY, maxY);
+        
+        
+        
+        TH2F *h_dataoffset_zoom;
+        TH2F *h_signaloffset_zoom;
+        if (subrangeX!=-1 && subrangeY!=-1) {
+         h_dataoffset_zoom   = new TH2F("h_dataoffset_zoom"     ,"data       offset", (int) subrangeX, minX, minX+(maxX-minX)/nbinX*subrangeX,(int) subrangeY, minY, minY+(maxY-minY)/nbinY*subrangeY);
+         h_signaloffset_zoom = new TH2F("h_signaloffset_zoom"   ,"signal      offset",(int) subrangeX, minX, minX+(maxX-minX)/nbinX*subrangeX,(int) subrangeY, minY, minY+(maxY-minY)/nbinY*subrangeY);
 
+         h_dataoffset_zoom -> SetMarkerSize(1);
+         h_dataoffset_zoom -> SetMarkerStyle(20);
+         h_dataoffset_zoom -> SetMarkerColor(kBlack);
+         h_dataoffset_zoom -> SetLineWidth(2);
+         h_dataoffset_zoom -> SetLineColor(kBlack);
+         
+         h_signaloffset_zoom -> SetMarkerSize(1);
+         h_signaloffset_zoom -> SetMarkerStyle(20);
+         h_signaloffset_zoom -> SetMarkerColor(kBlack);
+         h_signaloffset_zoom -> SetLineWidth(2);
+         h_signaloffset_zoom -> SetLineColor(kBlack);
+                  
+         h_dataoffset_zoom->GetXaxis()->SetTitle(nameX);
+         h_dataoffset_zoom->GetYaxis()->SetTitle(nameY);
+         h_dataoffset_zoom->GetZaxis()->SetTitle("excess of events");
+         h_dataoffset_zoom->SetTitle ("number of events over background");
+         h_dataoffset_zoom->SetTitle ("");
+         
+         h_signaloffset_zoom->GetXaxis()->SetTitle(nameX);
+         h_signaloffset_zoom->GetYaxis()->SetTitle(nameY);
+         h_signaloffset_zoom->GetZaxis()->SetTitle("number of signal events");
+         h_signaloffset_zoom->SetTitle ("number of signal events");
+         h_signaloffset_zoom->SetTitle ("");
+         
+        }
         
         TGraph2DErrors *g_bkgoffsetsummed = new TGraph2DErrors();
         TGraph2DErrors *g_bkgoffsetsummed_error = new TGraph2DErrors();
@@ -504,15 +548,23 @@ class PlotVHqqHggH {
         h_bkgoffsetsummed_do->SetFillColor(kGreen);
         h_bkgoffsetsummed_do->SetFillStyle(3001);
         
+        h_dataoffsetsigma->SetMarkerSize(2);
         h_dataoffsetsigma->SetFillColor(kRed);
         h_dataoffsetsigma->SetFillStyle(3001);
         
-        h_dataoffset -> SetMarkerSize(1);
+        h_dataoffset -> SetMarkerSize(2);
         h_dataoffset -> SetMarkerStyle(20);
         h_dataoffset -> SetMarkerColor(kBlack);
         h_dataoffset -> SetLineWidth(2);
         h_dataoffset -> SetLineColor(kBlack);
         
+        h_signaloffset -> SetMarkerSize(2);
+        h_signaloffset -> SetMarkerStyle(20);
+        h_signaloffset -> SetMarkerColor(kBlack);
+        h_signaloffset -> SetLineWidth(2);
+        h_signaloffset -> SetLineColor(kBlack);
+        
+        h_dummy  -> SetMarkerSize(2);
         
         g_dataoffset -> SetMarkerSize(2);
         g_dataoffset -> SetMarkerStyle(20);
@@ -540,9 +592,10 @@ class PlotVHqqHggH {
          
          double YwithSig = (_BandError->GetY()) [iBin];
          double X = (_BandError->GetX()) [iBin];
-         
+                  
          double Y = YwithSig - (_vectTHstackSig.at(_vectTHstackSig.size() - 1) -> GetBinContent(iBin+1)); //---- subtract the signal
          double alpha =  Y/YwithSig; //---- scale the error ... first approx! Since TGraphErrors is built onder the sig+bkg hypothesis
+          
          
          double errXUp      = _BandError->GetErrorXhigh(iBin);
          double errXDown    = _BandError->GetErrorXlow(iBin);
@@ -550,6 +603,8 @@ class PlotVHqqHggH {
          double errYDown    = alpha * _BandError->GetErrorYlow(iBin);
 
          Y = data->GetBinContent(iBin+1) - Y;
+ 
+         std::cout << " X = " << X << " YwithSig = " << YwithSig << " Y = " << Y << std::endl;
          
          dataoffset -> SetPoint      (iBin, X, Y);
 //          double statisticalError = sqrt(data->GetBinContent(iBin+1));
@@ -593,7 +648,24 @@ class PlotVHqqHggH {
           
           h_dataoffset -> SetBinContent (ibinX+1, ibinY+1, Y);
           h_dataoffset -> SetBinError   (ibinX+1, ibinY+1, errY);
-//           h_dataoffset -> SetBinError   (ibinX+1, ibinY+1, 0);
+          
+          h_dummy -> SetBinContent (ibinX+1, ibinY+1, ibinY+ibinX*nbinX+1);
+          
+          if (subrangeX!=-1 && subrangeY!=-1) {
+           if (ibinX<subrangeX && ibinY<subrangeY) {
+            h_dataoffset_zoom -> SetBinContent (ibinX+1, ibinY+1, Y);
+            h_dataoffset_zoom -> SetBinError   (ibinX+1, ibinY+1, errY);
+            h_signaloffset_zoom-> SetBinContent (ibinX+1, ibinY+1, (_vectTHstackSig.at(_vectTHstackSig.size() - 1) -> GetBinContent(iBin+1)));
+           }
+          }
+          
+          
+          h_signaloffset -> SetBinContent (ibinX+1, ibinY+1, (_vectTHstackSig.at(_vectTHstackSig.size() - 1) -> GetBinContent(iBin+1)));
+//           h_signaloffset -> SetBinError   (ibinX+1, ibinY+1, (_vectTHstackSig.at(_vectTHstackSig.size() - 1) -> GetBinError(iBin+1)));
+//           
+//           std::cout << " (_vectTHstackSig.at(_vectTHstackSig.size() - 1) -> GetBinError(iBin+1)) = " << (_vectTHstackSig.at(_vectTHstackSig.size() - 1) -> GetBinError(iBin+1)) << std::endl;
+
+          //           h_dataoffset -> SetBinError   (ibinX+1, ibinY+1, 0);
           
  //           g_dataoffset -> SetPoint      (iBin, (ibinX+0.5)*(maxX-minX)/nbinX + minX, (ibinY+0.5)*(maxY-minY)/nbinY + minY, Y);
           g_dataoffset -> SetPointError (iBin, (maxX-minX)/nbinX/2., (maxY-minY)/nbinY/2., 0);
@@ -629,6 +701,10 @@ class PlotVHqqHggH {
          h_bkgoffsetsummed_do->GetXaxis()->SetTitle(nameX);
          h_bkgoffsetsummed_do->GetYaxis()->SetTitle(nameY);
          
+         
+         h_dummy->GetXaxis()->SetTitle(nameX);
+         h_dummy->GetYaxis()->SetTitle(nameY);
+         
          g_dataoffset->GetXaxis()->SetTitle(nameX);
          g_dataoffset->GetYaxis()->SetTitle(nameY);
          g_dataoffset->GetZaxis()->SetTitle("number of #sigma");
@@ -646,15 +722,24 @@ class PlotVHqqHggH {
          h_dataoffsetsigma->SetTitle ("number of #sigma");
          h_dataoffsetsigma->SetTitle ("");         
          
+         
+         h_signaloffset->GetXaxis()->SetTitle(nameX);
+         h_signaloffset->GetYaxis()->SetTitle(nameY);
+         h_signaloffset->GetZaxis()->SetTitle("number of signal events");
+         h_signaloffset->SetTitle ("number of signal events");
+         h_signaloffset->SetTitle ("");
+         
+         
+         
 //          h_bkgoffsetsummed_up->RebinX(2);
 //          h_bkgoffsetsummed_up->RebinY(2);
 // 
 //          h_bkgoffsetsummed_do->RebinX(2);
 //          h_bkgoffsetsummed_do->RebinY(2);
 // 
-         h_dataoffsetsigma->RebinX(2);
+//          h_dataoffsetsigma->RebinX(2);
          
-         h_dataoffset->RebinX(2);
+//          h_dataoffset->RebinX(2);
 //          h_dataoffset->RebinY(2);
          
 //          h_dataoffset->GetXaxis()->SetTitle(nameX);
@@ -710,30 +795,137 @@ class PlotVHqqHggH {
 //          h_dataoffsetsigma->GetZaxis() -> SetRangeUser (-5,5);
 //          h_dataoffsetsigma->Draw("COLZ");
 //          h_dataoffsetsigma->Draw("textsame");
-         gStyle->SetPaintTextFormat("4.1f");
-
          
-         c1 -> Divide(2,1);
+         TExec *ex6 = new TExec("ex4","gStyle->SetPaintTextFormat(\"4.1f\");");
          
-         c1 -> cd (1);
+//          gStyle->SetPaintTextFormat("4.1f");
          
-         h_dataoffsetsigma -> Draw ("COLZ");
-         h_dataoffsetsigma -> Draw ("textsame");
-         h_dataoffsetsigma -> GetXaxis() -> SetRangeUser (minX+(0.5)*(maxX-minX)/nbinX,maxX-(0.5)*(maxX-minX)/nbinX);
-         h_dataoffsetsigma -> GetYaxis() -> SetRangeUser (minY+(0.5)*(maxY-minY)/nbinY,maxY-(0.5)*(maxY-minY)/nbinY);
-         h_dataoffsetsigma -> GetZaxis() -> SetRangeUser (-4,4);
-         gPad -> SetRightMargin(0.2);
+//          TExec *ex1 = new TExec("ex1","gStyle->SetPaintTextFormat(\"4.1f\");");
+//          ex1->Draw();
          
-         
-         c1 -> cd (2);
-         
-         h_dataoffset -> Draw ("COLZ");
-         h_dataoffset -> Draw ("Etextsame");
-         h_dataoffset -> GetXaxis() -> SetRangeUser (minX+(0.5)*(maxX-minX)/nbinX,maxX-(0.5)*(maxX-minX)/nbinX);
-         h_dataoffset -> GetYaxis() -> SetRangeUser (minY+(0.5)*(maxY-minY)/nbinY,maxY-(0.5)*(maxY-minY)/nbinY);
-         gPad -> SetRightMargin(0.2);
          
 
+        
+         if (subrangeX == -1 && subrangeY == -1) {
+          c1 -> Divide(2,2);
+          
+          c1 -> cd (1);
+          TH1F* h_frame = gPad->DrawFrame(minX,minY,maxX,maxY);
+          ex6->Draw();
+          h_frame->GetXaxis()->SetTitle(nameX);
+          h_frame->GetYaxis()->SetTitle(nameY);
+          
+          
+          
+          h_dataoffsetsigma -> Draw ("COLZ SAME");
+          h_dataoffsetsigma -> Draw ("textsame");
+          h_dataoffsetsigma -> GetXaxis() -> SetRangeUser (minX+(0.5)*(maxX-minX)/nbinX,maxX-(0.5)*(maxX-minX)/nbinX);
+          h_dataoffsetsigma -> GetYaxis() -> SetRangeUser (minY+(0.5)*(maxY-minY)/nbinY,maxY-(0.5)*(maxY-minY)/nbinY);
+          h_dataoffsetsigma -> GetZaxis() -> SetRangeUser (-4,4);
+          gPad -> SetRightMargin(0.2);
+          
+  
+          c1 -> cd (2);
+          TH1F* h_frame2 = gPad->DrawFrame(minX,minY,maxX,maxY);
+          h_frame2->GetXaxis()->SetTitle(nameX);
+          h_frame2->GetYaxis()->SetTitle(nameY);
+          h_dataoffset -> Draw ("COLZ SAME");
+          h_dataoffset -> Draw ("Etextsame");
+          h_dataoffset -> GetXaxis() -> SetRangeUser (minX+(0.5)*(maxX-minX)/nbinX,maxX-(0.5)*(maxX-minX)/nbinX);
+          h_dataoffset -> GetYaxis() -> SetRangeUser (minY+(0.5)*(maxY-minY)/nbinY,maxY-(0.5)*(maxY-minY)/nbinY);
+//           h_dataoffset -> GetZaxis() -> SetRangeUser (-4,4);
+          gPad -> SetRightMargin(0.2);
+          
+          
+          
+          c1 -> cd (3);
+          TH1F* h_frame3 = gPad->DrawFrame(minX,minY,maxX,maxY);
+          TExec *ex5 = new TExec("ex4","gStyle->SetPaintTextFormat(\".0f\");");
+          ex5->Draw();
+          h_frame3->GetXaxis()->SetTitle(nameX);
+          h_frame3->GetYaxis()->SetTitle(nameY);
+          
+               
+//           h_dummy->SetPaintTextFormat(".0f");
+          h_dummy -> Draw ("TEXT SAME");
+          h_dummy->GetXaxis() -> SetNdivisions (nbinX);
+          h_dummy->GetYaxis() -> SetNdivisions (nbinY);
+          //           h_dummy -> Draw ("TEXT");
+          gPad -> SetRightMargin(0.2);
+//           gPad -> SetGrid();
+//           gStyle->SetPaintTextFormat("4.1f");          
+          ex6->Draw();
+          
+          
+          c1 -> cd (4);
+          TH1F* h_frame4 = gPad->DrawFrame(minX,minY,maxX,maxY);
+          h_frame4->GetXaxis()->SetTitle(nameX);
+          h_frame4->GetYaxis()->SetTitle(nameY);
+          
+          h_signaloffset -> Draw ("COLZ SAME");
+          h_signaloffset -> Draw ("textsame");
+          //          h_signaloffset -> Draw ("Etextsame");
+          h_signaloffset -> GetXaxis() -> SetRangeUser (minX+(0.5)*(maxX-minX)/nbinX,maxX-(0.5)*(maxX-minX)/nbinX);
+          h_signaloffset -> GetYaxis() -> SetRangeUser (minY+(0.5)*(maxY-minY)/nbinY,maxY-(0.5)*(maxY-minY)/nbinY);
+          gPad -> SetRightMargin(0.2);
+          
+          
+          
+          
+          
+          TCanvas* ccMap = new TCanvas ("ccMap","ccMap",400,400);
+          ccMap->cd();
+          gPad -> SetRightMargin(0.15);
+          gPad -> SetLeftMargin(0.15);
+          gPad -> SetTopMargin(0.15);
+          gPad -> SetBottomMargin(0.15);
+          TH1F* h_frame5 = gPad->DrawFrame(minX,minY,maxX,maxY);
+          TExec *ex4 = new TExec("ex4","gStyle->SetPaintTextFormat(\".0f\");");
+          ex4->Draw();
+          h_frame5->GetXaxis()->SetTitle(nameX);
+          h_frame5->GetYaxis()->SetTitle(nameY);
+          h_dummy -> Draw ("TEXT SAME");    
+//           h_dummy -> Draw ("COLZ SAME");    
+//           gStyle->SetPaintTextFormat(".0f");
+//           h_dummy -> Draw ("TEXT");
+//           gPad -> SetGrid();
+          ccMap -> Update();
+          
+          
+          
+          
+         }
+         else {
+          c1 -> Divide(2,2);
+          
+          c1 -> cd (1);
+          
+          h_dataoffsetsigma -> Draw ("COLZ");
+          h_dataoffsetsigma -> Draw ("textsame");
+          h_dataoffsetsigma -> GetXaxis() -> SetRangeUser (minX+(0.5)*(maxX-minX)/nbinX,maxX-(0.5)*(maxX-minX)/nbinX);
+          h_dataoffsetsigma -> GetYaxis() -> SetRangeUser (minY+(0.5)*(maxY-minY)/nbinY,maxY-(0.5)*(maxY-minY)/nbinY);
+          h_dataoffsetsigma -> GetZaxis() -> SetRangeUser (-4,4);
+          gPad -> SetRightMargin(0.2);
+          
+          
+          c1 -> cd (2);          
+          h_dataoffset_zoom -> Draw ("COLZ");
+          h_dataoffset_zoom -> Draw ("Etextsame");
+          gPad -> SetRightMargin(0.2);
+          
+
+          c1 -> cd (3);
+          h_dataoffset -> Draw ("COLZ");
+          h_dataoffset -> Draw ("Etextsame");
+          gPad -> SetRightMargin(0.2);
+          
+          
+          
+          c1 -> cd (4);
+          h_signaloffset_zoom -> Draw ("COLZ");
+          h_signaloffset_zoom -> Draw ("textsame");
+          gPad -> SetRightMargin(0.2);
+         }
         }
         
         else {
@@ -833,11 +1025,11 @@ class PlotVHqqHggH {
         
         //---- draw ----
        
-       void Draw(const int &rebin=1,const bool &div=false) {
-            Draw(new TCanvas(),rebin,div);
+       void Draw(const int &rebin=1,const bool &div=false,  const bool &shadow=true) {
+            Draw(new TCanvas(),rebin,div, shadow);
         }
 
-        void Draw(TCanvas *c1, const int &rebin=1, const bool &div=false) {
+        void Draw(TCanvas *c1, const int &rebin=1, const bool &div=false, const bool &shadow=true) {
 // 	    std::cout << " Ora disegno ! " << std::endl;
 // 	    std::cout << " rebin = " << rebin << std::endl; 
 	   int rebin2 = rebin; //---> just not to have warning :)
@@ -849,7 +1041,7 @@ class PlotVHqqHggH {
 
             TPad *pad1;
             if(div) {
-                pad1 = new TPad("pad1","pad1",0,1-0.614609572,1,1);
+                pad1 = new TPad("pad1","pad1",0,1-0.714609572,1,1);
                 pad1->SetTopMargin(0.0983606557);
                 pad1->SetBottomMargin(0.025);
             } else {
@@ -890,8 +1082,6 @@ class PlotVHqqHggH {
 	    summed->SetMarkerSize(0);
 	    
             if (_doBandError) {
-//              summed->Draw("same");
-             _BandError -> Draw("E2same");
              double allTG = 0;
              for (int iBin = 0; iBin < summed->GetNbinsX(); iBin ++) {
               std::cout << " iBin = " << iBin << " :: " << summed->GetNbinsX();
@@ -915,10 +1105,20 @@ class PlotVHqqHggH {
                
               }
              }
+             //              summed->Draw("same");
+             if (shadow) {
+              _BandError -> SetFillStyle (3345);
+              _BandError -> Draw("E2same");
+             }
              std::cout << " allTG = " << allTG << std::endl;
             }
             else {
-             summed->Draw("sameE2");
+             if (shadow) {
+              summed->Draw("sameE2");
+             }
+             else {
+              summed->Draw("same");
+             }
             }
 	    
 	    _max = hstack->GetMaximum() * 1.1;
@@ -1095,44 +1295,83 @@ class PlotVHqqHggH {
 
                 TH1F *rdat = (TH1F*)data->Clone("rdat");   
                 if(gROOT->FindObject("rref")) gROOT->FindObject("rref")->Delete();
-                TH1F *rref = new TH1F("rref","rref",
-                    summed->GetNbinsX(),
-                    summed->GetBinLowEdge(1),
-                    summed->GetBinLowEdge(summed->GetNbinsX()+1)
-                );
-                for (int i = 1, n = rref->GetNbinsX(); i <= n+1; ++i) {
-                    rref->SetBinContent(i,summed->GetBinContent(i));
-                    rref->SetBinError(i,summed->GetBinError(i));
+                TGraphAsymmErrors *rref = new TGraphAsymmErrors();
+                rref -> SetName ("rref");
+                for (int i = 0, n = summed->GetNbinsX(); i < n; ++i) {
+//                  std::cout << "  n+1 = " << n+1 << std::endl;
+                 rref->SetPoint      (i,summed->GetBinCenter(i+1), summed->GetBinContent(i+1));
+                 rref->SetPointError (i,summed->GetBinWidth(i+1) , summed->GetBinWidth(i+1)  , 0, 0);
                 }
                 rref->SetTitle("");
                 rref->SetLineWidth(0);
                 rref->SetFillColor(kGray+1);
                 rref->SetFillStyle(1001);
                 double absmax = 0;
-                for (int i = 0, n = rdat->GetNbinsX(); i <= n+1; ++i) {
-                    double scale = rref->GetBinContent(i);
+                for (int i = 0, n = summed->GetNbinsX(); i < n; ++i) {
+                    double scale = (rref->GetY())[i];
                     if (scale == 0) {
-                        rdat->SetBinContent(i, 0);
-                        rref->SetBinContent(i, 0);
+                        rdat->SetBinContent(i+1, 0);
+                        rref->SetPoint     (i,summed->GetBinCenter(i+1), 1);
+//                         rref->SetPoint     (i,summed->GetBinCenter(i+1) - summed->GetBinWidth(i+1)/2., 0);
                         rdat->SetBinError(i, 0);
-                        rref->SetBinError(i, 0);
-                    } else {
-                        rdat->SetBinContent(i, rdat->GetBinContent(i)/scale);
-                        rref->SetBinContent(i, rref->GetBinContent(i)/scale);
-                        rdat->SetBinError(i, rdat->GetBinError(i)/scale);
-                        rref->SetBinError(i, rref->GetBinError(i)/scale);
-                        double mymax = TMath::Max(1.2*fabs(rdat->GetBinContent(i)-1)+1.4*rdat->GetBinError(i), 2.0*rref->GetBinError(i));
+                        rref->SetPointError (i,summed->GetBinWidth(i+1)/2.  , summed->GetBinWidth(i+1)/2.  , 0, 0);
+                        std::cout << " I'm doing bin = " << i << " with scale = 0    and binXerror = " << summed->GetBinWidth(i+1)/2. << " and binCenter = " << summed->GetBinCenter(i+1) << std::endl;
+                    }
+                    else {
+                        std::cout << " I'm doing bin = " << i << " and binXerror = " << summed->GetBinWidth(i+1)/2. << " and binCenter = " << summed->GetBinCenter(i+1) << std::endl;
+                        rdat->SetBinContent(i+1, rdat->GetBinContent(i+1)/scale);
+//                         rref->SetPoint      (i,summed->GetBinCenter(i+1) - summed->GetBinWidth(i+1)/2., summed->GetBinContent(i+1)/scale);
+                        rref->SetPoint      (i,summed->GetBinCenter(i+1), summed->GetBinContent(i+1)/scale);
+                        rdat->SetBinError(i+1, rdat->GetBinError(i+1)/scale);
+
+                        if (!_doBandError) {
+                         rref->SetPointError (i,summed->GetBinWidth(i+1)/2., summed->GetBinWidth(i+1)/2., summed->GetBinError(i+1)/scale, summed->GetBinError(i+1)/scale);                      
+                        }
+                        else {
+                         
+                         
+                         double errXup = summed->GetBinWidth(i+1) / 2.;
+                         double errXlo = summed->GetBinWidth(i+1) / 2.;
+                         
+                         double errYup = 0;
+                         double errYlo = 0;
+                         
+                         errYup = _BandError->GetErrorYhigh(i);
+                         errYlo = _BandError->GetErrorYlow(i);
+                         
+//                          if (i!=0 && i!=n+1) {
+//                           errYup = _BandError->GetErrorYhigh(i-1);  //---- no under/overflow bin!
+//                           errYlo = _BandError->GetErrorYlow(i-1);  //---- no under/overflow bin!
+//                          }
+                         
+                         rref->SetPointEYhigh (i, errYup/scale);
+                         rref->SetPointEYlow  (i, errYlo/scale);
+                         rref->SetPointEXhigh (i, errXup);
+                         rref->SetPointEXlow  (i, errXlo);
+                         
+                         std::cout << " errYup/scale = " << errYup/scale ;
+                         std::cout << " errYlo/scale = " << errYlo/scale ;
+                         std::cout << " errXup = " << errXup ;
+                         std::cout << " errXlo = " << errXlo ;
+                         std::cout << std::endl;
+                         std::cout << " summed->GetBinWidth(" << i+1 << ") = " << summed->GetBinWidth(i+1) << std::endl;
+                         
+                        }
+                        double mymax = TMath::Max(1.2*fabs(rdat->GetBinContent(i+1)-1)+1.4*rdat->GetBinError(i+1), 2.0*rref->GetErrorYhigh(i));
                         absmax = TMath::Max(mymax, absmax);
                     }
                 }
 
                 c1->cd();
-                TPad *pad2 = new TPad("pad2","pad2",0,0,1,1-0.614609572);
+                TPad *pad2 = new TPad("pad2","pad2",0,0,1,1-0.714609572);
                 pad2->SetTopMargin(0.0261437908);
                 pad2->SetBottomMargin(0.392156863);
                 pad2->Draw();
                 pad2->cd();
 
+                std::cout << "  rref->GetXaxis()->GetXmax() = " <<  rref->GetXaxis()->GetXmax() << std::endl;
+                std::cout << "  rref->GetXaxis()->GetXmin() = " <<  rref->GetXaxis()->GetXmin() << std::endl;
+                
                 TLine *line = new TLine(rref->GetXaxis()->GetXmin(), 1.0, rref->GetXaxis()->GetXmax(), 1.0);
                 line->SetLineColor(kBlack);
                 line->SetLineWidth(1);
@@ -1140,11 +1379,13 @@ class PlotVHqqHggH {
 
 // 		rref->GetYaxis()->SetRangeUser(TMath::Max(0.,1.-absmax), absmax+1.);
 // 		rref->GetYaxis()->SetRangeUser(TMath::Max(0.,1.-absmax), TMath::Min(10.,absmax+1.));
-                rref->GetYaxis()->SetRangeUser(0., 3.);
+//                 rref->GetYaxis()->SetRangeUser(0., 3.);
+                rref->GetYaxis()->SetRangeUser(0., 2.);
 //                 rref->GetYaxis()->SetRangeUser(0., 5.);
                 
                 //                 AxisFonts(rref->GetYaxis(), "y", "ratio");
                 AxisFonts(rref->GetXaxis(), "x", hstack->GetXaxis()->GetTitle());
+                rref->GetXaxis()->SetRangeUser(summed->GetXaxis()->GetBinLowEdge(1), summed->GetXaxis()->GetBinLowEdge(_nbins+1));
                 rref->GetYaxis()->SetTitle("data / sim");
                 rref->GetYaxis()->SetLabelSize(0.09);
                 rref->GetYaxis()->SetTitleSize(0.09);
@@ -1152,7 +1393,24 @@ class PlotVHqqHggH {
                 rref->GetXaxis()->SetLabelSize(0.09);
                 rref->GetXaxis()->SetTitleSize(0.09);
                 rref->GetXaxis()->SetTitleOffset(1.5);
-                rref->Draw("E2"); 
+                rref->Draw("AE2"); 
+//                 rref->Draw("APE"); 
+                
+                std::cout << " rref->GetN() = " << rref->GetN() << std::endl;
+                if (_doLabelNumber) {   
+                 TText t;
+                 t.SetTextAngle(0);
+                 t.SetTextSize(0.08);
+                 t.SetTextAlign(33);
+                 for (int iBin=0;iBin<summed->GetNbinsX();iBin++) {
+                  TString labels = Form ("%d",iBin+1);
+                  double X = (rref->GetX()) [iBin];
+                  std::cout << " X = " << X << std::endl;
+                  t.DrawText(X+summed->GetBinWidth(iBin+1)/3,-0.1,labels.Data());
+                 }
+                 rref->GetXaxis()->SetLabelOffset(10);
+                }
+                
                 rdat->SetMarkerStyle(20);
                 rdat->Draw("E SAME p");
                 line->Draw("SAME"); 
@@ -1516,6 +1774,8 @@ class PlotVHqqHggH {
         
         bool    _doBandError    ;
         TGraphAsymmErrors*    _BandError      ;
+        
+        bool    _doLabelNumber  ;
         
 };
 

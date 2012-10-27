@@ -7,6 +7,54 @@
 #include "PlotVHqqHggH.C"
 
 
+
+//---- Filter bins ----
+TH1F* FilterBins(std::vector<int> binsToSelect, TH1F* inputTH) {
+  int numbin = binsToSelect.size();
+  
+  TString name = Form ("%s_new",inputTH->GetName());
+  TString title = Form ("%s",inputTH->GetTitle());
+  
+  TH1F* newTH = new TH1F (name,title,numbin,0,numbin);
+  for (int i=0; i< binsToSelect.size(); i++) {
+    newTH->SetBinContent (i+1, inputTH->GetBinContent(binsToSelect.at(i)));
+    newTH->SetBinError   (i+1, inputTH->GetBinError(binsToSelect.at(i)));
+  }
+  
+  return newTH;
+}
+       
+TGraphAsymmErrors* FilterBins(std::vector<int> binsToSelect, TGraphAsymmErrors* inputGR) {
+  int numbin = binsToSelect.size();
+  
+  TString name = Form ("%s_new",inputGR->GetName());
+  TString title = Form ("%s",inputGR->GetTitle());
+  
+  TGraphAsymmErrors* newGR = new TGraphAsymmErrors();
+  newGR -> SetName (name);
+  
+  for (int i=0; i< binsToSelect.size(); i++) {
+
+    double Y = (inputGR->GetY()) [i];
+    double X = (inputGR->GetX()) [i];
+    
+    double errXUp      = inputGR->GetErrorXhigh(i);
+    double errXDown    = inputGR->GetErrorXlow(i);
+    double errYUp      = inputGR->GetErrorYhigh(i);
+    double errYDown    = inputGR->GetErrorYlow(i);
+
+    newGR->SetPoint(i, X, Y);
+    newGR->SetPointError(i, errXDown, errXUp, errYDown, errYUp);
+    
+//     std::cout << " i = " << i << " X = " << X << " Y = " << Y << std::endl;
+  }
+  
+  return newGR;
+}
+
+
+
+
 void Plot_AM_2D_1J_testPropaganda() {
  TString folder = Form("sig/");
  TString cutNameBefore = Form("sig/histo_");
@@ -48,24 +96,36 @@ void Plot_AM_2D_1J_testPropaganda() {
  std::vector<double> vectNormalizationSig; 
  std::vector<TH1F*> vectTHSig;          
 
- ///==== signal (begin) ====
 
+ std::vector<int> binsToSelect; 
+ int NMAXX = 10;  
+ int NMAXY = 8;  
+ int NX = 4;
+ int NY = 4;
+ for (int iX=0; iX<NX; iX++){
+  for (int iY=0; iY<NY; iY++){
+   binsToSelect.push_back (iX*NMAXY+iY+1);
+  }
+ }
+ 
+ ///==== signal (begin) ====
+ 
  name = Form("%sggH%s",cutNameBefore.Data(),cutNameAfter.Data());
- vectTHSig.push_back ( (TH1F*) f->Get(name) );
+ vectTHSig.push_back ( FilterBins(binsToSelect, (TH1F*) f->Get(name)) );
  vectNameSig.push_back ("ggH m_{H}=125");
  vectColourSig.push_back(633);
  vectScaleSig.push_back(1.0000);
  vectNormalizationSig.push_back(0.719);
 
  name = Form("%svbfH%s",cutNameBefore.Data(),cutNameAfter.Data());
- vectTHSig.push_back ( (TH1F*) f->Get(name) );
+ vectTHSig.push_back ( FilterBins(binsToSelect, (TH1F*) f->Get(name)) );
  vectNameSig.push_back ("qqH m_{H}=125");
  vectColourSig.push_back(634);
  vectScaleSig.push_back(1.0000);
  vectNormalizationSig.push_back(2.565);
 
  name = Form("%swzttH%s",cutNameBefore.Data(),cutNameAfter.Data());
- vectTHSig.push_back ( (TH1F*) f->Get(name) );
+ vectTHSig.push_back ( FilterBins(binsToSelect, (TH1F*) f->Get(name)) );
  vectNameSig.push_back ("VH m_{H}=125");
  vectColourSig.push_back(635);
  vectScaleSig.push_back(1.0000);
@@ -74,7 +134,7 @@ void Plot_AM_2D_1J_testPropaganda() {
  ///==== signal (end)  ====
 
  name = Form("%sData%s",cutNameBefore.Data(),cutNameAfter.Data());
- hs->setDataHist ((TH1F*)f->Get(name));
+ hs->setDataHist (FilterBins(binsToSelect, (TH1F*) f->Get(name)));
 
 
 
@@ -87,7 +147,7 @@ void Plot_AM_2D_1J_testPropaganda() {
 
  ///==== background (begin)  ====
  name = Form("%sVV%s",cutNameBefore.Data(),cutNameAfter.Data());
- vectTHBkg.push_back ( (TH1F*) f->Get(name) );
+ vectTHBkg.push_back ( FilterBins(binsToSelect, (TH1F*) f->Get(name)) );
  vectNameBkg.push_back ("WZ/ZZ");
  vectColourBkg.push_back(858);
  vectSystBkg.push_back(0.00);
@@ -95,7 +155,7 @@ void Plot_AM_2D_1J_testPropaganda() {
  vectNormalizationBkg.push_back(0.281);
 
  name = Form("%sWJet%s",cutNameBefore.Data(),cutNameAfter.Data());
- vectTHBkg.push_back ( (TH1F*) f->Get(name) );
+ vectTHBkg.push_back ( FilterBins(binsToSelect, (TH1F*) f->Get(name)) );
  vectNameBkg.push_back ("W+jets");
  vectColourBkg.push_back(921);
  vectSystBkg.push_back(0.36);
@@ -103,7 +163,7 @@ void Plot_AM_2D_1J_testPropaganda() {
  vectNormalizationBkg.push_back(0.667);
 
  name = Form("%sTop%s",cutNameBefore.Data(),cutNameAfter.Data());
- vectTHBkg.push_back ( (TH1F*) f->Get(name) );
+ vectTHBkg.push_back ( FilterBins(binsToSelect, (TH1F*) f->Get(name)) );
  vectNameBkg.push_back ("top");
  vectColourBkg.push_back(400);
  vectSystBkg.push_back(0.07);
@@ -111,21 +171,21 @@ void Plot_AM_2D_1J_testPropaganda() {
  vectNormalizationBkg.push_back(5.654);
 
  name = Form("%sDYTT%s",cutNameBefore.Data(),cutNameAfter.Data());
- vectTHBkg.push_back ( (TH1F*) f->Get(name) );
+ vectTHBkg.push_back ( FilterBins(binsToSelect, (TH1F*) f->Get(name)) );
  vectNameBkg.push_back ("DY+jets");
  vectColourBkg.push_back(418);
  vectSystBkg.push_back(0.11);
  vectScaleBkg.push_back(1.0000);
  vectNormalizationBkg.push_back(0.377);
  name = Form("%sWW%s",cutNameBefore.Data(),cutNameAfter.Data());
- vectTHBkg.push_back ( (TH1F*) f->Get(name) );
+ vectTHBkg.push_back ( FilterBins(binsToSelect, (TH1F*) f->Get(name)) );
  vectNameBkg.push_back ("WW");
  vectColourBkg.push_back(851);
  vectSystBkg.push_back(0.50);
  vectScaleBkg.push_back(2.0000);
  vectNormalizationBkg.push_back(2.256);
  name = Form("%sggWW%s",cutNameBefore.Data(),cutNameAfter.Data());
- vectTHBkg.push_back ( (TH1F*) f->Get(name) );
+ vectTHBkg.push_back ( FilterBins(binsToSelect, (TH1F*) f->Get(name)) );
  vectNameBkg.push_back ("ggWW");
  vectColourBkg.push_back(853);
  vectSystBkg.push_back(0.00);
@@ -161,13 +221,16 @@ void Plot_AM_2D_1J_testPropaganda() {
 
  name = Form("%smodel_errs",folder.Data()); 
  std::cout << " name = " << name.Data() << std::endl;  
- hs->set_ErrorBand( *((TGraphAsymmErrors*) f->Get(name) ));  
+ hs->set_ErrorBand( *(FilterBins(binsToSelect, (TGraphAsymmErrors*) f->Get(name))) );  
 
+ 
+ hs->set_doLabelNumber ( true ) ;
+ 
  ///==== draw ====
 
 
 
- hs->Draw(c1,1,true);
+ hs->Draw(c1,1,true,false);
 
  c1->Print("15Oct_AN_HCP_VBFShape_mll_postFitLatino_2/mll.pdf");
  c1->Print("15Oct_AN_HCP_VBFShape_mll_postFitLatino_2/mll.png");
@@ -178,12 +241,13 @@ void Plot_AM_2D_1J_testPropaganda() {
  c1->Print("15Oct_AN_HCP_VBFShape_mll_postFitLatino_2/mll_logy.png");
  
  
- 
- TCanvas* c2 = new TCanvas("mll_prop","mll_prop",1200,600);
-//  hs->DrawPropagandaPlot(c2,1);
-//  hs->DrawPropagandaPlot(c2,1,10,"m_{ll} [GeV]",0,200,"m_{T}^{ll-E_{T}^{miss}} [GeV]",80,280);
- hs->DrawPropagandaPlot(c2,1,8,"m_{T}^{ll-E_{T}^{miss}} [GeV]",80,280,"m_{ll} [GeV]",0,200);
- 
+ TCanvas* c2 = new TCanvas("mll_prop","mll_prop",1000,1000);
+ double maxX = (280-80)/10*NX+80;
+ double maxY = (200-0)/8*NY+0;
+ std::cout << " maxX = " << maxX << std::endl;
+ std::cout << " maxY = " << maxY << std::endl;
+ std::cout << " NY   = " << NY   << std::endl;
+ hs->DrawPropagandaPlot(c2,1,NY,"m_{T}^{ll-E_{T}^{miss}} [GeV]",80,maxX,"m_{ll} [GeV]",0,maxY);
 //  10,80,280,8,0,200
  
  
