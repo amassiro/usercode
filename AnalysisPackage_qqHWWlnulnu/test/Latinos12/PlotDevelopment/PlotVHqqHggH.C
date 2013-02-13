@@ -649,7 +649,7 @@ class PlotVHqqHggH {
           h_dataoffset -> SetBinContent (ibinX+1, ibinY+1, Y);
           h_dataoffset -> SetBinError   (ibinX+1, ibinY+1, errY);
           
-          h_dummy -> SetBinContent (ibinX+1, ibinY+1, ibinY+ibinX*nbinX+1);
+          h_dummy -> SetBinContent (ibinX+1, ibinY+1, ibinY+ibinX*nbinY+1);
           
           if (subrangeX!=-1 && subrangeY!=-1) {
            if (ibinX<subrangeX && ibinY<subrangeY) {
@@ -844,7 +844,7 @@ class PlotVHqqHggH {
           ex5->Draw();
           h_frame3->GetXaxis()->SetTitle(nameX);
           h_frame3->GetYaxis()->SetTitle(nameY);
-          
+        
                
 //           h_dummy->SetPaintTextFormat(".0f");
           h_dummy -> Draw ("TEXT SAME");
@@ -869,6 +869,78 @@ class PlotVHqqHggH {
           h_signaloffset -> GetYaxis() -> SetRangeUser (minY+(0.5)*(maxY-minY)/nbinY,maxY-(0.5)*(maxY-minY)/nbinY);
           gPad -> SetRightMargin(0.2);
           
+        
+          
+          
+          
+          
+          
+          TCanvas* ccSigma = new TCanvas ("ccSigma","ccSigma",400,400);
+          ccSigma->cd();
+          //           gPad -> SetRightMargin(0.15);
+          //           gPad -> SetLeftMargin(0.15);
+          //           gPad -> SetTopMargin(0.15);
+          //           gPad -> SetBottomMargin(0.15);
+          
+          TH1F* h_Sigma = gPad->DrawFrame(minX,minY,maxX,maxY);
+          h_Sigma->GetXaxis()->SetTitle(nameX);
+          h_Sigma->GetYaxis()->SetTitle(nameY);
+          
+          h_dataoffsetsigma -> Draw ("COLZ SAME");
+          h_dataoffsetsigma -> Draw ("textsame");
+          h_dataoffsetsigma -> GetXaxis() -> SetRangeUser (minX+(0.5)*(maxX-minX)/nbinX,maxX-(0.5)*(maxX-minX)/nbinX);
+          h_dataoffsetsigma -> GetYaxis() -> SetRangeUser (minY+(0.5)*(maxY-minY)/nbinY,maxY-(0.5)*(maxY-minY)/nbinY);
+          h_dataoffsetsigma -> GetZaxis() -> SetRangeUser (-4,4);
+          gPad -> SetRightMargin(0.2);
+          ccSigma->SaveAs("ccSigma.png");
+          ccSigma->SaveAs("ccSigma.pdf");
+          
+          
+          TCanvas* ccOffset = new TCanvas ("ccOffset","ccOffset",400,400);
+          ccOffset->cd();
+          //           gPad -> SetRightMargin(0.15);
+          //           gPad -> SetLeftMargin(0.15);
+          //           gPad -> SetTopMargin(0.15);
+          //           gPad -> SetBottomMargin(0.15);
+          
+          TH1F* h_Offset = gPad->DrawFrame(minX,minY,maxX,maxY);
+          h_Offset->GetXaxis()->SetTitle(nameX);
+          h_Offset->GetYaxis()->SetTitle(nameY);
+          
+          h_dataoffset -> Draw ("COLZ SAME");
+          h_dataoffset -> Draw ("Etextsame");
+          h_dataoffset -> GetXaxis() -> SetRangeUser (minX+(0.5)*(maxX-minX)/nbinX,maxX-(0.5)*(maxX-minX)/nbinX);
+          h_dataoffset -> GetYaxis() -> SetRangeUser (minY+(0.5)*(maxY-minY)/nbinY,maxY-(0.5)*(maxY-minY)/nbinY);
+          //           h_dataoffset -> GetZaxis() -> SetRangeUser (-4,4);
+          gPad -> SetRightMargin(0.2);
+          ccOffset->SaveAs("ccOffset.png");
+          ccOffset->SaveAs("ccOffset.pdf");
+          
+          
+          
+          
+          
+          
+          
+          TCanvas* ccSignal = new TCanvas ("ccSignal","ccSignal",400,400);
+          ccSignal->cd();
+//           gPad -> SetRightMargin(0.15);
+//           gPad -> SetLeftMargin(0.15);
+//           gPad -> SetTopMargin(0.15);
+//           gPad -> SetBottomMargin(0.15);
+          
+          TH1F* h_frameSig = gPad->DrawFrame(minX,minY,maxX,maxY);
+          h_frameSig->GetXaxis()->SetTitle(nameX);
+          h_frameSig->GetYaxis()->SetTitle(nameY);
+          
+          h_signaloffset -> Draw ("COLZ SAME");
+          h_signaloffset -> Draw ("textsame");
+          //          h_signaloffset -> Draw ("Etextsame");
+          h_signaloffset -> GetXaxis() -> SetRangeUser (minX+(0.5)*(maxX-minX)/nbinX,maxX-(0.5)*(maxX-minX)/nbinX);
+          h_signaloffset -> GetYaxis() -> SetRangeUser (minY+(0.5)*(maxY-minY)/nbinY,maxY-(0.5)*(maxY-minY)/nbinY);
+          gPad -> SetRightMargin(0.2);
+          ccSignal->SaveAs("ccSignal.png");
+          ccSignal->SaveAs("ccSignal.pdf");
           
           
           
@@ -890,6 +962,8 @@ class PlotVHqqHggH {
 //           h_dummy -> Draw ("TEXT");
 //           gPad -> SetGrid();
           ccMap -> Update();
+          ccMap->SaveAs("ccMap.png");
+          ccMap->SaveAs("ccMap.pdf");
           
           
           
@@ -1349,8 +1423,12 @@ class PlotVHqqHggH {
                          rref->SetPointEXhigh (i, errXup);
                          rref->SetPointEXlow  (i, errXlo);
                          
+                         std::cout << " ~~~~~~~~~~~~~~~~~~~ " << std::endl;
                          std::cout << " errYup/scale = " << errYup/scale ;
                          std::cout << " errYlo/scale = " << errYlo/scale ;
+                         double tempx, tempy;
+                         rref->GetPoint(i, tempx, tempy);
+                         std::cout << " X      = " << tempx;
                          std::cout << " errXup = " << errXup ;
                          std::cout << " errXlo = " << errXlo ;
                          std::cout << std::endl;
@@ -1359,6 +1437,9 @@ class PlotVHqqHggH {
                         }
                         double mymax = TMath::Max(1.2*fabs(rdat->GetBinContent(i+1)-1)+1.4*rdat->GetBinError(i+1), 2.0*rref->GetErrorYhigh(i));
                         absmax = TMath::Max(mymax, absmax);
+                    }
+                    if (rdat->GetBinContent(i+1) == 0) {
+                     rdat->SetBinContent(i+1, -1);
                     }
                 }
 
@@ -1372,20 +1453,20 @@ class PlotVHqqHggH {
                 std::cout << "  rref->GetXaxis()->GetXmax() = " <<  rref->GetXaxis()->GetXmax() << std::endl;
                 std::cout << "  rref->GetXaxis()->GetXmin() = " <<  rref->GetXaxis()->GetXmin() << std::endl;
                 
-                TLine *line = new TLine(rref->GetXaxis()->GetXmin(), 1.0, rref->GetXaxis()->GetXmax(), 1.0);
-                line->SetLineColor(kBlack);
-                line->SetLineWidth(1);
-                line->SetLineStyle(1);
 
 // 		rref->GetYaxis()->SetRangeUser(TMath::Max(0.,1.-absmax), absmax+1.);
 // 		rref->GetYaxis()->SetRangeUser(TMath::Max(0.,1.-absmax), TMath::Min(10.,absmax+1.));
-//                 rref->GetYaxis()->SetRangeUser(0., 3.);
-                rref->GetYaxis()->SetRangeUser(0., 2.);
+                rref->GetYaxis()->SetRangeUser(0., 3.);
+//                 rref->GetYaxis()->SetRangeUser(0., 2.);
+//                 rref->GetYaxis()->SetRangeUser(0., 4.);
 //                 rref->GetYaxis()->SetRangeUser(0., 5.);
                 
                 //                 AxisFonts(rref->GetYaxis(), "y", "ratio");
                 AxisFonts(rref->GetXaxis(), "x", hstack->GetXaxis()->GetTitle());
                 rref->GetXaxis()->SetRangeUser(summed->GetXaxis()->GetBinLowEdge(1), summed->GetXaxis()->GetBinLowEdge(_nbins+1));
+                std::cout << "==========================================================" << std::endl;
+                std::cout << " summed->GetXaxis()->GetBinLowEdge(1) = " << summed->GetXaxis()->GetBinLowEdge(1)  << "  , summed->GetXaxis()->GetBinLowEdge(_nbins+1)) = " << summed->GetXaxis()->GetBinLowEdge(_nbins+1) << std::endl;
+                std::cout << "==========================================================" << std::endl;
                 rref->GetYaxis()->SetTitle("data / sim");
                 rref->GetYaxis()->SetLabelSize(0.09);
                 rref->GetYaxis()->SetTitleSize(0.09);
@@ -1394,7 +1475,14 @@ class PlotVHqqHggH {
                 rref->GetXaxis()->SetTitleSize(0.09);
                 rref->GetXaxis()->SetTitleOffset(1.5);
                 rref->Draw("AE2"); 
-//                 rref->Draw("APE"); 
+//                 rref->Draw("APE2"); 
+                rref->GetXaxis()->SetRangeUser(summed->GetXaxis()->GetBinLowEdge(1), summed->GetXaxis()->GetBinLowEdge(_nbins+1));
+                
+//                 TLine *line = new TLine(rref->GetXaxis()->GetXmin(), 1.0, rref->GetXaxis()->GetXmax(), 1.0);
+                TLine *line = new TLine(summed->GetXaxis()->GetBinLowEdge(1), 1.0, summed->GetXaxis()->GetBinLowEdge(_nbins+1), 1.0);
+                line->SetLineColor(kBlack);
+                line->SetLineWidth(1);
+                line->SetLineStyle(1);
                 
                 std::cout << " rref->GetN() = " << rref->GetN() << std::endl;
                 if (_doLabelNumber) {   
@@ -1412,7 +1500,7 @@ class PlotVHqqHggH {
                 }
                 
                 rdat->SetMarkerStyle(20);
-                rdat->Draw("E SAME p");
+                rdat->Draw("E0 SAME p");
                 line->Draw("SAME"); 
                 c1->Update();
                 pad2->GetFrame()->DrawClone();

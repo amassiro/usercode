@@ -60,14 +60,19 @@ void Plot_AM_2D_testPropaganda_Normal() {
  gROOT->LoadMacro("PlotVHqqHggH.C+");
  gInterpreter->ExecuteMacro("../Plot/LatinoStyle2.C");
 
- TCanvas* c1 = new TCanvas("mll","mll",500,600);
+ TCanvas* c1 = new TCanvas("mll","mll",1200,400);
 //  TFile* f = new TFile("postFitMll/mH125.root");
- TFile* f = new TFile("postFitDF0J/of0j_mH125.root");
+//  TFile* f = new TFile("postFitDF0J/of0j_mH125.root");
+ 
+//  TFile* f = new TFile("postFitDF0J/mH125.root");
+ TFile* f = new TFile("postFitDF1J/mH125.root");
+ 
 
 
  PlotVHqqHggH* hs = new PlotVHqqHggH();
 
- hs->setLumi(12.103);
+//  hs->setLumi(12.103);
+ hs->setLumi(19.5);
 //  hs->setLabel("M_{ll} [GeV]");
  hs->setLabel("unrolled");
  hs->addLabel("    #sqrt{s} = 8 TeV");
@@ -142,6 +147,22 @@ void Plot_AM_2D_testPropaganda_Normal() {
  vectScaleBkg.push_back(1.0000);
  vectNormalizationBkg.push_back(0.667);
 
+ name = Form("%sVg%s",cutNameBefore.Data(),cutNameAfter.Data());
+ vectTHBkg.push_back ( (TH1F*) f->Get(name) );
+ vectNameBkg.push_back ("V+#gamma");
+ vectColourBkg.push_back(616+1);
+ vectSystBkg.push_back(0.00);
+ vectScaleBkg.push_back(1.0000);
+ vectNormalizationBkg.push_back(1.000);
+ 
+ name = Form("%sVgS%s",cutNameBefore.Data(),cutNameAfter.Data());
+ vectTHBkg.push_back ( (TH1F*) f->Get(name) );
+ vectNameBkg.push_back ("V+#gamma*");
+ vectColourBkg.push_back(616+2);
+ vectSystBkg.push_back(0.00);
+ vectScaleBkg.push_back(1.0000);
+ vectNormalizationBkg.push_back(1.000);
+ 
  name = Form("%sTop%s",cutNameBefore.Data(),cutNameAfter.Data());
  vectTHBkg.push_back ( (TH1F*) f->Get(name) );
  vectNameBkg.push_back ("top");
@@ -219,13 +240,25 @@ void Plot_AM_2D_testPropaganda_Normal() {
  
  
  
+ 
+ 
+ //  return ([60,70,80,90,100,110,120,140,160,180,200,220,240,260,280],[12,30,45,60,75,100,125,150,175,200])
+ //                       mth                                                   mll
+ 
  TCanvas* c2 = new TCanvas("mll_prop","mll_prop",1000,1000);
-//  hs->DrawPropagandaPlot(c2,1);
-//  hs->DrawPropagandaPlot(c2,1,10,"m_{ll} [GeV]",0,200,"m_{T}^{ll-E_{T}^{miss}} [GeV]",80,280);
- hs->DrawPropagandaPlot(c2,1,8,"m_{T}^{ll-E_{T}^{miss}} [GeV]",80,280,"m_{ll} [GeV]",0,200);
+ hs->DrawPropagandaPlot(c2,1,9,"m_{T}^{ll-E_{T}^{miss}} [GeV]",60,280,"m_{ll} [GeV]",0,200);
  
-//  10,80,280,8,0,200
  
+ 
+// //  TCanvas* c2 = new TCanvas("mll_prop","mll_prop",1000,1000);
+// // //  hs->DrawPropagandaPlot(c2,1);
+// // //  hs->DrawPropagandaPlot(c2,1,10,"m_{ll} [GeV]",0,200,"m_{T}^{ll-E_{T}^{miss}} [GeV]",80,280);
+// //  hs->DrawPropagandaPlot(c2,1,8,"m_{T}^{ll-E_{T}^{miss}} [GeV]",80,280,"m_{ll} [GeV]",0,200);
+// //  
+// // //  10,80,280,8,0,200
+ 
+ c2->Print("mll_prop.pdf");
+ c2->Print("mll_prop.png");        
  
  c2->Print("15Oct_AN_HCP_VBFShape_mll_postFitLatino_2/mll_prop.pdf");
  c2->Print("15Oct_AN_HCP_VBFShape_mll_postFitLatino_2/mll_prop.png");        

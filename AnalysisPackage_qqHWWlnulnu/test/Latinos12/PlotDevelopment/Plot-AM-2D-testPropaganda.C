@@ -34,16 +34,16 @@ TGraphAsymmErrors* FilterBins(std::vector<int> binsToSelect, TGraphAsymmErrors* 
   
   for (int i=0; i< binsToSelect.size(); i++) {
 
-    double Y = (inputGR->GetY()) [i];
-    double X = (inputGR->GetX()) [i];
+   double X = i+0.5;
+   double Y = (inputGR->GetY()) [binsToSelect.at(i)-1];
     
-    double errXUp      = inputGR->GetErrorXhigh(i);
-    double errXDown    = inputGR->GetErrorXlow(i);
-    double errYUp      = inputGR->GetErrorYhigh(i);
-    double errYDown    = inputGR->GetErrorYlow(i);
+   double errXUp      = inputGR->GetErrorXhigh(binsToSelect.at(i)-1);
+   double errXDown    = inputGR->GetErrorXlow(binsToSelect.at(i)-1);
+   double errYUp      = inputGR->GetErrorYhigh(binsToSelect.at(i)-1);
+   double errYDown    = inputGR->GetErrorYlow(binsToSelect.at(i)-1);
 
-    newGR->SetPoint(i, X, Y);
-    newGR->SetPointError(i, errXDown, errXUp, errYDown, errYUp);
+   newGR->SetPoint(i, X, Y);
+   newGR->SetPointError(i, errXDown, errXUp, errYDown, errYUp);
     
 //     std::cout << " i = " << i << " X = " << X << " Y = " << Y << std::endl;
   }
@@ -57,6 +57,9 @@ void Plot_AM_2D_testPropaganda() {
  TString folder = Form("sig/");
  TString cutNameBefore = Form("sig/histo_");
 
+//  TString folder = Form("init/");
+//  TString cutNameBefore = Form("init/histo_");
+
 //  TString folder = Form("bkg/");
 //  TString cutNameBefore = Form("bkg/histo_");
 
@@ -68,13 +71,16 @@ void Plot_AM_2D_testPropaganda() {
 
  TCanvas* c1 = new TCanvas("mll","mll",500,600);
 //  TFile* f = new TFile("postFitMll/mH125.root");
- TFile* f = new TFile("postFitDF0J/of0j_mH125.root");
-
+//  TFile* f = new TFile("postFitDF0J/of0j_mH125.root");
+ TFile* f = new TFile("postFitDF0J/mH125.root");
+//  TFile* f = new TFile("postFitDF1J/mH125.root");
+ 
 
  PlotVHqqHggH* hs = new PlotVHqqHggH();
 
- hs->setLumi(12.103);
-//  hs->setLabel("M_{ll} [GeV]");
+//  hs->setLumi(12.103);
+ hs->setLumi(19.5);
+ //  hs->setLabel("M_{ll} [GeV]");
  hs->setLabel("unrolled");
  hs->addLabel("    #sqrt{s} = 8 TeV");
 
@@ -96,10 +102,27 @@ void Plot_AM_2D_testPropaganda() {
 
  
  std::vector<int> binsToSelect; 
- int NMAXX = 10;  
- int NMAXY = 8;  
- int NX = 4;
- int NY = 4;
+ 
+//  x HCP 2012
+//   int NMAXX = 10;  
+//   int NMAXY = 8;  
+//   int NX = 4;
+//   int NY = 4;
+ 
+//  x Moriond 2013
+int NMAXX = 14;  
+int NMAXY = 9;  
+// int NX = 8;
+
+//---- nice subregion ----
+int NX = 6;
+int NY = 4;
+
+//---- all ----
+// int NX = NMAXX;
+// int NY = NMAXY;
+
+
  for (int iX=0; iX<NX; iX++){
   for (int iY=0; iY<NY; iY++){
    binsToSelect.push_back (iX*NMAXY+iY+1);
@@ -172,6 +195,23 @@ void Plot_AM_2D_testPropaganda() {
  vectScaleBkg.push_back(1.0000);
  vectNormalizationBkg.push_back(0.667);
 
+ name = Form("%sVg%s",cutNameBefore.Data(),cutNameAfter.Data());
+ vectTHBkg.push_back ( FilterBins(binsToSelect, (TH1F*) f->Get(name)) );
+ vectNameBkg.push_back ("V+#gamma");
+ vectColourBkg.push_back(616+1);
+ vectSystBkg.push_back(0.00);
+ vectScaleBkg.push_back(1.0000);
+ vectNormalizationBkg.push_back(1.000);
+ 
+ name = Form("%sVgS%s",cutNameBefore.Data(),cutNameAfter.Data());
+ vectTHBkg.push_back ( FilterBins(binsToSelect, (TH1F*) f->Get(name)) );
+ vectNameBkg.push_back ("V+#gamma*");
+ vectColourBkg.push_back(616+2);
+ vectSystBkg.push_back(0.00);
+ vectScaleBkg.push_back(1.0000);
+ vectNormalizationBkg.push_back(1.000);
+ 
+ 
  name = Form("%sTop%s",cutNameBefore.Data(),cutNameAfter.Data());
  vectTHBkg.push_back ( FilterBins(binsToSelect, (TH1F*) f->Get(name)) );
  vectNameBkg.push_back ("top");
@@ -252,14 +292,28 @@ void Plot_AM_2D_testPropaganda() {
  c1->Print("15Oct_AN_HCP_VBFShape_mll_postFitLatino_2/mll_logy.png");
  
  
+//  return ([60,70,80,90,100,110,120,140,160,180,200,220,240,260,280],[12,30,45,60,75,100,125,150,175,200])
+//                       mth                                                   mll
  
- TCanvas* c2 = new TCanvas("mll_prop","mll_prop",1000,1000);
- double maxX = (280-80)/10*NX+80;
- double maxY = (200-0)/8*NY+0;
- std::cout << " maxX = " << maxX << std::endl;
- std::cout << " maxY = " << maxY << std::endl;
+TCanvas* c2 = new TCanvas("mll_prop","mll_prop",1000,1000);
+double maxX = 10*NX+60;
+//  double maxY = 15*NY+12;
+double maxY = 15*NY+15;
+std::cout << " maxX = " << maxX << std::endl;
+std::cout << " maxY = " << maxY << std::endl;
  std::cout << " NY   = " << NY   << std::endl;
- hs->DrawPropagandaPlot(c2,1,NY,"m_{T}^{ll-E_{T}^{miss}} [GeV]",80,maxX,"m_{ll} [GeV]",0,maxY);
+hs->DrawPropagandaPlot(c2,1,NY,"m_{T}^{ll-E_{T}^{miss}} [GeV]",60,maxX,"m_{ll} [GeV]",12,maxY);
+ 
+
+//---------------------------------------
+// // // //  x HCP 2012 // // // // 
+//   TCanvas* c2 = new TCanvas("mll_prop","mll_prop",1000,1000);
+//   double maxX = (280-80)/10*NX+80;
+//   double maxY = (200-0)/8*NY+0;
+//   std::cout << " maxX = " << maxX << std::endl;
+//   std::cout << " maxY = " << maxY << std::endl;
+//   std::cout << " NY   = " << NY   << std::endl;
+//   hs->DrawPropagandaPlot(c2,1,NY,"m_{T}^{ll-E_{T}^{miss}} [GeV]",80,maxX,"m_{ll} [GeV]",0,maxY);
 
  c2->Print("15Oct_AN_HCP_VBFShape_mll_postFitLatino_2/mll_prop.pdf");
  c2->Print("15Oct_AN_HCP_VBFShape_mll_postFitLatino_2/mll_prop.png");        
