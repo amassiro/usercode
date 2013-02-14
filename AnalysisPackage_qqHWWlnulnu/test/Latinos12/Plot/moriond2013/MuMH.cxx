@@ -123,8 +123,11 @@
 
  
  
- Double_t MH[200] = {110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 170, 180, 190, 200, 250, 300};
- int nMass = 15; 
+//  Double_t MH[200] = {110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 170, 180, 190, 200, 250, 300};
+//  int nMass = 15; 
+
+ Double_t MH[200] = {110, 115, 120, 125, 130, 135, 140, 150, 160, 170, 180, 190, 200, 250, 300};
+ int nMass = 13; 
  
  
  
@@ -139,9 +142,10 @@
  
  
  ///================================================0
- bool doZeroJet = false;
- bool doOneJet = false;
- bool doZeroPlusOneJet = true;
+ int doJetBin = 2;
+ //---- 0 = 0 jet
+ //---- 1 = 1 jet
+ //---- 2 = 0+1 jet
  ///================================================0
  
  
@@ -209,9 +213,13 @@
 // name = Form ("higgsCombineTest.MultiDimFit.mH%d.01jet.root",int(MH[iMass]));
 // name = Form ("01jet/higgsCombineTest.MultiDimFit.mH%d.root",int(MH[iMass]));
 
-   if (doZeroJet)         name = Form ("0jet/higgsCombineTest.MultiDimFit.mH%d.0jet.root",int(MH[iMass]));
-   if (doOneJet)          name = Form ("1jet/higgsCombineTest.MultiDimFit.mH%d.1jet.root",int(MH[iMass]));
-   if (doZeroPlusOneJet)  name = Form ("01jet/higgsCombineTest.MultiDimFit.mH%d.01jet.root",int(MH[iMass]));
+//    if (doJetBin==0)         name = Form ("0jet/higgsCombineTest.MultiDimFit.mH%d.0jet.root",int(MH[iMass]));
+//    if (doJetBin==1)         name = Form ("1jet/higgsCombineTest.MultiDimFit.mH%d.1jet.root",int(MH[iMass]));
+//    if (doJetBin==2)         name = Form ("01jet/higgsCombineTest.MultiDimFit.mH%d.01jet.root",int(MH[iMass]));
+
+   if (doJetBin==0)         name = Form ("0jet-78TeV/higgsCombineTest.MultiDimFit.mH%d.0jet.root",int(MH[iMass]));
+   if (doJetBin==1)         name = Form ("1jet-78TeV/higgsCombineTest.MultiDimFit.mH%d.1jet.root",int(MH[iMass]));
+   if (doJetBin==2)         name = Form ("01jet-78TeV/higgsCombineTest.MultiDimFit.mH%d.01jet.root",int(MH[iMass]));
    
 
 
@@ -515,9 +523,15 @@
  TLatex textcommon;
  textcommon.SetTextSize(0.04);
  textcommon.SetTextColor(kWhite);
- if (doZeroJet) sprintf(val,"#splitline{CMS Preliminary}{#splitline{#sqrt{s} = 8 TeV, L = 19.5 fb^{-1}}{e#mu 0 jet}}");
- if (doOneJet) sprintf(val,"#splitline{CMS Preliminary}{#splitline{#sqrt{s} = 8 TeV, L = 19.5 fb^{-1}}{e#mu 1 jet}}");
- if (doZeroPlusOneJet) sprintf(val,"#splitline{CMS Preliminary}{#splitline{#sqrt{s} = 8 TeV, L = 19.5 fb^{-1}}{e#mu 0+1 jet}}");
+ 
+//  if (doJetBin == 0) sprintf(val,"#splitline{CMS Preliminary}{#splitline{#sqrt{s} = 8 TeV, L = 19.5 fb^{-1}}{e#mu 0 jet}}");
+//  if (doJetBin == 1) sprintf(val,"#splitline{CMS Preliminary}{#splitline{#sqrt{s} = 8 TeV, L = 19.5 fb^{-1}}{e#mu 1 jet}}");
+//  if (doJetBin == 2) sprintf(val,"#splitline{CMS Preliminary}{#splitline{#sqrt{s} = 8 TeV, L = 19.5 fb^{-1}}{e#mu 0+1 jet}}");
+
+ if (doJetBin == 0) sprintf(val,"#splitline{CMS Preliminary}{#splitline{#splitline{#sqrt{s} = 7/8 TeV}{L = 4.9 + 19.5 fb^{-1}}}{e#mu 0 jet}}");
+ if (doJetBin == 1) sprintf(val,"#splitline{CMS Preliminary}{#splitline{#splitline{#sqrt{s} = 7/8 TeV}{L = 4.9 + 19.5 fb^{-1}}}{e#mu 1 jet}}");
+ if (doJetBin == 2) sprintf(val,"#splitline{CMS Preliminary}{#splitline{#splitline{#sqrt{s} = 7/8 TeV}{L = 4.9 + 19.5 fb^{-1}}}{e#mu 0+1 jet}}");
+
  textcommon.DrawLatex(140,2.5,val);
  
  
