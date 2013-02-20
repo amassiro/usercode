@@ -122,11 +122,48 @@ class PlotVHqqHggH {
 	
        void set_ErrorBand (TGraphAsymmErrors& grAE) {
         std::cout << " TGraphAsymmErrors:: Error band"  << std::endl;
+        if (!_doBandError) {
+         _BandError = (TGraphAsymmErrors*) grAE.Clone();
+        }
+        else {
+         
+         TGraphAsymmErrors* temp_BandError = new TGraphAsymmErrors ();
+         
+         int nBin =  _BandError->GetN();
+         for (int iBin = 0; iBin < nBin; iBin ++) {
+          double Y = (_BandError->GetY()) [iBin];
+          double X = (_BandError->GetX()) [iBin];
+          
+          double errXUp      = _BandError->GetErrorXhigh(iBin);
+          double errXDown    = _BandError->GetErrorXlow(iBin);
+          double errYUp      = _BandError->GetErrorYhigh(iBin);
+          double errYDown    = _BandError->GetErrorYlow(iBin);
+
+          double Y2 = (grAE.GetY()) [iBin];
+          double X2 = (grAE.GetX()) [iBin];
+          
+          double errXUp2      = grAE.GetErrorXhigh(iBin);
+          double errXDown2    = grAE.GetErrorXlow(iBin);
+          double errYUp2      = grAE.GetErrorYhigh(iBin);
+          double errYDown2    = grAE.GetErrorYlow(iBin);
+          
+          double errXUpComb      = errXUp; // sqrt(errXUp2*errXUp2     + errXUp*errXUp);  --> on X no propagation!
+          double errXDownComb    = errXDown; // sqrt(errXDown2*errXDown2 + errXDown*errXDown);   --> on X no propagation!
+          double errYUpComb      = sqrt(errYUp2*errYUp2     + errYUp*errYUp);
+          double errYDownComb    = sqrt(errYDown2*errYDown2 + errYDown*errYDown);
+          
+          
+          temp_BandError -> SetPoint      (iBin, X, Y + Y2);
+          temp_BandError -> SetPointError (iBin, errXDownComb, errXUpComb, errYDownComb, errYUpComb);
+          
+         }
+         std::swap (_BandError,     temp_BandError) ;
+        }
         _doBandError = true;
         std::cout << " grAE = " << &grAE << std::endl;
-        _BandError = (TGraphAsymmErrors*) grAE.Clone();
-        }
-         
+        std::cout << " done " << std::endl;
+       }
+       
        ///---- background
        
        void set_vectTHBkg (std::vector<TH1F*>& vh) {
@@ -268,6 +305,129 @@ class PlotVHqqHggH {
 	if (what == ">") _cutDxSign = 1;
 	if (what == "<") _cutDxSign = -1;
        }
+
+       
+       
+       
+       //---- merge trees with the same name ----
+       
+       void mergeSamples() {
+        
+        //---- for the Background
+        
+        std::vector<TH1F*> vectTHBkg;          
+        std::vector<int> vectColourBkg;        
+        std::vector<std::string> vectNameBkg;  
+//         std::vector<double> vectNormalizationBkg; 
+//         std::vector<double> vectSystBkg;       
+//         std::vector<double> vectScaleBkg;      
+                
+        std::vector<double> vectFlagToKeepBkg; //---- 1=keep, 0=remove because it has been merged
+        
+        
+        for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
+         vectFlagToKeepBkg.push_back(1);
+        }
+        int iHistoToKeepBkg = 0;
+        for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
+         if (vectFlagToKeepBkg.at(iBkg) == 1) {
+          if (_vectTHBkg.size() != 0)            vectTHBkg.push_back     (_vectTHBkg.at(iBkg));
+          if (_vectColourBkg.size() != 0)        vectColourBkg.push_back (_vectColourBkg.at(iBkg));
+          if (_vectNameBkg.size() != 0)          vectNameBkg.push_back   (_vectNameBkg.at(iBkg));
+          //           if (_vectSystBkg.size() != 0)          vectSystBkg.push_back(_vectSystBkg.at(iBkg));          
+          //           if (_vectScaleBkg.size() != 0)         vectScaleBkg.push_back(_vectScaleBkg.at(iBkg));
+          //           if (_vectNormalizationBkg.size() != 0) vectNormalizationBkg.push_back(_vectNormalizationBkg.at(iBkg));
+          
+          for (unsigned int jBkg = iBkg+1; jBkg<_vectTHBkg.size(); jBkg++) {
+           std::cout << " iBkg = " << iBkg << "::" << _vectTHBkg.size() << " jBkg = " << jBkg << std::endl;
+           if (_vectNameBkg.at(jBkg) == _vectNameBkg.at(iBkg)) {
+            vectTHBkg.at(iHistoToKeepBkg) -> Add (_vectTHBkg.at(jBkg));
+            vectFlagToKeepBkg.at(jBkg) = 0; //---- to be removed
+           }
+          }
+          iHistoToKeepBkg++;
+         }
+        }
+        
+        std::swap (_vectTHBkg,     vectTHBkg) ;
+        std::swap (_vectColourBkg, vectColourBkg) ;
+        std::swap (_vectNameBkg,   vectNameBkg) ;
+
+        
+        
+        
+        
+        
+        
+        //---- for the Signal
+        //---- there is an ad hoc function!
+        //---- see set_mergeSignal
+        //----
+        //---- or you can use this method too!
+        //---- for example to merge ggH 7 TeV and ggH 8 TeV only and
+        //----  not all the signal samples together
+        //----
+        
+       
+        std::vector<TH1F*> vectTHSig;          
+        std::vector<int> vectColourSig;        
+        std::vector<std::string> vectNameSig;  
+        
+        std::vector<double> vectFlagToKeepSig; //---- 1=keep, 0=remove because it has been merged
+        
+        
+        for (unsigned int iSig = 0; iSig<_vectTHSig.size(); iSig++) {
+         vectFlagToKeepSig.push_back(1);
+        }
+        int iHistoToKeepSig = 0;
+        for (unsigned int iSig = 0; iSig<_vectTHSig.size(); iSig++) {
+         if (vectFlagToKeepSig.at(iSig) == 1) {
+          if (_vectTHSig.size() != 0)            vectTHSig.push_back     (_vectTHSig.at(iSig));
+          if (_vectColourSig.size() != 0)        vectColourSig.push_back (_vectColourSig.at(iSig));
+          if (_vectNameSig.size() != 0)          vectNameSig.push_back   (_vectNameSig.at(iSig));
+          
+          for (unsigned int jSig = iSig+1; jSig<_vectTHSig.size(); jSig++) {
+           if (_vectNameSig.at(jSig) == _vectNameSig.at(iSig)) {
+            vectTHSig.at(iHistoToKeepSig) -> Add (_vectTHSig.at(jSig));
+            vectFlagToKeepSig.at(jSig) = 0; //---- to be removed
+           }
+          }
+          iHistoToKeepSig++;
+         }
+        }
+        
+        std::swap (_vectTHSig,     vectTHSig) ;
+        std::swap (_vectColourSig, vectColourSig) ;
+        std::swap (_vectNameSig,   vectNameSig) ;
+
+        //---- prepare style for signal histograms (in case of drawing  over background
+//         for (unsigned int iSig = 0; iSig<_vectTHSig.size(); iSig++) {
+//          _vectTHSig.at(iSig) -> SetFillStyle(1001);
+//          _vectTHSig.at(iSig) -> SetLineColor(_vectColourSig.at(iSig));
+//          _vectTHSig.at(iSig) -> SetLineWidth(3);
+//         }
+        
+        
+        //---- add signal histograms
+        _vectTHstackSig.clear(); //---->>> very important! Otherwise it crashes!!!
+        for (unsigned int iSig = 0; iSig<_vectTHSig.size(); iSig++) {
+         std::cout << " nbin(" << iSig << ") = " << _vectTHSig.at (iSig)->GetNbinsX() << std::endl;
+         _vectTHstackSig.push_back ((TH1F*) _vectTHSig.at (iSig) -> Clone() );
+         if (iSig != 0 && _addSignal) { 
+          _vectTHstackSig.at (iSig) -> Add ( _vectTHstackSig.at (iSig-1) ) ;
+         }
+        }  
+        
+        //---- prepare style for signal histograms
+        for (unsigned int iSig = 0; iSig<_vectTHstackSig.size(); iSig++) {
+         _vectTHstackSig.at(iSig) -> SetFillStyle(0);
+         _vectTHstackSig.at(iSig) -> SetLineColor(_vectColourSig.at(iSig));
+         _vectTHstackSig.at(iSig) -> SetLineWidth(3);
+        }
+        
+        
+       }
+       
        
        //---- prepare histos and stacks                                                   
        void prepare () {
@@ -1095,7 +1255,9 @@ class PlotVHqqHggH {
         DrawLabels(false); // do not plot data!
         pad1->GetFrame()->DrawClone();
        }
-        
+
+       
+       
         
         //---- draw ----
        
@@ -1103,7 +1265,7 @@ class PlotVHqqHggH {
             Draw(new TCanvas(),rebin,div, shadow);
         }
 
-        void Draw(TCanvas *c1, const int &rebin=1, const bool &div=false, const bool &shadow=true) {
+        void Draw(TCanvas *c1, const int &rebin=1, const bool &div=false, const bool &shadow=true, TCanvas *cAdditional=0) {
 // 	    std::cout << " Ora disegno ! " << std::endl;
 // 	    std::cout << " rebin = " << rebin << std::endl; 
 	   int rebin2 = rebin; //---> just not to have warning :)
@@ -1528,6 +1690,174 @@ class PlotVHqqHggH {
 	     tot = data->IntegralAndError(-1,-1, toterror);
 	     std::cout << " totDATA = " << tot << " +/- " << toterror << std::endl;
 	    }
+	    
+	    
+	    //---- plot "peak like" background subtracted
+	    if (cAdditional) {
+             cAdditional->cd();
+             TH1F *excessDat = (TH1F*)data->Clone("excessDat");   
+
+             if(gROOT->FindObject("rrefData")) {
+              gROOT->FindObject("rrefData")->Delete();
+             }
+             TGraphAsymmErrors *rrefData = new TGraphAsymmErrors();
+             rrefData -> SetName ("rrefData");
+
+             if(gROOT->FindObject("rrefDataStat")) {
+              gROOT->FindObject("rrefDataStat")->Delete();
+            }
+            TGraphAsymmErrors *rrefDataStat = new TGraphAsymmErrors();
+            rrefDataStat -> SetName ("rrefDataStat");
+            
+            
+            std::vector<TH1F*> temp_vectTHstackSig;
+            for (int iSig = 0; iSig<_vectTHstackSig.size(); iSig++) {
+             temp_vectTHstackSig.push_back( (TH1F*) (_vectTHstackSig.at(iSig)->Clone()));
+            }  
+               
+               
+             double minY = 0;
+             double maxY = 0;
+             
+             for (int i = 0, n = summed->GetNbinsX(); i < n; ++i) {
+              //                  std::cout << "  n+1 = " << n+1 << std::endl;
+              
+              double SigPlusBkg    = summed->GetBinContent(i+1);
+              double errSigPlusBkg = summed->GetBinError(i+1);
+
+              double OnlySig    = temp_vectTHstackSig.at(temp_vectTHstackSig.size()-1) -> GetBinContent(i+1);
+              double OnlyBkg    = SigPlusBkg - OnlySig;                      
+
+              double DataMinusBkg = 0;
+              
+              double errYupDataMinusBkg = errSigPlusBkg;
+              double errYloDataMinusBkg = errSigPlusBkg;
+
+              double errYupDataMinusBkg_Stat = 0;
+              double errYloDataMinusBkg_Stat = 0;
+              
+              if (_doBandError) {
+               errYloDataMinusBkg = _BandError->GetErrorYlow(i);
+               errYupDataMinusBkg = _BandError->GetErrorYhigh(i);
+               
+//                std::cout << " errYloDataMinusBkg = " << errYloDataMinusBkg << std::endl;
+//                std::cout << " errYupDataMinusBkg = " << errYupDataMinusBkg << std::endl;
+//                std::cout << " ==== " << std::endl;
+              }
+              if (data) {
+               DataMinusBkg = data->GetBinContent(i+1) - OnlyBkg;
+               errYloDataMinusBkg = sqrt(errYloDataMinusBkg*errYloDataMinusBkg + data->GetBinContent(i+1)); //---- poissonian
+               errYupDataMinusBkg = sqrt(errYupDataMinusBkg*errYupDataMinusBkg + data->GetBinContent(i+1)); //---- poissonian
+               errYloDataMinusBkg_Stat = sqrt(data->GetBinContent(i+1));
+               errYupDataMinusBkg_Stat = sqrt(data->GetBinContent(i+1));
+               
+//                std::cout << " errYloDataMinusBkg_Stat = " << errYloDataMinusBkg_Stat << std::endl;
+//                std::cout << " errYupDataMinusBkg_Stat = " << errYupDataMinusBkg_Stat << std::endl;
+//                std::cout << "   >>  errYloDataMinusBkg = " << errYloDataMinusBkg << std::endl;
+//                std::cout << "   >>  errYupDataMinusBkg = " << errYupDataMinusBkg << std::endl;
+//                std::cout << " ==== " << std::endl;
+               
+              }
+              
+              rrefData->SetPoint      (i,summed->GetBinCenter(i+1), DataMinusBkg);
+              rrefData->SetPointError (i,summed->GetBinWidth(i+1)/2. , summed->GetBinWidth(i+1)/2.  , errYloDataMinusBkg, errYupDataMinusBkg);
+
+              rrefDataStat->SetPoint      (i,summed->GetBinCenter(i+1), DataMinusBkg);
+              rrefDataStat->SetPointError (i,summed->GetBinWidth(i+1)/2. , summed->GetBinWidth(i+1)/2.  , errYloDataMinusBkg_Stat, errYupDataMinusBkg_Stat);
+              
+              if ((DataMinusBkg - errYloDataMinusBkg) < minY) minY = (DataMinusBkg - errYloDataMinusBkg);
+              if ((DataMinusBkg + errYupDataMinusBkg) > maxY) maxY = (DataMinusBkg + errYupDataMinusBkg);
+             }
+             
+             
+             for (int iSig = (temp_vectTHstackSig.size()-1); iSig>=0; iSig--) {
+//               std::cout << " iSig = " << iSig << "  temp_vectTHstackSig.size() = " << temp_vectTHstackSig.size() << std::endl;
+              if (_mergeSignal == 0 ||  iSig == (temp_vectTHstackSig.size()-1)) {
+               if (_mergeSignal == 1) {
+                temp_vectTHstackSig.at(iSig) -> SetLineColor (kRed);
+               }
+               temp_vectTHstackSig.at(iSig) -> SetFillStyle (3004);
+               temp_vectTHstackSig.at(iSig) -> SetFillColor (temp_vectTHstackSig.at(iSig) -> GetLineColor());
+               if (iSig == (temp_vectTHstackSig.size()-1)) {
+                temp_vectTHstackSig.at(iSig) -> SetTitle ("");
+                temp_vectTHstackSig.at(iSig) -> Draw();
+                AxisFonts(temp_vectTHstackSig.at(iSig)->GetXaxis(), "x", hstack->GetXaxis()->GetTitle());
+                AxisFonts(temp_vectTHstackSig.at(iSig)->GetYaxis(), "y", "data - background");
+                if (data) {
+                 temp_vectTHstackSig.at(iSig) ->GetYaxis () -> SetRangeUser(minY - 10 ,maxY*1.5 + 20);
+                }
+                else {
+                 temp_vectTHstackSig.at(iSig) ->GetYaxis () -> SetRangeUser(0 ,temp_vectTHstackSig.at(temp_vectTHstackSig.size()-1)->GetMaximum() * 1.5 + 5);
+                }
+               }                
+               else {
+                temp_vectTHstackSig.at(iSig) -> Draw("same");
+               }
+//                if (iSig == 0) temp_vectTHstackSig.at(iSig) -> Draw("hist");
+//                else           temp_vectTHstackSig.at(iSig) -> Draw("hist,same");
+              }
+             }
+             
+             
+             rrefData->SetTitle("");
+             rrefData -> SetLineWidth (2);
+             rrefData -> SetMarkerSize (1);
+             rrefData -> SetMarkerStyle(20);
+             rrefData -> SetLineColor (kBlack);
+             rrefData -> SetMarkerColor (kBlack);
+             
+             rrefDataStat->SetTitle("");
+             rrefDataStat -> SetLineWidth (4);
+//              rrefDataStat -> SetLineStyle (2);
+             rrefDataStat -> SetMarkerSize (1);
+             rrefDataStat -> SetMarkerStyle(21);
+             rrefDataStat -> SetLineColor (kBlue);
+             rrefDataStat -> SetMarkerColor (kBlue);
+             
+             TLine *line2 = new TLine(summed->GetXaxis()->GetBinLowEdge(1), 0.0, summed->GetXaxis()->GetBinLowEdge(_nbins+1), 0.0);
+             line2->SetLineColor(kBlack);
+             line2->SetLineWidth(1);
+             line2->SetLineStyle(1);
+             line2->Draw("SAME"); 
+
+             rrefData->Draw("EP");
+             rrefDataStat->Draw("EP");
+             
+             std::cout << " x1 = " << summed->GetXaxis()->GetBinLowEdge(1) + (summed->GetXaxis()->GetBinLowEdge(_nbins+1) - summed->GetXaxis()->GetBinLowEdge(1)) * 1. / 3. << std::endl;
+             std::cout << " y1 = " << maxY+5 << std::endl;
+             std::cout << " x2 = " << summed->GetXaxis()->GetBinLowEdge(1) + (summed->GetXaxis()->GetBinLowEdge(_nbins+1) - summed->GetXaxis()->GetBinLowEdge(1)) * 2. / 3. << std::endl;
+             std::cout << " y2 = " << maxY+15 << std::endl;
+             
+//              TLegend* legendSigMinusBkg = new TLegend(summed->GetXaxis()->GetBinLowEdge(1) + (summed->GetXaxis()->GetBinLowEdge(_nbins+1) - summed->GetXaxis()->GetBinLowEdge(1)) * 1. / 3. , maxY+5, summed->GetXaxis()->GetBinLowEdge(1) + (summed->GetXaxis()->GetBinLowEdge(_nbins+1) - summed->GetXaxis()->GetBinLowEdge(1)) * 2. / 3. ,  maxY+15);
+             TLegend* legendSigMinusBkg = new TLegend(0.3, 0.7, 0.7, 1.0);
+             
+             legendSigMinusBkg->SetBorderSize(     0);
+             legendSigMinusBkg->SetFillColor (     0);
+             legendSigMinusBkg->SetTextAlign (    12);
+             legendSigMinusBkg->SetTextFont  (_labelFont);
+             legendSigMinusBkg->SetTextSize  (_legendTextSize);
+             legendSigMinusBkg->AddEntry(rrefData,     "data (stat + syst)", "PL");
+             legendSigMinusBkg->AddEntry(rrefDataStat, "data (stat)", "PL");
+             for (int iSig = 0; iSig<temp_vectTHstackSig.size(); iSig++) {
+              if (_mergeSignal == 0) {
+               legendSigMinusBkg->AddEntry(temp_vectTHstackSig.at(iSig), _vectNameSig.at(iSig).c_str(), "PL");
+              }
+              else if ((_mergeSignal == 1) && (iSig == (temp_vectTHstackSig.size()-1))) {
+               if (_mass == -1) {
+                legendSigMinusBkg->AddEntry(temp_vectTHstackSig.at(iSig), "Higgs", "PL");
+               }
+               else {
+                TString name4Legend = Form ("Higgs %d GeV", _mass);
+                legendSigMinusBkg->AddEntry(temp_vectTHstackSig.at(iSig), name4Legend.Data(), "PL");
+                }
+              }
+             }
+             legendSigMinusBkg->Draw();
+             
+             cAdditional->Update();
+             
+             c1->cd();
+            }
         }
 
 
