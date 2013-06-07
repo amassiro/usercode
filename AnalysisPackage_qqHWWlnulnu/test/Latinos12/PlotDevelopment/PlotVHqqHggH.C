@@ -69,6 +69,7 @@ Float_t GetMaximumIncludingErrors(TH1* h)
 
 
 
+
 class PlotVHqqHggH {
 
     public: 
@@ -83,6 +84,7 @@ class PlotVHqqHggH {
             _axisLabelSize    = 40;
             _labelOffset      = 0.02;
             _titleOffset      = 1.6;
+            _titleOffset_additional = 2.0;
             
             _xoffset          = 0.20;
             _yoffset          = 0.06;
@@ -108,35 +110,59 @@ class PlotVHqqHggH {
         ///---- data
 
         void setDataHist (TH1 * h)         {
-            if (!_data) {
-                _data          = (TH1*) h->Clone();        
-                _data -> SetLineWidth (2);
-                _data -> SetMarkerSize (1);
-                _data -> SetLineColor (kBlack);
-                _data -> SetMarkerColor (kBlack);
-            }
-            else {
-                TH1* temp_data = (TH1*) h->Clone();        
-                _data -> Add(temp_data);        
-            }
-            //   int nBin = _data->GetNbinsX();  
-            double integral;
-            double error;
-            integral = h->IntegralAndError(-1,-1, error);
-            std::cout << " samp = " << "DATA" << " yield = " << integral << " +/- " << error << std::endl;
-            std::cout << " ~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+         _vectTHData.push_back((TH1*) h->Clone());
+         if (!_data) {
+          _data          = (TH1*) h->Clone();
+          _data -> Sumw2(); //---- usefull???
+          _data -> SetLineWidth (2);
+          _data -> SetMarkerSize (1);
+          _data -> SetLineColor (kBlack);
+          _data -> SetMarkerColor (kBlack);
+         }
+         else {
+          TH1* temp_data = (TH1*) h->Clone();
+          _data -> Add(temp_data);        
+         }
+         //   int nBin = _data->GetNbinsX();  
+         double integral;
+         double error;
+         integral = h->IntegralAndError(-1,-1, error);
+         std::cout << " samp = " << "DATA" << " yield = " << integral << " +/- " << error << std::endl;
+         std::cout << " ~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
         } 
-
-
+        
+        
+        void UpdateData () {
+         for (unsigned int iDat = 0; iDat<_vectTHData.size(); iDat++) {
+          if (iDat == 0) {
+           _data          = (TH1*) _vectTHData.at(iDat)->Clone();
+           _data -> Sumw2();
+          }
+          else {
+           _data -> Add((TH1*) _vectTHData.at(iDat)->Clone());
+          }
+         }
+        }
+        
+        
         void set_doLabelNumber (bool doLabelNumber) {
             _doLabelNumber = doLabelNumber;
         }
 
 
-        void set_ErrorBand (TGraphAsymmErrors& grAE) {
+        void set_ErrorBand (TGraphAsymmErrors& grAE, double scale = -1) {
             std::cout << " TGraphAsymmErrors:: Error band"  << std::endl;
+            _vectBandError.push_back((TGraphAsymmErrors*) grAE.Clone());
+            
+            if (scale != -1) {
+             scaleTGAE (_vectBandError.at(_vectBandError.size()-1), scale );
+            }
+                        
             if (!_doBandError) {
                 _BandError = (TGraphAsymmErrors*) grAE.Clone();
+                if (scale != -1 && scale != 1) {
+                 scaleTGAE (_BandError, scale );
+                }
             }
             else {
 
@@ -160,6 +186,12 @@ class PlotVHqqHggH {
                     double errYUp2      = grAE.GetErrorYhigh(iBin);
                     double errYDown2    = grAE.GetErrorYlow(iBin);
 
+                    if (scale != -1) {
+                     Y2        = Y2        * scale;
+                     errYUp2   = errYUp2   * scale;
+                     errYDown2 = errYDown2 * scale;
+                    }
+                    
                     double errXUpComb      = errXUp; // sqrt(errXUp2*errXUp2     + errXUp*errXUp);  --> on X no propagation!
                     double errXDownComb    = errXDown; // sqrt(errXDown2*errXDown2 + errXDown*errXDown);   --> on X no propagation!
                     double errYUpComb      = sqrt(errYUp2*errYUp2     + errYUp*errYUp);
@@ -180,6 +212,47 @@ class PlotVHqqHggH {
             std::cout << " done " << std::endl;
         }
 
+        
+        void UpdateError () {
+         for (unsigned int iErr = 0; iErr<_vectBandError.size(); iErr++) {
+          if (iErr == 0) {
+           _BandError          = (TGraphAsymmErrors*) _vectBandError.at(iErr)->Clone();
+          }
+          else {
+           
+           TGraphAsymmErrors* temp_BandError = new TGraphAsymmErrors ();
+           
+           int nBin =  _BandError->GetN();
+           for (int iBin = 0; iBin < nBin; iBin ++) {
+            double X = (_BandError->GetX()) [iBin];
+            double Y = (_BandError->GetY()) [iBin];
+            
+            double errXUp      = _BandError->GetErrorXhigh(iBin);
+            double errXDown    = _BandError->GetErrorXlow(iBin);
+            double errYUp      = _BandError->GetErrorYhigh(iBin);
+            double errYDown    = _BandError->GetErrorYlow(iBin);
+            
+            double Y2 = (_vectBandError.at(iErr)->GetY()) [iBin];
+            
+            double errYUp2      = _vectBandError.at(iErr)->GetErrorYhigh(iBin);
+            double errYDown2    = _vectBandError.at(iErr)->GetErrorYlow(iBin);
+            
+            double errXUpComb      = errXUp; // sqrt(errXUp2*errXUp2     + errXUp*errXUp);  --> on X no propagation!
+            double errXDownComb    = errXDown; // sqrt(errXDown2*errXDown2 + errXDown*errXDown);   --> on X no propagation!
+            double errYUpComb      = sqrt(errYUp2*errYUp2     + errYUp*errYUp);
+            double errYDownComb    = sqrt(errYDown2*errYDown2 + errYDown*errYDown);
+            
+            temp_BandError -> SetPoint      (iBin, X, Y + Y2);
+            temp_BandError -> SetPointError (iBin, errXDownComb, errXUpComb, errYDownComb, errYUpComb);
+            
+           }
+           std::swap (_BandError,     temp_BandError) ;
+           delete temp_BandError;
+          }
+         }
+        }
+           
+        
         ///---- background
         void set_vectTHBkg (std::vector<TH1F*>& vh) {
             std::vector<TH1*> dummy(vh.size());
@@ -341,6 +414,94 @@ class PlotVHqqHggH {
 
 
 
+        //---- add weights S/(S+B) ----
+        
+        void addWeight(int nCycle) {
+         std::vector<TH1*> vectTHBkg;
+         std::vector<TH1*> vectTHSig;
+         std::vector<TH1*> vectTHData;
+         std::vector<TGraphAsymmErrors*> vectBandError;
+         
+         for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
+          vectTHBkg.push_back     (_vectTHBkg.at(iBkg));
+         }
+         for (unsigned int iSig = 0; iSig<_vectTHSig.size(); iSig++) {
+          vectTHSig.push_back     (_vectTHSig.at(iSig));
+         }
+         for (unsigned int iDat = 0; iDat<_vectTHData.size(); iDat++) {
+          vectTHData.push_back     (_vectTHData.at(iDat));
+         }
+         for (unsigned int iErr = 0; iErr<_vectTHData.size(); iErr++) {
+          vectBandError.push_back     (_vectBandError.at(iErr));
+         }
+         
+          
+         int nBin = _vectTHBkg.at(0) -> GetNbinsX(); //---- at least 1 background!!!
+         for (int iCycle = 0; iCycle<nCycle; iCycle++) { //---- loop on different arrows of 2D plot
+          std::cout << " iCycle = " << iCycle << " :: " << nCycle << std::endl;
+          for (int iBin=0; iBin<nBin; iBin++) {
+           double sumBkg = 0;
+           for (unsigned int iBkg = 0; iBkg<(_vectTHBkg.size()/nCycle); iBkg++) {
+            sumBkg = sumBkg + _vectTHBkg.at( iBkg + (iCycle*_vectTHBkg.size()/nCycle) )->GetBinContent(iBin+1);
+           }
+           double sumSig = 0;
+           for (unsigned int iSig = 0; iSig<(_vectTHSig.size()/nCycle); iSig++) {
+            sumSig = sumSig + _vectTHSig.at( iSig + (iCycle*_vectTHSig.size()/nCycle) )->GetBinContent(iBin+1);
+           }
+           double weight;
+           if ((sumSig + sumBkg) != 0) weight = sumSig / (sumSig + sumBkg);
+           else weight = 1;
+                      
+           for (unsigned int iBkg = 0; iBkg<(_vectTHBkg.size()/nCycle); iBkg++) {
+            double value = vectTHBkg.at( iBkg + (iCycle*_vectTHBkg.size()/nCycle) )->GetBinContent(iBin+1);
+            double error = vectTHBkg.at( iBkg + (iCycle*_vectTHBkg.size()/nCycle) )->GetBinError(iBin+1);
+            vectTHBkg.at( iBkg + (iCycle*_vectTHBkg.size()/nCycle) )->SetBinContent(iBin+1, value * weight);
+            vectTHBkg.at( iBkg + (iCycle*_vectTHBkg.size()/nCycle) )->SetBinError  (iBin+1, error * weight);
+           }
+           for (unsigned int iSig = 0; iSig<(_vectTHSig.size()/nCycle); iSig++) {
+            double value = vectTHSig.at( iSig + (iCycle*_vectTHSig.size()/nCycle) )->GetBinContent(iBin+1);
+            double error = vectTHSig.at( iSig + (iCycle*_vectTHSig.size()/nCycle) )->GetBinError(iBin+1);
+            vectTHSig.at( iSig + (iCycle*_vectTHSig.size()/nCycle) )->SetBinContent(iBin+1, value * weight);
+            vectTHSig.at( iSig + (iCycle*_vectTHSig.size()/nCycle) )->SetBinError  (iBin+1, error * weight);
+           }
+           
+           if (_doBandError) {
+            for (unsigned int iErr = 0; iErr<(_vectBandError.size()/nCycle); iErr++) {
+             
+             double X = ( (vectBandError.at(iErr + (iCycle*_vectBandError.size()/nCycle))) ->GetX()) [iBin];
+             double errXUp      = (vectBandError.at(iErr + (iCycle*_vectBandError.size()/nCycle)))->GetErrorXhigh(iBin);
+             double errXDown    = (vectBandError.at(iErr + (iCycle*_vectBandError.size()/nCycle)))->GetErrorXlow(iBin);
+             
+             double Y           = weight * ((vectBandError.at(iErr + (iCycle*_vectBandError.size()/nCycle)))->GetY()) [iBin];
+             double errYUp      = weight * (vectBandError.at(iErr + (iCycle*_vectBandError.size()/nCycle)))->GetErrorYhigh(iBin);
+             double errYDown    = weight * (vectBandError.at(iErr + (iCycle*_vectBandError.size()/nCycle)))->GetErrorYlow(iBin);
+             
+             (vectBandError.at(iErr + (iCycle*_vectBandError.size()/nCycle))) -> SetPoint      (iBin, X, Y);
+             (vectBandError.at(iErr + (iCycle*_vectBandError.size()/nCycle))) -> SetPointError (iBin, errXDown, errXUp,  errYDown, errYUp);
+            }
+           }
+           
+           if (_data) {
+            for (unsigned int iDat = 0; iDat<(_vectTHData.size()/nCycle); iDat++) {
+             double value = vectTHData.at( iDat + (iCycle*_vectTHData.size()/nCycle) )->GetBinContent(iBin+1);
+             double error = vectTHData.at( iDat + (iCycle*_vectTHData.size()/nCycle) )->GetBinError(iBin+1);
+             vectTHData.at( iDat + (iCycle*_vectTHData.size()/nCycle) )->SetBinContent(iBin+1, value * weight);
+             vectTHData.at( iDat + (iCycle*_vectTHData.size()/nCycle) )->SetBinError  (iBin+1, error * weight);
+            }
+           }
+          }
+         }
+         std::swap (_vectTHBkg,     vectTHBkg ) ;
+         std::swap (_vectTHSig,     vectTHSig ) ;
+         if (_data)        std::swap (_vectTHData,       vectTHData   ) ;
+         if (_doBandError) std::swap (_vectBandError,    vectBandError) ;
+         
+         if (_data)        UpdateData() ;
+         if (_doBandError) UpdateError() ;
+         
+        }
+         
+         
 
         //---- merge trees with the same name ----
 
@@ -465,13 +626,23 @@ class PlotVHqqHggH {
         //---- prepare histos and stacks                                                   
         void prepare () {
             std::cout << " prepare ... " << std::endl;
+            if (_data) {
+             int nbin = _data -> GetNbinsX();
+             for (int iBin = 0; iBin < nbin; iBin++) {
+              double err_after = _data -> GetBinError(iBin+1);
+              if (err_after == 0) { //---> fix 0 error in case of 0 events --> bayesian poisson 0 events observed
+                _data -> SetBinError (iBin+1, 1.14);
+              }
+             }
+            }
+            
             
             //---- in case division by bin width to be applied
             if (_divide) {
              std::cout << " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ " << std::endl;
              if (_vectTHBkg.size() != 0) {
               for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
-               std::cout << " iBkg = " << iBkg << " :: " << _vectTHBkg.size() << std::endl;
+//                std::cout << " iBkg = " << iBkg << " :: " << _vectTHBkg.size() << std::endl;
                int nbin = _vectTHBkg.at(iBkg) -> GetNbinsX();
                for (int iBin = 0; iBin < nbin; iBin++) {
                 double err_before = _vectTHBkg.at(iBkg) -> GetBinError(iBin+1);
@@ -488,7 +659,7 @@ class PlotVHqqHggH {
              
              if (_vectTHSig.size() != 0) {
               for (unsigned int iSig = 0; iSig<_vectTHSig.size(); iSig++) {
-               std::cout << " iSig = " << iSig << " :: " << _vectTHSig.size() << std::endl;
+//                std::cout << " iSig = " << iSig << " :: " << _vectTHSig.size() << std::endl;
                int nbin = _vectTHSig.at(iSig) -> GetNbinsX();
                for (int iBin = 0; iBin < nbin; iBin++) {
                 double err_before = _vectTHSig.at(iSig) -> GetBinError(iBin+1);
@@ -538,7 +709,7 @@ class PlotVHqqHggH {
             //---- in case there is a scale factor to be applied ...
             if (_vectScaleBkg.size() != 0) {
                 for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
-                    std::cout << " iBkg = " << iBkg << " :: " << _vectTHBkg.size() << std::endl;
+//                     std::cout << " iBkg = " << iBkg << " :: " << _vectTHBkg.size() << std::endl;
                     int nbin = _vectTHBkg.at(iBkg) -> GetNbinsX();
                     for (int iBin = 0; iBin < nbin; iBin++) {
                         double err_before = _vectTHBkg.at(iBkg) -> GetBinError(iBin+1);
@@ -554,7 +725,7 @@ class PlotVHqqHggH {
 
             if (_vectScaleSig.size() != 0) {
                 for (unsigned int iSig = 0; iSig<_vectTHSig.size(); iSig++) {
-                    std::cout << " iSig = " << iSig << " :: " << _vectTHSig.size() << std::endl;
+//                     std::cout << " iSig = " << iSig << " :: " << _vectTHSig.size() << std::endl;
                     int nbin = _vectTHSig.at(iSig) -> GetNbinsX();
                     for (int iBin = 0; iBin < nbin; iBin++) {
                         double err_before = _vectTHSig.at(iSig) -> GetBinError(iBin+1);
@@ -1362,7 +1533,11 @@ class PlotVHqqHggH {
                     _vectTHBkg.at(iBkg)->SetLabelSize(_axisLabelSize,"Y");
                     _vectTHBkg.at(iBkg)->SetTitleSize(_axisLabelSize,"XY");  
                     _vectTHBkg.at(iBkg)->DrawNormalized("L");
+                    
+                    Float_t temp_titleOffset_additional = _titleOffset_additional;
+                    _titleOffset_additional = 0.1;
                     AxisFonts(_vectTHBkg.at(iBkg)->GetXaxis(), "x", hstack->GetXaxis()->GetTitle());
+                    _titleOffset_additional = temp_titleOffset_additional;
                     AxisFonts(_vectTHBkg.at(iBkg)->GetYaxis(), "y", "a.u.");
                     std::cout << " miny,maxy = " << miny << " , "  << maxy << std::endl;
                     //           _vectTHBkg.at(iBkg)->GetYaxis()->SetRangeUser(miny, maxy);
@@ -1398,7 +1573,782 @@ class PlotVHqqHggH {
         }
 
 
+        
+        
+        void RemoveError(TH1* histo) {
+         for (int iBin = 0; iBin < histo->GetNbinsX(); iBin ++) {
+          histo->SetBinError   (iBin+1, 0.);
+         }
+         histo->SetFillStyle(0);
+        }        
+        
+        
+        void ReverseCumulative(TH1* histo) {
+         double integral = histo->GetBinContent(histo->GetNbinsX());
+         for (int iBin = 0; iBin < histo->GetNbinsX(); iBin ++) {
+          double value = histo->GetBinContent(iBin+1);
+          histo->SetBinContent   (iBin+1, integral - value); 
+         }
+        }   
+        
+        void SquareHisto(TH1* histo) {
+         for (int iBin = 0; iBin < histo->GetNbinsX(); iBin ++) {
+          double value = histo->GetBinContent(iBin+1);
+          double error = histo->GetBinError(iBin+1);
+          histo->SetBinContent (iBin+1, value*value);
+          histo->SetBinError   (iBin+1, 2. * value * error);
+         }
+        }        
+        
+        void SqrtHisto(TH1* histo) {
+         for (int iBin = 0; iBin < histo->GetNbinsX(); iBin ++) {
+          double value = histo->GetBinContent(iBin+1);
+          double error = histo->GetBinError(iBin+1);
+          if (value != 0) {
+           histo->SetBinContent (iBin+1, sqrt(value));
+           histo->SetBinError   (iBin+1, 0.5 * error / value);
+          }
+         }
+        }        
+        
+        
+        
+        
+        
+        void DrawNormalizedBkgSummed(TCanvas *c1) {
+         
+         std::cout << " DrawNormalizedBkgSummed " << std::endl;
+         gStyle->SetOptStat(0);
+         c1->cd();
+         gStyle->SetOptStat(0);
+         
+         TH1 *summed = GetSummedMCHist();
+         bool alreadyPlot = false;
+         for (unsigned int iSig = 0; iSig<_vectTHstackSig.size(); iSig++) {          
+          if (_mergeSignal == 0) {
+           TH1* tempOfHisto = (TH1*) _vectTHSig.at(iSig)->Clone();
+           double integral_signal = tempOfHisto->Integral();
+           tempOfHisto->Sumw2();
+           tempOfHisto->Scale (1. / integral_signal);
+           if (alreadyPlot) {
+            tempOfHisto->DrawClone("Lsame");
+           }
+           else {
+            tempOfHisto->SetTitle("");
+            tempOfHisto->GetXaxis() -> SetTitle(_xLabel.Data());
+            tempOfHisto->GetYaxis() -> SetRangeUser(0.0001 , std::max(0.7, tempOfHisto->GetMaximum() * 2.7));
+            tempOfHisto->DrawClone("L");
+            alreadyPlot = true;
+           }
+          } 
+          else {
+           if (_mergeSignal == 1 && iSig == (_vectTHstackSig.size()-1)) {
+            TH1* tempOfHisto = (TH1*) _vectTHSig.at(iSig)->Clone();
+            double integral_signal = tempOfHisto->Integral();
+            tempOfHisto->Sumw2();
+            tempOfHisto->Scale (1. / integral_signal);
+            tempOfHisto->SetLineColor (kRed);
+            if (alreadyPlot) {
+             tempOfHisto->DrawClone("Lsame");
+            }
+            else {
+             tempOfHisto->SetTitle("");
+             tempOfHisto->GetXaxis() -> SetTitle(_xLabel.Data());
+             tempOfHisto->GetYaxis() -> SetRangeUser(0.0001 , std::max(0.7, tempOfHisto->GetMaximum() * 2.7));
+             tempOfHisto->DrawClone("L");
+             alreadyPlot = true;
+            }
+           }
+          }
+         }
+         
+         TH1 *summed_background;         
+         
+         for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
+          TH1* tempOfHisto = (TH1*) _vectTHBkg.at(iBkg)->Clone();
+          tempOfHisto->Sumw2();
+          if (iBkg == 0) {
+           summed_background = (TH1*) tempOfHisto->Clone();
+          }
+          else {
+           summed_background->Add(tempOfHisto);
+          }
+         }
+         
+         summed_background->SetTitle("");
+         summed_background->SetLineWidth(2);
+         summed_background->SetLineColor(kBlue);
+         summed_background->SetLineStyle(1);
+         double integral_background = summed_background->Integral();
+         summed_background->Sumw2();
+         summed_background->Scale (1. / integral_background);
+         summed_background->DrawClone("Lsame");
+         
 
+         c1->cd();
+         DrawLabels(false, true); // do not plot data and plot only the "background summed"
+        }
+        
+        
+        
+        void DrawNormalizedSoBBkgSummed(TCanvas *c1) {
+         
+         std::cout << " DrawNormalizedSoBBkgSummed " << std::endl;
+         gStyle->SetOptStat(0);
+         c1->cd();
+         gStyle->SetOptStat(0);
+         
+         TH1 *summed = GetSummedMCHist();
+         
+         TH1 *summed_background;         
+         
+         for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
+          TH1* tempOfHisto = (TH1*) _vectTHBkg.at(iBkg)->Clone();
+          tempOfHisto->Sumw2();
+          if (iBkg == 0) {
+           summed_background = (TH1*) tempOfHisto->Clone();
+          }
+          else {
+           summed_background->Add(tempOfHisto);
+          }
+         }
+         
+         summed_background->SetTitle("");
+         summed_background->SetLineWidth(2);
+         summed_background->SetLineColor(kBlue);
+         summed_background->SetLineStyle(1);
+         c1->cd();
+         
+         for (unsigned int iSig = 0; iSig<_vectTHstackSig.size(); iSig++) {          
+          if (_mergeSignal == 0) {
+           TH1* tempOfHisto = (TH1*) _vectTHSig.at(iSig)->Clone();
+           tempOfHisto->Sumw2();
+           TH1* summed_SoB = (TH1*) tempOfHisto->Clone();           
+           summed_SoB->SetTitle("");
+           summed_SoB->Divide(summed_background);
+           if (iSig == 0) {
+            //             summed_SoB->GetYaxis () -> SetRangeUser (0,1);
+            summed_SoB->GetYaxis() -> SetTitle("S/B");
+            summed_SoB->GetXaxis() -> SetTitle(_xLabel.Data());
+            summed_SoB->GetYaxis() -> SetRangeUser(0.0001 , summed_SoB->GetMaximum() * 2.0);
+            summed_SoB->DrawClone("L");
+           }
+           else {
+            summed_SoB->DrawClone("Lsame");
+           }
+          } 
+          else {
+           if (_mergeSignal == 1 && iSig == (_vectTHstackSig.size()-1)) {
+            TH1* tempOfHisto = (TH1*) _vectTHSig.at(iSig)->Clone();
+            tempOfHisto->Sumw2();
+            tempOfHisto->SetLineColor (kRed);
+            tempOfHisto->DrawClone("Lsame");
+            
+            TH1* summed_SoB = (TH1*) tempOfHisto->Clone();           
+            summed_SoB->SetTitle("");
+            summed_SoB->Divide(summed_background);
+            if (iSig == 0) {
+             summed_SoB->GetYaxis() -> SetTitle("S/B");
+             summed_SoB->GetXaxis() -> SetTitle(_xLabel.Data());
+             summed_SoB->GetYaxis() -> SetRangeUser(0.0001 , summed_SoB->GetMaximum() * 2.0);
+             summed_SoB->DrawClone("L");
+            }
+            else {
+             summed_SoB->DrawClone("Lsame");
+            }
+            
+           }
+          }
+         }
+         
+         c1->cd();
+         DrawLabels(false, true); // do not plot data and plot only the "background summed"
+         
+        }
+
+        void DrawNormalizedS2oBBkgSummed(TCanvas *c1) {
+         
+         std::cout << " DrawNormalizedS2oBBkgSummed " << std::endl;
+         gStyle->SetOptStat(0);
+         c1->cd();
+         gStyle->SetOptStat(0);
+         
+         TH1 *summed = GetSummedMCHist();
+         
+         TH1 *summed_background;         
+         
+         for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
+          TH1* tempOfHisto = (TH1*) _vectTHBkg.at(iBkg)->Clone();
+          tempOfHisto->Sumw2();
+          if (iBkg == 0) {
+           summed_background = (TH1*) tempOfHisto->Clone();
+          }
+          else {
+           summed_background->Add(tempOfHisto);
+          }
+         }
+         
+         summed_background->SetTitle("");
+         summed_background->SetLineWidth(2);
+         summed_background->SetLineColor(kBlue);
+         summed_background->SetLineStyle(1);
+         c1->cd();
+         
+         for (unsigned int iSig = 0; iSig<_vectTHstackSig.size(); iSig++) {          
+          if (_mergeSignal == 0) {
+           TH1* tempOfHisto = (TH1*) _vectTHSig.at(iSig)->Clone();
+           tempOfHisto->Sumw2();
+           TH1* summed_SoB = (TH1*) tempOfHisto->Clone();           
+           summed_SoB->SetTitle("");
+           SquareHisto(summed_SoB);
+           summed_SoB->Divide(summed_background);
+           if (iSig == 0) {
+            //             summed_SoB->GetYaxis () -> SetRangeUser (0,1);
+            summed_SoB->GetYaxis() -> SetTitle("S^{2}/B");
+            summed_SoB->GetXaxis() -> SetTitle(_xLabel.Data());
+            summed_SoB->GetYaxis() -> SetRangeUser(0.0001 , summed_SoB->GetMaximum() * 2.0);
+            summed_SoB->DrawClone("L");
+           }
+           else {
+            summed_SoB->DrawClone("Lsame");
+           }
+          } 
+          else {
+           if (_mergeSignal == 1 && iSig == (_vectTHstackSig.size()-1)) {
+            TH1* tempOfHisto = (TH1*) _vectTHSig.at(iSig)->Clone();
+            tempOfHisto->Sumw2();
+            tempOfHisto->SetLineColor (kRed);
+            tempOfHisto->DrawClone("Lsame");
+            
+            TH1* summed_SoB = (TH1*) tempOfHisto->Clone();           
+            summed_SoB->SetTitle("");
+            SquareHisto(summed_SoB);
+            summed_SoB->Divide(summed_background);
+            if (iSig == 0) {
+             summed_SoB->GetYaxis() -> SetTitle("S^{2}/B");
+             summed_SoB->GetXaxis() -> SetTitle(_xLabel.Data());
+             summed_SoB->GetYaxis() -> SetRangeUser(0.0001 , summed_SoB->GetMaximum() * 2.0);
+             summed_SoB->DrawClone("L");
+            }
+            else {
+             summed_SoB->DrawClone("Lsame");
+            }
+            
+           }
+          }
+         }
+         
+         c1->cd();
+         DrawLabels(false, true); // do not plot data and plot only the "background summed"
+         
+        }
+        
+        
+        void DrawNormalizedSosqrtBBkgSummed(TCanvas *c1) {
+         
+         std::cout << " DrawNormalizedS2oBBkgSummed " << std::endl;
+         gStyle->SetOptStat(0);
+         c1->cd();
+         gStyle->SetOptStat(0);
+         
+         TH1 *summed = GetSummedMCHist();
+         
+         TH1 *summed_background;         
+         
+         for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
+          TH1* tempOfHisto = (TH1*) _vectTHBkg.at(iBkg)->Clone();
+          tempOfHisto->Sumw2();
+          if (iBkg == 0) {
+           summed_background = (TH1*) tempOfHisto->Clone();
+          }
+          else {
+           summed_background->Add(tempOfHisto);
+          }
+         }
+         
+         summed_background->SetTitle("");
+         summed_background->SetLineWidth(2);
+         summed_background->SetLineColor(kBlue);
+         summed_background->SetLineStyle(1);
+         SqrtHisto(summed_background);
+         
+         c1->cd();
+         
+         for (unsigned int iSig = 0; iSig<_vectTHstackSig.size(); iSig++) {          
+          if (_mergeSignal == 0) {
+           TH1* tempOfHisto = (TH1*) _vectTHSig.at(iSig)->Clone();
+           tempOfHisto->Sumw2();
+           TH1* summed_SoB = (TH1*) tempOfHisto->Clone();           
+           summed_SoB->SetTitle("");
+           summed_SoB->Divide(summed_background);
+           if (iSig == 0) {
+            //             summed_SoB->GetYaxis () -> SetRangeUser (0,1);
+            summed_SoB->GetYaxis() -> SetTitle("S/#sqrt{B}");
+            summed_SoB->GetXaxis() -> SetTitle(_xLabel.Data());
+            summed_SoB->GetYaxis() -> SetRangeUser(0.0001 , summed_SoB->GetMaximum() * 2.0);
+            summed_SoB->DrawClone("L");
+           }
+           else {
+            summed_SoB->DrawClone("Lsame");
+           }
+          } 
+          else {
+           if (_mergeSignal == 1 && iSig == (_vectTHstackSig.size()-1)) {
+            TH1* tempOfHisto = (TH1*) _vectTHSig.at(iSig)->Clone();
+            tempOfHisto->Sumw2();
+            tempOfHisto->SetLineColor (kRed);
+            tempOfHisto->DrawClone("Lsame");
+            
+            TH1* summed_SoB = (TH1*) tempOfHisto->Clone();           
+            summed_SoB->SetTitle("");
+            SquareHisto(summed_SoB);
+            summed_SoB->Divide(summed_background);
+            if (iSig == 0) {
+             summed_SoB->GetYaxis() -> SetTitle("S^{2}/B");
+             summed_SoB->GetXaxis() -> SetTitle(_xLabel.Data());
+             summed_SoB->GetYaxis() -> SetRangeUser(0.0001 , summed_SoB->GetMaximum() * 2.0);
+             summed_SoB->DrawClone("L");
+            }
+            else {
+             summed_SoB->DrawClone("Lsame");
+            }
+            
+           }
+          }
+         }
+         
+         c1->cd();
+         DrawLabels(false, true); // do not plot data and plot only the "background summed"
+         
+        }
+        
+        
+        
+        void DrawIntegralLeft(TCanvas *c1) {
+         
+         std::cout << " DrawIntegralLeft " << std::endl;
+         gStyle->SetOptStat(0);
+         c1->cd();
+         gStyle->SetOptStat(0);
+         
+         TH1 *summed = GetSummedMCHist();
+         
+         TH1 *summed_background;         
+         
+         for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
+          _vectTHBkg.at(iBkg)->ComputeIntegral();
+          Double_t *integral = _vectTHBkg.at(iBkg)->GetIntegral();
+          TH1* tempOfHisto = (TH1*) _vectTHBkg.at(iBkg)->Clone();
+          tempOfHisto->SetContent(integral);
+          double integral_scale =  _vectTHBkg.at(iBkg)->Integral();
+          std::cout << " integral_scale = " << integral_scale << std::endl;
+          tempOfHisto->Sumw2();
+          tempOfHisto->Scale (integral_scale);
+          if (iBkg == 0) {
+           summed_background = (TH1*) tempOfHisto->Clone();
+          }
+          else {
+           summed_background->Add(tempOfHisto);
+          }
+         }
+         
+         summed_background->SetTitle("");
+         RemoveError(summed_background);
+         summed_background->SetLineWidth(2);
+         summed_background->SetLineColor(kBlue);
+         summed_background->SetLineStyle(1);
+         summed_background->GetYaxis() -> SetRangeUser(0.0001 ,summed_background->GetMaximum() * 1.1 + 5);
+         summed_background->GetXaxis() -> SetTitle(_xLabel.Data());
+         c1->cd();
+         summed_background->DrawClone("L");
+         
+         for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
+          _vectTHBkg.at(iBkg)->ComputeIntegral();
+          Double_t *integral = _vectTHBkg.at(iBkg)->GetIntegral();
+          TH1* tempOfHisto = (TH1*) _vectTHBkg.at(iBkg)->Clone();
+          tempOfHisto->SetContent(integral);
+          double integral_scale =  _vectTHBkg.at(iBkg)->Integral();
+          std::cout << " integral_scale = " << integral_scale << std::endl;
+          tempOfHisto->Sumw2();
+          tempOfHisto->Scale (integral_scale);
+          RemoveError(tempOfHisto);
+          tempOfHisto ->GetYaxis () -> SetRangeUser(0.0001 ,summed->Integral() * 1.5 + 5);
+          tempOfHisto->DrawClone("Lsame");
+         }
+         
+         
+         
+         for (unsigned int iSig = 0; iSig<_vectTHstackSig.size(); iSig++) {          
+          if (_mergeSignal == 0) {
+           _vectTHSig.at(iSig)->ComputeIntegral();
+           Double_t *integral = _vectTHSig.at(iSig)->GetIntegral();
+           TH1* tempOfHisto = (TH1*) _vectTHSig.at(iSig)->Clone();
+           tempOfHisto->SetContent(integral);
+           double integral_scale = _vectTHSig.at(iSig)->Integral();
+           std::cout << " integral_scale = " << integral_scale << std::endl;
+           tempOfHisto->Sumw2();
+           tempOfHisto->Scale (integral_scale);           
+           RemoveError(tempOfHisto);
+           tempOfHisto->DrawClone("Lsame");
+          } 
+          else {
+           if (_mergeSignal == 1 && iSig == (_vectTHstackSig.size()-1)) {
+            _vectTHSig.at(iSig)->ComputeIntegral();
+            Double_t *integral = _vectTHSig.at(iSig)->GetIntegral();
+            TH1* tempOfHisto = (TH1*) _vectTHSig.at(iSig)->Clone();
+            tempOfHisto->SetContent(integral);
+            double integral_scale = _vectTHSig.at(iSig)->Integral();
+            std::cout << " integral_scale = " << integral_scale << std::endl;
+            tempOfHisto->Sumw2();
+            tempOfHisto->Scale (integral_scale);           
+            RemoveError(tempOfHisto);
+            tempOfHisto->SetLineColor (kRed);
+            tempOfHisto->DrawClone("Lsame"); 
+           }
+          }
+         }
+         
+         c1->cd();
+         DrawLabels(false); // do not plot data!         
+        }
+        
+        
+        
+        
+        void DrawIntegralRight(TCanvas *c1) {
+         
+         std::cout << " DrawIntegralRight " << std::endl;
+         gStyle->SetOptStat(0);
+         c1->cd();
+         gStyle->SetOptStat(0);
+         
+         TH1 *summed = GetSummedMCHist();
+         
+         TH1 *summed_background;         
+         
+         for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
+          _vectTHBkg.at(iBkg)->ComputeIntegral();
+          Double_t *integral = _vectTHBkg.at(iBkg)->GetIntegral();
+          TH1* tempOfHisto = (TH1*) _vectTHBkg.at(iBkg)->Clone();
+          tempOfHisto->SetContent(integral);
+          double integral_scale =  _vectTHBkg.at(iBkg)->Integral();
+          std::cout << " integral_scale = " << integral_scale << std::endl;
+          tempOfHisto->Sumw2();
+          tempOfHisto->Scale (integral_scale);
+          ReverseCumulative(tempOfHisto);
+          if (iBkg == 0) {
+           summed_background = (TH1*) tempOfHisto->Clone();
+          }
+          else {
+           summed_background->Add(tempOfHisto);
+          }
+         }
+         
+         summed_background->SetTitle("");
+         RemoveError(summed_background);
+         summed_background->SetLineWidth(2);
+         summed_background->SetLineColor(kBlue);
+         summed_background->SetLineStyle(1);
+         summed_background->GetYaxis() -> SetRangeUser(0.0001 ,summed_background->GetMaximum() * 1.1 + 5);
+         summed_background->GetXaxis() -> SetTitle(_xLabel.Data());
+         c1->cd();
+         summed_background->DrawClone("L");
+         
+         for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
+          _vectTHBkg.at(iBkg)->ComputeIntegral();
+          Double_t *integral = _vectTHBkg.at(iBkg)->GetIntegral();
+          TH1* tempOfHisto = (TH1*) _vectTHBkg.at(iBkg)->Clone();
+          tempOfHisto->SetContent(integral);
+          double integral_scale =  _vectTHBkg.at(iBkg)->Integral();
+          std::cout << " integral_scale = " << integral_scale << std::endl;
+          tempOfHisto->Sumw2();
+          tempOfHisto->Scale (integral_scale);
+          ReverseCumulative(tempOfHisto);
+          RemoveError(tempOfHisto);
+          tempOfHisto ->GetYaxis () -> SetRangeUser(0.0001 ,summed->Integral() * 1.5 + 5);
+          tempOfHisto->DrawClone("Lsame");
+         }
+         
+         
+         
+         for (unsigned int iSig = 0; iSig<_vectTHstackSig.size(); iSig++) {          
+          if (_mergeSignal == 0) {
+           _vectTHSig.at(iSig)->ComputeIntegral();
+           Double_t *integral = _vectTHSig.at(iSig)->GetIntegral();
+           TH1* tempOfHisto = (TH1*) _vectTHSig.at(iSig)->Clone();
+           tempOfHisto->SetContent(integral);
+           double integral_scale = _vectTHSig.at(iSig)->Integral();
+           std::cout << " integral_scale = " << integral_scale << std::endl;
+           tempOfHisto->Sumw2();
+           tempOfHisto->Scale (integral_scale);           
+           RemoveError(tempOfHisto);
+           ReverseCumulative(tempOfHisto);
+           tempOfHisto->DrawClone("Lsame");
+          } 
+          else {
+           if (_mergeSignal == 1 && iSig == (_vectTHstackSig.size()-1)) {
+            _vectTHSig.at(iSig)->ComputeIntegral();
+            Double_t *integral = _vectTHSig.at(iSig)->GetIntegral();
+            TH1* tempOfHisto = (TH1*) _vectTHSig.at(iSig)->Clone();
+            tempOfHisto->SetContent(integral);
+            double integral_scale = _vectTHSig.at(iSig)->Integral();
+            std::cout << " integral_scale = " << integral_scale << std::endl;
+            tempOfHisto->Sumw2();
+            tempOfHisto->Scale (integral_scale);           
+            RemoveError(tempOfHisto);
+            ReverseCumulative(tempOfHisto);
+            tempOfHisto->SetLineColor (kRed);
+            tempOfHisto->DrawClone("Lsame"); 
+           }
+          }
+         }
+         
+         c1->cd();
+         DrawLabels(false); // do not plot data!         
+        }
+        
+        
+        ///---- S / B plot ----
+        void DrawIntegralRightSoB(TCanvas *c2) {
+         
+         std::cout << " DrawIntegralRightSoB " << std::endl;
+         gStyle->SetOptStat(0);
+         c2->cd();
+         gStyle->SetOptStat(0);
+         
+         TH1 *summed = GetSummedMCHist();
+         
+         TH1 *summed_background;         
+         
+         for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
+          _vectTHBkg.at(iBkg)->ComputeIntegral();
+          Double_t *integral = _vectTHBkg.at(iBkg)->GetIntegral();
+          TH1* tempOfHisto = (TH1*) _vectTHBkg.at(iBkg)->Clone();
+          tempOfHisto->SetContent(integral);
+          double integral_scale =  _vectTHBkg.at(iBkg)->Integral();
+          std::cout << " integral_scale = " << integral_scale << std::endl;
+          tempOfHisto->Sumw2();
+          tempOfHisto->Scale (integral_scale);
+          ReverseCumulative(tempOfHisto);
+          if (iBkg == 0) {
+           summed_background = (TH1*) tempOfHisto->Clone();
+          }
+          else {
+           summed_background->Add(tempOfHisto);
+          }
+         }
+         
+         summed_background->SetTitle("");
+         RemoveError(summed_background);
+         summed_background->SetLineWidth(2);
+         summed_background->SetLineColor(kBlue);
+         summed_background->SetLineStyle(1);
+         summed_background ->GetYaxis () -> SetRangeUser(0.0001 ,summed->Integral() * 1.5 + 5);
+         
+         for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
+          _vectTHBkg.at(iBkg)->ComputeIntegral();
+          Double_t *integral = _vectTHBkg.at(iBkg)->GetIntegral();
+          TH1* tempOfHisto = (TH1*) _vectTHBkg.at(iBkg)->Clone();
+          tempOfHisto->SetContent(integral);
+          double integral_scale =  _vectTHBkg.at(iBkg)->Integral();
+          std::cout << " integral_scale = " << integral_scale << std::endl;
+          tempOfHisto->Sumw2();
+          tempOfHisto->Scale (integral_scale);
+          RemoveError(tempOfHisto);
+          ReverseCumulative(tempOfHisto);
+          tempOfHisto ->GetYaxis () -> SetRangeUser(0.0001 ,summed->Integral() * 1.5 + 5);
+         }
+         
+         
+         c2->cd();
+         
+         for (unsigned int iSig = 0; iSig<_vectTHstackSig.size(); iSig++) {          
+          if (_mergeSignal == 0) {
+           _vectTHSig.at(iSig)->ComputeIntegral();
+           Double_t *integral = _vectTHSig.at(iSig)->GetIntegral();
+           TH1* tempOfHisto = (TH1*) _vectTHSig.at(iSig)->Clone();
+           tempOfHisto->SetContent(integral);
+           double integral_scale = _vectTHSig.at(iSig)->Integral();
+           std::cout << " integral_scale = " << integral_scale << std::endl;
+           tempOfHisto->Sumw2();
+           tempOfHisto->Scale (integral_scale);           
+           RemoveError(tempOfHisto);
+           ReverseCumulative(tempOfHisto);
+           TH1* summed_SoB = (TH1*) tempOfHisto->Clone();           
+           summed_SoB->SetTitle("");
+           summed_SoB->Divide(summed_background);
+           if (iSig == 0) {
+            //             summed_SoB->GetYaxis () -> SetRangeUser (0,1);
+            summed_SoB->GetYaxis() -> SetTitle("S/B");
+            summed_SoB->GetXaxis() -> SetTitle(_xLabel.Data());
+            summed_SoB->DrawClone("L");
+           }
+           else {
+            summed_SoB->DrawClone("Lsame");
+           }
+          } 
+          else {
+           if (_mergeSignal == 1 && iSig == (_vectTHstackSig.size()-1)) {
+            _vectTHSig.at(iSig)->ComputeIntegral();
+            Double_t *integral = _vectTHSig.at(iSig)->GetIntegral();
+            TH1* tempOfHisto = (TH1*) _vectTHSig.at(iSig)->Clone();
+            tempOfHisto->SetContent(integral);
+            double integral_scale = _vectTHSig.at(iSig)->Integral();
+            std::cout << " integral_scale = " << integral_scale << std::endl;
+            tempOfHisto->Sumw2();
+            tempOfHisto->Scale (integral_scale);           
+            RemoveError(tempOfHisto);
+            ReverseCumulative(tempOfHisto);
+            tempOfHisto->SetLineColor (kRed);
+            tempOfHisto->DrawClone("Lsame");
+            
+            TH1* summed_SoB = (TH1*) tempOfHisto->Clone();           
+            summed_SoB->SetTitle("");
+            summed_SoB->Divide(summed_background);
+            if (iSig == 0) {
+             summed_SoB->GetYaxis() -> SetTitle("S/B");
+             summed_SoB->GetXaxis() -> SetTitle(_xLabel.Data());
+             //              summed_SoB->GetYaxis () -> SetRangeUser (0,1);
+             summed_SoB->DrawClone("L");
+            }
+            else {
+             summed_SoB->DrawClone("Lsame");
+            }
+            
+           }
+          }
+         }
+         
+        }
+        
+        
+        
+        
+        
+        ///---- S / B plot ----
+        void DrawIntegralLeftSoB(TCanvas *c2) {
+         
+         std::cout << " DrawIntegralLeftSoB " << std::endl;
+         gStyle->SetOptStat(0);
+         c2->cd();
+         gStyle->SetOptStat(0);
+         
+         TH1 *summed = GetSummedMCHist();
+         
+         TH1 *summed_background;         
+         
+         for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
+          _vectTHBkg.at(iBkg)->ComputeIntegral();
+          Double_t *integral = _vectTHBkg.at(iBkg)->GetIntegral();
+          TH1* tempOfHisto = (TH1*) _vectTHBkg.at(iBkg)->Clone();
+          tempOfHisto->SetContent(integral);
+          double integral_scale =  _vectTHBkg.at(iBkg)->Integral();
+          std::cout << " integral_scale = " << integral_scale << std::endl;
+          tempOfHisto->Sumw2();
+          tempOfHisto->Scale (integral_scale);
+          if (iBkg == 0) {
+           summed_background = (TH1*) tempOfHisto->Clone();
+          }
+          else {
+           summed_background->Add(tempOfHisto);
+          }
+         }
+         
+         summed_background->SetTitle("");
+         RemoveError(summed_background);
+         summed_background->SetLineWidth(2);
+         summed_background->SetLineColor(kBlue);
+         summed_background->SetLineStyle(1);
+         summed_background ->GetYaxis () -> SetRangeUser(0.0001 ,summed->Integral() * 1.5 + 5);
+         
+         for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
+          _vectTHBkg.at(iBkg)->ComputeIntegral();
+          Double_t *integral = _vectTHBkg.at(iBkg)->GetIntegral();
+          TH1* tempOfHisto = (TH1*) _vectTHBkg.at(iBkg)->Clone();
+          tempOfHisto->SetContent(integral);
+          double integral_scale =  _vectTHBkg.at(iBkg)->Integral();
+          std::cout << " integral_scale = " << integral_scale << std::endl;
+          tempOfHisto->Sumw2();
+          tempOfHisto->Scale (integral_scale);
+          RemoveError(tempOfHisto);
+          tempOfHisto ->GetYaxis () -> SetRangeUser(0.0001 ,summed->Integral() * 1.5 + 5);
+         }
+         
+         
+         c2->cd();
+         
+         for (unsigned int iSig = 0; iSig<_vectTHstackSig.size(); iSig++) {          
+          if (_mergeSignal == 0) {
+           _vectTHSig.at(iSig)->ComputeIntegral();
+           Double_t *integral = _vectTHSig.at(iSig)->GetIntegral();
+           TH1* tempOfHisto = (TH1*) _vectTHSig.at(iSig)->Clone();
+           tempOfHisto->SetContent(integral);
+           double integral_scale = _vectTHSig.at(iSig)->Integral();
+           std::cout << " integral_scale = " << integral_scale << std::endl;
+           tempOfHisto->Sumw2();
+           tempOfHisto->Scale (integral_scale);           
+           RemoveError(tempOfHisto);
+           
+           TH1* summed_SoB = (TH1*) tempOfHisto->Clone();           
+           summed_SoB->SetTitle("");
+           summed_SoB->Divide(summed_background);
+           if (iSig == 0) {
+//             summed_SoB->GetYaxis () -> SetRangeUser (0,1);
+            summed_SoB->GetYaxis() -> SetTitle("S/B");
+            summed_SoB->GetXaxis() -> SetTitle(_xLabel.Data());
+            summed_SoB->DrawClone("L");
+           }
+           else {
+            summed_SoB->DrawClone("Lsame");
+           }
+          } 
+          else {
+           if (_mergeSignal == 1 && iSig == (_vectTHstackSig.size()-1)) {
+            _vectTHSig.at(iSig)->ComputeIntegral();
+            Double_t *integral = _vectTHSig.at(iSig)->GetIntegral();
+            TH1* tempOfHisto = (TH1*) _vectTHSig.at(iSig)->Clone();
+            tempOfHisto->SetContent(integral);
+            double integral_scale = _vectTHSig.at(iSig)->Integral();
+            std::cout << " integral_scale = " << integral_scale << std::endl;
+            tempOfHisto->Sumw2();
+            tempOfHisto->Scale (integral_scale);           
+            RemoveError(tempOfHisto);
+            tempOfHisto->SetLineColor (kRed);
+            tempOfHisto->DrawClone("Lsame");
+            
+            TH1* summed_SoB = (TH1*) tempOfHisto->Clone();           
+            summed_SoB->SetTitle("");
+            summed_SoB->Divide(summed_background);
+            if (iSig == 0) {
+             summed_SoB->GetYaxis() -> SetTitle("S/B");
+             summed_SoB->GetXaxis() -> SetTitle(_xLabel.Data());
+//              summed_SoB->GetYaxis () -> SetRangeUser (0,1);
+             summed_SoB->DrawClone("L");
+            }
+            else {
+             summed_SoB->DrawClone("Lsame");
+            }
+            
+           }
+          }
+         }
+         
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
         //---- draw ----
 
@@ -1406,7 +2356,7 @@ class PlotVHqqHggH {
             Draw(new TCanvas(),rebin,div, shadow);
         }
 
-        void Draw(TCanvas *c1, const int &rebin=1, const bool &div=false, const bool &shadow=true, TCanvas *cAdditional=0) {
+        void Draw(TCanvas *c1, const int &rebin=1, const bool &div=false, const bool &shadow=true, TCanvas *cAdditional=0, double integralGlobalScale = -1., double scaleEvenData = 0) {
             //      std::cout << " rebin = " << rebin << std::endl; 
             int rebin2 = rebin; //---> just not to have warning :)
             rebin2+=0; 
@@ -1510,10 +2460,12 @@ class PlotVHqqHggH {
             float pw = pad1->GetAbsWNDC()*c1->GetWw();
             float ph = pad1->GetAbsHNDC()*c1->GetWh();
 
-            float fontscale = min(pw,ph)/1000;
+//             float fontscale = min(pw,ph)/1000;
+            float fontscale = min(pw,ph)/600;
             this->_axisLabelSize *= fontscale;
-            this->_legendTextSize *= fontscale;
-
+//             this->_legendTextSize *= (fontscale/1.2);
+            this->_legendTextSize *= (fontscale/1.5);
+            
             std::cout << "w:" << pw << " h:" << ph  << std::endl;
 
 
@@ -1762,6 +2714,10 @@ class PlotVHqqHggH {
 
                 TH1 *rdat = (TH1*)data->Clone("rdat");   
                 if(gROOT->FindObject("rref")) gROOT->FindObject("rref")->Delete();
+                
+                TGraphAsymmErrors *g_rdat = new TGraphAsymmErrors();
+                g_rdat -> SetName ("g_rdat");
+                
                 TGraphAsymmErrors *rref = new TGraphAsymmErrors();
                 rref -> SetName ("rref");
                 for (int i = 0, n = summed->GetNbinsX(); i < n; ++i) {
@@ -1782,15 +2738,29 @@ class PlotVHqqHggH {
                         //                         rref->SetPoint     (i,summed->GetBinCenter(i+1) - summed->GetBinWidth(i+1)/2., 0);
                         rdat->SetBinError(i, 0);
                         rref->SetPointError (i,summed->GetBinWidth(i+1)/2.  , summed->GetBinWidth(i+1)/2.  , 0, 0);
+                        
+                        g_rdat->SetPoint      (i, summed->GetBinCenter(i+1), 0);
+                        g_rdat->SetPointError (i,summed->GetBinWidth(i+1)/2.  , summed->GetBinWidth(i+1)/2.  , 0, 0);
 /*                         std::cout << " I'm doing bin = " << i << " with scale = 0    and binXerror = " << summed->GetBinWidth(i+1)/2. << " and binCenter = " << summed->GetBinCenter(i+1) << std::endl; */
                     }
                     else {
 /*                         std::cout << " I'm doing bin = " << i << " and binXerror = " << summed->GetBinWidth(i+1)/2. << " and binCenter = " << summed->GetBinCenter(i+1) << std::endl; */
+                        double events_in_bin = rdat->GetBinContent(i+1);
+                        double error_in_bin  = rdat->GetBinError(i+1);
+                        
+                        g_rdat->SetPoint      (i,summed->GetBinCenter(i+1), (events_in_bin/scale));
+                        g_rdat->SetPointError (i, summed->GetBinWidth(i+1)/2.  , summed->GetBinWidth(i+1)/2.  , rdat->GetBinError(i+1)/scale, rdat->GetBinError(i+1)/scale);
+                        
                         rdat->SetBinContent(i+1, rdat->GetBinContent(i+1)/scale);
                         //                         rref->SetPoint      (i,summed->GetBinCenter(i+1) - summed->GetBinWidth(i+1)/2., summed->GetBinContent(i+1)/scale);
                         //                         rref->SetPoint      (i,summed->GetBinCenter(i+1), summed->GetBinContent(i+1)/scale);
                         rdat->SetBinError(i+1, rdat->GetBinError(i+1)/scale);
-
+                        
+                        if ( events_in_bin == 0) {
+                         //----> 0 events -> remember bayesian poisson -> only error up
+                         g_rdat->SetPointError (i, summed->GetBinWidth(i+1)/2.  , summed->GetBinWidth(i+1)/2.  , 0 , error_in_bin/scale);
+                        }
+                        
                         double xx = summed->GetBinCenter(i+1);
                         double yy = summed->GetBinContent(i+1)/scale;
 
@@ -1851,7 +2821,8 @@ class PlotVHqqHggH {
                         absmax = TMath::Max(mymax, absmax);
                     }
                     if (rdat->GetBinContent(i+1) == 0) {
-                        rdat->SetBinContent(i+1, -1);
+                        rdat->SetBinContent(i+1, 0);
+//                         rdat->SetBinContent(i+1, -1); //--- why?!?!?! -1 ?!?!?!
                     }
                 }
 
@@ -1912,8 +2883,12 @@ class PlotVHqqHggH {
                     rref->GetXaxis()->SetLabelOffset(10);
                 }
 
-                rdat->SetMarkerStyle(20);
-                rdat->Draw("E0 SAME p");
+//                 rdat->SetMarkerStyle(20);
+//                 rdat->Draw("E0 SAME p");
+//                 g_rdat->SetMarkerColor(kBlue);
+                g_rdat->SetLineWidth(2);
+                g_rdat->SetMarkerStyle(20);
+                g_rdat->Draw("SAME p");
                 line->Draw("SAME"); 
                 c1->Update();
                 pad2->GetFrame()->DrawClone();
@@ -2012,6 +2987,11 @@ class PlotVHqqHggH {
                         errYupDataMinusBkg = sqrt(errYupDataMinusBkg_Syst*errYupDataMinusBkg_Syst + data->GetBinContent(i+1)); //---- poissonian
                         errYloDataMinusBkg_Stat = data->GetBinError(i+1);
                         errYupDataMinusBkg_Stat = data->GetBinError(i+1);
+                        
+                        if (data->GetBinContent(i+1) == 0) { //----> remember poisson bayesian with 0 events observed -> only upper limit
+                         errYloDataMinusBkg_Stat = 0;
+                        }
+                        
 //                         errYloDataMinusBkg_Stat = sqrt(data->GetBinContent(i+1));
 //                         errYupDataMinusBkg_Stat = sqrt(data->GetBinContent(i+1));
 
@@ -2059,6 +3039,19 @@ class PlotVHqqHggH {
                         temp_vectTHstackSig.at(iSig) -> SetFillColor (temp_vectTHstackSig.at(iSig) -> GetLineColor());
                         if (iSig == (temp_vectTHstackSig.size()-1)) {
                             temp_vectTHstackSig.at(iSig) -> SetTitle ("");
+                            ///---- scale signal ---- (begin)
+                            if (integralGlobalScale != -1) {
+                             double integral_temp = temp_vectTHstackSig.at(iSig)->Integral();
+                             //---> calculate scale factor on SIGNAL and apply everywhere 
+                             integralGlobalScale = (integralGlobalScale / integral_temp);
+                             temp_vectTHstackSig.at(iSig) -> Scale ( integralGlobalScale );
+                             std::cout << "  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ " << std::endl;
+                             std::cout << "  integralGlobalScale = " << integralGlobalScale << std::endl;
+                             maxY = maxY * integralGlobalScale;
+                             minY = minY * integralGlobalScale;
+                             std::cout << "  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ " << std::endl;
+                            }
+                            ///---- scale signal ---- (end)
                             temp_vectTHstackSig.at(iSig) -> Draw();
                             if(_units.Sizeof() == 0) {
 //                              AxisFonts(temp_vectTHstackSig.at(iSig)->GetXaxis(), "x", hstack->GetXaxis()->GetTitle());
@@ -2071,13 +3064,19 @@ class PlotVHqqHggH {
                             }                             
                             AxisFonts(temp_vectTHstackSig.at(iSig)->GetYaxis(), "y", "data - background");
                             if (data) {
-                                temp_vectTHstackSig.at(iSig) ->GetYaxis () -> SetRangeUser(minY - 5 ,maxY*1.5 + 5);
+//                              temp_vectTHstackSig.at(iSig) ->GetYaxis () -> SetRangeUser(minY - 5 ,maxY*1.5 + 5);
+                             temp_vectTHstackSig.at(iSig) ->GetYaxis () -> SetRangeUser(-50 ,300); //--- for time evolution
                             }
                             else {
                                 temp_vectTHstackSig.at(iSig) ->GetYaxis () -> SetRangeUser(0 ,temp_vectTHstackSig.at(temp_vectTHstackSig.size()-1)->GetMaximum() * 1.5 + 5);
                             }
                         }                
                         else {
+                         ///---- scale signal ---- (begin)
+                            if (integralGlobalScale != -1) {
+                             temp_vectTHstackSig.at(iSig) -> Scale ( integralGlobalScale );
+                            }
+                            ///---- scale signal ---- (end)                         
                             temp_vectTHstackSig.at(iSig) -> Draw("same");
                         }
                         //                if (iSig == 0) temp_vectTHstackSig.at(iSig) -> Draw("hist");
@@ -2110,6 +3109,11 @@ class PlotVHqqHggH {
                 //              rrefData->Draw("EP");
                 //              rrefDataStat->Draw("EP");
 
+                
+                if (integralGlobalScale != -1) {
+                 scaleTGAE (rrefBkgSub, integralGlobalScale );
+                 rrefBkgSub->SetName ("rrefBkgSub");
+                }
                 rrefBkgSub->SetLineWidth(0);
                 rrefBkgSub->SetFillColor(kGray+1);
                 rrefBkgSub->SetLineColor(kGray+1);
@@ -2122,6 +3126,11 @@ class PlotVHqqHggH {
                 rrefDataStat -> SetMarkerStyle(20);
                 rrefDataStat -> SetLineColor (kBlack);
                 rrefDataStat -> SetMarkerColor (kBlack);
+
+                if (integralGlobalScale != -1 && scaleEvenData == 1) {
+                 scaleTGAE (rrefDataStat, integralGlobalScale );
+                }
+                
                 rrefDataStat->Draw("EP");
 
                 std::cout << " x1 = " << summed->GetXaxis()->GetBinLowEdge(1) + (summed->GetXaxis()->GetBinLowEdge(_nbins+1) - summed->GetXaxis()->GetBinLowEdge(1)) * 1. / 3. << std::endl;
@@ -2130,7 +3139,7 @@ class PlotVHqqHggH {
                 std::cout << " y2 = " << maxY+15 << std::endl;
 
                 //              TLegend* legendSigMinusBkg = new TLegend(summed->GetXaxis()->GetBinLowEdge(1) + (summed->GetXaxis()->GetBinLowEdge(_nbins+1) - summed->GetXaxis()->GetBinLowEdge(1)) * 1. / 3. , maxY+5, summed->GetXaxis()->GetBinLowEdge(1) + (summed->GetXaxis()->GetBinLowEdge(_nbins+1) - summed->GetXaxis()->GetBinLowEdge(1)) * 2. / 3. ,  maxY+15);
-                TLegend* legendSigMinusBkg = new TLegend(0.3, 0.7, 0.7, 1.0);
+                TLegend* legendSigMinusBkg = new TLegend(0.60, 0.40, 0.90, 0.70);
 
                 legendSigMinusBkg->SetBorderSize(     0);
                 legendSigMinusBkg->SetFillColor (     0);
@@ -2159,6 +3168,20 @@ class PlotVHqqHggH {
                 }
                 legendSigMinusBkg->Draw();
 
+                TLatex* newLabelLuminosity;
+                if(_extraLabel) {
+                 newLabelLuminosity = new TLatex(0.55, 0.83, TString::Format("#splitline{CMS preliminary}{%s}",_extraLabel->Data()));
+                }
+                else {
+                 newLabelLuminosity = new TLatex(0.55, 0.83, TString::Format("#splitline{CMS preliminary}{L = %.1f fb^{-1}}",_lumi));
+                }
+                newLabelLuminosity->SetNDC();
+                newLabelLuminosity->SetTextAlign(12);
+                newLabelLuminosity->SetTextFont(_labelFont);
+                newLabelLuminosity->SetTextSize(_legendTextSize*0.95);
+                newLabelLuminosity->Draw("same");
+                
+                
                 cAdditional->Update();
 
             }
@@ -2286,24 +3309,24 @@ class PlotVHqqHggH {
             }
 
             if(_breakdown) {
-             THStackAxisFonts(hstack, "y", "entries");
-             if (_divide) {
-              THStackAxisFonts(hstack, "y", TString::Format("entries / %s",_units.Data()));
-             }
-             hstack->GetHistogram()->LabelsOption("v");
+                THStackAxisFonts(hstack, "y", "entries");
+                if (_divide) {
+                 THStackAxisFonts(hstack, "y", TString::Format("entries / %s",_units.Data()));
+                }
+                hstack->GetHistogram()->LabelsOption("v");
             } else {
-             THStackAxisFonts(hstack, "x", TString::Format("%s [%s]",_xLabel.Data(),_units.Data()));
-             if(_units.Sizeof() == 1) {
-              THStackAxisFonts(hstack, "x", _xLabel.Data());
-              THStackAxisFonts(hstack, "y", "entries");
-             } else {
-              THStackAxisFonts(hstack, "x", TString::Format("%s [%s]",_xLabel.Data(),_units.Data()));
-              THStackAxisFonts(hstack, "y", "entries");
-              if (_divide) {
-               THStackAxisFonts(hstack, "y", TString::Format("entries / %s",_units.Data()));
-              }
-              //                     THStackAxisFonts(hstack, "y", TString::Format("entries / %.0f %s", binWidth,_units.Data()));
-             }
+                THStackAxisFonts(hstack, "x", TString::Format("%s [%s]",_xLabel.Data(),_units.Data()));
+                if(_units.Sizeof() == 1) {
+                    THStackAxisFonts(hstack, "x", _xLabel.Data());
+                    THStackAxisFonts(hstack, "y", "entries");
+                } else {
+                    THStackAxisFonts(hstack, "x", TString::Format("%s [%s]",_xLabel.Data(),_units.Data()));
+                    THStackAxisFonts(hstack, "y", "entries");
+                    if (_divide) {
+                     THStackAxisFonts(hstack, "y", TString::Format("entries / %s",_units.Data()));
+                    }
+                    //                     THStackAxisFonts(hstack, "y", TString::Format("entries / %.0f %s", binWidth,_units.Data()));
+                }
             }
             return hstack;
         }
@@ -2331,7 +3354,7 @@ class PlotVHqqHggH {
             return sampCount;
         }
 
-        void DrawLabels(bool plotData=true) {
+        void DrawLabels(bool plotData=true, bool onlySig=false) {
 
             // total mess to get it nice, should be redone
             size_t j=0;
@@ -2371,11 +3394,22 @@ class PlotVHqqHggH {
 
             if (plotData == false) j++;
 
-            for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
-                DrawLegend(x0+pos[j]*wx, _globalYoffset - off[j]*_yoffset, _vectTHBkg.at(iBkg)         , _vectNameBkg.at(iBkg) ,           "f" );
-                j++; 
+            if (onlySig == false) {
+             for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
+              DrawLegend(x0+pos[j]*wx, _globalYoffset - off[j]*_yoffset, _vectTHBkg.at(iBkg)         , _vectNameBkg.at(iBkg) ,           "f" );
+              j++; 
+             }
             }
-
+            else {
+             for (unsigned int iBkg = 0; iBkg<_vectTHBkg.size(); iBkg++) {
+              if (iBkg == 0) {
+               j++;
+               j++;
+               DrawLegend(x0+pos[j]*wx, _globalYoffset - off[j]*_yoffset, _vectTHBkg.at(iBkg)         , "background" ,           "f" );
+               j++;
+              }
+             }
+            }
 
             if (plotData) {
                 TLatex* luminosity;
@@ -2409,7 +3443,7 @@ class PlotVHqqHggH {
             axis->SetTitleOffset(  1.5);
             axis->SetTitleSize  (_axisLabelSize);
 
-            if (coordinate == "x") axis->SetTitleOffset(_titleOffset+2.0);
+            if (coordinate == "x") axis->SetTitleOffset(_titleOffset+_titleOffset_additional);
             if (coordinate == "y") axis->SetTitleOffset(_titleOffset);
 
             axis->SetTitle(title);
@@ -2461,6 +3495,33 @@ class PlotVHqqHggH {
         }
 
 
+        //------------------------------------------------------------------------------
+        // scale a TGraphAsymmErrors
+        //------------------------------------------------------------------------------
+        
+        void scaleTGAE(TGraphAsymmErrors* graph_temp,double scale_tgae) {
+         std::cout << " scaleTGAE::scale_tgae = " << scale_tgae << std::endl;
+         int nBin =  graph_temp->GetN();
+         for (int iBin = 0; iBin < nBin; iBin ++) {
+          double X = (graph_temp->GetX()) [iBin];
+          double Y = (graph_temp->GetY()) [iBin];
+          
+          double errXUp      = graph_temp->GetErrorXhigh(iBin);
+          double errXDown    = graph_temp->GetErrorXlow(iBin);
+          double errYUp      = graph_temp->GetErrorYhigh(iBin);
+          double errYDown    = graph_temp->GetErrorYlow(iBin);
+          
+          graph_temp -> SetPoint      (iBin, X, scale_tgae * Y);
+          graph_temp -> SetPointError (iBin, errXDown, errXUp, scale_tgae * errYDown, scale_tgae * errYUp);
+          
+          std::cout << " iBin = " << iBin<< " , " <<  errXDown << " , " <<  errXUp << " , " <<  scale_tgae * errYDown<< " , " <<  scale_tgae * errYUp << std::endl;
+          
+         }
+         std::cout << " DONE " << std::endl;
+        }
+        
+        
+        
         std::vector<TH1*>       _vectTHBkg             ;
         std::vector<std::string> _vectNameBkg           ;
         std::vector<int>         _vectColourBkg         ;
@@ -2478,6 +3539,7 @@ class PlotVHqqHggH {
 
         std::vector<double>      _vEdges ;
 
+        std::vector<TH1*>       _vectTHData             ;
         TH1* _data;
 
         float    _lumi;
@@ -2504,13 +3566,14 @@ class PlotVHqqHggH {
         Float_t _labelOffset    ;
         Float_t _axisLabelSize  ;
         Float_t _titleOffset    ;
+        Float_t _titleOffset_additional ;
 
         int     _blindBinSx        ;
         int     _blindBinDx        ;
         double  _blindSx        ;
         double  _blindDx        ;
         bool    _shadow_blind   ;
-        
+
         double  _cutSx          ;
         double  _cutDx          ;
         int     _cutSxSign      ; // -1 = "<"       +1 = ">"
@@ -2525,7 +3588,8 @@ class PlotVHqqHggH {
 
         bool    _doBandError    ;
         TGraphAsymmErrors*    _BandError      ;
-
+        std::vector<TGraphAsymmErrors*>    _vectBandError      ;
+        
         bool    _doLabelNumber  ;
         
         int _divide ;
