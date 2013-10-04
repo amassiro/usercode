@@ -1,0 +1,108 @@
+### generation of MC events
+
+## VH NLO with Herwig++
+
+
+WH_WToMuNu_H_M_125_8TeV_powheg_herwigpp_cff.py
+
+
+cmsenv
+git cms-addpkg Configuration/Generator
+git cms-addpkg GeneratorInterface/ExternalDecays
+
+scramv1 b -j 8
+
+cmsDriver.py Configuration/Generator/python/WH_WToMuNu_H_M_125_8TeV_powheg_herwigpp_cff.py -s GEN,SIM,DIGI,L1,DIGI2RAW,HLT --conditions auto:mc --datatier 'GEN-SIM-RAW' --eventcontent RAWSIM -n 10 --no_exec
+
+cmsRun WH_WToMuNu_H_M_125_8TeV_powheg_herwigpp_cff_py_GEN_SIM_DIGI_L1_DIGI2RAW_HLT.py
+
+
+
+cmsDriver.py Configuration/Generator/python/WH_WToMuNu_H_M_125_8TeV_powheg_herwigpp_cff.py -s GEN                         --conditions auto:mc --datatier 'GEN' --eventcontent RAWSIM -n 10 --no_exec
+
+cmsRun WH_WToMuNu_H_M_125_8TeV_powheg_herwigpp_cff_py_GEN.py
+
+
+
+cmsDriver.py Configuration/Generator/python/ZH_ZToMuMu_H_M_125_8TeV_powheg_herwigpp_cff.py -s GEN                         --conditions auto:mc --datatier 'GEN' --eventcontent RAWSIM -n 10 --no_exec
+
+cmsRun ZH_ZToMuMu_H_M_125_8TeV_powheg_herwigpp_cff_py_GEN.py
+
+
+
+
+
+
+
+
+cmsDriver.py Configuration/Generator/python/WH_HtoZZ_M_125_8TeV_powheg_herwigpp_cff.py -s GEN      --conditions auto:mc --datatier 'GEN' --eventcontent RAWSIM -n 100 --no_exec
+
+cmsRun WH_HtoZZ_M_125_8TeV_powheg_herwigpp_cff_py_GEN.py
+
+
+cmsDriver.py Configuration/Generator/python/WH_HtoWW_M_125_8TeV_powheg_herwigpp_cff.py -s GEN      --conditions auto:mc --datatier 'GEN' --eventcontent RAWSIM -n 100 --no_exec
+
+cmsRun WH_HtoWW_M_125_8TeV_powheg_herwigpp_cff_py_GEN.py
+
+
+
+cmsDriver.py Configuration/Generator/python/ZH_ZToBB_HToBB_M_130_8TeV_powheg_herwigpp_cff.py -s GEN      --conditions auto:mc --datatier 'GEN' --eventcontent RAWSIM -n 100 --no_exec
+
+cmsRun ZH_ZToBB_HToBB_M_130_8TeV_powheg_herwigpp_cff_py_GEN.py
+
+
+
+///---- nuovo pythia ----
+cmsDriver.py Configuration/Generator/python/ZH_HToZZTo4L_M_125_TuneZ2star_8TeV_pythia6_tauola_cff.py  -s GEN     --conditions auto:mc --datatier 'GEN' --eventcontent RAWSIM -n 100 --no_exec
+
+cmsRun ZH_HToZZTo4L_M_125_TuneZ2star_8TeV_pythia6_tauola_cff_py_GEN.py
+
+cmsRun WH_WToMuNu_HToZZ_ZToMuMu_M_125_8TeV_powheg_herwigpp_cff_py_GEN.py
+
+
+
+
+## tool for comparison
+
+/home/amassiro/Generation/CMSSW_6_2_0/src/Generator/GenComparison
+
+
+# crate ntuples
+
+cmsRun ConfigZH_Herwig.py
+cmsRun ConfigZH_Minlo.py
+cmsRun ConfigZH_Pythia.py
+
+
+cmsRun ConfigWH_Herwig.py
+cmsRun ConfigWH_Minlo.py
+cmsRun ConfigWH_Pythia.py
+
+
+# and plot!
+
+root -l ~/.root_logon Compare_ZH.cxx
+root -l ~/.root_logon Compare.cxx
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
